@@ -75,8 +75,6 @@ All six seats write an original CHA pack into that model's local instruction fil
   Scan to join: <strong>QQ discussion</strong> <code>1057540028</code> &nbsp;|&nbsp; <strong>QQ topic</strong> <code>1077074552</code>
 </p>
 
-[Telegram group @chachachacha99999](https://t.me/chachachacha99999) &nbsp;|&nbsp; [Telegram channel @chachachacha99999999](https://t.me/chachachacha99999999)
-
 ---
 
 <div align="center">

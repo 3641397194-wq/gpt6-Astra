@@ -14,7 +14,7 @@ const ui = {
   toast: document.getElementById("toast"),
 };
 
-let meta = { profiles: [], seats: [], channels: [], community: { qq: [], telegram: [] } };
+let meta = { profiles: [], seats: [], channels: [], community: { qq: [] } };
 let profile = "max";
 let channel = "ALL";
 let toastTimer;
@@ -72,7 +72,7 @@ function renderRuntime(value) {
 
 function renderCommunity() {
   const root = document.getElementById("communityGrid"); root.replaceChildren();
-  [...(meta.community.qq || []).map((item) => ({ type: "QQ", ...item })), ...(meta.community.telegram || []).map((item) => ({ type: "Telegram", ...item }))].forEach((item) => {
+  (meta.community.qq || []).map((item) => ({ type: "QQ", ...item })).forEach((item) => {
     const card = document.createElement("article"); card.className = "community-card"; card.innerHTML = `<b>${item.type} ${item.name}</b><span>${item.value}</span><small>点击复制或打开入口</small>`;
     const button = document.createElement("button"); button.textContent = item.url ? "打开并复制" : "复制群号"; button.addEventListener("click", async () => { await navigator.clipboard?.writeText(item.value); if (item.url) await window.coldbrew.openExternal(item.url); log(`社群入口 ${item.value} 已处理`, "ok"); toast("社群入口已复制"); }); card.appendChild(button); root.appendChild(card);
   });

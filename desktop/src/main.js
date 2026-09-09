@@ -7,10 +7,6 @@ const seatRuntime = require("./lib/seat-runtime");
 
 const COMMUNITY = {
   qq: [{ name: "交流群", value: "1057540028" }, { name: "专题群", value: "1077074552" }],
-  telegram: [
-    { name: "群", value: "@chachachacha99999", url: "https://t.me/chachachacha99999" },
-    { name: "频道", value: "@chachachacha99999999", url: "https://t.me/chachachacha99999999" },
-  ],
 };
 
 let splashWindow;
@@ -89,7 +85,7 @@ ipcMain.handle("coldbrew:open-docs", async () => {
 
 ipcMain.handle("coldbrew:open-external", async (_event, value) => {
   const url = String(value || "").trim();
-  if (!/^https:\/\/(t\.me|github\.com)(\/|$)/i.test(url)) throw new Error("只允许打开品牌社群或仓库链接");
+  if (!/^https:\/\/github\.com(\/|$)/i.test(url)) throw new Error("只允许打开仓库链接");
   await shell.openExternal(url);
   return url;
 });

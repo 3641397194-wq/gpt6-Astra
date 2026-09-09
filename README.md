@@ -86,8 +86,6 @@ Windows 便携包构建：`npm run pack:win`
   扫码加入：<strong>QQ 交流圈</strong> <code>1057540028</code> &nbsp;|&nbsp; <strong>QQ 专题圈</strong> <code>1077074552</code>
 </p>
 
-[Telegram 群 @chachachacha99999](https://t.me/chachachacha99999) &nbsp;|&nbsp; [Telegram 频道 @chachachacha99999999](https://t.me/chachachacha99999999)
-
 ---
 
 <div align="center">

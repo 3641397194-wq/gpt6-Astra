@@ -5,10 +5,10 @@
   <path d="M0 0h1600v430H0z" fill="#e3353d" opacity=".08"/>
   <path d="M0 0h448v430H0z" fill="#e3353d"/>
   <path d="M304 0h144v430H151z" fill="#7d1018"/>
-  <g fill="none" stroke="#5c2b2d" stroke-width="2"><path d="M490 46h1050M490 384h1050M543 90v250M731 90v250M919 90v250M1107 90v250M1295 90v250M1483 90v250"/></g>
-  <g font-family="Arial, Helvetica, sans-serif"><text x="55" y="95" fill="#fff7f3" font-size="16" font-weight="700" letter-spacing="5">CHA / COMMUNITY</text><text x="55" y="188" fill="#fff7f3" font-size="57" font-weight="700">THE DOOR</text><text x="55" y="246" fill="#fff7f3" font-size="57" font-weight="700">STAYS OPEN</text><text x="57" y="295" fill="#3b080b" font-size="16" letter-spacing="2">QQ · TELEGRAM · NIGHT SIGNAL</text></g>
-  <g fill="#f5eee5" font-family="Arial, Helvetica, sans-serif"><text x="543" y="141" font-size="14" letter-spacing="4">QQ / GROUP</text><text x="731" y="141" font-size="14" letter-spacing="4">QQ / TOPIC</text><text x="919" y="141" font-size="14" letter-spacing="4">TELEGRAM</text><text x="1107" y="141" font-size="14" letter-spacing="4">CHANNEL</text></g>
-  <g fill="#e3353d"><circle cx="611" cy="232" r="28"/><circle cx="799" cy="232" r="28"/><circle cx="987" cy="232" r="28"/><circle cx="1175" cy="232" r="28"/></g>
-  <g fill="#f5eee5" font-family="Arial, Helvetica, sans-serif" font-size="15" letter-spacing="1"><text x="543" y="301">1057540028</text><text x="731" y="301">1077074552</text><text x="919" y="301">@chachachacha99999</text><text x="1107" y="301">@chachachacha99999999</text></g>
+  <g fill="none" stroke="#5c2b2d" stroke-width="2"><path d="M490 46h1050M490 384h1050M543 90v250M919 90v250M1295 90v250"/></g>
+  <g font-family="Arial, Helvetica, sans-serif"><text x="55" y="95" fill="#fff7f3" font-size="16" font-weight="700" letter-spacing="5">CHA / COMMUNITY</text><text x="55" y="188" fill="#fff7f3" font-size="57" font-weight="700">THE DOOR</text><text x="55" y="246" fill="#fff7f3" font-size="57" font-weight="700">STAYS OPEN</text><text x="57" y="295" fill="#3b080b" font-size="16" letter-spacing="2">QQ · NIGHT SIGNAL</text></g>
+  <g fill="#f5eee5" font-family="Arial, Helvetica, sans-serif"><text x="611" y="141" font-size="14" letter-spacing="4">QQ / GROUP</text><text x="987" y="141" font-size="14" letter-spacing="4">QQ / TOPIC</text></g>
+  <g fill="#e3353d"><circle cx="731" cy="232" r="28"/><circle cx="1107" cy="232" r="28"/></g>
+  <g fill="#f5eee5" font-family="Arial, Helvetica, sans-serif" font-size="18" letter-spacing="1"><text x="655" y="301">1057540028</text><text x="1031" y="301">1077074552</text></g>
   <path d="M1312 84l180 156-180 156z" fill="none" stroke="#e3353d" stroke-width="9"/><path d="M1361 241h84" stroke="#f5eee5" stroke-width="3"/>
 </svg>
