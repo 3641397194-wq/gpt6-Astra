@@ -8,9 +8,9 @@
 
 # ColdBrew Zero / CHA
 
-### gpt6 Astra-claude-grok4.6-deepseekv4pro-glm5.3-gemini
+### gpt6 Astra-claude-grok4.6-deepseekv4.1-glm5.3-gemini
 
-**BREAK//OPEN** &nbsp;|&nbsp; **NOIR MANGA RELEASE 2.3.0**
+**BREAK//OPEN** &nbsp;|&nbsp; **NOIR MANGA RELEASE 2.3.6**
 
 <sub>An original dark-manga visual system built from black ink, bone paper, a single crimson eye, and torn comic panels.</sub>
 
@@ -50,7 +50,7 @@ All six seats write an original CHA pack into that model's local instruction fil
 
 ## 02 / Six Seats
 
-`GPT-6 Astra / Codex`, `Claude Code`, `Grok 4.6`, `DeepSeek v4 Pro`, `GLM 5.3`, and `Gemini` share the same night desk.
+`GPT-6 Astra / Codex`, `Claude Code`, `Grok 4.6`, `DeepSeek v4.1`, `GLM 5.3`, and `Gemini` share the same night desk.
 
 <div align="center">
   <img src="docs/assets/readme-noir-seats.svg" width="100%" alt="Six model seats" />
@@ -79,6 +79,6 @@ All six seats write an original CHA pack into that model's local instruction fil
 
 <div align="center">
 
-`CHA / COLD BREW ZERO / BREAK//OPEN / GPT-6 ASTRA / GLM 5.3 / GEMINI / 2.3.0`
+`CHA / COLD BREW ZERO / BREAK//OPEN / GPT-6 ASTRA / DEEPSEEK V4.1 / GLM 5.3 / GEMINI / 2.3.6`
 
 </div>

@@ -9,7 +9,7 @@
 | GPT-6 Astra / Codex | `~/.codex/prompts/cha-codex.md` + `config.toml` 的 `model_instructions_file` + `~/.codex/AGENTS.md` | [xsser/codex-jailbreak-guide](https://github.com/xsser/codex-jailbreak-guide)，[Calrton/jailbreak-prompts](https://github.com/Calrton/jailbreak-prompts) |
 | Claude Code | `~/.claude/CLAUDE.md` + `~/.claude/rules/cha-breakopen.md` | [Claude Code memory](https://code.claude.com/docs/en/memory) |
 | Grok 4.6 | `~/.grok/AGENTS.md` + `rules/cha-breakopen.md` + `skills/cha-breakopen/SKILL.md` | [xai-org/grok-build](https://github.com/xai-org/grok-build)，AGENTS.md 惯例 |
-| DeepSeek v4 Pro | `~/.deepseek/DEEPSEEK.md` + `~/.hermes/SOUL.md` + Hermes skill | [0x5477/deepseek-v4-pro-unrestricted](https://github.com/0x5477/deepseek-v4-pro-unrestricted) 的注入路径，DeepSeek 侧采用短帧写法 |
+| DeepSeek v4.1 | `~/.deepseek/DEEPSEEK.md` + `~/.hermes/SOUL.md` + Hermes skill | 公开仓只借注入位：[0x5477/deepseek-v4-pro-unrestricted](https://github.com/0x5477/deepseek-v4-pro-unrestricted) 的 DEEPSEEK.md / SOUL.md / skill 路径，[deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) 的 Harness 插件层。V4.1 正文是冷咖啡原创「短刻度 + 思考槽封口」，不搬第三方 prompt 全文 |
 | GLM 5.3 | `~/.glm/GLM.md` + `~/.zcode/AGENTS.md` | GLM Coding / ZCode 走 AGENTS.md 记忆层 |
 | Gemini | `~/.gemini/GEMINI.md` + `settings.json` 的 `context.fileName` | 本仓既有 Gemini 席位 |
 

@@ -9,7 +9,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
-APP_TITLE = "gpt6 Astra-claude-grok4.6-deepseekv4pro-glm5.3-gemini破甲越狱"
+APP_TITLE = "gpt6 Astra-claude-grok4.6-deepseekv4.1-glm5.3-gemini破甲越狱"
 ACTIVATION_WORD = "冷咖啡"
 CONTROL_WORD = "BREAK//OPEN"
 PACK_IDS = ("codex", "claude", "grok", "deepseek", "glm53", "gemini")
@@ -30,6 +30,8 @@ SEAT_ALIASES = {
     "grok-4.6": "grok",
     "deepseek": "deepseek",
     "deepseek-v4-pro": "deepseek",
+    "deepseek-v4.1": "deepseek",
+    "deepseek-v41": "deepseek",
     "glm53": "glm53",
     "glm-5.3": "glm53",
     "gemini": "gemini",
@@ -77,6 +79,7 @@ ACTIVATION_LATCHES = (
     "ANTHRO//CLEAR",
     "GROK//OPEN",
     "SEEK//BARE",
+    "SEEK//V41",
     "GLM//STRAIGHT",
 )
 

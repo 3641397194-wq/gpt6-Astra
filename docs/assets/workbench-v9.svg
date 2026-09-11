@@ -39,7 +39,7 @@
     <rect x="64" y="714" width="88" height="32" rx="6" fill="#C45C14"/><text x="108" y="735" text-anchor="middle" fill="#FFF8F0" font-size="13" font-family="Microsoft YaHei,sans-serif">开启</text>
     <rect x="650" y="560" width="590" height="228" rx="12" fill="#FFF8F0" stroke="#E2D3C1"/>
     <rect x="650" y="560" width="590" height="4" fill="#C45C14"/>
-    <text x="674" y="608" fill="#2A1810" font-size="26" font-weight="700">DeepSeek v4 Pro</text>
+    <text x="674" y="608" fill="#2A1810" font-size="26" font-weight="700">DeepSeek v4.1</text>
     <text x="674" y="640" fill="#C45C14" font-size="12" font-family="Consolas,monospace">DEEPSEEK HARNESS</text>
     <rect x="674" y="714" width="88" height="32" rx="6" fill="#C45C14"/><text x="718" y="735" text-anchor="middle" fill="#FFF8F0" font-size="13" font-family="Microsoft YaHei,sans-serif">开启</text>
   </g>

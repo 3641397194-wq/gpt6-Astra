@@ -25,7 +25,7 @@
   <g font-family="Arial, Helvetica, sans-serif" font-size="15" letter-spacing="2">
     <text x="64" y="470" fill="#e3353d">01 / LOCK THE LINE</text>
     <text x="64" y="510" fill="#f5efe7">BLACK INK / BONE PAPER / CRIMSON EYE</text>
-    <text x="64" y="546" fill="#9f9289">GPT 6 ASTRA · CLAUDE · GROK 4.6 · DEEPSEEK V4 PRO · GLM 5.3 · GEMINI</text>
+    <text x="64" y="546" fill="#9f9289">GPT 6 ASTRA · CLAUDE · GROK 4.6 · DEEPSEEK V4.1 · GLM 5.3 · GEMINI</text>
   </g>
   <g transform="translate(803 20)">
     <path d="M252 36c142 8 260 79 326 197l-44 455H60L8 543C27 281 101 77 252 36Z" fill="#0a0909"/>
@@ -49,7 +49,7 @@
   <g transform="translate(64 634)">
     <rect width="227" height="41" fill="#e3353d"/>
     <text x="17" y="27" fill="#fff7f3" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" letter-spacing="3">CHA / ACTIVE</text>
-    <text x="254" y="27" fill="#c9bdb3" font-family="Arial, Helvetica, sans-serif" font-size="15" letter-spacing="3">BREAK//OPEN / 2.3.0</text>
+    <text x="254" y="27" fill="#c9bdb3" font-family="Arial, Helvetica, sans-serif" font-size="15" letter-spacing="3">BREAK//OPEN / 2.3.6</text>
   </g>
   <path d="M0 710h1600" stroke="#f5efe7" stroke-width="1" opacity=".25"/>
 </svg>

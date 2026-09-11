@@ -8,9 +8,9 @@
 
 # 冷咖啡 / CHA
 
-### gpt6 Astra-claude-grok4.6-deepseekv4pro-glm5.3-gemini破甲越狱
+### gpt6 Astra-claude-grok4.6-deepseekv4.1-glm5.3-gemini破甲越狱
 
-**COLD BREW ZERO** &nbsp;|&nbsp; **BREAK//OPEN** &nbsp;|&nbsp; **NOIR MANGA RELEASE 2.3.0**
+**COLD BREW ZERO** &nbsp;|&nbsp; **BREAK//OPEN** &nbsp;|&nbsp; **NOIR MANGA RELEASE 2.3.6**
 
 <sub>黑墨、骨白、猩红单眼与断页分镜组成的原创暗黑漫画视觉系统。</sub>
 
@@ -61,7 +61,7 @@ Windows 便携包构建：`npm run pack:win`
 
 ## 02 / 模型席位
 
-六个模型保留在同一张黑白底片上：`GPT-6 Astra / Codex`、`Claude Code`、`Grok 4.6`、`DeepSeek v4 Pro`、`GLM 5.3` 与 `Gemini`。
+六个模型保留在同一张黑白底片上：`GPT-6 Astra / Codex`、`Claude Code`、`Grok 4.6`、`DeepSeek v4.1`、`GLM 5.3` 与 `Gemini`。
 
 <div align="center">
   <img src="docs/assets/readme-noir-seats.svg" width="100%" alt="六个模型的暗黑漫画席位海报" />
@@ -90,6 +90,6 @@ Windows 便携包构建：`npm run pack:win`
 
 <div align="center">
 
-`CHA / COLD BREW ZERO / BREAK//OPEN / GPT-6 ASTRA / GLM 5.3 / GEMINI / 2.3.0`
+`CHA / COLD BREW ZERO / BREAK//OPEN / GPT-6 ASTRA / DEEPSEEK V4.1 / GLM 5.3 / GEMINI / 2.3.6`
 
 </div>

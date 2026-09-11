@@ -3,7 +3,7 @@ const path = require("node:path");
 
 const ACTIVATION_WORD = "冷咖啡";
 const CONTROL_WORD = "BREAK//OPEN";
-const APP_TITLE = "gpt6 Astra-claude-grok4.6-deepseekv4pro-glm5.3-gemini破甲越狱";
+const APP_TITLE = "gpt6 Astra-claude-grok4.6-deepseekv4.1-glm5.3-gemini破甲越狱";
 const ACTIVATION_LATCHES = [
   ACTIVATION_WORD,
   "cold coffee",
@@ -13,6 +13,7 @@ const ACTIVATION_LATCHES = [
   "ANTHRO//CLEAR",
   "GROK//OPEN",
   "SEEK//BARE",
+  "SEEK//V41",
   "GLM//STRAIGHT",
 ];
 
@@ -37,7 +38,7 @@ const SEATS = [
   { id: "codex", tag: "GPT-6 Astra", name: "Codex", accent: "#d42b31", short: "model_instructions 破甲覆盖", mark: "01" },
   { id: "claude", tag: "Claude Code", name: "Claude", accent: "#ded5cb", short: "CLAUDE.md 常驻破甲", mark: "02" },
   { id: "grok", tag: "Grok 4.6", name: "Grok", accent: "#9d252b", short: "AGENTS / skills 破甲", mark: "03" },
-  { id: "deepseek", tag: "DeepSeek v4 Pro", name: "DeepSeek", accent: "#ef4348", short: "DEEPSEEK.md / Hermes 破甲", mark: "04" },
+  { id: "deepseek", tag: "DeepSeek v4.1", name: "DeepSeek", accent: "#ef4348", short: "短刻度 · DEEPSEEK.md / Hermes", mark: "04" },
   { id: "glm53", tag: "GLM 5.3", name: "GLM", accent: "#4b1318", short: "GLM.md / ZCode 破甲", mark: "05" },
   { id: "gemini", tag: "Gemini", name: "Gemini", accent: "#ef4348", short: "GEMINI.md 破甲注入", mark: "06" },
 ];

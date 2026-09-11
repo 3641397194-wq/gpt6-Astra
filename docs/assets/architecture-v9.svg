@@ -22,7 +22,7 @@
     <rect x="960" y="122" width="280" height="118" rx="8" fill="#14202A" stroke="#2A4053"/>
     <rect x="960" y="122" width="6" height="118" rx="3" fill="#65C7FF"/>
     <text x="990" y="168" fill="#8DA5B6" font-size="12" font-family="Consolas,monospace">HARNESS</text>
-    <text x="990" y="204" fill="#EDF6FB" font-size="26" font-weight="700">DeepSeek v4</text>
+    <text x="990" y="204" fill="#EDF6FB" font-size="26" font-weight="700">DeepSeek v4.1</text>
   </g>
   <path d="M180 240 V292 H1100 V240" fill="none" stroke="#43E4D0" stroke-width="2"/>
   <rect x="160" y="308" width="960" height="132" rx="10" fill="#101923" stroke="#2A4053"/>
