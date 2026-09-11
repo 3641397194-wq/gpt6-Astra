@@ -6,7 +6,11 @@ const geminiSeat = require("./lib/gemini-seat");
 const seatRuntime = require("./lib/seat-runtime");
 
 const COMMUNITY = {
-  qq: [{ name: "交流群", value: "1057540028" }, { name: "专题群", value: "1077074552" }],
+  qq: [
+    { name: "交流群", value: "1057540028" },
+    { name: "专题群", value: "1077074552" },
+    { name: "Cool coffeeAI交流", value: "618179023" },
+  ],
 };
 
 let splashWindow;

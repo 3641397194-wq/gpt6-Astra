@@ -351,7 +351,7 @@ button { cursor: pointer; }
 .log-line.warn { color: var(--warning); }
 .log-line.error { color: #f2696e; }
 .result-output { margin: 0; padding: 14px; color: #e9878a; white-space: pre-wrap; font: 11px/1.6 ui-monospace, monospace; }
-.community-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
+.community-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
 .community-card { position: relative; padding: 15px; border: 1px solid var(--line); background: var(--surface); box-shadow: 4px 4px 0 rgb(0 0 0 / 24%), inset 0 1px 0 rgb(242 238 232 / 3%); }
 .community-card::before { position: absolute; top: 0; right: 0; width: 22px; height: 22px; border-top: 1px solid var(--red); border-right: 1px solid var(--red); content: ""; }
 .community-card b { display: block; color: var(--bone); font-size: 12px; }

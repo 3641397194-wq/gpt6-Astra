@@ -64,15 +64,18 @@ All six seats write an original CHA pack into that model's local instruction fil
 
 <p align="center">
   <a href="docs/assets/qq-group-1-card.png">
-    <img src="docs/assets/qq-group-1-card.png" width="350" alt="QQ discussion QR code, group 1057540028" />
+    <img src="docs/assets/qq-group-1-card.png" width="280" alt="QQ discussion QR code, group 1057540028" />
   </a>
   <a href="docs/assets/qq-group-2-card.png">
-    <img src="docs/assets/qq-group-2-card.png" width="350" alt="QQ topic QR code, group 1077074552" />
+    <img src="docs/assets/qq-group-2-card.png" width="280" alt="QQ topic QR code, group 1077074552" />
+  </a>
+  <a href="docs/assets/qq-group-3-card.png">
+    <img src="docs/assets/qq-group-3-card.png" width="280" alt="Cool coffeeAI QR code, group 618179023" />
   </a>
 </p>
 
 <p align="center">
-  Scan to join: <strong>QQ discussion</strong> <code>1057540028</code> &nbsp;|&nbsp; <strong>QQ topic</strong> <code>1077074552</code>
+  Scan to join: <strong>QQ discussion</strong> <code>1057540028</code> &nbsp;|&nbsp; <strong>QQ topic</strong> <code>1077074552</code> &nbsp;|&nbsp; <strong>Cool coffeeAI</strong> <code>618179023</code>
 </p>
 
 ---

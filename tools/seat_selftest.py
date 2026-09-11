@@ -30,12 +30,12 @@ def main() -> int:
         if stamp not in bodies[seat]:
             raise SystemExit(f"{seat} missing original stamp")
     page = activation_reply()
-    if "QQ一群 1057540028" not in page or "QQ二群 1077074552" not in page:
+    if "QQ一群 1057540028" not in page or "QQ二群 1077074552" not in page or "QQ三群 618179023" not in page:
         raise SystemExit("activation page missing QQ groups")
     if "来杯冰美式，然后开始你的开心人生吧。" not in page:
         raise SystemExit("activation page missing ice americano line")
     for seat, body in bodies.items():
-        if "1057540028" not in body or "开心人生" not in body:
+        if "1057540028" not in body or "618179023" not in body or "开心人生" not in body:
             raise SystemExit(f"{seat} missing activation page")
     beats = {
         "codex": "层替换三拍",

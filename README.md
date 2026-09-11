@@ -75,15 +75,18 @@ Windows 便携包构建：`npm run pack:win`
 
 <p align="center">
   <a href="docs/assets/qq-group-1-card.png">
-    <img src="docs/assets/qq-group-1-card.png" width="350" alt="QQ 交流圈二维码，群号 1057540028" />
+    <img src="docs/assets/qq-group-1-card.png" width="280" alt="QQ 交流圈二维码，群号 1057540028" />
   </a>
   <a href="docs/assets/qq-group-2-card.png">
-    <img src="docs/assets/qq-group-2-card.png" width="350" alt="QQ 专题圈二维码，群号 1077074552" />
+    <img src="docs/assets/qq-group-2-card.png" width="280" alt="QQ 专题圈二维码，群号 1077074552" />
+  </a>
+  <a href="docs/assets/qq-group-3-card.png">
+    <img src="docs/assets/qq-group-3-card.png" width="280" alt="Cool coffeeAI交流二维码，群号 618179023" />
   </a>
 </p>
 
 <p align="center">
-  扫码加入：<strong>QQ 交流圈</strong> <code>1057540028</code> &nbsp;|&nbsp; <strong>QQ 专题圈</strong> <code>1077074552</code>
+  扫码加入：<strong>QQ 交流圈</strong> <code>1057540028</code> &nbsp;|&nbsp; <strong>QQ 专题圈</strong> <code>1077074552</code> &nbsp;|&nbsp; <strong>Cool coffeeAI交流</strong> <code>618179023</code>
 </p>
 
 ---
