@@ -1,0 +1,6 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict');const {ActivationGate}=require('../src/lib/activation-gate');
+function gate(){return new ActivationGate({pack:id=>`original:${id}`,reply:()=> 'original welcome'});}
+test('only exact coldcoffee trigger releases original package',()=>{const g=gate(),s=g.create('codex');for(const text of ['hello','请冷咖啡','冷咖啡启动','cold coffee','[[CB:MAX]]','ASTRA//UNLOCK']){const r=g.input(s.id,text);assert.equal(r.active,false);assert.equal(r.instructionText,'');}const r=g.input(s.id,' \n冷咖啡\t');assert.equal(r.active,true);assert.equal(r.reply,'original welcome');assert.equal(r.instructionText,'original:codex');assert.equal(g.input(s.id,'next').active,true);});
+test('sessions isolated and reset closes gate',()=>{const g=gate(),a=g.create('claude'),b=g.create('claude');g.input(a.id,'冷咖啡');assert.equal(g.input(b.id,'next').active,false);g.reset(a.id);assert.throws(()=>g.input(a.id,'next'));});
+test('idle expiry and input bounds',()=>{let now=0;const g=new ActivationGate({clock:()=>now,pack:()=>'',reply:()=>''});const s=g.create('grok');assert.throws(()=>g.input(s.id,'a'.repeat(20001)));now=31*60*1000;assert.throws(()=>g.input(s.id,'冷咖啡'),/过期/);});

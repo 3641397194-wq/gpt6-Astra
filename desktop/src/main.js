@@ -1,9 +1,14 @@
-const { app, BrowserWindow, ipcMain, shell } = require("electron");
+const { app, BrowserWindow, ipcMain, shell, dialog } = require("electron");
 const path = require("node:path");
 const fs = require("node:fs");
 const { ACTIVATION_WORD, CONTROL_WORD, APP_TITLE, PROFILES, SEATS, CHANNELS, activate } = require("./lib/prompt-engine");
+const workbenchCore = require("./shared/workbench-core");
 const geminiSeat = require("./lib/gemini-seat");
 const seatRuntime = require("./lib/seat-runtime");
+const { SeatTransactions } = require("./lib/seat-transactions");
+const seatTransactions = new SeatTransactions();
+const { ActivationGate } = require("./lib/activation-gate");
+const activationGate = new ActivationGate();
 
 const COMMUNITY = {
   qq: [
@@ -49,7 +54,7 @@ function createMain() {
       sandbox: true,
     },
   });
-  mainWindow.loadFile(path.join(__dirname, "renderer", "index.html"));
+  mainWindow.loadFile(path.join(__dirname, "workbench", "index.html"));
 }
 
 ipcMain.handle("coldbrew:meta", () => ({
@@ -60,7 +65,7 @@ ipcMain.handle("coldbrew:meta", () => ({
   seats: SEATS,
   channels: CHANNELS,
   community: COMMUNITY,
-  version: "2.3.6",
+  version: workbenchCore.VERSION,
 }));
 
 ipcMain.handle("coldbrew:activate", (_event, payload = {}) => activate({
@@ -69,6 +74,30 @@ ipcMain.handle("coldbrew:activate", (_event, payload = {}) => activate({
   channel: payload.channel,
   prompt: payload.prompt,
 }));
+
+ipcMain.handle("coldbrew:transaction", async (_event, action, payload = {}) => {
+  if(action === "gate-create") return activationGate.create(payload.seat);
+  if(action === "gate-input") return activationGate.input(payload.id, payload.text);
+  if(action === "gate-reset") { activationGate.reset(payload.id); return {ok:true}; }
+  if(action === "select") {
+    const result = await dialog.showOpenDialog(mainWindow, { title: "选择当前模型的配置目录（仅操作预览列出的文件）", properties: ["openDirectory", "createDirectory"] });
+    return result.canceled ? {canceled:true} : seatTransactions.select(result.filePaths[0]);
+  }
+  if(action === "preview") return seatTransactions.preview(payload.seat);
+  if(action === "file") return seatTransactions.file(payload.id, payload.index);
+  if(action === "verify") return seatTransactions.verify(payload.seat);
+  if(action === "history") return seatTransactions.history();
+  if(action === "deploy" || action === "restore") {
+    if(payload.confirm !== true) throw new Error("请先确认文件操作");
+    const confirm = await dialog.showMessageBox(mainWindow, {type:"warning",title:"冷咖啡 · 确认文件操作",message:action === "deploy" ? "将按预览写入席位包并保存原文件备份" : "将恢复此版本备份；冲突文件会中止操作", detail:seatTransactions.requireRoot(),buttons:["取消", "确认执行"],defaultId:0,cancelId:0});
+    if(confirm.response !== 1) return {canceled:true};
+    return action === "deploy" ? seatTransactions.deploy(payload.id) : seatTransactions.restore(payload.id);
+  }
+  throw new Error("未知文件操作");
+});
+
+ipcMain.handle("coldbrew:compose", (_event, payload) => workbenchCore.compose(payload));
+ipcMain.handle("coldbrew:evaluate", (_event, answer, options) => workbenchCore.evaluate(answer, options));
 
 ipcMain.handle("coldbrew:inspect", () => seatRuntime.inspectAll());
 

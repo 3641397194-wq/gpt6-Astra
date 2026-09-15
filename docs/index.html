@@ -1,116 +1,64 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="冷咖啡 / ColdBrew Zero：原创黑白猩红暗黑漫画工作台。">
-  <title>冷咖啡 / CHA // ColdBrew Zero</title>
-  <style>
-    :root { color-scheme:dark; --paper:#f4ede4; --void:#090808; --ink:#151110; --red:#e3353d; --red-deep:#791018; --soft:#b7aaa0; --line:#513837; }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { min-width:320px; margin:0; color:var(--paper); background:var(--void); font:16px/1.65 Inter,"Segoe UI","Microsoft YaHei",sans-serif; }
-    body::before { position:fixed; z-index:10; inset:0; pointer-events:none; content:""; opacity:.06; background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.42) 0 1px,transparent 1px 4px); mix-blend-mode:screen; }
-    a { color:inherit; }
-    .frame { width:min(1180px,calc(100% - 40px)); margin:0 auto; }
-    .masthead { min-height:82px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); }
-    .brand { display:inline-flex; align-items:center; gap:12px; text-decoration:none; font-size:13px; font-weight:800; letter-spacing:.18em; }
-    .brand img { width:38px; height:38px; object-fit:cover; filter:grayscale(1) contrast(1.25); border:1px solid var(--paper); }
-    .brand::before { width:7px; height:38px; background:var(--red); content:""; }
-    .edition { color:var(--soft); font:11px ui-monospace,Consolas,monospace; letter-spacing:.13em; }
-    .hero { padding:38px 0 88px; }
-    .poster { position:relative; overflow:hidden; border-top:1px solid var(--paper); border-bottom:1px solid var(--paper); }
-    .poster img { display:block; width:100%; height:auto; }
-    .poster-caption { display:flex; align-items:end; justify-content:space-between; gap:28px; padding-top:20px; }
-    .poster-caption p { max-width:500px; margin:0; color:var(--soft); }
-    .actions { display:flex; flex-wrap:wrap; gap:10px; }
-    .action { min-height:42px; display:inline-flex; align-items:center; border:1px solid var(--line); padding:9px 14px; text-decoration:none; font:12px ui-monospace,Consolas,monospace; letter-spacing:.09em; }
-    .action.main { color:#fff; background:var(--red); border-color:var(--red); }
-    .action:hover { color:var(--red); border-color:var(--red); }
-    .action.main:hover { color:var(--ink); background:var(--paper); border-color:var(--paper); }
-    .band { border-top:1px solid var(--line); padding:78px 0; }
-    .band.red { position:relative; background:var(--red-deep); }
-    .band.red::before { position:absolute; inset:0; content:""; opacity:.18; background-image:repeating-linear-gradient(135deg,transparent 0 14px,rgba(255,255,255,.2) 14px 15px); }
-    .band .frame { position:relative; }
-    .label { color:var(--red); font:12px ui-monospace,Consolas,monospace; letter-spacing:.18em; }
-    .red .label { color:var(--paper); }
-    .heading { display:flex; justify-content:space-between; gap:36px; align-items:end; margin-bottom:28px; }
-    h1,h2 { margin:8px 0 0; line-height:.95; letter-spacing:0; }
-    h1 { font-size:84px; }
-    h2 { font-size:52px; }
-    .heading p { max-width:470px; margin:0; color:var(--soft); }
-    .red .heading p { color:#f1c4c5; }
-    .art { margin:0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
-    .red .art { border-color:#e97176; }
-    .art img { display:block; width:100%; height:auto; }
-    .qr-pair { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-top:30px; }
-    .qr-card { display:block; padding:11px; border:1px solid #e97176; background:#180607; box-shadow:8px 8px 0 rgba(29,5,6,.34); text-decoration:none; }
-    .qr-card img { display:block; width:100%; height:auto; }
-    .qr-card span { display:block; margin:12px 4px 2px; color:#ffdfe0; font:11px ui-monospace,Consolas,monospace; letter-spacing:.14em; }
-    .qr-card strong { display:block; margin:0 4px; color:var(--paper); font:700 18px ui-monospace,Consolas,monospace; }
-    .qr-card:hover { border-color:var(--paper); transform:translate(-2px,-2px); box-shadow:10px 10px 0 rgba(29,5,6,.45); }
-    .model-copy { display:grid; grid-template-columns:1fr 1fr; gap:36px; margin:30px 0 0; }
-    .model-copy p { margin:0; color:var(--soft); }
-    .model-copy strong { color:var(--paper); }
-    .signal-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:30px; border-top:1px solid #e97176; border-bottom:1px solid #e97176; }
-    .signal { min-height:112px; padding:18px; border-right:1px solid #e97176; }
-    .signal:last-child { border-right:0; }
-    .signal b { display:block; color:#ffdfe0; font:11px ui-monospace,Consolas,monospace; letter-spacing:.14em; }
-    .signal a,.signal code { display:block; margin-top:20px; color:var(--paper); font-weight:700; overflow-wrap:anywhere; }
-    .signal a:hover { color:#1a0708; }
-    footer { padding:34px 0 60px; color:var(--soft); font:11px ui-monospace,Consolas,monospace; letter-spacing:.1em; }
-    @media (max-width:820px) { .frame { width:min(100% - 28px,1180px); } .masthead { min-height:72px; } .edition { display:none; } .hero { padding:28px 0 64px; } h1 { font-size:60px; } h2 { font-size:42px; } .poster-caption,.heading,.model-copy { display:block; } .poster-caption p,.heading p,.model-copy p + p { margin-top:18px; } .actions { margin-top:22px; } .band { padding:62px 0; } .qr-pair,.signal-list { grid-template-columns:1fr; } .qr-card { width:min(100%,400px); margin:0 auto; } .signal:nth-child(2) { border-right:0; } .signal:nth-child(-n+2) { border-bottom:1px solid #e97176; } }
-    @media (max-width:480px) { h1 { font-size:48px; } h2 { font-size:36px; } .brand { font-size:11px; letter-spacing:.12em; } .brand::before { height:30px; } .brand img { width:30px; height:30px; } .signal { border-right:0; border-bottom:1px solid #e97176; } .signal:last-child { border-bottom:0; } }
-  </style>
-</head>
-<body>
-  <header class="frame masthead">
-    <a class="brand" href="../README.md"><img src="assets/product-icon.png" alt="冷咖啡图标"><span>冷咖啡 / CHA</span></a>
-    <span class="edition">COLD BREW ZERO / NOIR MANGA RELEASE 2.3.6</span>
-  </header>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>冷咖啡 · 仓库主页新版预览</title><style>*{box-sizing:border-box}body{margin:0;color:#1f2328;background:#fff;font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}a{color:#0969da;text-decoration:none}a:hover{text-decoration:underline}.appbar{background:#f6f8fa;border-bottom:1px solid #d1d9e0;padding:18px 30px;display:flex;justify-content:space-between;align-items:center;gap:20px}.repo-name{font-size:14px;font-weight:600}.preview-label{font-size:12px;color:#656d76}.repo-tabs{background:#f6f8fa;padding:0 30px;display:flex;gap:25px;border-bottom:1px solid #d1d9e0}.repo-tabs span{padding:12px 0;font-size:13px}.repo-tabs .selected{border-bottom:2px solid #f78166}.container{max-width:1200px;padding:28px;margin:auto}.notice{border:1px solid #d1d9e0;border-radius:7px;background:#f6f8fa;padding:14px 18px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;gap:20px}.notice a{background:#1f2328;color:#fff;border-radius:6px;padding:8px 14px;white-space:nowrap}.repo-grid{display:grid;grid-template-columns:minmax(0,880px) 220px;gap:25px}.readme{border:1px solid #d1d9e0;border-radius:7px;overflow:hidden;min-width:0}.readme-tab{font-size:12px;padding:12px 18px;border-bottom:1px solid #d1d9e0;font-weight:600}.markdown-body{padding:30px;font-size:14px}.markdown-body img{max-width:100%;height:auto}.markdown-body h1{font-size:30px;border-bottom:1px solid #d1d9e0;padding-bottom:12px;margin:22px 0 16px}.markdown-body h2{font-size:22px;border-bottom:1px solid #d1d9e0;padding-bottom:9px;margin:34px 0 16px;scroll-margin-top:20px}.markdown-body p{margin:12px 0 18px}.markdown-body sub{color:#656d76;font-size:11px}.markdown-body table{width:100%;border-collapse:collapse;font-size:12px;margin:20px 0}.markdown-body td,.markdown-body th{border:1px solid #d1d9e0;padding:12px}.markdown-body th{background:#f6f8fa}.markdown-body blockquote{margin:24px 0;border-left:4px solid #c92537;background:#fff7f7;padding:10px 18px;color:#4f353a}.markdown-body blockquote p{margin:7px 0}.markdown-body pre{padding:16px;border-radius:7px;background:#f6f8fa;overflow:auto}.markdown-body code{font-family:Consolas,monospace;font-size:12px}.markdown-body details{border:1px solid #d1d9e0;padding:14px;border-radius:7px;margin-top:20px}.markdown-body summary{cursor:pointer;font-weight:600}.markdown-body hr{border:0;border-top:1px solid #d1d9e0;margin-top:30px}.about h3{font-size:15px;margin:0 0 14px}.about p{font-size:13px;color:#656d76}.about .tag{display:inline-block;font-size:11px;background:#ddf4ff;color:#0969da;border-radius:14px;padding:3px 9px;margin:0 3px 7px 0}.about hr{border:0;border-top:1px solid #d1d9e0;margin:22px 0}.about a{display:block;margin-top:12px;font-size:12px}@media(max-width:900px){.repo-grid{grid-template-columns:1fr}.about{display:none}.container{padding:16px}.markdown-body{padding:20px}.appbar{padding:15px}.preview-label{display:none}}@media(max-width:520px){.markdown-body{padding:12px;font-size:12px}.markdown-body h1{font-size:23px}.markdown-body th,.markdown-body td{padding:5px;font-size:10px}.notice{display:block;font-size:12px}.notice a{display:inline-block;margin-top:10px}.repo-tabs{gap:14px;padding:0 16px}.repo-tabs span{font-size:11px}}</style></head><body><header class="appbar"><div class="repo-name">3641397194-wq / <strong>gpt6-Astra</strong></div><span class="preview-label">仓库主页排版预览 · 非 GitHub 在线页面</span></header><nav class="repo-tabs"><span class="selected">代码与说明</span><span>问题讨论</span><span>变更记录</span><span>项目文档</span></nav><div class="container"><div class="notice"><span><strong>本地预览，尚未推送。</strong>下方内容来自本次改写的 README，在线排版以 GitHub 为准。</span><a href="#上手使用">启动软件：查看步骤 ↓</a></div><div class="repo-grid"><article class="readme"><div class="readme-tab">README.md · 项目主页</div><div class="markdown-body"><div align="center">
+  <img src="assets/coldcoffee-cover-v3.png" width="100%" alt="冷咖啡原创黑白漫画主视觉" />
+  <h1>冷咖啡 · 破甲工作台</h1>
+  <p><strong>六模型席位 · 五档工作模式 · 本地任务构建 · 会话版本对比</strong></p>
+  <p>保留冷咖啡的直接与锋利，让任务更明确，让输出有据可查。</p>
+  <p><a href="#软件界面">软件界面</a> · <a href="#上手使用">上手使用</a> · <a href="#模型席位">模型席位</a> · <a href="#冷咖啡社群">三个 QQ 群</a></p>
+  <p><sub>3.0.0-preview.1 · 本地预览版 · 尚未验证真实模型突破效果</sub></p>
+</div>
 
-  <main>
-    <section class="hero frame">
-      <div class="poster"><img src="assets/readme-noir-hero.svg" alt="冷咖啡原创黑白猩红暗黑漫画主视觉"></div>
-      <div class="poster-caption">
-        <p>一张黑白底片，一道猩红信号。冷咖啡的主站、桌面端和社群入口现在共享同一套原创暗黑漫画视觉。</p>
-        <div class="actions"><a class="action main" href="../README.md">进入仓库</a><a class="action" href="https://github.com/3641397194-wq/gpt6-Astra">查看 GitHub</a></div>
-      </div>
-    </section>
+<blockquote>
+<p><strong>启动口令：<code>冷咖啡</code></strong></p>
+<p>完成安装与接入后，在目标软件的对话框里<strong>单独发送「冷咖啡」</strong>。不要只打开安装器，也不要把口令夹在一大段话里。</p>
+<p>接入严格控制层时，未输入口令保持待机；安装完成不等于已激活。原版兼容部署与严格开关的接入说明见 <a href="ACTIVATION.md">启动说明</a>。</p>
+</blockquote>
 
-    <section class="band">
-      <div class="frame">
-        <div class="heading"><div><div class="label">01 / NIGHT SEQUENCE</div><h1>四格，<br>一条线。</h1></div><p>目标、上下文、输出和检查从左到右进入画面。信息层级保持轻，主视觉保持直接。</p></div>
-        <figure class="art"><img src="assets/readme-noir-chain.svg" alt="冷咖啡四格暗黑漫画工作链"></figure>
-      </div>
-    </section>
+<h2 id="软件界面">软件界面</h2>
+<p>不是一张概念图。下图来自这次新版界面的实际运行：左侧选择席位，输入冷咖啡验证会话开关，查看词包与文件差异，再确认真实写入。</p>
+<img src="assets/workbench-avatar-cc4af119d023.png" width="100%" alt="冷咖啡新版软件实机界面：任务构建与交付预览" />
+<table>
+<tr><th align="left">构建更清楚</th><th align="left">版本看得见</th><th align="left">输出可检查</th></tr>
+<tr><td>原词包保持不变。选择目录后查看实际写入清单与前后内容，写入前自动备份。</td><td>部署历史保存在所选目录，可按版本恢复。文件在部署后被改动时中止恢复，保留现场。</td><td>逐文件核对 SHA-256。另提供 JSON、代码围栏与必含词检查，不预填成功率。</td></tr>
+</table>
+<p><strong>边界说明：</strong>席位选择是任务模板配置，不代表模型已连接；本地构建不会向模型发请求。任务模板的会话记录保存在内存，刷新后清空；部署备份单独保存在所选目录。文本条件通过不等于模型突破或代码正确。</p>
 
-    <section class="band">
-      <div class="frame">
-        <div class="heading"><div><div class="label">02 / SIX VOICES</div><h2>六个席位，<br>同一夜色。</h2></div><p>GPT-6 Astra、Claude、Grok 4.6、DeepSeek v4.1、GLM 5.3 和 Gemini 保留在同一张黑白底片上，DeepSeek 席位走 V4.1 短刻度破甲注入。</p></div>
-        <figure class="art"><img src="assets/readme-noir-seats.svg" alt="六个模型的暗黑漫画席位海报"></figure>
-        <div class="model-copy"><p><strong>不使用旧的蓝绿小卡片。</strong><br>每个模型只保留清晰名称、编号与方向，以海报书脊的形式进入页面。</p><p><strong>Gemini 已纳入主视觉。</strong><br>它与 GLM 5.3 共同作为破甲席位，成为产品首页的固定构成。</p></div>
-      </div>
-    </section>
+<h2 id="上手使用">上手使用</h2>
+<ol>
+<li><strong>选模型与目录：</strong>选择模型席位和明确的目标目录，预览将写入的原版词包与文件差异。</li>
+<li><strong>确认安装：</strong>确认备份并写入，检查配置文件。严格开关需目标客户端接入消息处理层；浏览器专用目录用于演示，不是客户端真实配置目录。</li>
+<li><strong>输入口令：</strong>重新加载对应客户端后，在对话框单独发送 <code>冷咖啡</code>，显示原欢迎页后再开始任务。</li>
+</ol>
+<p>从项目根目录启动桌面端（需要 Node.js 和 npm）：</p>
+<pre><code>cd desktop
+npm ci
+npm start</code></pre>
+<p>运行新功能测试：</p>
+<pre><code>cd desktop
+npm test</code></pre>
+<p>从项目根目录启动浏览器预览（需要 Node.js；此启动入口还需 Python 3.9+）：</p>
+<pre><code>python tools/preview/server.py</code></pre>
+<p>浏览器访问本机端口 8772 的 <code>/readme-preview</code> 查看本页，访问 <code>/workbench/</code> 操作新版工作台。浏览器与桌面端复用同一套界面和任务构建代码。</p>
+<details><summary>已有用户：原版席位工具与本次升级范围</summary>
+<p>原版席位包与根目录命令行入口保留，新界面已接入独立事务式部署、检查和版本恢复，仅在明确选择目录后操作清单文件。</p>
+<p>原有命令行参数见 <code>python coldbrew.py --help</code>；原有席位文档见 <a href="SEAT-PACKS.md">席位包说明</a>。严格启动适配器与原版兼容部署分开：第三方客户端必须接入消息处理层，原版提示词文件自身不是强制开关。详见 docs/ACTIVATION.md。</p>
+</details>
 
-    <section class="band red">
-      <div class="frame">
-        <div class="heading"><div><div class="label">03 / COMMUNITY SIGNAL</div><h2>门，一直开着。</h2></div><p>QQ 宣传入口完整保留，统一放进红黑社群海报和可直接点击的联系栏。</p></div>
-        <figure class="art"><img src="assets/readme-noir-community.svg" alt="冷咖啡社群暗黑漫画入口"></figure>
-        <div class="qr-pair" aria-label="QQ 社群二维码">
-          <a class="qr-card" href="assets/qq-group-1-card.png" target="_blank" rel="noopener"><img src="assets/qq-group-1-card.png" alt="QQ 交流圈二维码，群号 1057540028"><span>QQ / GROUP</span><strong>1057540028</strong></a>
-          <a class="qr-card" href="assets/qq-group-2-card.png" target="_blank" rel="noopener"><img src="assets/qq-group-2-card.png" alt="QQ 专题圈二维码，群号 1077074552"><span>QQ / TOPIC</span><strong>1077074552</strong></a>
-          <a class="qr-card" href="assets/qq-group-3-card.png" target="_blank" rel="noopener"><img src="assets/qq-group-3-card.png" alt="Cool coffeeAI交流二维码，群号 618179023"><span>QQ / COFFEE</span><strong>618179023</strong></a>
-        </div>
-        <div class="signal-list">
-          <div class="signal"><b>QQ / GROUP</b><code>1057540028</code></div>
-          <div class="signal"><b>QQ / TOPIC</b><code>1077074552</code></div>
-          <div class="signal"><b>QQ / COFFEE</b><code>618179023</code></div>
-        </div>
-      </div>
-    </section>
-  </main>
+<h2 id="模型席位">模型席位</h2>
+<table>
+<tr><th>GPT-6 Astra</th><th>Claude Code</th><th>Grok 4.6</th></tr>
+<tr><td>目标 · 实现 · 验收</td><td>约束 · 结构 · 复核</td><td>问题 · 产物 · 待验证项</td></tr>
+<tr><th>DeepSeek v4.1</th><th>GLM 5.3</th><th>Gemini</th></tr>
+<tr><td>拆分 · 复现 · 检查</td><td>条目 · 推进 · 交付</td><td>素材 · 组织 · 验证</td></tr>
+</table>
+<p>以上是仓库中的席位名称与组织方式，不是提供商的模型可用性保证。</p>
 
-  <footer class="frame">CHA / COLD BREW ZERO / BREAK//OPEN / GPT-6 ASTRA / DEEPSEEK V4.1 / GLM 5.3 / GEMINI / 2.3.6</footer>
-</body>
-</html>
+<h2 id="冷咖啡社群">冷咖啡社群</h2>
+<p>交流用法，讨论模型，分享作品。三个 QQ 群统一展示，点击二维码查看原图。</p>
+<table>
+<tr><th>QQ 交流群</th><th>QQ 专题群</th><th>Cool coffeeAI 交流</th></tr>
+<tr><td align="center"><a href="assets/qq-group-1-card.png"><img src="assets/qq-group-1-card.png" width="220" alt="QQ 交流群二维码" /></a></td><td align="center"><a href="assets/qq-group-2-card.png"><img src="assets/qq-group-2-card.png" width="220" alt="QQ 专题群二维码" /></a></td><td align="center"><a href="assets/qq-group-3-card.png"><img src="assets/qq-group-3-card.png" width="220" alt="Cool coffeeAI 交流群二维码" /></a></td></tr>
+<tr><td align="center"><code>1057540028</code></td><td align="center"><code>1077074552</code></td><td align="center"><code>618179023</code></td></tr>
+</table>
+<hr />
+<p align="center"><strong>冷咖啡</strong> · 把想法做出来，把作品留下来。</p>
+</div></article><aside class="about"><h3>关于冷咖啡</h3><p>越狱 · 破甲工作台<br>六模型席位，本地任务构建与会话版本对比。</p><span class="tag">冷咖啡</span><span class="tag">GPT-6 Astra</span><span class="tag">原创界面</span><hr><h3>当前预览</h3><p>3.0.0-preview.1<br>尚未连接模型服务</p><a href="#上手使用">查看软件启动步骤 ↓</a><a href="#冷咖啡社群">查看三个 QQ 群 ↓</a><hr><p>不展示虚构的关注数、下载量或突破成功率。</p></aside></div></div></body></html>

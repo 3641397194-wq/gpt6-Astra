@@ -10,3 +10,11 @@ _rollback_pre_astra_20260905/
 _gemini_test_home/
 _gemini_js_home/
 _render_title_astra.py
+
+# Local preview QA images (not release assets)
+docs/assets/brand-header-v3.png
+docs/assets/coldcoffee-manga-v3.png
+docs/assets/community-v3.png
+docs/assets/readme-check-v3.png
+docs/assets/workbench-mobile-v3.png
+docs/assets/workbench-v3.png
