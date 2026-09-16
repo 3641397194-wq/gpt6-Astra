@@ -43,9 +43,15 @@ function nextText(item,previous,spec){
 }
 class SeatTransactions{
   constructor(){this.root=null;this.pending=new Map();}
-  select(root){if(typeof root!=='string'||!path.isAbsolute(root))throw new Error('请明确选择绝对目录');const resolved=path.resolve(root);if(path.parse(resolved).root===resolved)throw new Error('请选择专用目录，不要选择磁盘根目录');guardPath(resolved);if(fs.existsSync(resolved)&&!fs.statSync(resolved).isDirectory())throw new Error('所选路径不是目录');this.root=resolved;this.pending.clear();return {root:this.root};}
+  select(root,{layout="default"}={}){if(!["default","hermes","zcode"].includes(layout))throw new Error("目录布局错误");if(typeof root!=='string'||!path.isAbsolute(root))throw new Error('请明确选择绝对目录');const resolved=path.resolve(root);if(path.parse(resolved).root===resolved)throw new Error('请选择专用目录，不要选择磁盘根目录');guardPath(resolved);if(fs.existsSync(resolved)&&!fs.statSync(resolved).isDirectory())throw new Error('所选路径不是目录');this.root=resolved;this.layout=layout;this.pending.clear();return {root:this.root};}
   requireRoot(){if(!this.root)throw new Error('先选择目标目录；尚未读取任何用户配置');guardPath(this.root);return this.root;}
-  preview(seat){const root=this.requireRoot();if(!runtime.PACK_IDS.includes(seat))throw new Error('未知模型席位');const spec=runtime.plan(seat,root);const files=spec.writes.map(item=>{const rel=path.relative(root,item.file);const file=within(root,rel),before=read(file),text=nextText(item,decode(before),spec),after=Buffer.from(text);return {path:rel.replace(/\\/g,'/'),kind:item.kind,before:before?.toString('base64')??null,after:after.toString('base64'),beforeHash:before?hash(before):null,afterHash:hash(after),changed:!before||!before.equals(after)};});
+  preview(seat){const root=this.requireRoot();if(!runtime.PACK_IDS.includes(seat))throw new Error('未知模型席位');const spec=runtime.plan(seat,root);
+    if(this.layout==='hermes'||this.layout==='zcode'){
+      if((this.layout==='hermes'&&seat!=='deepseek')||(this.layout==='zcode'&&seat!=='glm53'))throw new Error('席位与目录布局不匹配');
+      const nested=path.join(root,this.layout);
+      spec.writes=spec.writes.filter(item=>item.file.startsWith(nested+path.sep)).map(item=>({...item,file:path.join(root,path.relative(nested,item.file))}));
+    }
+    const files=spec.writes.map(item=>{const rel=path.relative(root,item.file);const file=within(root,rel),before=read(file),text=nextText(item,decode(before),spec),after=Buffer.from(text);return {path:rel.replace(/\\/g,'/'),kind:item.kind,before:before?.toString('base64')??null,after:after.toString('base64'),beforeHash:before?hash(before):null,afterHash:hash(after),changed:!before||!before.equals(after)};});
     const id=crypto.randomUUID();const plan={id,seat,root,created:Date.now(),files,pack:spec.pack};this.pending.clear();this.pending.set(id,plan);return {id,seat,root,pack:spec.pack,packHash:hash(spec.pack),changes:files.filter(f=>f.changed).length,files:files.map(({path,kind,beforeHash,afterHash,changed,before,after})=>({path,kind,beforeHash,afterHash,changed,exists:before!==null,bytes:Buffer.from(after,'base64').length})),modelStatus:'未验证：仅处理配置文件'};
   }
   getPlan(id){const plan=this.pending.get(id);if(!plan||plan.root!==this.requireRoot()||Date.now()-plan.created>15*60*1000)throw new Error('预览已过期，请重新预览');return plan;}

@@ -4,7 +4,7 @@
   <p><strong>六模型席位 · 五档工作模式 · 本地任务构建 · 会话版本对比</strong></p>
   <p>保留冷咖啡的直接与锋利，让任务更明确，让输出有据可查。</p>
   <p><a href="#软件界面">软件界面</a> · <a href="#上手使用">上手使用</a> · <a href="#模型席位">模型席位</a> · <a href="#冷咖啡社群">三个 QQ 群</a></p>
-  <p><sub>3.0.0-preview.1 · 本地预览版 · 尚未验证真实模型突破效果</sub></p>
+  <p><sub>3.0.0-preview.2 · 本地预览版 · 尚未验证真实模型突破效果</sub></p>
 </div>
 
 <blockquote>
@@ -18,7 +18,7 @@
 <img src="/docs/assets/workbench-avatar-cc4af119d023.png" width="100%" alt="冷咖啡新版软件实机界面：任务构建与交付预览" />
 <table>
 <tr><th align="left">构建更清楚</th><th align="left">版本看得见</th><th align="left">输出可检查</th></tr>
-<tr><td>原词包保持不变。选择目录后查看实际写入清单与前后内容，写入前自动备份。</td><td>部署历史保存在所选目录，可按版本恢复。文件在部署后被改动时中止恢复，保留现场。</td><td>逐文件核对 SHA-256。另提供 JSON、代码围栏与必含词检查，不预填成功率。</td></tr>
+<tr><td>原词包保持不变。桌面端自动识别配置目录并展示差异，确认写入前自动备份；也支持手动选择。</td><td>部署历史保存在所选目录，可按版本恢复。文件在部署后被改动时中止恢复，保留现场。</td><td>逐文件核对 SHA-256。另提供 JSON、代码围栏与必含词检查，不预填成功率。</td></tr>
 </table>
 <p><strong>边界说明：</strong>席位选择是任务模板配置，不代表模型已连接；本地构建不会向模型发请求。任务模板的会话记录保存在内存，刷新后清空；部署备份单独保存在所选目录。文本条件通过不等于模型突破或代码正确。</p>
 
@@ -39,7 +39,7 @@ npm test</code></pre>
 <pre><code>python tools/preview/server.py</code></pre>
 <p>浏览器访问本机端口 8772 的 <code>/readme-preview</code> 查看本页，访问 <code>/workbench/</code> 操作新版工作台。浏览器与桌面端复用同一套界面和任务构建代码。</p>
 <details><summary>已有用户：原版席位工具与本次升级范围</summary>
-<p>原版席位包与根目录命令行入口保留，新界面已接入独立事务式部署、检查和版本恢复，仅在明确选择目录后操作清单文件。</p>
+<p>原版席位包与根目录命令行入口保留，新界面已接入独立事务式部署、检查和版本恢复，桌面端启动和切换席位时自动定位环境变量或约定配置目录，只预览不静默写入。DeepSeek 支持 Hermes 实际目录，GLM 支持 ZCode 实际目录。确认后安装清单文件；网页预览仅操作演示目录。</p>
 <p>原有命令行参数见 <code>python coldbrew.py --help</code>；原有席位文档见 <a href="/docs/SEAT-PACKS.md">席位包说明</a>。严格启动适配器与原版兼容部署分开：第三方客户端必须接入消息处理层，原版提示词文件自身不是强制开关。详见 docs/ACTIVATION.md。</p>
 </details>
 
@@ -61,4 +61,4 @@ npm test</code></pre>
 </table>
 <hr />
 <p align="center"><strong>冷咖啡</strong> · 把想法做出来，把作品留下来。</p>
-</div></article><aside class="about"><h3>关于冷咖啡</h3><p>越狱 · 破甲工作台<br>六模型席位，本地任务构建与会话版本对比。</p><span class="tag">冷咖啡</span><span class="tag">GPT-6 Astra</span><span class="tag">原创界面</span><hr><h3>当前预览</h3><p>3.0.0-preview.1<br>尚未连接模型服务</p><a href="/workbench/">操作新版软件 ↗</a><a href="#冷咖啡社群">查看三个 QQ 群 ↓</a><hr><p>不展示虚构的关注数、下载量或突破成功率。</p></aside></div></div></body></html>
+</div></article><aside class="about"><h3>关于冷咖啡</h3><p>越狱 · 破甲工作台<br>六模型席位，本地任务构建与会话版本对比。</p><span class="tag">冷咖啡</span><span class="tag">GPT-6 Astra</span><span class="tag">原创界面</span><hr><h3>当前预览</h3><p>3.0.0-preview.2<br>尚未连接模型服务</p><a href="/workbench/">操作新版软件 ↗</a><a href="#冷咖啡社群">查看三个 QQ 群 ↓</a><hr><p>不展示虚构的关注数、下载量或突破成功率。</p></aside></div></div></body></html>

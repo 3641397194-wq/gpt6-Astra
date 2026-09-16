@@ -9,6 +9,7 @@ const { SeatTransactions } = require("./lib/seat-transactions");
 const seatTransactions = new SeatTransactions();
 const { ActivationGate } = require("./lib/activation-gate");
 const activationGate = new ActivationGate();
+const { detectDirectory } = require("./lib/detect-directory");
 
 const COMMUNITY = {
   qq: [
@@ -79,9 +80,14 @@ ipcMain.handle("coldbrew:transaction", async (_event, action, payload = {}) => {
   if(action === "gate-create") return activationGate.create(payload.seat);
   if(action === "gate-input") return activationGate.input(payload.id, payload.text);
   if(action === "gate-reset") { activationGate.reset(payload.id); return {ok:true}; }
+  if(action === "auto-select") {
+    const found = detectDirectory(payload.seat);
+    seatTransactions.select(found.root, {layout:found.layout});
+    return found;
+  }
   if(action === "select") {
     const result = await dialog.showOpenDialog(mainWindow, { title: "选择当前模型的配置目录（仅操作预览列出的文件）", properties: ["openDirectory", "createDirectory"] });
-    return result.canceled ? {canceled:true} : seatTransactions.select(result.filePaths[0]);
+    return result.canceled ? {canceled:true} : seatTransactions.select(result.filePaths[0], {layout: payload.seat === "deepseek" && path.basename(result.filePaths[0]).toLowerCase() === ".hermes" ? "hermes" : payload.seat === "glm53" && path.basename(result.filePaths[0]).toLowerCase() === ".zcode" ? "zcode" : "default"});
   }
   if(action === "preview") return seatTransactions.preview(payload.seat);
   if(action === "file") return seatTransactions.file(payload.id, payload.index);

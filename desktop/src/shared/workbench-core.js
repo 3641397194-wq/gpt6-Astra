@@ -4,7 +4,7 @@
   else root.ColdCoffeeCore = api;
 })(typeof globalThis === 'object' ? globalThis : this, function () {
   'use strict';
-  const VERSION = '3.0.0-preview.1';
+  const VERSION = '3.0.0-preview.2';
   const SEATS = [
     {id:'codex',tag:'GPT-6 Astra',mark:'01',hint:'目标清单 → 最小实现 → 验收证据'},
     {id:'claude',tag:'Claude Code',mark:'02',hint:'约束整理 → 结构化实现 → 差异复核'},
