@@ -13,9 +13,30 @@
 <p>接入严格控制层时，未输入口令保持待机；安装完成不等于已激活。原版兼容部署与严格开关的接入说明见 <a href="ACTIVATION.md">启动说明</a>。</p>
 </blockquote>
 
-<h2 id="软件界面">软件界面</h2>
-<p>不是一张概念图。下图来自这次新版界面的实际运行：左侧选择席位，输入冷咖啡验证会话开关，查看词包与文件差异，再确认真实写入。</p>
-<img src="assets/workbench-avatar-cc4af119d023.png" width="100%" alt="冷咖啡新版软件实机界面：任务构建与交付预览" />
+<h2 id="软件界面">软件功能界面</h2>
+<p>下面六张都是 3.1 工作台实机画面：左侧六个功能页，右侧对应操作区。不是概念图，也不是海报。</p>
+<p><strong>01 任务模板</strong> · 写目标、选档位、本地构建任务契约；需要走付费中转时再点发送。</p>
+<img src="assets/workbench-v3-3f8ea5204a3b.png" width="100%" alt="冷咖啡工作台：任务模板，本地构建与交付预览" />
+<table>
+<tr>
+<th align="center">02 席位包部署</th>
+<th align="center">03 冷咖啡中转</th>
+</tr>
+<tr>
+<td align="center"><img src="assets/ui-packs-d8b601d4cd45.png" width="100%" alt="席位包部署：冷咖啡口令验证与文件预览" /></td>
+<td align="center"><img src="assets/ui-relay-9705a35c7f2f.png" width="100%" alt="冷咖啡中转：Codex API 接入配置" /></td>
+</tr>
+<tr>
+<th align="center">04 输出测评</th>
+<th align="center">05 会话版本对比</th>
+</tr>
+<tr>
+<td align="center"><img src="assets/ui-eval-269a60109ce6.png" width="100%" alt="输出测评：JSON 与必含词本地检查" /></td>
+<td align="center"><img src="assets/ui-history-a81b95080ae5.png" width="100%" alt="会话版本对比：两次构建的文本差异" /></td>
+</tr>
+</table>
+<p><strong>06 冷咖啡社群</strong> · 三个 QQ 群入口做在软件里，扫码或复制群号。</p>
+<img src="assets/ui-community-c225da0cb0d9.png" width="100%" alt="冷咖啡工作台社群页：三个 QQ 群二维码" />
 <table>
 <tr><th align="left">构建更清楚</th><th align="left">版本看得见</th><th align="left">输出可检查</th></tr>
 <tr><td>原词包保持不变。桌面端自动识别配置目录并展示差异，确认写入前自动备份；也支持手动选择。</td><td>部署历史保存在所选目录，可按版本恢复。文件在部署后被改动时中止恢复，保留现场。</td><td>逐文件核对 SHA-256。另提供 JSON、代码围栏与必含词检查，不预填成功率。</td></tr>

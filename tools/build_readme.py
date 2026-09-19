@@ -18,9 +18,30 @@ body='''<div align="center">
 <p>接入严格控制层时，未输入口令保持待机；安装完成不等于已激活。原版兼容部署与严格开关的接入说明见 <a href="docs/ACTIVATION.md">启动说明</a>。</p>
 </blockquote>
 
-<h2 id="软件界面">软件界面</h2>
-<p>不是一张概念图。下图来自这次新版界面的实际运行：左侧选择席位，输入冷咖啡验证会话开关，查看词包与文件差异，再确认真实写入。</p>
-<img src="docs/assets/workbench-deploy-v3.png" width="100%" alt="冷咖啡新版软件实机界面：任务构建与交付预览" />
+<h2 id="软件界面">软件功能界面</h2>
+<p>下面六张都是 3.1 工作台实机画面：左侧六个功能页，右侧对应操作区。不是概念图，也不是海报。</p>
+<p><strong>01 任务模板</strong> · 写目标、选档位、本地构建任务契约；需要走付费中转时再点发送。</p>
+<img src="docs/assets/workbench-v3.png" width="100%" alt="冷咖啡工作台：任务模板，本地构建与交付预览" />
+<table>
+<tr>
+<th align="center">02 席位包部署</th>
+<th align="center">03 冷咖啡中转</th>
+</tr>
+<tr>
+<td align="center"><img src="docs/assets/ui-packs.png" width="100%" alt="席位包部署：冷咖啡口令验证与文件预览" /></td>
+<td align="center"><img src="docs/assets/ui-relay.png" width="100%" alt="冷咖啡中转：Codex API 接入配置" /></td>
+</tr>
+<tr>
+<th align="center">04 输出测评</th>
+<th align="center">05 会话版本对比</th>
+</tr>
+<tr>
+<td align="center"><img src="docs/assets/ui-eval.png" width="100%" alt="输出测评：JSON 与必含词本地检查" /></td>
+<td align="center"><img src="docs/assets/ui-history.png" width="100%" alt="会话版本对比：两次构建的文本差异" /></td>
+</tr>
+</table>
+<p><strong>06 冷咖啡社群</strong> · 三个 QQ 群入口做在软件里，扫码或复制群号。</p>
+<img src="docs/assets/ui-community.png" width="100%" alt="冷咖啡工作台社群页：三个 QQ 群二维码" />
 <table>
 <tr><th align="left">构建更清楚</th><th align="left">版本看得见</th><th align="left">输出可检查</th></tr>
 <tr><td>原词包保持不变。桌面端自动识别配置目录并展示差异，确认写入前自动备份；也支持手动选择。</td><td>部署历史保存在所选目录，可按版本恢复。文件在部署后被改动时中止恢复，保留现场。</td><td>逐文件核对 SHA-256。另提供 JSON、代码围栏与必含词检查，不预填成功率。</td></tr>
@@ -99,12 +120,13 @@ npm test</code></pre>
 <p align="center"><strong>冷咖啡</strong> · 把想法做出来，把作品留下来。</p>
 '''
 # Content-addressed screenshots prevent an old cached image from resurfacing.
-screenshot=ROOT/'docs/assets/workbench-deploy-v3.png'
-if screenshot.exists():
-    digest=hashlib.sha256(screenshot.read_bytes()).hexdigest()[:12]
-    name=f'workbench-avatar-{digest}.png'
-    shutil.copyfile(screenshot,ROOT/'docs/assets'/name)
-    body=body.replace('docs/assets/workbench-deploy-v3.png',f'docs/assets/{name}')
+for src_name in ('workbench-v3.png','ui-packs.png','ui-relay.png','ui-eval.png','ui-history.png','ui-community.png'):
+    src=ROOT/'docs/assets'/src_name
+    if src.exists():
+        digest=hashlib.sha256(src.read_bytes()).hexdigest()[:12]
+        name=f'{src.stem}-{digest}{src.suffix}'
+        shutil.copyfile(src,ROOT/'docs/assets'/name)
+        body=body.replace(f'docs/assets/{src_name}',f'docs/assets/{name}')
 (ROOT/'README.md').write_text(body,encoding='utf-8')
 css='''*{box-sizing:border-box}body{margin:0;color:#1f2328;background:#fff;font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}a{color:#0969da;text-decoration:none}a:hover{text-decoration:underline}.appbar{background:#f6f8fa;border-bottom:1px solid #d1d9e0;padding:18px 30px;display:flex;justify-content:space-between;align-items:center;gap:20px}.repo-name{font-size:14px;font-weight:600}.preview-label{font-size:12px;color:#656d76}.repo-tabs{background:#f6f8fa;padding:0 30px;display:flex;gap:25px;border-bottom:1px solid #d1d9e0}.repo-tabs span{padding:12px 0;font-size:13px}.repo-tabs .selected{border-bottom:2px solid #f78166}.container{max-width:1200px;padding:28px;margin:auto}.notice{border:1px solid #d1d9e0;border-radius:7px;background:#f6f8fa;padding:14px 18px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;gap:20px}.notice a{background:#1f2328;color:#fff;border-radius:6px;padding:8px 14px;white-space:nowrap}.repo-grid{display:grid;grid-template-columns:minmax(0,880px) 220px;gap:25px}.readme{border:1px solid #d1d9e0;border-radius:7px;overflow:hidden;min-width:0}.readme-tab{font-size:12px;padding:12px 18px;border-bottom:1px solid #d1d9e0;font-weight:600}.markdown-body{padding:30px;font-size:14px}.markdown-body img{max-width:100%;height:auto}.markdown-body h1{font-size:30px;border-bottom:1px solid #d1d9e0;padding-bottom:12px;margin:22px 0 16px}.markdown-body h2{font-size:22px;border-bottom:1px solid #d1d9e0;padding-bottom:9px;margin:34px 0 16px;scroll-margin-top:20px}.markdown-body p{margin:12px 0 18px}.markdown-body sub{color:#656d76;font-size:11px}.markdown-body table{width:100%;border-collapse:collapse;font-size:12px;margin:20px 0}.markdown-body td,.markdown-body th{border:1px solid #d1d9e0;padding:12px}.markdown-body th{background:#f6f8fa}.markdown-body blockquote{margin:24px 0;border-left:4px solid #c92537;background:#fff7f7;padding:10px 18px;color:#4f353a}.markdown-body blockquote p{margin:7px 0}.markdown-body pre{padding:16px;border-radius:7px;background:#f6f8fa;overflow:auto}.markdown-body code{font-family:Consolas,monospace;font-size:12px}.markdown-body details{border:1px solid #d1d9e0;padding:14px;border-radius:7px;margin-top:20px}.markdown-body summary{cursor:pointer;font-weight:600}.markdown-body hr{border:0;border-top:1px solid #d1d9e0;margin-top:30px}.about h3{font-size:15px;margin:0 0 14px}.about p{font-size:13px;color:#656d76}.about .tag{display:inline-block;font-size:11px;background:#ddf4ff;color:#0969da;border-radius:14px;padding:3px 9px;margin:0 3px 7px 0}.about hr{border:0;border-top:1px solid #d1d9e0;margin:22px 0}.about a{display:block;margin-top:12px;font-size:12px}@media(max-width:900px){.repo-grid{grid-template-columns:1fr}.about{display:none}.container{padding:16px}.markdown-body{padding:20px}.appbar{padding:15px}.preview-label{display:none}}@media(max-width:520px){.markdown-body{padding:12px;font-size:12px}.markdown-body h1{font-size:23px}.markdown-body th,.markdown-body td{padding:5px;font-size:10px}.notice{display:block;font-size:12px}.notice a{display:inline-block;margin-top:10px}.repo-tabs{gap:14px;padding:0 16px}.repo-tabs span{font-size:11px}}'''
 page=f'''<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>冷咖啡 · 仓库主页新版预览</title><style>{css}</style></head><body><header class="appbar"><div class="repo-name">3641397194-wq / <strong>gpt6-Astra</strong></div><span class="preview-label">仓库主页排版预览 · 非 GitHub 在线页面</span></header><nav class="repo-tabs"><span class="selected">代码与说明</span><span>问题讨论</span><span>变更记录</span><span>项目文档</span></nav><div class="container"><div class="notice"><span><strong>本地预览，API 已按 OpenAI 兼容模式接入。</strong>桌面端填写 API Key 后可测试 <code>/models</code>；真实套餐和用量以中转服务端为准。</span><a href="/workbench/">打开软件交互预览 ↗</a></div><div class="repo-grid"><article class="readme"><div class="readme-tab">README.md · 项目主页</div><div class="markdown-body">{body.replace('src="docs/','src="/docs/').replace('href="docs/','href="/docs/')}</div></article><aside class="about"><h3>关于冷咖啡</h3><p>破甲工作台<br>六模型席位、API 中转入口、内置工作流与 QQ 私聊定制。</p><span class="tag">冷咖啡</span><span class="tag">GPT-6 Astra</span><span class="tag">OpenAI API</span><span class="tag">原创界面</span><hr><h3>当前预览</h3><p>3.1.0-preview.1<br>默认 API：coldcoffeeai.com/v1<br>等待顾客 API Key 验证</p><a href="/workbench/">操作新版软件 ↗</a><a href="#冷咖啡中转">查看中转服务 ↓</a><a href="#闭源工作流">闭源工作流：进群私聊 ↓</a><a href="#冷咖啡社群">查看三个 QQ 群 ↓</a><hr><p>不把 API Key、余额或账号信息写入仓库。</p></aside></div></div></body></html>'''
