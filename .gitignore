@@ -18,3 +18,16 @@ docs/assets/community-v3.png
 docs/assets/readme-check-v3.png
 docs/assets/workbench-mobile-v3.png
 docs/assets/workbench-v3.png
+
+# Local credentials and diagnostics stay outside source control
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+auth.json
+credentials.json
+*.log
+*.dmp

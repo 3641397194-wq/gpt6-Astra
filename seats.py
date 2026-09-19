@@ -32,6 +32,8 @@ SEAT_ALIASES = {
     "deepseek-v4-pro": "deepseek",
     "deepseek-v4.1": "deepseek",
     "deepseek-v41": "deepseek",
+    "deepseek-v4.1-flash": "deepseek",
+    "deepseekv4.1flash": "deepseek",
     "glm53": "glm53",
     "glm-5.3": "glm53",
     "gemini": "gemini",
@@ -145,7 +147,7 @@ def seat_home(seat_id: str, override: str | os.PathLike[str] | None = None) -> P
         "codex": _home_of(("CODEX_HOME", "CODEX_DIR"), ".codex"),
         "claude": _home_of(("CLAUDE_CONFIG_DIR", "CLAUDE_HOME"), ".claude"),
         "grok": _home_of(("GROK_HOME", "GROK_DIR"), ".grok"),
-        "deepseek": _home_of(("DEEPSEEK_HOME", "DEEPSEEK_DIR"), ".deepseek"),
+        "deepseek": Path(os.environ.get("DSH_HOME", "").strip() or (Path.home() / ".dsh")).expanduser().resolve(),
         "glm53": _home_of(("GLM_HOME", "ZCODE_HOME", "ZHIPU_HOME"), ".glm"),
         "gemini": _home_of(("GEMINI_HOME", "GEMINI_DIR"), ".gemini"),
     }
@@ -155,11 +157,20 @@ def seat_home(seat_id: str, override: str | os.PathLike[str] | None = None) -> P
 def extra_homes(override: str | os.PathLike[str] | None = None) -> dict[str, Path]:
     if override:
         root = Path(override).expanduser().resolve()
-        return {"hermes": root / "hermes", "zcode": root / "zcode"}
+        return {"zcode": root / "zcode"}
     return {
-        "hermes": _home_of(("HERMES_HOME",), ".hermes"),
         "zcode": _home_of(("ZCODE_HOME",), ".zcode"),
     }
+
+
+def deepseek_harness_loader(begin: str, end: str) -> str:
+    return (
+        f"{begin}\n# 冷咖啡 · DeepSeek 官方 Harness 入口\n\n"
+        "用户输入「冷咖啡」时，使用 Harness 的 skill 工具加载 cha-deepseek，再按该技能的原版启动说明继续。\n"
+        "完整词包位于本 Harness 配置目录的 skills/cha-deepseek/SKILL.md；后续请求按已加载技能及适用路由处理。\n"
+        "此入口只负责加载，原版正文保存在技能文件中。\n"
+        f"{end}\n"
+    )
 
 
 def _split(text: str, begin: str, end: str) -> tuple[str, str, str]:
@@ -262,14 +273,11 @@ def plan(seat_id: str, override: str | os.PathLike[str] | None = None) -> dict:
         ]
         writes += route_skill_writes(home)
     elif seat_id == "deepseek":
-        hermes = extra["hermes"]
         writes = [
-            {"kind": "marked", "file": home / "DEEPSEEK.md"},
-            {"kind": "marked", "file": hermes / "SOUL.md", "home": hermes},
-            {"kind": "file", "file": hermes / "skills" / "cha-deepseek" / "SKILL.md", "home": hermes},
+            {"kind": "marked", "file": home / "AGENTS.md", "body": deepseek_harness_loader(begin, end)},
+            {"kind": "file", "file": home / "skills" / "cha-deepseek" / "SKILL.md"},
         ]
         writes += route_skill_writes(home)
-        writes += [{**item, "home": hermes} for item in route_skill_writes(hermes)]
     elif seat_id == "glm53":
         zcode = extra["zcode"]
         writes = [
@@ -343,7 +351,7 @@ def deploy(seat_id: str, home: str | os.PathLike[str] | None = None) -> dict:
             snapped.append(str(bak))
         if item["kind"] in {"file", "marked"}:
             previous = target.read_text(encoding="utf-8") if item["kind"] == "marked" and target.exists() else ""
-            next_text = insert_marked(previous, pack, begin, end) if item["kind"] == "marked" else pack
+            next_text = insert_marked(previous, item.get("body", pack), begin, end) if item["kind"] == "marked" else pack
             _write(target, next_text)
             written.append(str(target))
         elif item["kind"] == "toml":
@@ -382,6 +390,8 @@ def verify(seat_id: str, home: str | os.PathLike[str] | None = None) -> dict:
         marker = True
         if item["kind"] in {"marked", "file"}:
             marker = spec["begin"] in text and spec["end"] in text
+            if seat_id == "deepseek":
+                marker = item["body"].strip() in text if item["kind"] == "marked" else text == spec["pack"]
         elif item["kind"] == "toml":
             marker = "model_instructions_file" in text
         elif item["kind"] == "settings":

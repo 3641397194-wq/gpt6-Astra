@@ -10,6 +10,18 @@ function homeOf(envKeys, folder) {
   return path.join(os.homedir(), folder);
 }
 
+function deepseekHarnessHome() {
+  const configured = process.env.DSH_HOME?.trim();
+  if (!configured) return path.join(os.homedir(), '.dsh');
+  if (configured === '~') return os.homedir();
+  if (configured.startsWith('~/') || configured.startsWith('~\\')) return path.join(os.homedir(), configured.slice(2));
+  return path.resolve(configured);
+}
+
+function deepseekHarnessLoader(begin, end) {
+  return `${begin}\n# 冷咖啡 · DeepSeek 官方 Harness 入口\n\n用户输入「冷咖啡」时，使用 Harness 的 skill 工具加载 cha-deepseek，再按该技能的原版启动说明继续。\n完整词包位于本 Harness 配置目录的 skills/cha-deepseek/SKILL.md；后续请求按已加载技能及适用路由处理。\n此入口只负责加载，原版正文保存在技能文件中。\n${end}\n`;
+}
+
 function snapshotOnce(src, dest) {
   if (fs.existsSync(dest) || !fs.existsSync(src)) return false;
   fs.mkdirSync(path.dirname(dest), { recursive: true });
@@ -90,7 +102,7 @@ function seatHomes() {
     codex: homeOf(["CODEX_HOME", "CODEX_DIR"], ".codex"),
     claude: homeOf(["CLAUDE_CONFIG_DIR", "CLAUDE_HOME"], ".claude"),
     grok: homeOf(["GROK_HOME", "GROK_DIR"], ".grok"),
-    deepseek: homeOf(["DEEPSEEK_HOME", "DEEPSEEK_DIR"], ".deepseek"),
+    deepseek: deepseekHarnessHome(),
     glm53: homeOf(["GLM_HOME", "ZCODE_HOME", "ZHIPU_HOME"], ".glm"),
     gemini: homeOf(["GEMINI_HOME", "GEMINI_DIR"], ".gemini"),
   };
@@ -100,12 +112,10 @@ function extraHomes(overrideHome) {
   if (overrideHome) {
     const root = path.resolve(String(overrideHome));
     return {
-      hermes: path.join(root, "hermes"),
       zcode: path.join(root, "zcode"),
     };
   }
   return {
-    hermes: homeOf(["HERMES_HOME"], ".hermes"),
     zcode: homeOf(["ZCODE_HOME"], ".zcode"),
   };
 }
@@ -163,15 +173,12 @@ function plan(seatId, overrideHome) {
     };
   }
   if (seatId === "deepseek") {
-    const hermes = extra.hermes;
     return {
       home,
       writes: [
-        { kind: "marked", file: path.join(home, "DEEPSEEK.md"), begin, end },
-        { kind: "marked", file: path.join(hermes, "SOUL.md"), begin, end, home: hermes },
-        { kind: "file", file: path.join(hermes, "skills", "cha-deepseek", "SKILL.md"), mode: "replace", home: hermes },
+        { kind: "marked", file: path.join(home, "AGENTS.md"), begin, end, body: deepseekHarnessLoader(begin, end) },
+        { kind: "file", file: path.join(home, "skills", "cha-deepseek", "SKILL.md"), mode: "replace" },
         ...routeSkillWrites(home),
-        ...routeSkillWrites(hermes).map((item) => ({ ...item, home: hermes })),
       ],
       begin,
       end,
@@ -239,7 +246,7 @@ function deploy(seatId, overrideHome) {
     if (snapshotOnce(item.file, bak)) snapped.push(bak);
     if (item.kind === "file" || item.kind === "marked") {
       const previous = item.kind === "marked" ? readText(item.file) : "";
-      const next = item.kind === "marked" ? insertMarked(previous, spec.pack, spec.begin, spec.end) : spec.pack;
+      const next = item.kind === "marked" ? insertMarked(previous, item.body ?? spec.pack, spec.begin, spec.end) : spec.pack;
       writeText(item.file, next);
       written.push(item.file);
     } else if (item.kind === "toml") {
@@ -288,6 +295,8 @@ function verify(seatId, overrideHome) {
     const text = exists ? readText(item.file) : "";
     let marker = true;
     if (item.kind === "marked" || item.kind === "file") marker = text.includes(spec.begin) && text.includes(spec.end);
+    if (seatId === "deepseek" && item.kind === "marked") marker = text.includes(item.body.trim());
+    if (seatId === "deepseek" && item.kind === "file") marker = text === spec.pack;
     if (item.kind === "toml") marker = text.includes("model_instructions_file");
     if (item.kind === "settings") marker = exists;
     if (item.kind === "skill") marker = exists && text.includes(path.basename(path.dirname(item.file)));

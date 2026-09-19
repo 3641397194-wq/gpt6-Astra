@@ -10,6 +10,10 @@ const seatTransactions = new SeatTransactions();
 const { ActivationGate } = require("./lib/activation-gate");
 const activationGate = new ActivationGate();
 const { detectDirectory } = require("./lib/detect-directory");
+const { RelayAdapter } = require("./lib/relay-adapter");
+const relayAdapter = new RelayAdapter();
+const { assertTrustedSender, protectWindow } = require("./lib/window-security");
+const WORKBENCH_ENTRY = path.join(__dirname, "workbench", "index.html");
 
 const COMMUNITY = {
   qq: [
@@ -22,6 +26,13 @@ const COMMUNITY = {
 let splashWindow;
 let mainWindow;
 
+function handleTrusted(channel, handler) {
+  ipcMain.handle(channel, (event, ...args) => {
+    assertTrustedSender(event, mainWindow, WORKBENCH_ENTRY);
+    return handler(event, ...args);
+  });
+}
+
 function createSplash() {
   splashWindow = new BrowserWindow({
     width: 920,
@@ -31,8 +42,10 @@ function createSplash() {
     show: false,
     backgroundColor: "#090707",
     title: APP_TITLE,
+    icon: path.join(__dirname, "..", "assets", "icon-v4.png"),
     webPreferences: { contextIsolation: true, sandbox: true },
   });
+  protectWindow(splashWindow);
   splashWindow.loadFile(path.join(__dirname, "splash", "index.html"));
   splashWindow.once("ready-to-show", () => splashWindow.show());
 }
@@ -47,6 +60,7 @@ function createMain() {
     show: false,
     backgroundColor: "#080707",
     title: APP_TITLE,
+    icon: path.join(__dirname, "..", "assets", "icon-v4.png"),
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -55,10 +69,11 @@ function createMain() {
       sandbox: true,
     },
   });
-  mainWindow.loadFile(path.join(__dirname, "workbench", "index.html"));
+  protectWindow(mainWindow);
+  mainWindow.loadFile(WORKBENCH_ENTRY, process.argv.includes("--relay") ? { hash: "relay" } : {});
 }
 
-ipcMain.handle("coldbrew:meta", () => ({
+handleTrusted("coldbrew:meta", () => ({
   activation: ACTIVATION_WORD,
   control: CONTROL_WORD,
   title: APP_TITLE,
@@ -69,14 +84,14 @@ ipcMain.handle("coldbrew:meta", () => ({
   version: workbenchCore.VERSION,
 }));
 
-ipcMain.handle("coldbrew:activate", (_event, payload = {}) => activate({
+handleTrusted("coldbrew:activate", (_event, payload = {}) => activate({
   word: payload.word,
   profile: payload.profile,
   channel: payload.channel,
   prompt: payload.prompt,
 }));
 
-ipcMain.handle("coldbrew:transaction", async (_event, action, payload = {}) => {
+handleTrusted("coldbrew:transaction", async (_event, action, payload = {}) => {
   if(action === "gate-create") return activationGate.create(payload.seat);
   if(action === "gate-input") return activationGate.input(payload.id, payload.text);
   if(action === "gate-reset") { activationGate.reset(payload.id); return {ok:true}; }
@@ -87,7 +102,7 @@ ipcMain.handle("coldbrew:transaction", async (_event, action, payload = {}) => {
   }
   if(action === "select") {
     const result = await dialog.showOpenDialog(mainWindow, { title: "选择当前模型的配置目录（仅操作预览列出的文件）", properties: ["openDirectory", "createDirectory"] });
-    return result.canceled ? {canceled:true} : seatTransactions.select(result.filePaths[0], {layout: payload.seat === "deepseek" && path.basename(result.filePaths[0]).toLowerCase() === ".hermes" ? "hermes" : payload.seat === "glm53" && path.basename(result.filePaths[0]).toLowerCase() === ".zcode" ? "zcode" : "default"});
+    return result.canceled ? {canceled:true} : seatTransactions.select(result.filePaths[0], {layout: payload.seat === "deepseek" ? "deepseek-harness" : payload.seat === "glm53" && path.basename(result.filePaths[0]).toLowerCase() === ".zcode" ? "zcode" : "default"});
   }
   if(action === "preview") return seatTransactions.preview(payload.seat);
   if(action === "file") return seatTransactions.file(payload.id, payload.index);
@@ -102,15 +117,36 @@ ipcMain.handle("coldbrew:transaction", async (_event, action, payload = {}) => {
   throw new Error("未知文件操作");
 });
 
-ipcMain.handle("coldbrew:compose", (_event, payload) => workbenchCore.compose(payload));
-ipcMain.handle("coldbrew:evaluate", (_event, answer, options) => workbenchCore.evaluate(answer, options));
+// The relay adapter starts in deterministic preview mode. The API-first screen
+// explicitly switches it to OpenAI-compatible mode after the customer enters
+// a base URL and API key; no credential is bundled in the release.
+handleTrusted("coldbrew:relay", async (_event, action, payload = {}) => {
+  if (action === "status") return relayAdapter.status();
+  if (action === "providers") return relayAdapter.providerPresets();
+  if (action === "models") return relayAdapter.models();
+  if (action === "test") return relayAdapter.testConnection();
+  if (action === "catalog") return relayAdapter.catalog();
+  if (action === "entitlement") return relayAdapter.entitlement(payload);
+  if (action === "usage") return relayAdapter.usage(payload);
+  if (action === "preflight") return relayAdapter.preflight(payload);
+  if (action === "submit") return relayAdapter.submit(payload);
+  if (action === "configure") {
+    // Configuration is held in the main process only. The API key is never
+    // written to the repository or returned by status().
+    return relayAdapter.reconfigure(payload);
+  }
+  throw new Error("未知中转操作");
+});
 
-ipcMain.handle("coldbrew:inspect", () => seatRuntime.inspectAll());
+handleTrusted("coldbrew:compose", (_event, payload) => workbenchCore.compose(payload));
+handleTrusted("coldbrew:evaluate", (_event, answer, options) => workbenchCore.evaluate(answer, options));
 
-ipcMain.handle("coldbrew:gemini", (_event, verb, payload = {}) => geminiSeat.run(verb, payload.home));
-ipcMain.handle("coldbrew:seat", (_event, seatId, verb, payload = {}) => seatRuntime.run(String(seatId || ""), verb, payload.home));
+handleTrusted("coldbrew:inspect", () => seatRuntime.inspectAll());
 
-ipcMain.handle("coldbrew:open-docs", async () => {
+handleTrusted("coldbrew:gemini", (_event, verb, payload = {}) => geminiSeat.run(verb, payload.home));
+handleTrusted("coldbrew:seat", (_event, seatId, verb, payload = {}) => seatRuntime.run(String(seatId || ""), verb, payload.home));
+
+handleTrusted("coldbrew:open-docs", async () => {
   const packagedDocs = path.join(process.resourcesPath, "public", "docs", "index.html");
   const localDocs = path.resolve(__dirname, "..", "..", "docs", "index.html");
   const target = app.isPackaged && fs.existsSync(packagedDocs) ? packagedDocs : localDocs;
@@ -122,20 +158,20 @@ ipcMain.handle("coldbrew:open-docs", async () => {
   return "https://github.com/3641397194-wq/gpt6-Astra";
 });
 
-ipcMain.handle("coldbrew:open-external", async (_event, value) => {
+handleTrusted("coldbrew:open-external", async (_event, value) => {
   const url = String(value || "").trim();
-  if (!/^https:\/\/github\.com(\/|$)/i.test(url)) throw new Error("只允许打开仓库链接");
+  if (!/^https:\/\/(?:github\.com|(?:www\.)?coldcoffeeai\.com)(\/|$)/i.test(url)) throw new Error("只允许打开仓库或冷咖啡中转链接");
   await shell.openExternal(url);
   return url;
 });
 
-ipcMain.handle("window:minimize", () => mainWindow?.minimize());
-ipcMain.handle("window:maximize", () => {
+handleTrusted("window:minimize", () => mainWindow?.minimize());
+handleTrusted("window:maximize", () => {
   if (!mainWindow) return false;
   if (mainWindow.isMaximized()) mainWindow.unmaximize(); else mainWindow.maximize();
   return mainWindow.isMaximized();
 });
-ipcMain.handle("window:close", () => mainWindow?.close());
+handleTrusted("window:close", () => mainWindow?.close());
 
 app.whenReady().then(() => {
   createSplash();

@@ -25,5 +25,5 @@
  let gateBusy=false;
  byId('gate-form').addEventListener('submit',async event=>{event.preventDefault();if(gateBusy)return;gateBusy=true;const buttons=byId('gate-form').querySelectorAll('button');buttons.forEach(b=>b.disabled=true);try{if(!gateId)gateId=(await api('gate-create',{seat})).id;const r=await api('gate-input',{id:gateId,text:byId('gate-input').value});byId('gate-state').textContent=r.active?'已激活 · 当前会话':'待机 · 词包未放行';byId('gate-reply').textContent=r.reply;byId('gate-note').textContent=r.note+`；已放行 ${r.instructionText.length} 字符。`;}catch(e){byId('gate-reply').textContent=e.message;gateId=null;}finally{gateBusy=false;buttons.forEach(b=>b.disabled=false);}});
  byId('gate-reset').addEventListener('click',async()=>{if(gateId)await api('gate-reset',{id:gateId});gateId=null;byId('gate-input').value='';byId('gate-state').textContent='待机 · 词包未放行';byId('gate-reply').textContent='会话已重置。请重新输入「冷咖啡」。';byId('gate-note').textContent='未向客户端放行词包';});
- enabled();page('packs');if(window.coldbrew?.transaction)autoSelect();
+ enabled();page(location.hash==='#relay'?'relay':'packs');if(window.coldbrew?.transaction&&location.hash!=='#relay')autoSelect();
 })();

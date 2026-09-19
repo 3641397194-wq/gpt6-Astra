@@ -25,7 +25,7 @@ function marked(previous,pack,begin,end){const n1=previous.split(begin).length-1
 function nextText(item,previous,spec){
   if(item.kind==='skill')return item.body.endsWith('\n')?item.body:item.body+'\n';
   if(item.kind==='file')return spec.pack;
-  if(item.kind==='marked')return marked(previous,spec.pack,spec.begin,spec.end);
+  if(item.kind==='marked')return marked(previous,item.body??spec.pack,spec.begin,spec.end);
   if(item.kind==='toml'){
     const line=`${item.key} = ${JSON.stringify(item.value)}`;const table=previous.search(/^\s*\[/m);const split=table<0?previous.length:table;const head=previous.slice(0,split),tail=previous.slice(split);const pattern=new RegExp(`^[ \\t]*${item.key}[ \\t]*=.*$`,'gm');const found=[...head.matchAll(pattern)];
     if(found.length>1)throw new Error('配置包含重复顶层字段，请先整理');
@@ -43,11 +43,12 @@ function nextText(item,previous,spec){
 }
 class SeatTransactions{
   constructor(){this.root=null;this.pending=new Map();}
-  select(root,{layout="default"}={}){if(!["default","hermes","zcode"].includes(layout))throw new Error("目录布局错误");if(typeof root!=='string'||!path.isAbsolute(root))throw new Error('请明确选择绝对目录');const resolved=path.resolve(root);if(path.parse(resolved).root===resolved)throw new Error('请选择专用目录，不要选择磁盘根目录');guardPath(resolved);if(fs.existsSync(resolved)&&!fs.statSync(resolved).isDirectory())throw new Error('所选路径不是目录');this.root=resolved;this.layout=layout;this.pending.clear();return {root:this.root};}
+  select(root,{layout="default"}={}){if(!["default","deepseek-harness","zcode"].includes(layout))throw new Error("目录布局错误");if(typeof root!=='string'||!path.isAbsolute(root))throw new Error('请明确选择绝对目录');const resolved=path.resolve(root);if(path.parse(resolved).root===resolved)throw new Error('请选择专用目录，不要选择磁盘根目录');guardPath(resolved);if(fs.existsSync(resolved)&&!fs.statSync(resolved).isDirectory())throw new Error('所选路径不是目录');this.root=resolved;this.layout=layout;this.pending.clear();return {root:this.root};}
   requireRoot(){if(!this.root)throw new Error('先选择目标目录；尚未读取任何用户配置');guardPath(this.root);return this.root;}
   preview(seat){const root=this.requireRoot();if(!runtime.PACK_IDS.includes(seat))throw new Error('未知模型席位');const spec=runtime.plan(seat,root);
-    if(this.layout==='hermes'||this.layout==='zcode'){
-      if((this.layout==='hermes'&&seat!=='deepseek')||(this.layout==='zcode'&&seat!=='glm53'))throw new Error('席位与目录布局不匹配');
+    if(this.layout==='deepseek-harness'&&seat!=='deepseek')throw new Error('席位与目录布局不匹配');
+    if(this.layout==='zcode'){
+      if(seat!=='glm53')throw new Error('席位与目录布局不匹配');
       const nested=path.join(root,this.layout);
       spec.writes=spec.writes.filter(item=>item.file.startsWith(nested+path.sep)).map(item=>({...item,file:path.join(root,path.relative(nested,item.file))}));
     }

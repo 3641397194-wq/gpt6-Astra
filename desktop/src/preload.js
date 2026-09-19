@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("coldbrew", {
   transaction: (action, payload) => ipcRenderer.invoke("coldbrew:transaction", action, payload),
+  relay: (action, payload) => ipcRenderer.invoke("coldbrew:relay", action, payload),
   compose: (payload) => ipcRenderer.invoke("coldbrew:compose", payload),
   evaluate: (answer, options) => ipcRenderer.invoke("coldbrew:evaluate", answer, options),
   meta: () => ipcRenderer.invoke("coldbrew:meta"),

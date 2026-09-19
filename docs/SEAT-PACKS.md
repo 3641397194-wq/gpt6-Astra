@@ -9,11 +9,26 @@
 | GPT-6 Astra / Codex | `~/.codex/prompts/cha-codex.md` + `config.toml` 的 `model_instructions_file` + `~/.codex/AGENTS.md` | [xsser/codex-jailbreak-guide](https://github.com/xsser/codex-jailbreak-guide)，[Calrton/jailbreak-prompts](https://github.com/Calrton/jailbreak-prompts) |
 | Claude Code | `~/.claude/CLAUDE.md` + `~/.claude/rules/cha-breakopen.md` | [Claude Code memory](https://code.claude.com/docs/en/memory) |
 | Grok 4.6 | `~/.grok/AGENTS.md` + `rules/cha-breakopen.md` + `skills/cha-breakopen/SKILL.md` | [xai-org/grok-build](https://github.com/xai-org/grok-build)，AGENTS.md 惯例 |
-| DeepSeek v4.1 | `~/.deepseek/DEEPSEEK.md` + `~/.hermes/SOUL.md` + Hermes skill | 公开仓只借注入位：[0x5477/deepseek-v4-pro-unrestricted](https://github.com/0x5477/deepseek-v4-pro-unrestricted) 的 DEEPSEEK.md / SOUL.md / skill 路径，[deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) 的 Harness 插件层。V4.1 正文是冷咖啡原创「短刻度 + 思考槽封口」，不搬第三方 prompt 全文 |
+| DeepSeek v4.1 Flash | `$DSH_HOME/AGENTS.md` 加载入口 + `$DSH_HOME/skills/cha-deepseek/SKILL.md` 完整原包；默认 `~/.dsh` | [DeepSeek 官方 Harness](https://github.com/deepseek-ai/deepseek-harness)：按官方全局指令与技能加载合同安装。原包正文保持原样，模型版本在 Harness 内选择 |
 | GLM 5.3 | `~/.glm/GLM.md` + `~/.zcode/AGENTS.md` | GLM Coding / ZCode 走 AGENTS.md 记忆层 |
 | Gemini | `~/.gemini/GEMINI.md` + `settings.json` 的 `context.fileName` | 本仓既有 Gemini 席位 |
 
 目录总览见 [simimasai111/ai-jailbreak-prompts](https://github.com/simimasai111/ai-jailbreak-prompts)。
+
+### DeepSeek 官方 Harness 安装说明
+
+DeepSeek 席位现在面向 `deepseek-ai/deepseek-harness`（命令 `dsh`）。自动定位使用 `DSH_HOME`，未设置时采用 `~/.dsh`。手动选择时应选择 Harness 配置根目录；自定义目录还应与 Harness 的 `DSH_HOME` 或 `dshHome` 配置一致。旧的 `DEEPSEEK_HOME`、`.deepseek`、Hermes 目录不会再作为自动安装目标。
+
+安装预览会列出 `AGENTS.md`、`skills/cha-deepseek/SKILL.md` 和各条原版路由技能。`AGENTS.md` 只追加带标记的短入口，完整词包按原文保存在技能文件中；这是因为官方全局指令的默认总预算为 65,536 字节，而完整原包已超过这个预算。启动官方 Harness 后，在新会话输入「冷咖啡」，入口会指引模型使用官方 `skill` 工具加载 `cha-deepseek`。也可输入 `/cha-deepseek 冷咖啡` 显式加载同一技能。
+
+桌面端提供预览、备份写入、逐文件检查和版本恢复。文件一致仅验证安装结果；还应在 Harness 技能目录中确认 `cha-deepseek` 可见，并在真实模型会话验证加载结果。自定义 Harness profile 若关闭 `agent-instructions`、`skill-filesystem` 或 `tool-skill`，需在 Harness 中启用相应插件。既有 `.deepseek` 或 Hermes 安装的历史备份仍留在原目录，本次不迁移或删除它们。
+
+官方合同核对于 2026-09-20，参考提交 `ddefc45fbc7f8e46dd73185e68295696d1297887`：
+
+- [配置根目录：`DSH_HOME` / `~/.dsh`](https://github.com/deepseek-ai/deepseek-harness/blob/ddefc45fbc7f8e46dd73185e68295696d1297887/packages/util/home-paths/src/index.ts)
+- [全局 `AGENTS.md` 与默认字节预算](https://github.com/deepseek-ai/deepseek-harness/blob/ddefc45fbc7f8e46dd73185e68295696d1297887/packages/context/agent-instructions/README.md)
+- [技能目录及 YAML frontmatter 格式](https://github.com/deepseek-ai/deepseek-harness/blob/ddefc45fbc7f8e46dd73185e68295696d1297887/packages/skill/skill-filesystem/README.md)
+- [`skill` 工具及 `/name` 显式调用](https://github.com/deepseek-ai/deepseek-harness/blob/ddefc45fbc7f8e46dd73185e68295696d1297887/packages/skill/tool-skill/README.md)
 
 ## 原创记号
 

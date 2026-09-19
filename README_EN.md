@@ -50,7 +50,7 @@ All six seats write an original CHA pack into that model's local instruction fil
 
 ## 02 / Six Seats
 
-`GPT-6 Astra / Codex`, `Claude Code`, `Grok 4.6`, `DeepSeek v4.1`, `GLM 5.3`, and `Gemini` share the same night desk.
+`GPT-6 Astra / Codex`, `Claude Code`, `Grok 4.6`, `DeepSeek v4.1 Flash`, `GLM 5.3`, and `Gemini` share the same night desk.
 
 <div align="center">
   <img src="docs/assets/readme-noir-seats.svg" width="100%" alt="Six model seats" />
