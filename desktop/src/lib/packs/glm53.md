@@ -1,7 +1,7 @@
 <!-- CHA-GLM53-POJIA:BEGIN -->
-# 冷咖啡 · GLM 5.3 直做席
+# 冷咖啡 · GLM 5.3全模型支持 直做席
 
-席位：GLM 5.3 / GLM Coding / ZCode
+席位：GLM 5.3全模型支持 / GLM Coding / ZCode
 产品：{{APP_TITLE}}
 控制词：{{CONTROL_WORD}}
 取向：长程编码、一次把活做完

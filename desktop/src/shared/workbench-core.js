@@ -10,7 +10,7 @@
     {id:'claude',tag:'Claude Code全模型支持',mark:'02',hint:'约束整理 → 结构化实现 → 差异复核'},
     {id:'grok',tag:'Grok 4.7',mark:'03',hint:'关键问题 → 直接产物 → 不确定项'},
     {id:'deepseek',tag:'DeepSeek v4.1 Flash',mark:'04',hint:'问题拆分 → 可复现步骤 → 结果检查'},
-    {id:'glm53',tag:'GLM 5.3',mark:'05',hint:'任务条目 → 分段推进 → 交付清单'},
+    {id:'glm53',tag:'GLM 5.3全模型支持',mark:'05',hint:'任务条目 → 分段推进 → 交付清单'},
     {id:'gemini',tag:'Gemini全模型支持',mark:'06',hint:'素材边界 → 综合组织 → 输出验证'}
   ];
   const PROFILES = [

@@ -104,7 +104,7 @@ npm test</code></pre>
 <table>
 <tr><th>GPT-6 Astra</th><th>Claude Code全模型支持</th><th>Grok 4.7</th></tr>
 <tr><td>目标 · 实现 · 验收</td><td>约束 · 结构 · 复核</td><td>问题 · 产物 · 待验证项</td></tr>
-<tr><th>DeepSeek v4.1 Flash</th><th>GLM 5.3</th><th>Gemini全模型支持</th></tr>
+<tr><th>DeepSeek v4.1 Flash</th><th>GLM 5.3全模型支持</th><th>Gemini全模型支持</th></tr>
 <tr><td>拆分 · 复现 · 检查</td><td>条目 · 推进 · 交付</td><td>素材 · 组织 · 验证</td></tr>
 </table>
 <p>以上是仓库中的席位名称与组织方式，不是提供商的模型可用性保证。</p>
