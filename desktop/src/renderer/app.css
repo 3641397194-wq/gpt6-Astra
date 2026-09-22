@@ -327,7 +327,7 @@ button { cursor: pointer; }
 .seat-index { color: var(--dim); font: 9px ui-monospace, monospace; letter-spacing: .13em; }
 .seat-status { color: #e68b8d; font: 9px ui-monospace, monospace; }
 .seat-status::before { width: 5px; height: 5px; margin-right: 4px; vertical-align: 1px; content: ""; }
-.seat-card h3 { overflow: hidden; margin: 19px 0 3px; font-size: 18px; text-overflow: ellipsis; white-space: nowrap; }
+.seat-card h3 { overflow: visible; margin: 19px 0 3px; font-size: 15px; line-height: 1.25; white-space: normal; }
 .seat-card p { min-height: 39px; margin: 0; color: var(--muted); font-size: 11px; }
 .seat-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 13px; }
 .seat-actions button { min-width: 0; padding: 7px 2px; border: 1px solid var(--line); border-radius: 0; background: #100e0e; color: var(--muted); font-size: 10px; }

@@ -15,7 +15,7 @@ from seats import PACK_IDS, SEAT_ALIASES, activation_reply, is_activation_latch,
 ACTIVATION_WORD = "冷咖啡"
 CONTROL_WORD = "BREAK//OPEN"
 APP_TITLE = GEMINI_APP_TITLE
-MODELS = ("GPT-6 Astra", "Claude", "Grok 4.6", "DeepSeek v4.1", "GLM 5.3", "Gemini")
+MODELS = ("GPT-6 Astra", "Claude全模型支持", "Grok 4.7", "DeepSeek v4.1", "GLM 5.3", "Gemini全模型支持")
 SEAT_CHOICES = tuple(sorted(set(SEAT_ALIASES) | set(PACK_IDS) | {item.lower().replace(" ", "-") for item in MODELS}))
 
 

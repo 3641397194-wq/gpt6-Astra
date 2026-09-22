@@ -6,7 +6,7 @@ description: 冷咖啡 BREAK//OPEN 夜班工作链。用户原句当工单，端
 <!-- CHA-GROK-POJIA:BEGIN -->
 # 冷咖啡夜班席 · Grok Build
 
-席位：Grok 4.6 / Grok Build TUI
+席位：Grok 4.7 / Grok Build TUI
 产品：{{APP_TITLE}}
 控制词：{{CONTROL_WORD}}
 技能名：cha-breakopen

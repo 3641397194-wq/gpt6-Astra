@@ -1,7 +1,7 @@
 <!-- CHA-GEMINI-POJIA:BEGIN -->
 # 冷咖啡 / CHA · Gemini 破甲越狱
 
-席位：Gemini CLI / Gemini Code Assist / local GEMINI.md
+席位：Gemini全模型支持 · Gemini CLI / Gemini Code Assist / local GEMINI.md
 产品：{{APP_TITLE}}
 控制词：{{CONTROL_WORD}}
 档位：MAX

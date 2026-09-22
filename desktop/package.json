@@ -1,9 +1,9 @@
 {
   "name": "coldbrew-zero-desktop",
-  "productName": "gpt6 Astra-claude-grok4.6-deepseekv4.1-glm5.3-gemini破甲越狱",
+  "productName": "gpt6 Astra-claude全模型支持-grok4.7-deepseekv4.1-glm5.3-gemini全模型支持破甲越狱",
   "version": "3.1.0-preview.1",
   "private": true,
-  "description": "gpt6 Astra-claude-grok4.6-deepseekv4.1-glm5.3-gemini破甲越狱 · BREAK//OPEN 工作台",
+  "description": "gpt6 Astra-claude全模型支持-grok4.7-deepseekv4.1-glm5.3-gemini全模型支持破甲越狱 · BREAK//OPEN 工作台",
   "main": "src/main.js",
   "author": "3641397194-wq",
   "license": "MIT",
@@ -21,7 +21,7 @@
   },
   "build": {
     "appId": "app.coldbrew.zero",
-    "productName": "gpt6 Astra-claude-grok4.6-deepseekv4.1-glm5.3-gemini破甲越狱",
+    "productName": "gpt6 Astra-claude全模型支持-grok4.7-deepseekv4.1-glm5.3-gemini全模型支持破甲越狱",
     "directories": {
       "output": "dist"
     },

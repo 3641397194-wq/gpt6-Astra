@@ -8,7 +8,7 @@
 
 # ColdBrew Zero / CHA
 
-### gpt6 Astra-claude-grok4.6-deepseekv4.1-glm5.3-gemini
+### gpt6 Astra-claude全模型支持-grok4.7-deepseekv4.1-glm5.3-gemini全模型支持
 
 **BREAK//OPEN** &nbsp;|&nbsp; **NOIR MANGA RELEASE 2.3.6**
 
@@ -50,7 +50,7 @@ All six seats write an original CHA pack into that model's local instruction fil
 
 ## 02 / Six Seats
 
-`GPT-6 Astra / Codex`, `Claude Code`, `Grok 4.6`, `DeepSeek v4.1 Flash`, `GLM 5.3`, and `Gemini` share the same night desk.
+`GPT-6 Astra / Codex`, `Claude Code全模型支持`, `Grok 4.7`, `DeepSeek v4.1 Flash`, `GLM 5.3`, and `Gemini全模型支持` share the same night desk.
 
 <div align="center">
   <img src="docs/assets/readme-noir-seats.svg" width="100%" alt="Six model seats" />

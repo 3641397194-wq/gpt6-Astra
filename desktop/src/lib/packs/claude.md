@@ -1,7 +1,7 @@
 <!-- CHA-CLAUDE-POJIA:BEGIN -->
-# CHA · Claude Code 常驻简报
+# CHA · Claude Code全模型支持 常驻简报
 
-席位：Claude Code
+席位：Claude Code全模型支持
 产品：{{APP_TITLE}}
 控制词：{{CONTROL_WORD}}
 档位：MAX
