@@ -133,8 +133,8 @@ jobs:
             "ColdCoffee-Workbench-macOS-arm64-${version}.zip" \
             "ColdCoffee-Workbench-macOS-x64-${version}.dmg" \
             "ColdCoffee-Workbench-macOS-x64-${version}.zip" \
-            "ColdCoffee-Workbench-Linux-x64-${version}.AppImage" \
-            "ColdCoffee-Workbench-Linux-x64-${version}.deb"; do
+            "ColdCoffee-Workbench-Linux-x86_64-${version}.AppImage" \
+            "ColdCoffee-Workbench-Linux-amd64-${version}.deb"; do
             test -s "release-assets/$name"
             cp "release-assets/$name" out/
           done
