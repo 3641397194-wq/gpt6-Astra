@@ -18,8 +18,10 @@ const { RelayAdapter } = require("./lib/relay-adapter");
 const relayAdapter = new RelayAdapter();
 const { assertTrustedSender, protectWindow } = require("./lib/window-security");
 const WORKBENCH_ENTRY = path.join(__dirname, "workbench", "index.html");
-const { ToolboxEngine } = require("./lib/toolbox/engine");
-const { runAgent } = require("./lib/toolbox/agent");
+// electron-builder places extraResources outside app.asar on every platform.
+const TOOLBOX_ROOT = app.isPackaged ? path.join(process.resourcesPath, "toolbox") : path.join(__dirname, "lib", "toolbox");
+const { ToolboxEngine } = require(path.join(TOOLBOX_ROOT, "engine.js"));
+const { runAgent } = require(path.join(TOOLBOX_ROOT, "agent.js"));
 let originalToolbox;
 function getOriginalToolbox() {
   const workspaceArg = process.argv.find(value => value.startsWith("--toolbox-workspace="));
@@ -284,13 +286,13 @@ handleTrusted("coldbrew:original-toolbox", async (_event, action, payload = {}) 
       env: { ELECTRON_RUN_AS_NODE: "1" },
     } } };
   }
-  if (action === "skill") return fs.readFileSync(path.join(__dirname, "lib", "toolbox", "SKILL.md"), "utf8");
+  if (action === "skill") return fs.readFileSync(path.join(TOOLBOX_ROOT, "SKILL.md"), "utf8");
   if (action === "export-skill" || action === "export-task") {
     const task = action === "export-task" ? engine.get(payload.id) : null;
     const fileName = task ? `coldcoffee-${task.id}.json` : "coldcoffee-toolbox-SKILL.md";
     const result = await dialog.showSaveDialog(mainWindow, { title: task ? "导出实际运行结果" : "导出原创工具 skill", defaultPath: path.join(engine.workspace, fileName) });
     if (result.canceled || !result.filePath) return { canceled: true };
-    const text = task ? JSON.stringify(task, null, 2) : fs.readFileSync(path.join(__dirname, "lib", "toolbox", "SKILL.md"), "utf8");
+    const text = task ? JSON.stringify(task, null, 2) : fs.readFileSync(path.join(TOOLBOX_ROOT, "SKILL.md"), "utf8");
     fs.writeFileSync(result.filePath, text, "utf8");
     return { file: result.filePath };
   }

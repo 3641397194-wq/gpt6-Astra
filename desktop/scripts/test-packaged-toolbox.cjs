@@ -28,6 +28,8 @@ assert.equal(version, fs.readFileSync(path.join(root, '..', 'VERSION'), 'utf8').
 for (const name of ['agent.js', 'binary.js', 'common.js', 'engine.js', 'ida.js', 'mcp.js', 'network.js', 'registry.js', 'SKILL.md']) {
   assert.ok(fs.existsSync(path.join(resources, 'toolbox', name)), 'MCP resource: ' + name);
 }
+assert.equal(typeof require(path.join(resources, 'toolbox', 'engine.js')).ToolboxEngine, 'function');
+assert.equal(typeof require(path.join(resources, 'toolbox', 'agent.js')).runAgent, 'function');
 const forbidden = /(?:^|[/\\])(?:auth\.json|credentials\.json|\.env(?:\.[^/\\]+)?|[^/\\]*\.bak-[^/\\]*|[^/\\]*\.(?:log|dmp|pem|pfx|p12|key)|[^/\\]*\.test\.js|seat-selftest\.js)$/i;
 for (const name of asar.listPackage(archive)) assert.ok(!forbidden.test(name), 'excluded private/test file: ' + name);
 function walk(dir) {

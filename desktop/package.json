@@ -42,6 +42,7 @@
       "src/**/*",
       "assets/**/*",
       "package.json",
+      "!src/lib/toolbox/**",
       "!src/**/*.test.js",
       "!src/**/seat-selftest.js",
       "!assets/icon-source.jpg",
