@@ -13,6 +13,12 @@ contextBridge.exposeInMainWorld("coldbrew", {
   gemini: (verb, payload) => ipcRenderer.invoke("coldbrew:gemini", verb, payload),
   seat: (seatId, verb, payload) => ipcRenderer.invoke("coldbrew:seat", seatId, verb, payload),
   toolbox: (payload) => ipcRenderer.invoke("coldbrew:toolbox", payload),
+  originalToolbox: (action, payload) => ipcRenderer.invoke("coldbrew:original-toolbox", action, payload),
+  onOriginalToolbox: (fn) => {
+    const listener = (_event, entry) => fn(entry);
+    ipcRenderer.on("coldbrew:original-toolbox-event", listener);
+    return () => ipcRenderer.removeListener("coldbrew:original-toolbox-event", listener);
+  },
   toolsHealth: (payload) => ipcRenderer.invoke("coldbrew:tools-health", payload),
   workflowTemplates: () => ipcRenderer.invoke("coldbrew:workflow-templates"),
   workflows: () => ipcRenderer.invoke("coldbrew:workflows"),

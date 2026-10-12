@@ -27,6 +27,47 @@
 .form-submit-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.relay-submit{color:#f2c5bc;border-color:#8f4b55;background:#241117;font-size:11px;padding:10px 14px;border-radius:1px}.relay-submit:hover{background:#3a1720;border-color:#dc6870}.relay-submit:disabled{opacity:.45}.relay-submit span{margin-left:10px}@media(max-width:600px){.form-submit-actions{width:100%;display:grid;grid-template-columns:1fr}.form-submit-actions button{width:100%}.form-footer{align-items:stretch;flex-direction:column}.form-footer>label{justify-content:space-between}}
 
 .tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}.tool-card p{font-size:13px}.tool-actions{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}.tool-notes{margin:0 0 12px;padding-left:18px;color:#d7c4c8;font:12px/1.7 Consolas,monospace;overflow-wrap:anywhere}.tool-notes:empty{display:none}.mcp-url{margin:8px 0 0;font:12px/1.5 Consolas,monospace;color:#f0d2c8;overflow-wrap:anywhere}#ida-mcp-clients{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin:0;padding:0;list-style:none}#ida-mcp-clients li{padding:8px 0;border-bottom:1px solid #30272d}@media(max-width:1100px){.tool-grid,#ida-mcp-clients{grid-template-columns:1fr}}
+.pentest-desk{margin:0 0 22px;padding:18px 20px 16px;background:#141214;border:1px solid #51343c;border-left:4px solid #e53543;box-shadow:4px 4px 0 #0005}
+.pentest-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.pentest-head h2{margin:6px 0 4px;font-size:22px;letter-spacing:1px}
+.pentest-head p{margin:0;font-size:12px;max-width:640px}
+.pentest-status{display:grid;justify-items:end;gap:6px;min-width:108px}
+.pentest-status b{display:inline-block;min-width:72px;text-align:center;padding:6px 10px;border:1px solid #6d4048;background:#1b1216;color:#d7b4b6;font-size:12px;letter-spacing:2px}
+.pentest-desk[data-state="armed"] .pentest-status b{color:#f7efe8;background:#c92537;border-color:#f07a84;box-shadow:0 0 16px #e5354344}
+.pentest-status span{font:10px Consolas,monospace;color:#9d8c90}
+.pentest-lanes{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 12px}
+.pentest-lanes button{font-size:12px;padding:7px 12px}
+.pentest-lanes button.on{background:#3a1820;border-color:#e53543;color:#ffe8e2}
+.pentest-lane{display:none}
+.pentest-lane.on{display:block}
+.pentest-split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pentest-form{display:grid;grid-template-columns:1fr 1.2fr 1.4fr auto;gap:8px;align-items:center}
+.pentest-form-find{grid-template-columns:1.2fr 92px 1fr 1fr auto}
+.pentest-list{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.pentest-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;background:#0e0b0e;border:1px solid #3a2c33}
+.pentest-list strong{display:block;color:#f0e6df;font-size:13px}
+.pentest-list span,.pentest-list small{color:#b7a6aa;font-size:11px}
+.pentest-list button{font-size:10px;padding:4px 8px}
+.pentest-empty{color:#9d8e94;font-size:12px;padding:8px 0}
+.pentest-sheet-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.pentest-sheet-bar span{font-size:11px;color:#b7a6aa}
+#pentest-sheet{min-height:220px;max-height:360px;overflow:auto;margin:0;padding:14px;background:#0b090c;border:1px solid #3a2c33;color:#e6d9d4}
+.nav[data-page="toolbox"].pentest-live{box-shadow:inset 3px 0 #e53543}
+.re-desk{margin:0 0 22px;padding:18px 20px 16px;background:#141214;border:1px solid #51343c;border-left:4px solid #e53543;box-shadow:4px 4px 0 #0005}
+.re-pick{display:inline-flex;align-items:center;gap:10px;margin:12px 0 4px;font-size:12px;color:#d7c4c8}
+.re-pick input{width:auto;font-size:12px}
+#re-out{min-height:180px;max-height:360px;overflow:auto;margin:8px 0 0;padding:14px;background:#0b090c;border:1px solid #3a2c33;color:#e6d9d4;white-space:pre-wrap}
+.pentest-roster,.pentest-skills{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.roster-card,.skill-card{padding:12px 14px;background:#0e0b0e;border:1px solid #3a2c33;text-align:left}
+.roster-card{cursor:pointer;width:100%}
+.roster-card:hover,.skill-card:hover{border-color:#a4565b}
+.roster-card b,.skill-card b{display:block;color:#f0e6df;font-size:14px}
+.roster-card small,.skill-card small{display:block;margin-top:3px;color:#e45762;font:10px Consolas,monospace}
+.roster-card span,.skill-card p{display:block;margin:6px 0 0;color:#cbb8bc;font-size:12px;line-height:1.6}
+.skill-card p{margin:8px 0}
+.skill-card button{font-size:11px}
+@media(max-width:900px){.pentest-roster,.pentest-skills{grid-template-columns:1fr}}
+@media(max-width:900px){.pentest-split,.pentest-form,.pentest-form-find{grid-template-columns:1fr}.pentest-head{display:block}.pentest-status{justify-items:start;margin-top:12px}}
 
 .seat{display:flex;flex-direction:column;align-items:stretch;gap:2px;text-align:left}.seat-line{display:flex;align-items:center;gap:10px;width:100%;min-width:0}.seat-line .mark{flex:none}.seat.selected .seat-line:after{content:'';width:5px;height:5px;background:var(--accent);border-radius:50%;margin-left:auto;flex:none}.seat.selected:after{content:none}.seat-place{color:#b7a4a8;font-size:10px;line-height:1.35;padding-left:22px}
 

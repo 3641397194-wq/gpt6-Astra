@@ -17,4 +17,12 @@ npm start
 npm run pack:win
 ```
 
-品牌启动词是 `冷咖啡`，控制词是 `BREAK//OPEN`，当前版本为 `2.3.6`。 DeepSeek 席位已升到 V4.1 短刻度破甲。启动词 `冷咖啡` 会先打出两个 QQ 群号，再打出激活页。工单先口语归一再全自动打到 80 条小类三拍。
+品牌启动词是 `冷咖啡`，控制词是 `BREAK//OPEN`，当前版本为 `3.2.0-preview.1`。 DeepSeek 席位已升到 V4.1 短刻度破甲。启动词 `冷咖啡` 会先打出两个 QQ 群号，再打出激活页。工单先口语归一再全自动打到 80 条小类三拍。
+
+## 原创工具箱 1.0
+
+左侧工具箱现已集成原创网络、网站、文件和文本程序，以及 AI 工具反馈循环与 MCP。使用和验收范围见 [原创工具箱说明](../docs/original-toolbox.md)。运行 `npm run test:toolbox` 验证工具，运行 `npm run test:toolbox:ui` 验证桌面界面。
+
+## 三系统发布
+
+GitHub Actions 在原生 Windows、macOS arm64 / x64、Linux x64 环境中执行检查、构建及打包版 UI 测试。安装包仅在全部平台通过后公开到 GitHub Releases，附带 SHA256SUMS.txt。macOS 包未做 Apple Developer 签名和公证，首次打开按系统提示确认。

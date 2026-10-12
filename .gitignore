@@ -31,3 +31,9 @@ auth.json
 credentials.json
 *.log
 *.dmp
+
+# Original toolbox fixtures and transient run artifacts
+desktop/work/
+
+# Local editor backups never enter a release
+*.bak-*
