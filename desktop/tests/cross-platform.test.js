@@ -12,7 +12,7 @@ const idaMcp = require("../src/lib/ida-mcp");
 const seatRuntime = require("../src/lib/seat-runtime");
 
 test("macOS and Linux use native data directories for directory detection", () => {
-  const home = path.join(os.tmpdir(), "coldbrew-cross-platform-home");
+  const home = path.join(fs.realpathSync(os.tmpdir()), "coldbrew-cross-platform-home");
   assert.equal(detectDataHome({ home, env: {}, platform: "darwin" }), path.join(home, "Library", "Application Support"));
   assert.equal(detectDataHome({ home, env: {}, platform: "linux" }), path.join(home, ".local", "share"));
   assert.equal(detectDataHome({ home, env: { XDG_DATA_HOME: "/xdg-data" }, platform: "linux" }), "/xdg-data");
@@ -24,7 +24,7 @@ test("macOS and Linux use native data directories for directory detection", () =
 });
 
 test("IDA plugin target follows the host platform", () => {
-  const home = path.join(os.tmpdir(), "coldbrew-ida-home");
+  const home = path.join(fs.realpathSync(os.tmpdir()), "coldbrew-ida-home");
   const mac = idaToolbox.resolveTarget({ home, env: {}, platform: "darwin" });
   assert.equal(mac.target, path.join(home, "Library", "Application Support", "Hex-Rays", "IDA Pro", "plugins"));
   assert.equal(mac.targetSource, "macOS 用户目录");
@@ -37,7 +37,7 @@ test("IDA plugin target follows the host platform", () => {
 });
 
 test("IDAUSR path lists and MCP package paths work on Unix", () => {
-  const home = path.join(os.tmpdir(), "coldbrew-idausr-home");
+  const home = path.join(fs.realpathSync(os.tmpdir()), "coldbrew-idausr-home");
   const mac = idaToolbox.resolveTarget({ home, env: { IDAUSR: "/Users/fixture/ida-one:/Users/fixture/ida-two" }, platform: "darwin" });
   assert.match(mac.target, /ida-one[\\/]plugins$/);
   const tilde = idaToolbox.resolveTarget({ home, env: { IDAUSR: "~/ida-user" }, platform: "darwin" });
@@ -50,7 +50,7 @@ test("IDAUSR path lists and MCP package paths work on Unix", () => {
 });
 
 test("IDA MCP package installation keeps platform-specific package root", () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "coldbrew-mcp-package-"));
+  const root = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), "coldbrew-mcp-package-"));
   const packageDir = path.join(root, "Library", "Application Support", "gpt6-Astra", "ida-pro-mcp");
   const source = path.join(packageDir, "ida_pro_mcp");
   fs.mkdirSync(path.join(source, "ida_mcp"), { recursive: true });

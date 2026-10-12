@@ -80,7 +80,7 @@ function main() {
     }
   }
 
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cha-seats-"));
+  const root = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), "cha-seats-"));
   try {
     for (const id of PACK_IDS) {
       const home = id === "cursor" ? path.join(root, ".cursor") : id === "mimo" ? path.join(root, ".config", "mimocode") : id === "kimi" ? path.join(root, ".kimi-code") : path.join(root, id);

@@ -9,7 +9,7 @@ const { detectDirectory } = require('../src/lib/detect-directory');
 const runtime = require('../src/lib/seat-runtime');
 
 test('scan reports each seat without creating directories', () => {
-  const missing = path.join(os.tmpdir(), 'cc-newbie-missing-' + process.pid);
+  const missing = path.join(fs.realpathSync(os.tmpdir()), 'cc-newbie-missing-' + process.pid);
   const rows = scanAll({
     seats: ['codex', 'claude'],
     detect(seat) {
@@ -27,7 +27,7 @@ test('scan reports each seat without creating directories', () => {
 });
 
 test('install writes once, verifies, and refuses a click that was not confirmed', () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cc-newbie-'));
+  const root = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'cc-newbie-'));
   const detect = () => ({ root, exists: true, source: 'test', layout: 'default' });
   assert.throws(() => installOne('codex', { confirm: false, detect }), /一键破甲/);
   const first = installOne('codex', { confirm: true, detect });
@@ -44,7 +44,7 @@ test('install writes once, verifies, and refuses a click that was not confirmed'
 });
 
 test('cursor install lands in a directory named .cursor', () => {
-  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'cc-cursor-'));
+  const base = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'cc-cursor-'));
   try {
     const install = path.join(base, 'E', 'cursor');
     const roaming = path.join(base, 'Roaming', 'Cursor');
@@ -80,7 +80,7 @@ test('cursor install lands in a directory named .cursor', () => {
 });
 
 test('mimo install lands in .config/mimocode and skips npm', () => {
-  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'cc-mimo-'));
+  const base = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'cc-mimo-'));
   try {
     const user = path.join(base, '.config', 'mimocode');
     const data = path.join(base, '.local', 'share', 'mimocode');
@@ -120,7 +120,7 @@ test('mimo install lands in .config/mimocode and skips npm', () => {
 });
 
 test('kimi k3 install lands in .kimi-code skills and skips config', () => {
-  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'cc-kimi-'));
+  const base = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'cc-kimi-'));
   try {
     const user = path.join(base, '.kimi-code');
     const agents = path.join(base, '.agents', 'skills');
@@ -170,7 +170,7 @@ test('kimi k3 install lands in .kimi-code skills and skips config', () => {
 });
 
 test('uninstall restores the backup and drops the toolbox hook', () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cc-undo-'));
+  const root = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'cc-undo-'));
   const agents = path.join(root, 'AGENTS.md');
   fs.writeFileSync(agents, 'keep-me\n');
   fs.writeFileSync(path.join(root, 'config.toml'), 'model = "keep"\n');
@@ -197,7 +197,7 @@ test('uninstall restores the backup and drops the toolbox hook', () => {
 });
 
 test('cursor uninstall removes the rule and the mcp entry only', () => {
-  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'cc-undo-cursor-'));
+  const base = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'cc-undo-cursor-'));
   const user = path.join(base, '.cursor');
   fs.mkdirSync(user);
   const detect = () => ({ root: user, exists: true, source: 'test', layout: 'default' });
@@ -218,7 +218,7 @@ test('cursor uninstall removes the rule and the mcp entry only', () => {
 });
 
 test('launcher lookup only returns matching shortcuts', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cc-lnk-'));
+  const dir = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'cc-lnk-'));
   fs.writeFileSync(path.join(dir, 'Codex.lnk'), '');
   fs.writeFileSync(path.join(dir, 'Cursor.lnk'), '');
   fs.writeFileSync(path.join(dir, '冷咖啡破甲工作台.lnk'), '');
