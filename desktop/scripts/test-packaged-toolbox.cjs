@@ -39,6 +39,7 @@ function walk(dir) {
 }
 walk(resources);
 const env = { ...process.env, COLDCOFFEE_APP_EXECUTABLE: executable, COLDCOFFEE_UI_OUTPUT: path.join(root, 'work', 'packaged-ui') };
+if (process.env.CI) env.DEBUG = 'pw:browser';
 delete env.ELECTRON_RUN_AS_NODE;
 if (process.platform === 'win32') env.COLDCOFFEE_SIMULATE_PORTABLE = '1';
 if (process.platform === 'linux') env.COLDCOFFEE_UI_NO_SANDBOX = '1'; // CI launcher only; application defaults stay unchanged.

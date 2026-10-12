@@ -11,12 +11,13 @@ const { digest } = require('../src/lib/toolbox/common');
   if (packaged && process.env.COLDCOFFEE_SIMULATE_PORTABLE === '1') env.PORTABLE_EXECUTABLE_FILE = packaged;
   let app, modelServer;
   try {
-    app = await electron.launch({ executablePath: packaged || require('electron'), args: [...(process.env.COLDCOFFEE_UI_NO_SANDBOX === '1' ? ['--no-sandbox'] : []), ...(packaged ? [] : [root]), '--toolbox', '--toolbox-workspace=' + data], env, timeout: 30000 });
+    const loader = path.join(path.dirname(require.resolve('playwright-core/package.json')), 'lib/server/electron/loader.js');
+    app = await electron.launch({ executablePath: packaged || require('electron'), args: ['-r', loader, '--enable-logging=stderr', ...(process.env.COLDCOFFEE_UI_NO_SANDBOX === '1' ? ['--no-sandbox'] : []), ...(packaged ? [] : [root]), '--toolbox', '--toolbox-workspace=' + data], env, timeout: 60000 });
     let launchLog = ''; app.process().stderr?.on('data', data => { launchLog = (launchLog + data.toString()).slice(-6000); });
     let page; for (let i = 0; i < 600 && !page; i++) { page = app.windows().find(p => p.url().includes('/workbench/index.html')); if (!page) await new Promise(r => setTimeout(r, 100)); }
     if (!page) {
-      const windows = await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().map(w => ({ url: w.webContents.getURL(), loading: w.webContents.isLoading(), crashed: w.webContents.isCrashed() })));
-      throw new Error('Workbench window missing: ' + JSON.stringify(windows) + '\n' + launchLog);
+      const state = await app.evaluate(({ app, BrowserWindow }) => ({ ready: app.isReady(), appPath: app.getAppPath(), argv: process.argv, windows: BrowserWindow.getAllWindows().map(w => ({ url: w.webContents.getURL(), loading: w.webContents.isLoading(), crashed: w.webContents.isCrashed() })) }));
+      throw new Error('Workbench window missing: ' + JSON.stringify(state) + '\n' + launchLog);
     }
     const errors = []; page.on('pageerror', e => errors.push(e.message));
     await page.waitForSelector('#cc-ready.ready'); await page.waitForSelector('#page-toolbox.active'); assert.match(await page.locator('#cc-ready').textContent(), /16 项原创工具/);
