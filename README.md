@@ -112,5 +112,11 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <tr><td align="center"><a href="docs/assets/qq-group-1-card.png"><img src="docs/assets/qq-group-1-card.png" width="220" alt="QQ 交流群二维码" /></a></td><td align="center"><a href="docs/assets/qq-group-2-card.png"><img src="docs/assets/qq-group-2-card.png" width="220" alt="QQ 专题群二维码" /></a></td><td align="center"><a href="docs/assets/qq-group-3-card.png"><img src="docs/assets/qq-group-3-card.png" width="220" alt="Cool coffeeAI 交流群二维码" /></a></td></tr>
 <tr><td align="center"><code>1057540028</code></td><td align="center"><code>1077074552</code></td><td align="center"><code>618179023</code></td></tr>
 </table>
+<h3 align="center">Telegram</h3>
+<p align="center">聊天群和频道。用法和售后也可以在这边问。</p>
+<table>
+<tr><th>聊天群</th><th>频道</th></tr>
+<tr><td align="center"><a href="https://t.me/chachachachalkf"><code>t.me/chachachachalkf</code></a></td><td align="center"><a href="https://t.me/chachachalkf"><code>t.me/chachachalkf</code></a></td></tr>
+</table>
 <hr />
 <p align="center"><strong>冷咖啡</strong> · 把想法做出来，把作品留下来。</p>

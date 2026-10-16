@@ -88,6 +88,12 @@ IDA user plugins resolve to `%APPDATA%\\Hex-Rays\\IDA Pro\\plugins` on Windows, 
   Scan to join: <strong>QQ discussion</strong> <code>1057540028</code> &nbsp;|&nbsp; <strong>QQ topic</strong> <code>1077074552</code> &nbsp;|&nbsp; <strong>Cool coffeeAI</strong> <code>618179023</code>
 </p>
 
+<p align="center">
+  <strong>Telegram chat</strong> <a href="https://t.me/chachachachalkf"><code>t.me/chachachachalkf</code></a>
+  &nbsp;|&nbsp;
+  <strong>Telegram channel</strong> <a href="https://t.me/chachachalkf"><code>t.me/chachachalkf</code></a>
+</p>
+
 ---
 
 <div align="center">
