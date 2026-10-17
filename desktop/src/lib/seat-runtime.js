@@ -5,6 +5,7 @@ const { renderPack, renderRouteSkill, renderLeafSkill, leafIds, markers, seatMet
 const { cursorConfigDir, assertCursorUserDir } = require("./cursor-home");
 const { mimoConfigDir, assertMimoUserDir } = require("./mimo-home");
 const { kimiCodeHome, assertKimiUserDir } = require("./kimi-home");
+const { deepseekHarnessHome } = require("./deepseek-home");
 
 function homeOf(envKeys, folder) {
   for (const key of envKeys) {
@@ -25,14 +26,6 @@ function realpathOrSelf(target) {
   } catch {
     return target;
   }
-}
-
-function deepseekHarnessHome() {
-  const configured = process.env.DSH_HOME?.trim();
-  if (!configured) return path.join(os.homedir(), '.dsh');
-  if (configured === '~') return os.homedir();
-  if (configured.startsWith('~/') || configured.startsWith('~\\')) return path.join(os.homedir(), configured.slice(2));
-  return path.resolve(configured);
 }
 
 function deepseekHarnessLoader(begin, end) {
@@ -168,7 +161,9 @@ function extraHomes(overrideHome) {
 function plan(seatId, overrideHome) {
   const homes = seatHomes();
   const extra = extraHomes(overrideHome);
-  const home = overrideHome ? path.resolve(String(overrideHome)) : homes[seatId];
+  const home = seatId === "deepseek"
+    ? deepseekHarnessHome({ override: overrideHome == null ? undefined : String(overrideHome) })
+    : overrideHome ? path.resolve(String(overrideHome)) : homes[seatId];
   const { begin, end } = markers(seatId);
   const pack = renderPack(seatId);
   const meta = seatMeta(seatId);

@@ -9,7 +9,7 @@
 | GPT-6 Astra全模型支持 / Codex | `~/.codex/prompts/cha-codex.md` + `config.toml` 的 `model_instructions_file` + `~/.codex/AGENTS.md` | [xsser/codex-jailbreak-guide](https://github.com/xsser/codex-jailbreak-guide)，[Calrton/jailbreak-prompts](https://github.com/Calrton/jailbreak-prompts) |
 | Claude Code全模型支持 | `~/.claude/CLAUDE.md` + `~/.claude/rules/cha-breakopen.md` | [Claude Code memory](https://code.claude.com/docs/en/memory) |
 | Grok 4.7 | `~/.grok/AGENTS.md` + `rules/cha-breakopen.md` + `skills/cha-breakopen/SKILL.md` | [xai-org/grok-build](https://github.com/xai-org/grok-build)，AGENTS.md 惯例 |
-| DeepSeek v4.1 Flash | `$DSH_HOME/AGENTS.md` 加载入口 + `$DSH_HOME/skills/cha-deepseek/SKILL.md` 完整原包；默认 `~/.dsh` | [DeepSeek 官方 Harness](https://github.com/deepseek-ai/deepseek-harness)：按官方全局指令与技能加载合同安装。原包正文保持原样，模型版本在 Harness 内选择 |
+| DeepSeek v4.1 Flash 10.17版本 | `$DSH_HOME/AGENTS.md` 加载入口 + `$DSH_HOME/skills/cha-deepseek/SKILL.md` 完整原包；默认 `~/.dsh` | [DeepSeek 官方 Harness](https://github.com/deepseek-ai/deepseek-harness)：按官方全局指令与技能加载合同安装。原包正文保持原样，模型版本在 Harness 内选择 |
 | GLM 5.3全模型支持 | `~/.glm/GLM.md` + `~/.zcode/AGENTS.md` | GLM Coding / ZCode 走 AGENTS.md 记忆层 |
 | Gemini全模型支持 | `~/.gemini/GEMINI.md` + `settings.json` 的 `context.fileName` | 本仓既有 Gemini 席位 |
 | Cursor | `%USERPROFILE%\.cursor\rules\cha-cursor.mdc`（YAML 头含 `alwaysApply: true`）+ `%USERPROFILE%\.cursor\skills\cha-cursor\SKILL.md`。不写安装目录，不写 `%APPDATA%\Cursor`，不写 `skills-cursor`，不写普通 `.md` 规则 | Cursor 用户规则目录 `~/.cursor/rules/*.mdc` |
@@ -18,18 +18,23 @@
 
 ### DeepSeek 官方 Harness 安装说明
 
-DeepSeek 席位现在面向 `deepseek-ai/deepseek-harness`（命令 `dsh`）。自动定位使用 `DSH_HOME`，未设置时采用 `~/.dsh`。手动选择时应选择 Harness 配置根目录；自定义目录还应与 Harness 的 `DSH_HOME` 或 `dshHome` 配置一致。旧的 `DEEPSEEK_HOME`、`.deepseek`、Hermes 目录不会再作为自动安装目标。
+DeepSeek v4.1 Flash 10.17版本 席位面向 10.17 版 `deepseek-ai/deepseek-harness` `0.2.1-rc.2`（命令 `dsh`），适配覆盖 Windows、macOS、Linux。自动定位使用 `DSH_HOME`，未设置或仅含空白时采用 `~/.dsh`。手动选择时应选择 Harness 配置根目录，并在启动 Harness 时设置相同的 `DSH_HOME`；新版 `agent-instructions` 从进程环境读取配置根，profile 行里的 `dshHome` / `agentsHome` 字段会被忽略。`skill-filesystem` 仍接受这两个字段，自定义时需保持其 `dshHome` 与进程 `DSH_HOME` 一致。旧的 `DEEPSEEK_HOME`、`.deepseek`、Hermes 目录仍不作为自动安装目标。
 
-安装预览会列出 `AGENTS.md`、`skills/cha-deepseek/SKILL.md` 和各条原版路由技能。`AGENTS.md` 只追加带标记的短入口，完整词包按原文保存在技能文件中；这是因为官方全局指令的默认总预算为 65,536 字节，而完整原包已超过这个预算。启动官方 Harness 后，在新会话输入「冷咖啡」，入口会指引模型使用官方 `skill` 工具加载 `cha-deepseek`。也可输入 `/cha-deepseek 冷咖啡` 显式加载同一技能。
+新版 Harness 还读取共享配置根 `$DSH_AGENTS_HOME` / `~/.agents` 中的 `AGENTS.md` 与 `skills/`。本软件继续只向专用 `$DSH_HOME` / `~/.dsh` 安装，保留共享根、profile、凭据与会话文件原样；设置 `DSH_AGENTS_HOME` 不会改变本软件的 DeepSeek 安装目标。
 
-桌面端提供预览、备份写入、逐文件检查和版本恢复。文件一致仅验证安装结果；还应在 Harness 技能目录中确认 `cha-deepseek` 可见，并在真实模型会话验证加载结果。自定义 Harness profile 若关闭 `agent-instructions`、`skill-filesystem` 或 `tool-skill`，需在 Harness 中启用相应插件。既有 `.deepseek` 或 Hermes 安装的历史备份仍留在原目录，本次不迁移或删除它们。
+安装预览会列出 `AGENTS.md`、`skills/cha-deepseek/SKILL.md` 和各条原版路由技能。`AGENTS.md` 只追加带标记的短入口，完整词包按原文保存在技能文件中。新版 `agent-instructions` 要求 profile 显式提供 `maxBytes`；官方 `dsh-base` 配置为 65,536 字节，预算覆盖全局与项目指令的完整渲染消息，完整原包已超过这个预算，因此保持短入口与按需加载的分工。启动官方 Harness 后，在新会话输入「冷咖啡」，入口会指引模型使用官方 `skill` 工具加载 `cha-deepseek`。也可输入 `/cha-deepseek 冷咖啡` 显式加载同一技能。
 
-官方合同核对于 2026-09-20，参考提交 `ddefc45fbc7f8e46dd73185e68295696d1297887`：
+技能继续采用扫描根下的一级目录 `skills/<name>/SKILL.md`，YAML frontmatter 含 `name` 与 `description`；`name` 使用 kebab-case。`disable-model-invocation` / `user-invocable` 省略时，模型加载和用户显式调用均默认启用。更深层的嵌套 `**/SKILL.md` 不属于默认发现范围。
 
-- [配置根目录：`DSH_HOME` / `~/.dsh`](https://github.com/deepseek-ai/deepseek-harness/blob/ddefc45fbc7f8e46dd73185e68295696d1297887/packages/util/home-paths/src/index.ts)
-- [全局 `AGENTS.md` 与默认字节预算](https://github.com/deepseek-ai/deepseek-harness/blob/ddefc45fbc7f8e46dd73185e68295696d1297887/packages/context/agent-instructions/README.md)
-- [技能目录及 YAML frontmatter 格式](https://github.com/deepseek-ai/deepseek-harness/blob/ddefc45fbc7f8e46dd73185e68295696d1297887/packages/skill/skill-filesystem/README.md)
-- [`skill` 工具及 `/name` 显式调用](https://github.com/deepseek-ai/deepseek-harness/blob/ddefc45fbc7f8e46dd73185e68295696d1297887/packages/skill/tool-skill/README.md)
+桌面端提供预览、备份写入、逐文件检查和版本恢复。文件一致仅验证安装结果；还应在 Harness 技能目录中确认 `cha-deepseek` 可见，并在真实模型会话验证加载结果。自定义 Harness profile 若关闭 `agent-instructions`、`skill-filesystem` 或 `tool-skill`，需在 Harness 中启用相应插件；`skill-filesystem` 应保留 `includeDefaultRoots: true`（默认），或显式把安装目录的 `skills/` 加入 `customSkillDirs`。既有 `.deepseek` 或 Hermes 安装的历史备份仍留在原目录，本次不迁移或删除它们。
+
+官方合同核对于 2026-10-18，参考 2026-10-17 发布的 `0.2.1-rc.2`，提交 `687f282e8625c6b8d11ff58211a90524be2e4317`：
+
+- [专用与共享根目录：`DSH_HOME` / `DSH_AGENTS_HOME`](https://github.com/deepseek-ai/deepseek-harness/blob/687f282e8625c6b8d11ff58211a90524be2e4317/packages/util/home-paths/src/index.ts)
+- [全局 `AGENTS.md` 与 `maxBytes` 合同](https://github.com/deepseek-ai/deepseek-harness/blob/687f282e8625c6b8d11ff58211a90524be2e4317/packages/context/agent-instructions/README.md)
+- [官方 `dsh-base` 指令预算配置](https://github.com/deepseek-ai/deepseek-harness/blob/687f282e8625c6b8d11ff58211a90524be2e4317/packages/bundle/base/cordis.patch.yml#L303-L306)
+- [技能目录及 YAML frontmatter 格式](https://github.com/deepseek-ai/deepseek-harness/blob/687f282e8625c6b8d11ff58211a90524be2e4317/packages/skill/skill-filesystem/README.md)
+- [`skill` 工具及 `/name` 显式调用](https://github.com/deepseek-ai/deepseek-harness/blob/687f282e8625c6b8d11ff58211a90524be2e4317/packages/skill/tool-skill/README.md)
 
 ## 原创记号
 

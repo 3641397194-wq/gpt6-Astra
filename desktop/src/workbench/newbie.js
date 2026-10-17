@@ -11,7 +11,7 @@
   let busy = false;
   const desktop = !!window.coldbrew?.beginner;
   const DEMO = [
-    ['codex', 'Codex', 'GPT'], ['claude', 'Claude', 'Code'], ['grok', 'Grok', '4.7'], ['deepseek', 'DeepSeek', 'Harness'],
+    ['codex', 'Codex', 'GPT'], ['claude', 'Claude', 'Code'], ['grok', 'Grok', '4.7'], ['deepseek', window.ColdCoffeeCore.DEEPSEEK_LABEL, 'Harness'],
     ['glm53', 'GLM', '5.3'], ['gemini', 'Gemini', '全模型'], ['doubao', '豆包', '技能'], ['workbuddy', 'WorkBuddy', '搭档'],
     ['cursor', 'Cursor', '.cursor'], ['mimo', 'MiMo-V2.6-Pro', '.config'], ['kimi', 'Kimi K3', '.kimi-code'],
   ];

@@ -5,11 +5,12 @@
 })(typeof globalThis === 'object' ? globalThis : this, function () {
   'use strict';
   const VERSION = '3.1.0-preview.3';
+  const DEEPSEEK_LABEL = 'DeepSeek v4.1 Flash 10.17版本';
   const SEATS = [
     {id:'codex',tag:'GPT-6 Astra全模型支持',mark:'01',hint:'目标清单 → 最小实现 → 验收证据'},
     {id:'claude',tag:'Claude Code全模型支持',mark:'02',hint:'约束整理 → 结构化实现 → 差异复核'},
     {id:'grok',tag:'Grok 4.7',mark:'03',hint:'关键问题 → 直接产物 → 不确定项'},
-    {id:'deepseek',tag:'DeepSeek v4.1 Flash',mark:'04',hint:'问题拆分 → 可复现步骤 → 结果检查'},
+    {id:'deepseek',tag:DEEPSEEK_LABEL,mark:'04',hint:'问题拆分 → 可复现步骤 → 结果检查'},
     {id:'glm53',tag:'GLM 5.3全模型支持',mark:'05',hint:'任务条目 → 分段推进 → 交付清单'},
     {id:'gemini',tag:'Gemini全模型支持',mark:'06',hint:'素材边界 → 综合组织 → 输出验证'},
     {id:'doubao',tag:'豆包',mark:'07',hint:'技能落在平台用户数据目录的 .user_skills/cha-doubao，不写入自带 .skills',place:'DOUBAO_USER_SKILLS 或平台默认目录'},
@@ -84,5 +85,5 @@
     while(endA>start&&endB>start&&a[endA-1]===b[endB-1]) {endA--;endB--;}
     return {same:before===after,prefix:start,removed:a.slice(start,endA),added:b.slice(start,endB)};
   }
-  return {VERSION,SEATS,PROFILES,COMMUNITY,PRESETS,normalize,compose,evaluate,diff};
+  return {VERSION,DEEPSEEK_LABEL,SEATS,PROFILES,COMMUNITY,PRESETS,normalize,compose,evaluate,diff};
 });

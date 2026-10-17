@@ -5,6 +5,7 @@ const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const { resolveTarget } = require("./ida-toolbox");
+const { DEEPSEEK_LABEL } = require("../shared/workbench-core");
 
 const SERVER = "ida-pro-mcp";
 const URL = "http://127.0.0.1:13337/mcp";
@@ -231,7 +232,7 @@ function clients(options = {}) {
     { id: "codex", label: "Codex", kind: "toml", file: path.join(home, ".codex", "config.toml"), enabled: false },
     { id: "claude", label: "Claude Code", kind: "json", file: path.join(home, ".claude.json"), keys: ["mcpServers", SERVER], entry: { type: "http", url: URL } },
     { id: "grok", label: "Grok", kind: "toml", file: path.join(home, ".grok", "config.toml"), enabled: true },
-    { id: "deepseek", label: "DeepSeek", kind: "manual", note: "本机 .dsh 没有用户级 MCP 配置文件" },
+    { id: "deepseek", label: DEEPSEEK_LABEL, kind: "manual", note: "在 Harness 当前 profile 中配置 MCP；这里保留手动接入" },
     { id: "glm53", label: "GLM / ZCode", kind: "json", file: path.join(home, ".zcode", "cli", "config.json"), keys: ["mcp", "servers", SERVER], entry: { type: "http", url: URL, enabled: true } },
     { id: "gemini", label: "Gemini", kind: "json", file: path.join(home, ".gemini", "settings.json"), keys: ["mcpServers", SERVER], entry: { httpUrl: URL } },
     { id: "doubao", label: "豆包", kind: "manual", note: "豆包没有 mcp.json。连接器里选 HTTP，地址用下面这一条" },

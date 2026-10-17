@@ -6,12 +6,13 @@ const { detectDirectory } = require('./detect-directory');
 const { SeatTransactions } = require('./seat-transactions');
 const { PACK_IDS } = require('./seat-runtime');
 const { attachSeat, detachSeat } = require('./ida-mcp');
+const { DEEPSEEK_LABEL } = require('../shared/workbench-core');
 
 const CARDS = {
   codex: { name: 'Codex', line: 'GPT' },
   claude: { name: 'Claude', line: 'Code' },
   grok: { name: 'Grok', line: '4.7' },
-  deepseek: { name: 'DeepSeek', line: 'Harness' },
+  deepseek: { name: DEEPSEEK_LABEL, line: 'Harness' },
   glm53: { name: 'GLM', line: '5.3' },
   gemini: { name: 'Gemini', line: '全模型' },
   doubao: { name: '豆包', line: '技能' },

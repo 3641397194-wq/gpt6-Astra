@@ -83,6 +83,12 @@ jobs:
         run: |
           npx playwright install-deps chromium
           sudo apt-get install -y fakeroot
+      - name: Install headless UI test browser
+        working-directory: desktop
+        run: npx playwright install chromium
+      - name: Verify DeepSeek names and home-page layout
+        working-directory: desktop
+        run: npm run test:deepseek:ui
       - name: Build native packages
         working-directory: desktop
         env:
