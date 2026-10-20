@@ -11,6 +11,17 @@ const OUTPUT = path.resolve(__dirname, '../work/deepseek-ui');
 const LABEL = 'DeepSeek v4.1 Flash 10.17版本';
 const SIZES = [{ width: 1360, height: 1080 }, { width: 1080, height: 900 }];
 const MIME = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp' };
+// Pure renderer data: no bundled sources or customer installation are inspected.
+const CATALOG = {
+  skillCount: 94, fileCount: 700, bytes: 10 * 1024 * 1024,
+  runtime: { version: '6.7.0', nodeRange: '^22.19.0 || ^24.11.0 || >=26.0.0' },
+  sources: [
+    { id: 'rea', name: 'REA', skillCount: 5, fileCount: 101, bytes: 2 * 1024 * 1024, license: 'MIT',
+      skills: Array.from({ length: 5 }, (_, index) => ({ name: 'rea-fixture-' + index, path: 'skills/fixture-' + index + '/SKILL.md', description: '固定夹具技能' })) },
+    { id: 'reverse-skill', name: 'reverse-skill', skillCount: 89, fileCount: 599, bytes: 8 * 1024 * 1024, license: 'MIT / GPL-3.0',
+      skills: Array.from({ length: 89 }, (_, index) => ({ name: 'reverse-fixture-' + index, path: 'skills/fixture-' + index + '/SKILL.md', description: '固定夹具技能' })) },
+  ],
+};
 
 // Serve tracked assets directly through Playwright so host HTTP proxies do not
 // inject third-party scripts into the page under test. No listening port or network is needed.
@@ -51,7 +62,7 @@ async function mockDesktop(context, platform) {
     source: 'ui-fixture', layout: seat === 'deepseek' ? 'deepseek-harness' : 'default',
   }) });
   assert.equal(scan.find(row => row.seat === 'deepseek').name, LABEL);
-  await context.addInitScript(({ rows, platform }) => {
+  await context.addInitScript(({ rows, platform, catalog }) => {
     window.__deepseekUiCalls = [];
     const record = (method, action) => window.__deepseekUiCalls.push({ method, action });
     const noop = async () => null;
@@ -60,6 +71,7 @@ async function mockDesktop(context, platform) {
       beginner: async (action) => {
         record('beginner', action);
         if (action === 'scan') return rows;
+        if (action === 'catalog') return catalog;
         throw new Error('Unexpected fixture beginner action: ' + action);
       },
       transaction: async (action) => {
@@ -75,7 +87,7 @@ async function mockDesktop(context, platform) {
       onOriginalToolbox: () => () => {}, onWorkflow: () => () => {},
       relay: noop, openExternal: noop, minimize: noop, maximize: noop, close: noop,
     };
-  }, { rows: scan, platform });
+  }, { rows: scan, platform, catalog: CATALOG });
 }
 
 async function measureLabel(locator) {
@@ -145,12 +157,16 @@ async function measureLabel(locator) {
             const copy = element.cloneNode(true); copy.querySelector('.mark').remove(); return copy.textContent;
           });
           assert.equal(sidebar, LABEL, id + ': hidden sidebar label');
+          assert.equal(await page.locator('#upstream-seat option[value="deepseek"]').textContent(), LABEL, id + ': upstream seat display uses the shared label');
           assert.equal(await page.locator('#seats').getAttribute('hidden'), '');
           const status = await page.locator('#newbie-status').textContent();
           assert.ok(status.includes(test.kind === 'desktop' ? '点卡片' : '现在看的是样子'), id + ': expected render path');
           if (test.kind === 'desktop') {
+            await page.waitForFunction(() => document.getElementById('upstream-total-skills').textContent === '94');
             result.ipcCalls = await page.evaluate(() => window.__deepseekUiCalls);
-            assert.deepEqual(result.ipcCalls.filter(call => call.method === 'beginner'), [{ method: 'beginner', action: 'scan' }]);
+            assert.deepEqual(result.ipcCalls.filter(call => call.method === 'beginner'), [
+              { method: 'beginner', action: 'scan' }, { method: 'beginner', action: 'catalog' },
+            ]);
             assert.equal(result.ipcCalls.some(call => call.method === 'transaction'), false);
           }
         }

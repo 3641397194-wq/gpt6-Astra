@@ -307,6 +307,9 @@ handleTrusted("coldbrew:original-toolbox", async (_event, action, payload = {}) 
 });
 
 handleTrusted("coldbrew:beginner", async (_event, action, payload = {}) => {
+  if (action === "catalog" || action === "upstream-catalog") return require("./lib/upstream-skills").catalog();
+  if (action === "upstream-status") return beginner.statusOne(String(payload.seat || ""));
+  if (action === "upstream-prepare") return beginner.prepareOne(String(payload.seat || ""), { confirm: payload.confirm === true });
   if (action === "scan") {
     const links = beginner.collectShortcuts();
     return beginner.scanAll().map((row) => ({ ...row, launchers: row.ok ? beginner.launchersFrom(row.seat, links) : [] }));
@@ -316,17 +319,9 @@ handleTrusted("coldbrew:beginner", async (_event, action, payload = {}) => {
   if (action === "open") {
     const seat = String(payload.seat || "");
     const hit = beginner.matchLauncher(seat, payload.path);
-    let toolbox = { code: "skip" };
-    try {
-      const { detectDirectory } = require("./lib/detect-directory");
-      const found = detectDirectory(seat);
-      toolbox = require("./lib/ida-mcp").attachSeat(seat, { root: found.root, layout: found.layout || "default" });
-    } catch (error) {
-      toolbox = { code: "skip", skipped: error.message };
-    }
     const opened = await shell.openPath(hit.path);
     if (opened) throw new Error(opened);
-    return { ok: true, name: hit.name, toolbox: toolbox.code || "skip" };
+    return { ok: true, name: hit.name };
   }
   throw new Error("未知小白操作");
 });

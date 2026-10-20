@@ -4,6 +4,11 @@ contextBridge.exposeInMainWorld("coldbrew", {
   platform: process.platform,
   transaction: (action, payload) => ipcRenderer.invoke("coldbrew:transaction", action, payload),
   beginner: (action, payload) => ipcRenderer.invoke("coldbrew:beginner", action, payload),
+  upstream: Object.freeze({
+    catalog: () => ipcRenderer.invoke("coldbrew:beginner", "catalog"),
+    status: (seat) => ipcRenderer.invoke("coldbrew:beginner", "upstream-status", { seat }),
+    prepare: (seat, confirm) => ipcRenderer.invoke("coldbrew:beginner", "upstream-prepare", { seat, confirm: confirm === true }),
+  }),
   relay: (action, payload) => ipcRenderer.invoke("coldbrew:relay", action, payload),
   compose: (payload) => ipcRenderer.invoke("coldbrew:compose", payload),
   evaluate: (answer, options) => ipcRenderer.invoke("coldbrew:evaluate", answer, options),

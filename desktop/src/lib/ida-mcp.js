@@ -314,6 +314,43 @@ function detachSeat(seat, options = {}) {
   return { ok: after.installed !== true, seat, code: after.installed ? "skip" : "off", file: picked.client.file, skipped: row.skipped || "" };
 }
 
+// The one-click installer owns a selected-directory transaction. Describe this
+// connection without creating directories, backing up files, or writing outside
+// that directory; the transaction performs the actual merge and exact restore.
+function planSeatConnection(seat, options = {}) {
+  if (typeof options.root !== "string" || !path.isAbsolute(options.root)) throw new Error("请先明确选择安装目录");
+  const root = path.resolve(options.root);
+  if (seat === "grok") return { code: "manual", message: "Grok 客户端的 MCP 格式各不相同，请按所用客户端手动连接 IDA", writes: [] };
+  const picked = seatClient(seat, { ...options, env: {}, home: root }, false);
+  if (picked.code !== "ready") return { code: picked.code, message: picked.skipped || picked.client?.note || "使用客户端手动连接", writes: [] };
+  const client = picked.client;
+  const relative = path.relative(root, client.file);
+  if (!relative || relative === ".." || relative.startsWith(".." + path.sep) || path.isAbsolute(relative)) {
+    return { code: "manual", message: "此客户端的 IDA 连接位于所选目录之外，请使用单独的 MCP 连接设置", writes: [] };
+  }
+  return {
+    code: "ida", file: client.file,
+    writes: [{ kind: "ida-mcp", file: client.file, home: root, mode: client.kind, keys: client.keys, entry: client.entry, enabled: client.enabled }],
+  };
+}
+
+function patchSeatConnection(text, item) {
+  if (item.mode === "json") return require("./upstream-config").patchJson(text, item);
+  if (item.mode !== "toml") throw new Error("未知 IDA MCP 配置格式");
+  const TOML = require("smol-toml");
+  let data;
+  try { data = TOML.parse(text.replace(/^\uFEFF/, "")); }
+  catch (error) { throw new Error("IDA MCP TOML 解析失败：" + error.message); }
+  const starts = text.split(BEGIN).length - 1, ends = text.split(END).length - 1;
+  if (starts !== ends || starts > 1 || (starts && text.indexOf(END) < text.indexOf(BEGIN))) throw new Error("IDA MCP 配置标记损坏或重复");
+  // An existing unmarked entry belongs to the customer; keep it byte-for-byte.
+  if (!starts && data.mcp_servers && Object.hasOwn(data.mcp_servers, SERVER)) return text;
+  const result = upsertToml(text, item.enabled);
+  try { TOML.parse(result.replace(/^\uFEFF/, "")); }
+  catch (error) { throw new Error("合并后的 IDA MCP TOML 校验失败：" + error.message); }
+  return result;
+}
+
 function tomlBlock(enabled) {
   const lines = [BEGIN, `[mcp_servers.${SERVER}]`, `url = "${URL}"`];
   if (enabled) lines.push("enabled = true");
@@ -555,6 +592,8 @@ module.exports = {
   status,
   attachSeat,
   detachSeat,
+  planSeatConnection,
+  patchSeatConnection,
   installClients,
   uninstallClients,
   installPackage,

@@ -83,7 +83,7 @@ test('DeepSeek discovery and runtime use one native resolver without creating a 
     assert.equal(detected.source, value?.trim() ? 'DSH_HOME' : 'DeepSeek 官方 Harness 配置目录');
     withEnv(env, () => {
       assert.equal(runtime.seatHomes().deepseek, expected);
-      assert.equal(runtime.plan('deepseek').home, expected);
+      assert.equal(runtime.basePlan('deepseek').home, expected);
     });
   }
   assert.equal(fs.existsSync(home), false);
@@ -92,8 +92,8 @@ test('DeepSeek discovery and runtime use one native resolver without creating a 
   fs.writeFileSync(file, 'fixture');
   assert.throws(() => detectDirectory('deepseek', { env: { DSH_HOME: file }, home }), /不是目录/);
   withEnv({ DSH_HOME: 'ignored' }, () => {
-    assert.equal(runtime.plan('deepseek', '').home, process.cwd());
-    assert.equal(runtime.plan('deepseek', '~/manual').home, path.join(home, 'manual'));
+    assert.equal(runtime.basePlan('deepseek', '').home, process.cwd());
+    assert.equal(runtime.basePlan('deepseek', '~/manual').home, path.join(home, 'manual'));
   });
 });
 
@@ -107,9 +107,12 @@ function assertSkill(text, expectedName) {
   assert.doesNotMatch(header[1], /^(?:disableModelInvocation|userInvocable):/m);
 }
 
-test('DeepSeek plan keeps a short AGENTS loader and top-level discoverable skills', t => {
+// These contract checks intentionally exercise only the original Harness word
+// pack. Full upstream resources/configuration have independent integrity and
+// transaction tests and are not repeatedly installed by this small fixture.
+test('DeepSeek base plan keeps a short AGENTS loader and top-level discoverable skills', t => {
   const home = path.join(fixture(t), '.dsh');
-  const spec = runtime.plan('deepseek', home);
+  const spec = runtime.basePlan('deepseek', home);
   const entry = spec.writes.find(item => item.kind === 'marked');
   assert.equal(entry.file, path.join(home, 'AGENTS.md'));
   assert.match(entry.body, /skills\/cha-deepseek\/SKILL\.md/);
@@ -143,7 +146,7 @@ test('DeepSeek transactional deploy is idempotent and restores existing bytes', 
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, content);
   }
-  const tx = new SeatTransactions();
+  const tx = new SeatTransactions({ plan: runtime.basePlan });
   tx.select(home, { layout: 'deepseek-harness' });
   const preview = tx.preview('deepseek');
   for (const [file, content] of originals) assert.deepEqual(fs.readFileSync(file), content);
@@ -154,13 +157,13 @@ test('DeepSeek transactional deploy is idempotent and restores existing bytes', 
   assert.equal(tx.preview('deepseek').changes, 0);
   assert.ok(fs.readFileSync(agents).subarray(0, originals.get(agents).length).equals(originals.get(agents)));
   assert.equal(fs.readFileSync(agents, 'utf8').split('<!-- CHA-DEEPSEEK-POJIA:BEGIN -->').length - 1, 1);
-  assert.equal(fs.readFileSync(skill, 'utf8'), runtime.plan('deepseek', home).pack);
+  assert.equal(fs.readFileSync(skill, 'utf8'), runtime.basePlan('deepseek', home).pack);
   for (const file of [profile, shared]) assert.deepEqual(fs.readFileSync(file), originals.get(file));
   assert.equal(fs.existsSync(path.join(root, '.agents', 'skills')), false);
   const restored = tx.restore(installed.id);
   assert.equal(restored.ok, true);
   for (const [file, content] of originals) assert.deepEqual(fs.readFileSync(file), content);
-  for (const item of runtime.plan('deepseek', home).writes) {
+  for (const item of runtime.basePlan('deepseek', home).writes) {
     if (!originals.has(item.file)) assert.equal(fs.existsSync(item.file), false);
   }
 });
@@ -171,10 +174,10 @@ test('DeepSeek legacy runtime deployment restores original files', t => {
   fs.mkdirSync(home);
   const original = Buffer.from('# Keep my rules\r\n');
   fs.writeFileSync(agents, original);
-  const installed = runtime.deploy('deepseek', home);
-  assert.equal(runtime.verify('deepseek', home).ok, true);
+  const installed = runtime.deploy('deepseek', home, { planFn: runtime.basePlan });
+  assert.equal(runtime.verify('deepseek', home, { planFn: runtime.basePlan }).ok, true);
   assert.ok(installed.backups.length > 0);
-  assert.equal(runtime.restore('deepseek', home).ok, true);
+  assert.equal(runtime.restore('deepseek', home, { planFn: runtime.basePlan }).ok, true);
   assert.deepEqual(fs.readFileSync(agents), original);
   assert.equal(fs.existsSync(path.join(home, 'skills', 'cha-deepseek', 'SKILL.md')), false);
 });
@@ -258,5 +261,22 @@ print(json.dumps({'verified': True, 'backups': len(first['backups']), 'writes': 
 `, { root });
   assert.equal(result.verified, true);
   assert.ok(result.backups > 0);
-  assert.equal(result.writes, runtime.plan('deepseek', path.join(root, '.dsh')).writes.length);
+  assert.equal(result.writes, runtime.basePlan('deepseek', path.join(root, '.dsh')).writes.length);
+});
+
+test('DeepSeek full plan extends the original Harness contract with 94 adapters and native MCP without installing', t => {
+  const home = path.join(fixture(t), '.dsh');
+  const original = runtime.basePlan('deepseek', home);
+  const full = runtime.plan('deepseek', home);
+  assert.equal(full.home, original.home);
+  assert.equal(full.pack, original.pack);
+  assert.deepEqual(full.writes.slice(0, original.writes.length), original.writes);
+  const adapters = full.writes.filter(item => item.kind === 'asset' && /[\\/]skills[\\/]cc-(?:rea|rs)-[^\\/]+[\\/]SKILL\.md$/.test(item.file));
+  assert.equal(adapters.length, 94);
+  assert.equal(full.upstream.skillCount, 94);
+  const mcp = full.writes.filter(item => item.kind === 'upstream-mcp');
+  assert.equal(mcp.length, 1);
+  assert.equal(mcp[0].file, path.join(home, 'cordis.patch.yml'));
+  assert.equal(mcp[0].mode, 'dsh');
+  assert.equal(fs.existsSync(home), false, 'planning must not install or create the Harness root');
 });
