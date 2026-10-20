@@ -56,15 +56,15 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <tr><td>05</td><td>GLM 5.3全模型支持</td><td><code>%USERPROFILE%\.glm</code>，有 ZCode 时用 <code>%USERPROFILE%\.zcode</code></td><td><code>~/.glm</code>，有 ZCode 时用 <code>~/.zcode</code></td><td><code>GLM.md</code></td></tr>
 <tr><td>06</td><td>Gemini全模型支持</td><td><code>%USERPROFILE%\.gemini</code></td><td><code>~/.gemini</code></td><td><code>GEMINI.md</code></td></tr>
 <tr><td>07</td><td>豆包</td><td><code>%LOCALAPPDATA%\Doubao\User Data\Default\.doubao\agent_mode\workspace\.user_skills</code></td><td>macOS <code>~/Library/Application Support/Doubao/...</code>，Linux <code>~/.local/share/Doubao/...</code>。不写软件自带的 <code>.skills</code></td><td><code>cha-doubao/SKILL.md</code></td></tr>
-<tr><td>08</td><td>WorkBuddy</td><td><code>%USERPROFILE%\.workbuddy</code></td><td><code>~/.workbuddy</code></td><td><code>skills/cha-workbuddy/SKILL.md</code></td></tr>
-<tr><td>09</td><td>Cursor</td><td><code>%USERPROFILE%\.cursor</code></td><td><code>~/.cursor</code></td><td><code>rules/cha-cursor.mdc</code> 和 <code>skills/cha-cursor/SKILL.md</code></td></tr>
+<tr><td>08</td><td><code translate="no">WorkBuddy</code></td><td><code>%USERPROFILE%\.workbuddy</code></td><td><code>~/.workbuddy</code></td><td><code>skills/cha-workbuddy/SKILL.md</code></td></tr>
+<tr><td>09</td><td><code translate="no">Cursor</code></td><td><code>%USERPROFILE%\.cursor</code></td><td><code>~/.cursor</code></td><td><code>rules/cha-cursor.mdc</code> 和 <code>skills/cha-cursor/SKILL.md</code></td></tr>
 <tr><td>10</td><td>MiMo-V2.6-Pro</td><td><code>%USERPROFILE%\.config\mimocode</code></td><td><code>~/.config/mimocode</code></td><td><code>skills/cha-mimo/SKILL.md</code></td></tr>
 <tr><td>11</td><td>Kimi K3</td><td><code>%USERPROFILE%\.kimi-code</code></td><td><code>~/.kimi-code</code></td><td><code>skills/cha-kimi/SKILL.md</code></td></tr>
 </table>
-<p>上表列出原词包主文件。完整技能扩展还会在所选数据根写入 <code>.coldcoffee-upstream/</code>、<code>.coldcoffee-history/</code> 和独立技能入口。已确认格式的客户端会合并 REA / IDA 连接配置（包括 Cursor 的 <code>mcp.json</code>）；其余客户端保留手动接入说明。所有写入仅限勾选的软件，写前备份、写后校验。</p>
+<p>上表列出原词包主文件。完整技能扩展还会在所选数据根写入 <code>.coldcoffee-upstream/</code>、<code>.coldcoffee-history/</code> 和独立技能入口。已确认格式的客户端会合并 REA / IDA 连接配置（包括 <code translate="no">Cursor</code> 的 <code>mcp.json</code>）；其余客户端保留手动接入说明。所有写入仅限勾选的软件，写前备份、写后校验。</p>
 <table>
 <tr><th align="left">软件</th><th align="left">不写</th></tr>
-<tr><td>Cursor</td><td>安装目录、<code>%APPDATA%\Cursor</code>、<code>skills-cursor</code>。环境变量 <code>CURSOR_HOME</code> 只有目录名仍是 <code>.cursor</code> 才用。规则头里有 <code>alwaysApply: true</code>。</td></tr>
+<tr><td><code translate="no">Cursor</code></td><td>安装目录、<code>%APPDATA%\Cursor</code>、<code>skills-cursor</code>。环境变量 <code>CURSOR_HOME</code> 只有目录名仍是 <code>.cursor</code> 才用。规则头里有 <code>alwaysApply: true</code>。</td></tr>
 <tr><td>MiMo-V2.6-Pro</td><td>npm 安装目录、<code>auth.json</code>、<code>mimocode.json</code>。没设变量时在 <code>.config/mimocode</code>。设了绝对路径 <code>MIMOCODE_HOME</code> 才改写 <code>$MIMOCODE_HOME/config</code>。</td></tr>
 <tr><td>Kimi K3</td><td>程序目录、<code>config.toml</code>、凭据、会话、<code>mcp.json</code>、旧目录 <code>~/.kimi</code>、跨工具的 <code>~/.agents/skills</code>。设了绝对路径 <code>KIMI_CODE_HOME</code> 时，数据根就是这个目录，技能仍在它下面的 <code>skills/cha-kimi/SKILL.md</code>。</td></tr>
 </table>
