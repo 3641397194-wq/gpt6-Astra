@@ -208,7 +208,8 @@ test('preparing/restoring journals recover byte-exact partial state; third-party
     beforeHash: file.beforeHash, afterHash: file.afterHash, beforeMode: file.beforeMode, afterMode: file.afterMode,
     changed: true, before: tx.retain(file.before, file.beforeHash), after: tx.retain(file.after, file.afterHash) }));
   const snapshot = { schemaVersion: 2, id: crypto.randomUUID(), seat: 'codex', root, at: new Date().toISOString(), status: 'preparing', files };
-  tx.save(snapshot); atomic(first, Buffer.from('new one'));
+  // Simulate a committed write with the same recorded permissions as deploy().
+  tx.save(snapshot); atomic(first, Buffer.from('new one'), plan.files.find((file) => file.path === 'one.txt').afterMode);
   tx.validateRestore(snapshot.id);
   assert.equal(tx.restore(snapshot.id).restored, 1);
   assert.equal(fs.readFileSync(first, 'utf8'), 'old one'); assert.equal(fs.readFileSync(second, 'utf8'), 'old two');
@@ -219,7 +220,7 @@ test('preparing/restoring journals recover byte-exact partial state; third-party
     beforeMode: file.beforeMode, afterMode: file.afterMode, before: file.before !== null ? tx.retain(file.before, file.beforeHash) : null,
     after: tx.retain(file.after, file.afterHash), changed: true,
   })) };
-  tx.save(snapshot2); atomic(first, Buffer.from('new one')); fs.writeFileSync(second, 'a user edit');
+  tx.save(snapshot2); atomic(first, Buffer.from('new one'), plan2.files.find((file) => file.path === 'one.txt').afterMode); fs.writeFileSync(second, 'a user edit');
   assert.throws(() => tx.restore(snapshot2.id), /文件已被其他操作修改/);
   assert.equal(fs.readFileSync(first, 'utf8'), 'new one'); assert.equal(fs.readFileSync(second, 'utf8'), 'a user edit');
 });
