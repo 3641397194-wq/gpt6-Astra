@@ -8,17 +8,32 @@ const runtime = require('./seat-runtime');
 const hash = (buffer) => crypto.createHash('sha256').update(buffer).digest('hex');
 const MAX_FILE = 64 * 1024 * 1024;
 
+function absolutePath(value) {
+  // DOS/UNC namespace prefixes change spelling, not directory identity. Strip
+  // only these known prefixes so ancestor traversal reaches the real drive or
+  // share root (path.dirname treats a namespaced UNC root differently).
+  return path.resolve(process.platform === 'win32'
+    ? value.replace(/^\\\\\?\\UNC\\/i, '\\\\').replace(/^\\\\\?\\([a-z]:\\)/i, '$1') : value);
+}
+
 function guardPath(file) {
-  // One native realpath check validates the whole existing ancestor chain.
-  // Unlike a cached "safe directory" bit this still detects a junction swap
-  // between sibling writes, without 10+ lstat calls for each 11k-file snapshot.
-  const normalize = (value) => process.platform === 'win32' ? path.resolve(value).toLowerCase() : path.resolve(value);
-  for (let part = path.resolve(file); ; part = path.dirname(part)) {
+  const normalize = (value) => process.platform === 'win32' ? absolutePath(value).toLowerCase() : absolutePath(value);
+  for (let part = absolutePath(file); ; part = path.dirname(part)) {
     let stat;
     try { stat = fs.lstatSync(part); } catch (error) { if (error.code === 'ENOENT' && path.dirname(part) !== part) continue; throw error; }
     if (stat.isSymbolicLink()) throw new Error('目标路径包含符号链接或目录联接，请选择普通目录');
     if (stat.isFile() && stat.nlink > 1) throw new Error('目标文件包含硬链接，请先使用独立副本');
-    if (normalize(fs.realpathSync.native(part)) !== normalize(part)) throw new Error('目标路径包含符号链接或目录联接，请选择普通目录');
+    // Keep the common path at one lstat + native realpath, without caching a
+    // "safe" bit that could miss a junction swap between sibling writes.
+    // A native spelling change can also be an ordinary Windows 8.3 expansion;
+    // on that boundary inspect every ORIGINAL ancestor, including its root.
+    // Inspecting the canonical chain instead would hide the links being tested.
+    if (normalize(fs.realpathSync.native(part)) !== normalize(part)) {
+      for (let ancestor = path.dirname(part); ; ancestor = path.dirname(ancestor)) {
+        if (fs.lstatSync(ancestor).isSymbolicLink()) throw new Error('目标路径包含符号链接或目录联接，请选择普通目录');
+        if (path.dirname(ancestor) === ancestor) break;
+      }
+    }
     return;
   }
 }
@@ -153,8 +168,8 @@ class SeatTransactions {
   select(root, { layout = 'default' } = {}) {
     if (!['default', 'deepseek-harness', 'zcode'].includes(layout)) throw new Error('目录布局错误');
     if (typeof root !== 'string' || !path.isAbsolute(root)) throw new Error('请明确选择绝对目录');
-    const resolved = path.resolve(root);
-    if (path.parse(resolved).root === resolved) throw new Error('请选择专用目录，不要选择磁盘根目录');
+    const resolved = path.resolve(root), plain = absolutePath(root);
+    if (path.parse(plain).root === plain) throw new Error('请选择专用目录，不要选择磁盘根目录');
     guardPath(resolved);
     if (fs.existsSync(resolved) && !fs.statSync(resolved).isDirectory()) throw new Error('所选路径不是目录');
     this.root = resolved;

@@ -154,6 +154,11 @@ jobs:
         run: |
           version="$(tr -d '\r\n' < VERSION)"
           tag="v${version}"
+          existing_commit="$(gh api "repos/$GITHUB_REPOSITORY/commits/$tag" --jq '.sha' 2>/dev/null || true)"
+          if [ -n "$existing_commit" ] && [ "$existing_commit" != "$GITHUB_SHA" ]; then
+            echo "::error::Published version belongs to a different commit; bump VERSION before publishing."
+            exit 1
+          fi
           shopt -s nullglob
           files=(out/*)
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
@@ -162,3 +167,5 @@ jobs:
             gh release create "$tag" "${files[@]}" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "冷咖啡工作台 $version" --draft --prerelease --notes-file out/RELEASE_NOTES.md
           fi
           gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false --prerelease
+      - name: Verify installers are downloadable without signing in
+        run: python3 tools/verify_release_downloads.py --repo "$GITHUB_REPOSITORY" --attempts 6 --output release-download-check.json

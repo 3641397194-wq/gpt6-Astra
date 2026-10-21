@@ -7,7 +7,8 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '../..');
 
-for (const relative of ['README.md', 'docs/index.html', 'docs/readme-preview.html', 'tools/build_readme.py']) {
+// The generator reads README.md; download-links.test.js checks isolated generation.
+for (const relative of ['README.md', 'docs/index.html', 'docs/readme-preview.html']) {
   test(`${relative} preserves official client brand names with translation-resistant markup`, () => {
     const source = fs.readFileSync(path.join(root, relative), 'utf8');
     for (const brand of ['WorkBuddy', 'Cursor']) {
