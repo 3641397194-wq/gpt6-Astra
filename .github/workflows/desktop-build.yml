@@ -154,7 +154,8 @@ jobs:
         run: |
           version="$(tr -d '\r\n' < VERSION)"
           tag="v${version}"
-          existing_commit="$(gh api "repos/$GITHUB_REPOSITORY/commits/$tag" --jq '.sha' 2>/dev/null || true)"
+          existing_refs="$(git ls-remote --tags origin "refs/tags/$tag" "refs/tags/$tag^{}")"
+          existing_commit="$(printf '%s\n' "$existing_refs" | awk '$2 ~ /\^\{\}$/ {peeled=$1} $2 !~ /\^\{\}$/ {direct=$1} END {print peeled ? peeled : direct}')"
           if [ -n "$existing_commit" ] && [ "$existing_commit" != "$GITHUB_SHA" ]; then
             echo "::error::Published version belongs to a different commit; bump VERSION before publishing."
             exit 1
