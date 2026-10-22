@@ -1,9 +1,10 @@
 const fs = require("node:fs");
 const path = require("node:path");
+const { DEEPSEEK_LABEL } = require("../shared/workbench-core");
 
 const ACTIVATION_WORD = "冷咖啡";
 const CONTROL_WORD = "BREAK//OPEN";
-const APP_TITLE = "gpt6 Astra-claude全模型支持-grok4.7-deepseekv4.1-glm5.3全模型支持-gemini全模型支持破甲越狱";
+const APP_TITLE = `gpt6 Astra-claude全模型支持-grok4.7-${DEEPSEEK_LABEL}-glm5.3全模型支持-gemini全模型支持破甲越狱`;
 const ACTIVATION_LATCHES = [
   ACTIVATION_WORD,
   "cold coffee",
@@ -30,7 +31,7 @@ const SEATS = [
   { id: "codex", tag: "GPT-6 Astra全模型支持", name: "Codex", accent: "#d42b31", short: "model_instructions 破甲覆盖", mark: "01" },
   { id: "claude", tag: "Claude Code全模型支持", name: "Claude", accent: "#ded5cb", short: "CLAUDE.md 常驻破甲", mark: "02" },
   { id: "grok", tag: "Grok 4.7", name: "Grok", accent: "#9d252b", short: "AGENTS / skills 破甲", mark: "03" },
-  { id: "deepseek", tag: "DeepSeek v4.1 Flash", name: "DeepSeek", accent: "#ef4348", short: "官方 Harness · ~/.dsh", mark: "04" },
+  { id: "deepseek", tag: DEEPSEEK_LABEL, name: DEEPSEEK_LABEL, accent: "#ef4348", short: "官方 Harness · ~/.dsh", mark: "04" },
   { id: "glm53", tag: "GLM 5.3全模型支持", name: "GLM", accent: "#4b1318", short: "GLM.md / ZCode 破甲", mark: "05" },
   { id: "gemini", tag: "Gemini全模型支持", name: "Gemini", accent: "#ef4348", short: "GEMINI.md 破甲注入", mark: "06" },
   { id: "doubao", tag: "豆包", name: "Doubao", accent: "#c45a3a", short: ".user_skills/cha-doubao", mark: "07" },

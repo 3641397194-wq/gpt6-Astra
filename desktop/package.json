@@ -1,9 +1,9 @@
 {
   "name": "coldbrew-zero-desktop",
-  "productName": "gpt6 Astra-claude全模型支持-grok4.7-deepseekv4.1-glm5.3全模型支持-gemini全模型支持破甲越狱",
-  "version": "3.1.0-preview.3",
+  "productName": "冷咖啡破甲工作台",
+  "version": "3.2.0-preview.2",
   "private": true,
-  "description": "gpt6 Astra-claude全模型支持-grok4.7-deepseekv4.1-glm5.3全模型支持-gemini全模型支持破甲越狱 · BREAK//OPEN 工作台",
+  "description": "gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持破甲越狱 · BREAK//OPEN 工作台",
   "main": "src/main.js",
   "author": {
     "name": "3641397194-wq",
@@ -17,19 +17,32 @@
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "check": "node --check src/workbench/pack-controls.js && node --check src/workbench/newbie.js && node --check src/workbench/workbench.js && node --check src/shared/workbench-core.js && npm test && node --check src/main.js && node --check src/preload.js && node --check src/renderer/app.js && node --check src/lib/prompt-engine.js && node --check src/lib/beginner-install.js && node --check src/lib/gemini-seat.js && node --check src/lib/seat-packs.js && node --check src/lib/seat-runtime.js && node --check src/lib/ida-toolbox.js && node --check src/lib/ida-mcp.js && node src/lib/seat-selftest.js && node scripts/run-seat-selftest.js",
+    "check": "node --check src/workbench/toolbox-view.js && node --check src/workbench/pack-controls.js && node --check src/workbench/newbie.js && node --check src/workbench/upstream-skills-view.js && node --check src/workbench/workbench.js && node --check src/shared/workbench-core.js && npm test && node --check src/main.js && node --check src/preload.js && node --check src/renderer/app.js && node --check src/lib/prompt-engine.js && node --check src/lib/beginner-install.js && node --check src/lib/gemini-seat.js && node --check src/lib/seat-packs.js && node --check src/lib/seat-runtime.js && node --check src/lib/upstream-skills.js && node --check src/lib/upstream-config.js && node --check src/lib/upstream-rea-runtime.js && node --check src/lib/upstream/rea-launcher.cjs && node --check src/lib/ida-toolbox.js && node --check src/lib/ida-mcp.js && node src/lib/seat-selftest.js && node scripts/run-seat-selftest.js",
     "pack:win": "electron-builder --win portable --publish never",
     "pack:mac": "electron-builder --mac dmg zip --publish never",
     "pack:linux": "electron-builder --linux AppImage deb --publish never",
-    "test": "node --test tests/*.test.js src/lib/relay-adapter.test.js"
+    "test": "node --test tests/*.test.js src/lib/relay-adapter.test.js",
+    "toolbox:mcp": "node src/lib/toolbox/mcp.js",
+    "test:toolbox": "node --test tests/toolbox*.test.js",
+    "test:toolbox:ui": "node scripts/test-original-toolbox-ui.cjs",
+    "test:toolbox:packaged": "node scripts/test-packaged-toolbox.cjs",
+    "test:deepseek:ui": "node scripts/test-deepseek-ui.cjs",
+    "test:upstream:ui": "node scripts/test-upstream-skills-ui.cjs",
+    "test:upstream:runtime": "node ../tools/preview/verify-upstream-runtime.cjs"
+  },
+  "dependencies": {
+    "jsonc-parser": "3.3.1",
+    "smol-toml": "1.9.0",
+    "yaml": "2.9.0"
   },
   "devDependencies": {
     "electron": "^35.7.5",
-    "electron-builder": "^26.15.3"
+    "electron-builder": "^26.15.3",
+    "playwright": "^1.64.0"
   },
   "build": {
     "appId": "app.coldbrew.zero",
-    "productName": "gpt6 Astra-claude全模型支持-grok4.7-deepseekv4.1-glm5.3全模型支持-gemini全模型支持破甲越狱",
+    "productName": "冷咖啡破甲工作台",
     "directories": {
       "output": "dist"
     },
@@ -37,6 +50,7 @@
       "src/**/*",
       "assets/**/*",
       "package.json",
+      "!src/lib/toolbox/**",
       "!src/**/*.test.js",
       "!src/**/seat-selftest.js",
       "!assets/icon-source.jpg",
@@ -54,9 +68,22 @@
     ],
     "extraResources": [
       {
+        "from": "resources/upstream-skills",
+        "to": "upstream-skills",
+        "filter": [
+          "catalog.json",
+          "*.bundle.json.gz"
+        ]
+      },
+      {
         "from": "../tools/ida-zh-cn",
         "to": "ida-zh-cn",
-        "filter": ["plugin/**", "LICENSE", "NOTICE.md", "VENDORED.txt"]
+        "filter": [
+          "plugin/**",
+          "LICENSE",
+          "NOTICE.md",
+          "VENDORED.txt"
+        ]
       },
       {
         "from": "../docs",
@@ -81,6 +108,14 @@
           "!**/__pycache__/**",
           "!**/*.dmp"
         ]
+      },
+      {
+        "from": "src/lib/toolbox",
+        "to": "toolbox",
+        "filter": [
+          "**/*.js",
+          "SKILL.md"
+        ]
       }
     ],
     "asar": true,
@@ -89,21 +124,26 @@
       "icon": "assets/icon-v4.ico",
       "target": [
         "portable"
-      ]
+      ],
+      "artifactName": "ColdCoffee-Workbench-Windows-${version}-${arch}.${ext}",
+      "signAndEditExecutable": false,
+      "signExecutable": false
     },
     "mac": {
       "icon": "assets/icon-v4.png",
-      "identity": null,
+      "identity": "-",
       "category": "public.app-category.developer-tools",
       "target": [
         "dmg",
         "zip"
-      ]
+      ],
+      "artifactName": "ColdCoffee-Workbench-macOS-${arch}-${version}.${ext}",
+      "hardenedRuntime": false
     },
     "linux": {
       "icon": "assets/icon-v4.png",
       "executableName": "coldbrew-zero",
-      "artifactName": "coldbrew-zero-${version}-linux-${arch}.${ext}",
+      "artifactName": "ColdCoffee-Workbench-Linux-${arch}-${version}.${ext}",
       "category": "Development",
       "target": [
         "AppImage",

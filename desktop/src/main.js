@@ -18,6 +18,21 @@ const { RelayAdapter } = require("./lib/relay-adapter");
 const relayAdapter = new RelayAdapter();
 const { assertTrustedSender, protectWindow } = require("./lib/window-security");
 const WORKBENCH_ENTRY = path.join(__dirname, "workbench", "index.html");
+// electron-builder places extraResources outside app.asar on every platform.
+const TOOLBOX_ROOT = app.isPackaged ? path.join(process.resourcesPath, "toolbox") : path.join(__dirname, "lib", "toolbox");
+const { ToolboxEngine } = require(path.join(TOOLBOX_ROOT, "engine.js"));
+const { runAgent } = require(path.join(TOOLBOX_ROOT, "agent.js"));
+let originalToolbox;
+function getOriginalToolbox() {
+  const workspaceArg = process.argv.find(value => value.startsWith("--toolbox-workspace="));
+  if (!originalToolbox) originalToolbox = new ToolboxEngine({
+    workspace: workspaceArg ? workspaceArg.slice("--toolbox-workspace=".length) : path.join(app.getPath("userData"), "original-toolbox"),
+    emit: entry => {
+      if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send("coldbrew:original-toolbox-event", entry);
+    },
+  });
+  return originalToolbox;
+}
 
 const COMMUNITY = {
   qq: [
@@ -83,7 +98,7 @@ function createMain() {
   });
   protectWindow(mainWindow);
   const seatArg = process.argv.find((item) => item.startsWith("--seat="));
-  const hash = process.argv.includes("--relay") ? "relay" : process.argv.includes("--workflow") ? "workflow" : (seatArg ? seatArg.slice("--seat=".length) : "");
+  const hash = process.argv.includes("--toolbox") ? "toolbox" : process.argv.includes("--relay") ? "relay" : process.argv.includes("--workflow") ? "workflow" : (seatArg ? seatArg.slice("--seat=".length) : "");
   mainWindow.loadFile(WORKBENCH_ENTRY, hash ? { hash } : {});
 }
 
@@ -239,7 +254,62 @@ handleTrusted("coldbrew:toolbox", async (_event, payload = {}) => {
   throw new Error("未知工具箱操作");
 });
 
+handleTrusted("coldbrew:original-toolbox", async (_event, action, payload = {}) => {
+  const engine = getOriginalToolbox();
+  if (action === "catalog") return engine.catalog();
+  if (action === "start") return engine.start(payload.name, payload.arguments || {});
+  if (action === "status") return engine.get(payload.id);
+  if (action === "list") return engine.list();
+  if (action === "cancel") return engine.cancel(payload.id);
+  if (action === "import") {
+    const picked = await dialog.showOpenDialog(mainWindow, { title: "选择要分析的样本（保留原件，复制到工具箱工作目录）", properties: ["openFile"] });
+    return picked.canceled ? { canceled: true } : engine.importSample(picked.filePaths[0]);
+  }
+  if (action === "agent") {
+    const input = { goal: String(payload.goal || "").slice(0, 8000), target: String(payload.target || ""), modelId: String(payload.modelId || ""), maxRounds: payload.maxRounds || 8, idaUrl: payload.idaUrl ? String(payload.idaUrl) : undefined };
+    if (!input.target) throw new Error("先填写目标或选一个样本");
+    if (relayAdapter.status().mode === "preview") throw new Error("先到中转页填写 API Key 并验证模型");
+    return engine.start("ai_task", input, ctx => runAgent(engine, relayAdapter, input, ctx));
+  }
+  if (action === "connection") {
+    if (process.env.PORTABLE_EXECUTABLE_FILE) {
+      // A portable launcher's extraction directory is temporary. Export only
+      // our own small server modules to a stable workspace instead.
+      const target = engine.directory(path.join("mcp-runtime", require("node:crypto").randomUUID()));
+      const source = path.join(process.resourcesPath, "toolbox");
+      for (const name of fs.readdirSync(source).filter(name => name.endsWith(".js") || name === "SKILL.md")) fs.writeFileSync(path.join(target, name), fs.readFileSync(path.join(source, name)), { flag: "wx" });
+      return { mcpServers: { "coldcoffee-toolbox": { command: "node", args: [path.join(target, "mcp.js"), "--workspace", engine.workspace] } } };
+    }
+    return { mcpServers: { "coldcoffee-toolbox": {
+      command: process.execPath,
+      args: [app.isPackaged ? path.join(process.resourcesPath, "toolbox", "mcp.js") : path.join(__dirname, "lib", "toolbox", "mcp.js"), "--workspace", engine.workspace],
+      env: { ELECTRON_RUN_AS_NODE: "1" },
+    } } };
+  }
+  if (action === "skill") return fs.readFileSync(path.join(TOOLBOX_ROOT, "SKILL.md"), "utf8");
+  if (action === "export-skill" || action === "export-task") {
+    const task = action === "export-task" ? engine.get(payload.id) : null;
+    const fileName = task ? `coldcoffee-${task.id}.json` : "coldcoffee-toolbox-SKILL.md";
+    const result = await dialog.showSaveDialog(mainWindow, { title: task ? "导出实际运行结果" : "导出原创工具 skill", defaultPath: path.join(engine.workspace, fileName) });
+    if (result.canceled || !result.filePath) return { canceled: true };
+    const text = task ? JSON.stringify(task, null, 2) : fs.readFileSync(path.join(TOOLBOX_ROOT, "SKILL.md"), "utf8");
+    fs.writeFileSync(result.filePath, text, "utf8");
+    return { file: result.filePath };
+  }
+  if (action === "report") {
+    const task = engine.get(payload.id);
+    if (!task.report) throw new Error("报告尚未生成");
+    const target = path.join(engine.workspace, task.report.directory);
+    const error = await shell.openPath(target); if (error) throw new Error(error);
+    return { directory: target };
+  }
+  throw new Error("未知原创工具箱操作");
+});
+
 handleTrusted("coldbrew:beginner", async (_event, action, payload = {}) => {
+  if (action === "catalog" || action === "upstream-catalog") return require("./lib/upstream-skills").catalog();
+  if (action === "upstream-status") return beginner.statusOne(String(payload.seat || ""));
+  if (action === "upstream-prepare") return beginner.prepareOne(String(payload.seat || ""), { confirm: payload.confirm === true });
   if (action === "scan") {
     const links = beginner.collectShortcuts();
     return beginner.scanAll().map((row) => ({ ...row, launchers: row.ok ? beginner.launchersFrom(row.seat, links) : [] }));
@@ -249,17 +319,9 @@ handleTrusted("coldbrew:beginner", async (_event, action, payload = {}) => {
   if (action === "open") {
     const seat = String(payload.seat || "");
     const hit = beginner.matchLauncher(seat, payload.path);
-    let toolbox = { code: "skip" };
-    try {
-      const { detectDirectory } = require("./lib/detect-directory");
-      const found = detectDirectory(seat);
-      toolbox = require("./lib/ida-mcp").attachSeat(seat, { root: found.root, layout: found.layout || "default" });
-    } catch (error) {
-      toolbox = { code: "skip", skipped: error.message };
-    }
     const opened = await shell.openPath(hit.path);
     if (opened) throw new Error(opened);
-    return { ok: true, name: hit.name, toolbox: toolbox.code || "skip" };
+    return { ok: true, name: hit.name };
   }
   throw new Error("未知小白操作");
 });

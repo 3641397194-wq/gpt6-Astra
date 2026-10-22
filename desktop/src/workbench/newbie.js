@@ -11,7 +11,7 @@
   let busy = false;
   const desktop = !!window.coldbrew?.beginner;
   const DEMO = [
-    ['codex', 'Codex', 'GPT'], ['claude', 'Claude', 'Code'], ['grok', 'Grok', '4.7'], ['deepseek', 'DeepSeek', 'Harness'],
+    ['codex', 'Codex', 'GPT'], ['claude', 'Claude', 'Code'], ['grok', 'Grok', '4.7'], ['deepseek', window.ColdCoffeeCore.DEEPSEEK_LABEL, 'Harness'],
     ['glm53', 'GLM', '5.3'], ['gemini', 'Gemini', '全模型'], ['doubao', '豆包', '技能'], ['workbuddy', 'WorkBuddy', '搭档'],
     ['cursor', 'Cursor', '.cursor'], ['mimo', 'MiMo-V2.6-Pro', '.config'], ['kimi', 'Kimi K3', '.kimi-code'],
   ];
@@ -162,10 +162,14 @@
       paint();
       try {
         const result = await window.coldbrew.beginner('install', { seat: row.seat, confirm: true });
+        if (result.ok !== true || result.verified !== true) throw new Error('安装后的文件校验未通过。' + (result.message || '请查看技能检查结果。'));
         row.state = 'ok';
         const hook = result.toolbox === 'ida' ? ' · 工具箱已接入' : result.toolbox === 'manual' ? ' · 这个软件要手填工具箱地址' : '';
-        row.stateText = (result.changed ? `写好了 · ${result.changed} 个文件` : '本来就是最新，没有重复写') + hook;
+        const upstream = result.upstream;
+        const skills = upstream ? ` · 附带 ${upstream.skillCount} 项完整技能` : '';
+        row.stateText = (result.changed ? `写好了 · ${result.changed} 个文件` : '本来就是最新，没有重复写') + hook + skills;
         row.result = result;
+        if (upstream) window.dispatchEvent(new CustomEvent('coldcoffee:upstream-install', { detail: { seat: row.seat, upstream } }));
         done += 1;
       } catch (error) {
         row.state = 'bad';
@@ -174,7 +178,7 @@
     }
     busy = false;
     setStep(3);
-    status.textContent = done ? `${done} 个写好了。打开软件，发「冷咖啡」。` : '一个都没写成，看红字。';
+    status.textContent = done ? `${done} 个写好了。重启目标软件，单独发「冷咖啡」。` : '一个都没写成，看红字。';
     finale.hidden = !done;
     paint();
   }
@@ -211,7 +215,11 @@
         const result = await window.coldbrew.beginner('uninstall', { seat: row.seat, confirm: true });
         row.state = result.ok ? 'ok' : 'bad';
         row.stateText = result.message;
-        if (result.ok) done += 1;
+        if (result.ok) {
+          done += 1;
+          row.result = null;
+          window.dispatchEvent(new CustomEvent('coldcoffee:upstream-invalidate', { detail: { seat: row.seat, message: result.message } }));
+        }
       } catch (error) {
         row.state = 'bad';
         row.stateText = error.message;

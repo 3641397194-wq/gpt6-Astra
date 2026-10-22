@@ -8,9 +8,9 @@
 
 # ColdBrew Zero / CHA
 
-### gpt6 Astra-claude全模型支持-grok4.7-deepseekv4.1-glm5.3全模型支持-gemini全模型支持
+### gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持
 
-**BREAK//OPEN** &nbsp;|&nbsp; **NOIR MANGA RELEASE 2.3.6**
+**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX RELEASE 3.2.0-preview.2**
 
 <sub>An original dark-manga visual system built from black ink, bone paper, a single crimson eye, and torn comic panels.</sub>
 
@@ -52,7 +52,7 @@ npm ci
 npm start
 ```
 
-Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). GitHub Actions builds all three packages on their native runners and publishes them as workflow artifacts.
+Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). GitHub Actions builds all three packages on their native runners and tests the packaged UI and publishes installers plus SHA-256 checksums to GitHub Releases.
 
 All eight seats write an original CHA pack into that model's local instruction files. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
 
@@ -60,7 +60,9 @@ IDA user plugins resolve to `%APPDATA%\\Hex-Rays\\IDA Pro\\plugins` on Windows, 
 
 ## 02 / Six Seats
 
-`GPT-6 Astra全模型支持 / Codex`, `Claude Code全模型支持`, `Grok 4.7`, `DeepSeek v4.1 Flash`, `GLM 5.3全模型支持`, and `Gemini全模型支持` share the same night desk.
+`GPT-6 Astra全模型支持 / Codex`, `Claude Code全模型支持`, `Grok 4.7`, `DeepSeek v4.1 Flash 10.17版本`, `GLM 5.3全模型支持`, and `Gemini全模型支持` share the same night desk.
+
+The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Windows, macOS, and Linux. It installs only under `$DSH_HOME` (default `~/.dsh`), with a short `AGENTS.md` entry and `skills/cha-deepseek/SKILL.md`; the shared `$DSH_AGENTS_HOME` / `~/.agents` root remains untouched. See the [Harness installation notes](docs/SEAT-PACKS.md#deepseek-官方-harness-安装说明).
 
 <div align="center">
   <img src="docs/assets/readme-noir-seats.svg" width="100%" alt="Six model seats" />
@@ -88,10 +90,24 @@ IDA user plugins resolve to `%APPDATA%\\Hex-Rays\\IDA Pro\\plugins` on Windows, 
   Scan to join: <strong>QQ discussion</strong> <code>1057540028</code> &nbsp;|&nbsp; <strong>QQ topic</strong> <code>1077074552</code> &nbsp;|&nbsp; <strong>Cool coffeeAI</strong> <code>618179023</code>
 </p>
 
+<p align="center">
+  <strong>Telegram chat</strong> <a href="https://t.me/chachachachalkf"><code>t.me/chachachachalkf</code></a>
+  &nbsp;|&nbsp;
+  <strong>Telegram channel</strong> <a href="https://t.me/chachachalkf"><code>t.me/chachachalkf</code></a>
+</p>
+
 ---
 
 <div align="center">
 
-`CHA / COLD BREW ZERO / BREAK//OPEN / GPT-6 ASTRA / DEEPSEEK V4.1 / GLM 5.3全模型支持 / GEMINI / 2.3.6`
+`CHA / COLD BREW ZERO / BREAK//OPEN / GPT-6 ASTRA / DeepSeek v4.1 Flash 10.17版本 / GLM 5.3全模型支持 / GEMINI / 2.3.6`
 
 </div>
+
+## Original toolbox / Downloads
+
+Release 3.2.0-preview.2: Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, Linux x64 AppImage/DEB.
+
+[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.2) · [Original toolbox and feature scope](docs/original-toolbox.md)
+
+The 16 original tools run inside the application. AI automation provides a real tool/observation loop, with a 19-tool MCP server and an exportable skill. Larger exploitation, ticket/domain and remote-session modules remain future work.

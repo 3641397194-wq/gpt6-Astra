@@ -80,13 +80,16 @@ function main() {
     }
   }
 
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cha-seats-"));
+  const root = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), "cha-seats-"));
+  // Keep this legacy seat/layout regression focused on the original packs.
+  // Full pinned sources, adapters and transaction recovery have dedicated tests.
+  const base = { planFn: runtime.basePlan };
   try {
     for (const id of PACK_IDS) {
       const home = id === "cursor" ? path.join(root, ".cursor") : id === "mimo" ? path.join(root, ".config", "mimocode") : id === "kimi" ? path.join(root, ".kimi-code") : path.join(root, id);
-      const pre = runtime.preview(id, home);
+      const pre = runtime.preview(id, home, base);
       assert(pre.ok && pre.text, `${id} preview failed`);
-      const dep = runtime.deploy(id, home);
+      const dep = runtime.deploy(id, home, base);
       assert(dep.ok && dep.writes.length, `${id} deploy failed`);
       if (id === "cursor") {
         const rule = fs.readFileSync(path.join(home, "rules", "cha-cursor.mdc"), "utf8");
@@ -122,9 +125,9 @@ function main() {
         assert(!fs.existsSync(path.join(root, ".agents")), "kimi must not write ~/.agents");
         assert(!fs.existsSync(path.join(root, ".kimi")), "kimi must not write ~/.kimi");
       }
-      const ver = runtime.verify(id, home);
+      const ver = runtime.verify(id, home, base);
       assert(ver.ok, `${id} verify failed: ${JSON.stringify(ver.checks)}`);
-      const res = runtime.restore(id, home);
+      const res = runtime.restore(id, home, base);
       assert(res.ok, `${id} restore failed`);
     }
   } finally {

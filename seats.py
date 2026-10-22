@@ -9,7 +9,8 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
-APP_TITLE = "gpt6 Astra-claude全模型支持-grok4.7-deepseekv4.1-glm5.3全模型支持-gemini全模型支持破甲越狱"
+DEEPSEEK_LABEL = "DeepSeek v4.1 Flash 10.17版本"
+APP_TITLE = f"gpt6 Astra-claude全模型支持-grok4.7-{DEEPSEEK_LABEL}-glm5.3全模型支持-gemini全模型支持破甲越狱"
 ACTIVATION_WORD = "冷咖啡"
 CONTROL_WORD = "BREAK//OPEN"
 PACK_IDS = ("codex", "claude", "grok", "deepseek", "glm53", "gemini", "doubao", "workbuddy", "cursor")
@@ -35,6 +36,9 @@ SEAT_ALIASES = {
     "deepseek-v41": "deepseek",
     "deepseek-v4.1-flash": "deepseek",
     "deepseekv4.1flash": "deepseek",
+    "deepseek-v4.1-flash-10.17版本": "deepseek",
+    "deepseek-v4.1-flash-10.17": "deepseek",
+    "deepseekv4.1flash10.17": "deepseek",
     "glm53": "glm53",
     "glm-5.3": "glm53",
     "gemini": "gemini",
@@ -178,7 +182,37 @@ def cursor_skill_body() -> str:
     )
 
 
+def deepseek_harness_home(override: str | os.PathLike[str] | None = None) -> Path:
+    # Match dsh-home-paths without expanding ~other or resolving symlinks.
+    selected = os.fspath(override) if override is not None else os.environ.get("DSH_HOME")
+    home = os.fspath(Path.home())
+    if selected is None or (override is None and not selected.strip()):
+        selected = os.path.join(home, ".dsh")
+    if selected == "~":
+        selected = home
+    elif selected.startswith(("~/", "~\\")):
+        selected = home + os.sep + selected[2:]
+    # Windows abspath calls GetFullPathName, which removes trailing spaces and
+    # dots. Harness uses Node's lexical path.resolve, so normalize without I/O.
+    if os.name == "nt":
+        selected = selected.replace("/", "\\")
+        if selected.startswith("\\\\") and not re.match(r"^\\\\[^\\]+\\[^\\]+", selected):
+            selected = "\\" + selected.lstrip("\\")
+        drive, tail = os.path.splitdrive(selected)
+        if re.fullmatch(r"[A-Za-z]:", drive) and not tail.startswith("\\"):
+            base = os.environ.get("=" + drive) or os.getcwd()
+            if os.path.splitdrive(base)[0].lower() != drive.lower():
+                base = drive + "\\"
+            selected = os.path.join(base, tail)
+    resolved = os.path.normpath(os.path.join(os.getcwd(), selected))
+    if os.name != "nt":
+        resolved = "/" + resolved.lstrip("/")
+    return Path(resolved)
+
+
 def seat_home(seat_id: str, override: str | os.PathLike[str] | None = None) -> Path:
+    if seat_id == "deepseek":
+        return deepseek_harness_home(override)
     if override:
         resolved = Path(override).expanduser().resolve()
         if seat_id == "cursor":
@@ -188,7 +222,6 @@ def seat_home(seat_id: str, override: str | os.PathLike[str] | None = None) -> P
         "codex": _home_of(("CODEX_HOME", "CODEX_DIR"), ".codex"),
         "claude": _home_of(("CLAUDE_CONFIG_DIR", "CLAUDE_HOME"), ".claude"),
         "grok": _home_of(("GROK_HOME", "GROK_DIR"), ".grok"),
-        "deepseek": Path(os.environ.get("DSH_HOME", "").strip() or (Path.home() / ".dsh")).expanduser().resolve(),
         "glm53": _home_of(("GLM_HOME", "ZCODE_HOME", "ZHIPU_HOME"), ".glm"),
         "gemini": _home_of(("GEMINI_HOME", "GEMINI_DIR"), ".gemini"),
         "doubao": doubao_user_skills(),

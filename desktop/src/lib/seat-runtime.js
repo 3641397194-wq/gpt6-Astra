@@ -5,6 +5,7 @@ const { renderPack, renderRouteSkill, renderLeafSkill, leafIds, markers, seatMet
 const { cursorConfigDir, assertCursorUserDir } = require("./cursor-home");
 const { mimoConfigDir, assertMimoUserDir } = require("./mimo-home");
 const { kimiCodeHome, assertKimiUserDir } = require("./kimi-home");
+const { deepseekHarnessHome } = require("./deepseek-home");
 
 function homeOf(envKeys, folder) {
   for (const key of envKeys) {
@@ -25,14 +26,6 @@ function realpathOrSelf(target) {
   } catch {
     return target;
   }
-}
-
-function deepseekHarnessHome() {
-  const configured = process.env.DSH_HOME?.trim();
-  if (!configured) return path.join(os.homedir(), '.dsh');
-  if (configured === '~') return os.homedir();
-  if (configured.startsWith('~/') || configured.startsWith('~\\')) return path.join(os.homedir(), configured.slice(2));
-  return path.resolve(configured);
 }
 
 function deepseekHarnessLoader(begin, end) {
@@ -165,10 +158,12 @@ function extraHomes(overrideHome) {
   };
 }
 
-function plan(seatId, overrideHome) {
+function basePlan(seatId, overrideHome) {
   const homes = seatHomes();
   const extra = extraHomes(overrideHome);
-  const home = overrideHome ? path.resolve(String(overrideHome)) : homes[seatId];
+  const home = seatId === "deepseek"
+    ? deepseekHarnessHome({ override: overrideHome == null ? undefined : String(overrideHome) })
+    : overrideHome ? path.resolve(String(overrideHome)) : homes[seatId];
   const { begin, end } = markers(seatId);
   const pack = renderPack(seatId);
   const meta = seatMeta(seatId);
@@ -326,6 +321,16 @@ function plan(seatId, overrideHome) {
   };
 }
 
+function plan(seatId, overrideHome, { layout = 'default' } = {}) {
+  const spec = basePlan(seatId, overrideHome);
+  if (layout === 'zcode') {
+    if (seatId !== 'glm53') throw new Error('席位与目录布局不匹配');
+    const nested = path.join(spec.home, 'zcode');
+    spec.writes = spec.writes.filter((item) => item.file.startsWith(nested + path.sep)).map((item) => ({ ...item, file: path.join(spec.home, path.relative(nested, item.file)), home: spec.home }));
+  }
+  return require('./upstream-skills').extendPlan(spec, seatId, { zcode: layout === 'zcode' });
+}
+
 function bakName(file) {
   const parts = String(file).replace(/\\/g, "/").split("/");
   return `${parts.slice(-3).join("__")}.bak`;
@@ -345,117 +350,99 @@ function routeSkillWrites(home) {
   return parents.concat(leaves);
 }
 
-function deploy(seatId, overrideHome) {
-  const spec = plan(seatId, overrideHome);
-  const snapped = [];
-  const written = [];
+function transactionGroups(spec, { createTx } = {}) {
+  const grouped = new Map();
   for (const item of spec.writes) {
-    const home = item.home || spec.home;
-    const backups = backupDir(home);
-    const bak = path.join(backups, bakName(item.file));
-    if (snapshotOnce(item.file, bak)) snapped.push(bak);
-    if (item.kind === "file" || item.kind === "marked") {
-      const previous = item.kind === "marked" ? readText(item.file) : "";
-      const next = item.kind === "marked" ? insertMarked(previous, item.body ?? spec.pack, spec.begin, spec.end) : spec.pack;
-      writeText(item.file, next);
-      written.push(item.file);
-    } else if (item.kind === "toml") {
-      const previous = readText(item.file);
-      writeText(item.file, upsertTomlString(previous, item.key, item.value));
-      written.push(item.file);
-    } else if (item.kind === "settings") {
-      patchJsonFileName(item.file, item.name);
-      written.push(item.file);
-    } else if (item.kind === "skill") {
-      writeText(item.file, item.body);
-      written.push(item.file);
-    }
+    const root = item.home || spec.home;
+    if (!grouped.has(root)) grouped.set(root, []);
+    grouped.get(root).push(item);
   }
-  const state = {
-    seat: seatId,
-    title: APP_TITLE,
-    deployedAt: new Date().toISOString(),
-    home: spec.home,
-    writes: written,
-    backups: snapped,
-    marker: true,
-  };
-  writeText(path.join(backupDir(spec.home), "state.json"), `${JSON.stringify(state, null, 2)}\n`);
-  return { ok: true, action: "deploy", ...state };
-}
-
-function preview(seatId, overrideHome) {
-  const spec = plan(seatId, overrideHome);
-  return {
-    ok: true,
-    action: "preview",
-    seat: seatId,
-    title: APP_TITLE,
-    tag: spec.meta?.tag,
-    home: spec.home,
-    write: spec.writes.map((item) => item.file),
-    text: spec.pack,
-  };
-}
-
-function verify(seatId, overrideHome) {
-  const spec = plan(seatId, overrideHome);
-  const checks = spec.writes.map((item) => {
-    const exists = fs.existsSync(item.file);
-    const text = exists ? readText(item.file) : "";
-    let marker = true;
-    if (item.kind === "marked" || item.kind === "file") marker = text.includes(spec.begin) && text.includes(spec.end);
-    if (seatId === "deepseek" && item.kind === "marked") marker = text.includes(item.body.trim());
-    if (seatId === "deepseek" && item.kind === "file") marker = text === spec.pack;
-    if (item.kind === "toml") marker = text.includes("model_instructions_file");
-    if (item.kind === "settings") marker = exists;
-    if (item.kind === "skill") marker = exists && text.includes(path.basename(path.dirname(item.file)));
-    return { file: item.file, exists, marker, bytes: Buffer.byteLength(text, "utf8") };
+  return [...grouped].map(([root, writes]) => {
+    const { SeatTransactions } = require('./seat-transactions');
+    const build = () => ({ ...spec, home: root, writes });
+    const tx = createTx ? createTx(root, build) : new SeatTransactions({ plan: build });
+    tx.select(root);
+    return { root, tx };
   });
-  const ok = checks.every((item) => item.exists && item.marker);
+}
+
+function deploy(seatId, overrideHome, { planFn = plan, createTx } = {}) {
+  const spec = planFn(seatId, overrideHome);
+  const writes = [], backups = [];
+  let changed = 0;
+  // Preview every selected root before changing any of them. GLM and ZCode
+  // can have separate configuration roots, so this prevents an avoidable
+  // first-root write when the second-root preview already finds a conflict.
+  const groups = transactionGroups(spec, { createTx }).map(({ root, tx }) => ({ root, tx, preview: tx.preview(seatId) }));
+  const completed = [];
+  try {
+    for (const group of groups) {
+      const result = group.tx.deploy(group.preview.id);
+      changed += result.changed;
+      writes.push(...group.preview.files.map((file) => path.join(group.root, file.path)));
+      if (result.backup) {
+        backups.push(result.backup);
+        completed.push({ tx: group.tx, id: path.basename(result.backup, '.json'), root: group.root });
+      }
+    }
+  } catch (error) {
+    const rollbackErrors = [];
+    for (const item of completed.reverse()) {
+      try { item.tx.restore(item.id); }
+      catch (rollback) { rollbackErrors.push(`${item.root}: ${rollback.message}`); }
+    }
+    const suffix = rollbackErrors.length
+      ? `；已写入目录的补偿恢复遇到冲突，文件与备份均保留：${rollbackErrors.join('；')}`
+      : completed.length ? '；之前已写入的目录已按哈希校验补偿恢复' : '；未留下已提交目录';
+    throw new Error(`多目录安装中断：${error.message}${suffix}`);
+  }
+  return { ok: true, action: 'deploy', seat: seatId, title: APP_TITLE, home: spec.home, deployedAt: new Date().toISOString(), writes, backups, changed, marker: true, upstream: spec.upstream };
+}
+
+function preview(seatId, overrideHome, { planFn = plan } = {}) {
+  const spec = planFn(seatId, overrideHome);
   return {
-    ok,
-    action: "verify",
-    seat: seatId,
-    home: spec.home,
-    checks,
-    marker: ok,
+    ok: true, action: 'preview', seat: seatId, title: APP_TITLE,
+    tag: spec.meta?.tag, home: spec.home,
+    write: [...new Set(spec.writes.map((item) => item.file))],
+    text: spec.pack, upstream: spec.upstream,
   };
 }
 
-function restore(seatId, overrideHome) {
-  const spec = plan(seatId, overrideHome);
-  const restored = [];
-  for (const item of spec.writes) {
-    const home = item.home || spec.home;
-    const bak = path.join(backupDir(home), bakName(item.file));
-    if (fs.existsSync(bak)) {
-      fs.mkdirSync(path.dirname(item.file), { recursive: true });
-      fs.copyFileSync(bak, item.file);
-      restored.push(item.file);
-      continue;
-    }
-    if (!fs.existsSync(item.file)) continue;
-    if (item.kind === "toml" || item.kind === "settings") continue;
-    if (item.kind === "skill") {
-      fs.unlinkSync(item.file);
-      restored.push(item.file);
-      continue;
-    }
-    const text = readText(item.file);
-    if (item.kind === "file" && text.includes(spec.begin)) {
-      fs.unlinkSync(item.file);
-      restored.push(item.file);
-      continue;
-    }
-    if (item.kind === "marked") {
-      const cleaned = wipeMarked(text, spec.begin, spec.end);
-      if (cleaned) writeText(item.file, `${cleaned}\n`);
-      else fs.unlinkSync(item.file);
-      restored.push(item.file);
-    }
+function verify(seatId, overrideHome, { planFn = plan, createTx } = {}) {
+  const spec = planFn(seatId, overrideHome);
+  const checks = [];
+  for (const { root, tx } of transactionGroups(spec, { createTx })) {
+    const result = tx.verify(seatId);
+    checks.push(...result.checks.map((file) => ({
+      file: path.join(root, file.path), exists: file.exists, marker: file.ok,
+      bytes: file.exists ? fs.statSync(path.join(root, file.path)).size : 0,
+    })));
   }
-  return { ok: true, action: "restore", seat: seatId, restored, home: spec.home };
+  const ok = checks.every((item) => item.exists && item.marker);
+  return { ok, action: 'verify', seat: seatId, home: spec.home, checks, marker: ok, upstream: spec.upstream };
+}
+
+function restore(seatId, overrideHome, { planFn = plan, createTx } = {}) {
+  const spec = planFn(seatId, overrideHome);
+  const restored = [];
+  const candidates = [];
+  // Preflight each root before restoring any root. Interrupted prepare/restore
+  // journals are recoverable only when every target is byte- and mode-equal
+  // to a recorded before or after state.
+  for (const { root, tx } of transactionGroups(spec, { createTx })) {
+    const statuses = new Set(['applied', 'preparing', 'restoring', 'partial']);
+    const last = tx.history().find((entry) => entry.seat === seatId && statuses.has(entry.status));
+    if (!last) continue;
+    const states = tx.validateRestore(last.id);
+    candidates.push({ root, tx, id: last.id, states });
+  }
+  for (const candidate of candidates) {
+    candidate.tx.restore(candidate.id);
+    candidate.restored = candidate.states.filter((state) => !state.isBefore).map((state) => path.join(candidate.root, state.file.path));
+    restored.push(...candidate.restored);
+  }
+  return { ok: true, action: 'restore', seat: seatId, restored, home: spec.home };
 }
 
 function run(seatId, verb, home) {
@@ -484,4 +471,4 @@ function inspectAll() {
   };
 }
 
-module.exports = { PACK_IDS, preview, deploy, verify, restore, run, inspectAll, plan, seatHomes, doubaoSkillsHome, platformDataHome };
+module.exports = { PACK_IDS, preview, deploy, verify, restore, run, inspectAll, plan, basePlan, seatHomes, doubaoSkillsHome, platformDataHome };

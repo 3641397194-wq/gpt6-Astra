@@ -5,6 +5,7 @@ const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const { resolveTarget } = require("./ida-toolbox");
+const { DEEPSEEK_LABEL } = require("../shared/workbench-core");
 
 const SERVER = "ida-pro-mcp";
 const URL = "http://127.0.0.1:13337/mcp";
@@ -231,7 +232,7 @@ function clients(options = {}) {
     { id: "codex", label: "Codex", kind: "toml", file: path.join(home, ".codex", "config.toml"), enabled: false },
     { id: "claude", label: "Claude Code", kind: "json", file: path.join(home, ".claude.json"), keys: ["mcpServers", SERVER], entry: { type: "http", url: URL } },
     { id: "grok", label: "Grok", kind: "toml", file: path.join(home, ".grok", "config.toml"), enabled: true },
-    { id: "deepseek", label: "DeepSeek", kind: "manual", note: "本机 .dsh 没有用户级 MCP 配置文件" },
+    { id: "deepseek", label: DEEPSEEK_LABEL, kind: "manual", note: "在 Harness 当前 profile 中配置 MCP；这里保留手动接入" },
     { id: "glm53", label: "GLM / ZCode", kind: "json", file: path.join(home, ".zcode", "cli", "config.json"), keys: ["mcp", "servers", SERVER], entry: { type: "http", url: URL, enabled: true } },
     { id: "gemini", label: "Gemini", kind: "json", file: path.join(home, ".gemini", "settings.json"), keys: ["mcpServers", SERVER], entry: { httpUrl: URL } },
     { id: "doubao", label: "豆包", kind: "manual", note: "豆包没有 mcp.json。连接器里选 HTTP，地址用下面这一条" },
@@ -311,6 +312,43 @@ function detachSeat(seat, options = {}) {
   blankMcpFile(picked.client.file);
   const after = describe(picked.client);
   return { ok: after.installed !== true, seat, code: after.installed ? "skip" : "off", file: picked.client.file, skipped: row.skipped || "" };
+}
+
+// The one-click installer owns a selected-directory transaction. Describe this
+// connection without creating directories, backing up files, or writing outside
+// that directory; the transaction performs the actual merge and exact restore.
+function planSeatConnection(seat, options = {}) {
+  if (typeof options.root !== "string" || !path.isAbsolute(options.root)) throw new Error("请先明确选择安装目录");
+  const root = path.resolve(options.root);
+  if (seat === "grok") return { code: "manual", message: "Grok 客户端的 MCP 格式各不相同，请按所用客户端手动连接 IDA", writes: [] };
+  const picked = seatClient(seat, { ...options, env: {}, home: root }, false);
+  if (picked.code !== "ready") return { code: picked.code, message: picked.skipped || picked.client?.note || "使用客户端手动连接", writes: [] };
+  const client = picked.client;
+  const relative = path.relative(root, client.file);
+  if (!relative || relative === ".." || relative.startsWith(".." + path.sep) || path.isAbsolute(relative)) {
+    return { code: "manual", message: "此客户端的 IDA 连接位于所选目录之外，请使用单独的 MCP 连接设置", writes: [] };
+  }
+  return {
+    code: "ida", file: client.file,
+    writes: [{ kind: "ida-mcp", file: client.file, home: root, mode: client.kind, keys: client.keys, entry: client.entry, enabled: client.enabled }],
+  };
+}
+
+function patchSeatConnection(text, item) {
+  if (item.mode === "json") return require("./upstream-config").patchJson(text, item);
+  if (item.mode !== "toml") throw new Error("未知 IDA MCP 配置格式");
+  const TOML = require("smol-toml");
+  let data;
+  try { data = TOML.parse(text.replace(/^\uFEFF/, "")); }
+  catch (error) { throw new Error("IDA MCP TOML 解析失败：" + error.message); }
+  const starts = text.split(BEGIN).length - 1, ends = text.split(END).length - 1;
+  if (starts !== ends || starts > 1 || (starts && text.indexOf(END) < text.indexOf(BEGIN))) throw new Error("IDA MCP 配置标记损坏或重复");
+  // An existing unmarked entry belongs to the customer; keep it byte-for-byte.
+  if (!starts && data.mcp_servers && Object.hasOwn(data.mcp_servers, SERVER)) return text;
+  const result = upsertToml(text, item.enabled);
+  try { TOML.parse(result.replace(/^\uFEFF/, "")); }
+  catch (error) { throw new Error("合并后的 IDA MCP TOML 校验失败：" + error.message); }
+  return result;
 }
 
 function tomlBlock(enabled) {
@@ -554,6 +592,8 @@ module.exports = {
   status,
   attachSeat,
   detachSeat,
+  planSeatConnection,
+  patchSeatConnection,
   installClients,
   uninstallClients,
   installPackage,

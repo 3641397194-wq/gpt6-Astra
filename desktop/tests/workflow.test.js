@@ -23,7 +23,7 @@ test("工具健康检查返回结构化状态", () => {
 });
 
 test("工作流实际执行命令并写入证据报告", async () => {
-  const artifactDir = fs.mkdtempSync(path.join(os.tmpdir(), "coldcoffee-workflow-"));
+  const artifactDir = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), "coldcoffee-workflow-"));
   const events = [];
   const engine = new WorkflowEngine({ emit: (event) => events.push(event) });
   const task = engine.start({

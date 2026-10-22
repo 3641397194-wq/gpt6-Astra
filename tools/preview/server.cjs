@@ -2,11 +2,28 @@
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {SeatTransactions,guardPath}=require('../../desktop/src/lib/seat-transactions');
 const {ActivationGate}=require('../../desktop/src/lib/activation-gate');
+const upstream=require('../../desktop/src/lib/upstream-skills');
+const {statusRea}=require('../../desktop/src/lib/upstream-rea-runtime');
+const {PACK_IDS}=require('../../desktop/src/lib/seat-runtime');
 const gate=new ActivationGate();
 const root=path.resolve(__dirname,'../..'),tx=new SeatTransactions(),nonce=crypto.randomBytes(32).toString('hex');
 const routes={'/':'docs/readme-preview.html','/readme-preview':'docs/readme-preview.html','/workbench/':'desktop/src/workbench/index.html','/assets/brand-avatar-v3.png':'desktop/assets/brand-avatar-v3.png','/assets/brand-avatar-v4.png':'desktop/assets/brand-avatar-v4.png','/assets/coldcoffee-manga-v3.png':'desktop/assets/coldcoffee-manga-v3.png','/assets/coldcoffee-manga-v4.png':'desktop/assets/coldcoffee-manga-v4.png','/assets/coldcoffee-manga-v5.jpg':'desktop/assets/coldcoffee-manga-v5.jpg'};
 const prefixes={'/docs/':'docs/','/workbench/':'desktop/src/workbench/','/shared/':'desktop/src/shared/','/assets/community/':'desktop/assets/community/'};
 const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.svg':'image/svg+xml','.md':'text/plain; charset=utf-8'};
+function previewRoot(seat){
+ if(!PACK_IDS.includes(seat))throw new Error('未知席位');
+ const base=path.join(root,'.coldbrew','interactive-preview');
+ return path.join(base,seat==='cursor'?'.cursor':seat==='mimo'?'.config/mimocode':seat==='kimi'?'.kimi-code':seat);
+}
+function layout(seat){return seat==='deepseek'?'deepseek-harness':seat==='glm53'?'zcode':'default';}
+function inspectUpstream(seat){
+ const selected=previewRoot(seat),check=new SeatTransactions();
+ check.select(selected,{layout:layout(seat)});
+ const checked=check.verify(seat),summary=checked.upstream;
+ return {ok:checked.ok,seat,root:selected,upstream:{...summary,verified:checked.ok,
+  runtime:statusRea(selected),message:'只核对项目内合成目录；未读取个人配置。',
+  mcp:{...summary.mcp,configured:summary.mcp.configured&&checked.ok,message:checked.ok?summary.mcp.message:'隔离目录尚未安装或内容未匹配；请在高级预览中写入后再核对。'}}};
+}
 function json(res,status,data){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(data));}
 http.createServer(async(req,res)=>{
  if(req.headers.host!=='127.0.0.1:8772'&&req.headers.host!=='localhost:8772')return json(res,403,{error:'Host rejected'});
@@ -19,7 +36,9 @@ http.createServer(async(req,res)=>{
    if(action==='gate-create')result=gate.create(payload.seat);
    else if(action==='gate-input')result=gate.input(payload.id,payload.text);
    else if(action==='gate-reset'){gate.reset(payload.id);result={ok:true};}
-   else if(action==='select'){if(!['codex','claude','grok','deepseek','glm53','gemini'].includes(payload.seat))throw new Error('未知席位');result=tx.select(path.join(root,'.coldbrew','interactive-preview',payload.seat));}
+   else if(action==='upstream-catalog')result=upstream.catalog();
+   else if(action==='upstream-status')result=inspectUpstream(payload.seat);
+   else if(action==='select'||action==='auto-select'){const selected=previewRoot(payload.seat);result={...tx.select(selected,{layout:layout(payload.seat)}),exists:fs.existsSync(selected),source:'隔离预览专用合成目录 · 不读取个人目录',layout:layout(payload.seat)};}
    else if(action==='preview')result=tx.preview(payload.seat);
    else if(action==='file')result=tx.file(payload.id,payload.index);
    else if(action==='deploy'){if(payload.confirm!==true)throw new Error('请先确认写入');result=tx.deploy(payload.id);}

@@ -1,0 +1,2199 @@
+{
+  "runtime": {
+    "bundle": "rea-runtime.bundle.json.gz",
+    "bytes": 28962505,
+    "entry": "scripts/rea.mjs",
+    "fileCount": 1776,
+    "id": "rea-runtime",
+    "installArgs": [
+      "ci",
+      "--omit=dev",
+      "--omit=optional",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund"
+    ],
+    "integrity": "sha512-yhIx2ioJYYT1C/tONfYeitC6LhnKmCh+ZwRUOgYuhSc733lGhkkt73zhug9WmLgxoMdKuqIYGCoBfD4fXkOhFw==",
+    "license": "MIT",
+    "nodeRange": "^22.19.0 || ^24.11.0 || >=26.0.0",
+    "package": "rea-agents",
+    "publishedFileCount": 1775,
+    "repository": "https://github.com/morluto/rea",
+    "sha256": "ccb46a185cabd506ef4368ad0774104a445a3aa7cd98e40913be79888407f99d",
+    "sourceLock": {
+      "commit": "833136507dd79d959340b09862a53af344e4f1b3",
+      "directDependencyFieldsVerified": [
+        "dependencies",
+        "optionalDependencies",
+        "devDependencies"
+      ],
+      "path": "package-lock.json",
+      "repository": "https://github.com/morluto/rea",
+      "sha256": "b0d2cf0da353f85a24e7de55521864fb1eae986d5469ef64ee932878dc5b823e"
+    },
+    "tarball": "https://registry.npmjs.org/rea-agents/-/rea-agents-6.7.0.tgz",
+    "tarballSha256": "20958a66dba1a011e50a486beb9463a343128ed368c984f94065362c13f51f90",
+    "version": "6.7.0"
+  },
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "author": "morluto",
+      "bundle": "rea.bundle.json.gz",
+      "bytes": 83786634,
+      "commit": "833136507dd79d959340b09862a53af344e4f1b3",
+      "fileCount": 9296,
+      "gitTreeEntryCount": 4601,
+      "id": "rea",
+      "license": "MIT",
+      "licenseFiles": [
+        "LICENSE",
+        "THIRD_PARTY_NOTICES.md",
+        "third_party/evmole/LICENSE",
+        "third_party/pwndbg/LICENSE.md"
+      ],
+      "name": "REA · Reverse Engineer Anything",
+      "originalFileCount": 4596,
+      "repository": "https://github.com/morluto/rea",
+      "sha256": "5ef8368a743419e1c741902c23bd6474cc4f5800e0e7977459d162e887aa072f",
+      "skillCount": 5,
+      "skills": [
+        {
+          "description": "Optimize REA providers and shared analysis workflows for agent context, latency, CPU, and memory while preserving correctness and Evidence. Use for analysis bottlenecks and cache or query design; CI/test-suite optimization belongs to rea-ci-tests-audit.",
+          "name": "rea-analysis-optimization",
+          "path": ".agents/skills/rea-analysis-optimization/SKILL.md"
+        },
+        {
+          "description": "Prepare or rewrite REA release changelogs and GitHub release notes from pinned Git history, with verified contributor thanks and Release Please synchronization.",
+          "name": "rea-changelog-update",
+          "path": ".agents/skills/rea-changelog-update/SKILL.md"
+        },
+        {
+          "description": "Audit REA CI and test suites for correctness, fixture drift, false passes, and measured performance; use for suite or workflow investigations and efficiency changes, rather than ordinary feature testing or a single test failure.",
+          "name": "rea-ci-tests-audit",
+          "path": ".agents/skills/rea-ci-tests-audit/SKILL.md"
+        },
+        {
+          "description": "Design or change REA investigation tools, CLI/MCP contracts, provider capabilities, and Evidence semantics.",
+          "name": "rea-tool-design",
+          "path": ".agents/skills/rea-tool-design/SKILL.md"
+        },
+        {
+          "description": "Reverse engineer native, managed, Electron/JavaScript, packaged, firmware, and browser targets with REA. Use shipped-artifact or requested runtime evidence to explain features, compare versions, decompile code, or guide a reconstruction. Skip REA for ordinary source-repository architecture analysis.",
+          "name": "reverse-engineer-anything",
+          "path": ".agents/skills/reverse-engineer-anything/SKILL.md"
+        }
+      ],
+      "submodules": [
+        {
+          "bytes": 2182544,
+          "commit": "4fdab3d464d97b68e0af9088df3f9e2e1545b21c",
+          "fileCount": 210,
+          "included": true,
+          "nestedSubmodules": [],
+          "path": "third_party/binwalk",
+          "skills": [],
+          "symlinks": [],
+          "url": "https://github.com/ReFirmLabs/binwalk.git"
+        },
+        {
+          "bytes": 1135345,
+          "commit": "effeb734fc570c32650f88b159608979dc7b423e",
+          "fileCount": 64,
+          "included": true,
+          "nestedSubmodules": [],
+          "path": "third_party/ghidra-nativeaot",
+          "skills": [],
+          "symlinks": [],
+          "url": "https://github.com/Washi1337/ghidra-nativeaot.git"
+        },
+        {
+          "bytes": 270622,
+          "commit": "5844800a486d2248fa949b74c9896285f5b54de2",
+          "fileCount": 50,
+          "included": true,
+          "nestedSubmodules": [],
+          "path": "third_party/jadx-headless-mcp",
+          "skills": [
+            {
+              "description": "Load an Android APK / XAPK / DEX / JAR into the jadx-headless MCP for static analysis. Accepts a local file path, or a package name to fetch from APKPure via apkeep. Use when the user asks to open/load an APK in jadx (e.g. \"open com.example.app in jadx\", \"load ./demo.xapk\", \"/jadx-headless:open-apk <path|package>\").",
+              "name": "open-apk",
+              "path": "third_party/jadx-headless-mcp/skills/open-apk/SKILL.md"
+            }
+          ],
+          "symlinks": [],
+          "url": "https://github.com/1013503897/jadx-headless-mcp.git"
+        },
+        {
+          "bytes": 2143292,
+          "commit": "1fcc7a0a584a70a96c31f5a276c20944d199a089",
+          "fileCount": 2873,
+          "included": true,
+          "nestedSubmodules": [],
+          "path": "third_party/unblob",
+          "skills": [],
+          "symlinks": [
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/archive/cpio/cpio_binary/__output__/duplicate_entries.cpio_extract/colors/purple",
+              "sha256": "c3c4b7566c4989508d7cf523fdd41cbfd6b4d327e25e20206d5bec62297c069e",
+              "targetBase64": "cHVycGxlLnR4dA=="
+            },
+            {
+              "bytes": 5,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/archive/sevenzip/__output__/multi-sevenzip-dangling-symlinks.tar_extract/dangling-symlink.7z.001",
+              "sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+              "targetBase64": "aGVsbG8="
+            },
+            {
+              "bytes": 5,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/archive/sevenzip/__output__/multi-sevenzip-dangling-symlinks.tar_extract/dangling-symlink.7z.002",
+              "sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+              "targetBase64": "aGVsbG8="
+            },
+            {
+              "bytes": 5,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/archive/sevenzip/__output__/multi-sevenzip-dangling-symlinks.tar_extract/dangling-symlink.7z.003",
+              "sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+              "targetBase64": "aGVsbG8="
+            },
+            {
+              "bytes": 13,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/archive/tar/__output__/absolute.tar_extract/absolute/absolute-symlink",
+              "sha256": "344ed139c3e515546e30b7c762820baf635a7309f5f5faf3b04921a439a5e12c",
+              "targetBase64": "YWJzb2x1dGUtZmlsZQ=="
+            },
+            {
+              "bytes": 13,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/archive/tar/__output__/absolute.tar_extract/absolute/link_to_etc_shadow",
+              "sha256": "f388d2e18de1abf7ef884885885cde6375c4c40cede0456a95acba6908b13937",
+              "targetBase64": "Li4vZXRjL3NoYWRvdw=="
+            },
+            {
+              "bytes": 4,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/archive/tar/__output__/linktest_missing_dir.tar_extract/linktest/link",
+              "sha256": "14e0ffdc8215c81da0cde40f581237ee35177ddac4f1fc7613cad3004798d25f",
+              "targetBase64": "b3JpZw=="
+            },
+            {
+              "bytes": 14,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/archive/tar/__output__/symlinks.tar_extract/test/sbin/cp",
+              "sha256": "85d4dd4ef86ceeb5656dbcb05c167fdbae84349ede4025f920e4aea8750c1757",
+              "targetBase64": "Li4vYmluL2J1c3lib3g="
+            },
+            {
+              "bytes": 14,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/archive/tar/__output__/symlinks.tar_extract/test/sbin/find",
+              "sha256": "85d4dd4ef86ceeb5656dbcb05c167fdbae84349ede4025f920e4aea8750c1757",
+              "targetBase64": "Li4vYmluL2J1c3lib3g="
+            },
+            {
+              "bytes": 14,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/archive/tar/__output__/symlinks.tar_extract/test/sbin/ln",
+              "sha256": "85d4dd4ef86ceeb5656dbcb05c167fdbae84349ede4025f920e4aea8750c1757",
+              "targetBase64": "Li4vYmluL2J1c3lib3g="
+            },
+            {
+              "bytes": 14,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/archive/tar/__output__/symlinks.tar_extract/test/sbin/ls",
+              "sha256": "85d4dd4ef86ceeb5656dbcb05c167fdbae84349ede4025f920e4aea8750c1757",
+              "targetBase64": "Li4vYmluL2J1c3lib3g="
+            },
+            {
+              "bytes": 17,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/archive/tar/__output__/symlinks.tar_extract/test/sbin/mv",
+              "sha256": "a45f328e8f8527741de5e5eb29abb79256c4d8580829e68d00b62bffc5a44390",
+              "targetBase64": "Li4vLi4vYmluL2J1c3lib3g="
+            },
+            {
+              "bytes": 5,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/compression/gzip/__output__/multi-gzip-dangling-symlinks.tar_extract/dangling-symlink.gz.a",
+              "sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+              "targetBase64": "aGVsbG8="
+            },
+            {
+              "bytes": 5,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/compression/gzip/__output__/multi-gzip-dangling-symlinks.tar_extract/dangling-symlink.gz.b",
+              "sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+              "targetBase64": "aGVsbG8="
+            },
+            {
+              "bytes": 5,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/compression/gzip/__output__/multi-gzip-dangling-symlinks.tar_extract/dangling-symlink.gz.c",
+              "sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+              "targetBase64": "aGVsbG8="
+            },
+            {
+              "bytes": 22,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/btrfs_stream/__output__/sample.v1.none.bin_extract/16-5254007.btrfs_stream_extract/symlink_hello",
+              "sha256": "fda0a7dd24b188544c67a6432685ae5499f8182a630e9ed67c2d6486723f92fe",
+              "targetBase64": "ZGF0YV9zYW1wbGVzL2hlbGxvLnR4dA=="
+            },
+            {
+              "bytes": 22,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/btrfs_stream/__output__/sample.v2.none.bin_extract/16-5250324.btrfs_stream_extract/symlink_hello",
+              "sha256": "fda0a7dd24b188544c67a6432685ae5499f8182a630e9ed67c2d6486723f92fe",
+              "targetBase64": "ZGF0YV9zYW1wbGVzL2hlbGxvLnR4dA=="
+            },
+            {
+              "bytes": 3,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/extfs/__output__/f_badsymlinks.img_extract/attr_fastlink",
+              "sha256": "2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae",
+              "targetBase64": "Zm9v"
+            },
+            {
+              "bytes": 62,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/extfs/__output__/f_badsymlinks.img_extract/attr_link",
+              "sha256": "f506898cc7c2e092f9eb9fadae7ba50383f5b46a2a4fe5597dbb553a78981268",
+              "targetBase64": "YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE="
+            },
+            {
+              "bytes": 62,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/extfs/__output__/f_badsymlinks.img_extract/bad_link_size",
+              "sha256": "f506898cc7c2e092f9eb9fadae7ba50383f5b46a2a4fe5597dbb553a78981268",
+              "targetBase64": "YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE="
+            },
+            {
+              "bytes": 62,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/extfs/__output__/f_badsymlinks.img_extract/high_link",
+              "sha256": "f506898cc7c2e092f9eb9fadae7ba50383f5b46a2a4fe5597dbb553a78981268",
+              "targetBase64": "YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE="
+            },
+            {
+              "bytes": 63,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/extfs/__output__/f_badsymlinks.img_extract/long_fastlink",
+              "sha256": "f152be2c851cbd99a7ffc9cad92cf32652b308f87e299b192a4c8a02078434b9",
+              "targetBase64": "YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFh0r4I"
+            },
+            {
+              "bytes": 1023,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/extfs/__output__/f_badsymlinks.img_extract/long_link",
+              "sha256": "bc21b2851f3c650542fbce4c20c876064383e1c8ea1a5a385cea362df74e7f40",
+              "targetBase64": "YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFh"
+            },
+            {
+              "bytes": 8,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/dir_1/hosts",
+              "sha256": "0af934d57f150547a45162832d1cf307d7c1762070bd1283553ea02baeae1e5c",
+              "targetBase64": "Li4vaG9zdHM="
+            },
+            {
+              "bytes": 13,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/dir_1/passwd",
+              "sha256": "7fef78f53440346c04dac510d59620d42ec06e3441b45b527edb53a0e4624058",
+              "targetBase64": "Li4vZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 8,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/dir_2/hosts",
+              "sha256": "0af934d57f150547a45162832d1cf307d7c1762070bd1283553ea02baeae1e5c",
+              "targetBase64": "Li4vaG9zdHM="
+            },
+            {
+              "bytes": 13,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/dir_2/passwd",
+              "sha256": "7fef78f53440346c04dac510d59620d42ec06e3441b45b527edb53a0e4624058",
+              "targetBase64": "Li4vZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 8,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/dir_3/hosts",
+              "sha256": "0af934d57f150547a45162832d1cf307d7c1762070bd1283553ea02baeae1e5c",
+              "targetBase64": "Li4vaG9zdHM="
+            },
+            {
+              "bytes": 13,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/dir_3/passwd",
+              "sha256": "7fef78f53440346c04dac510d59620d42ec06e3441b45b527edb53a0e4624058",
+              "targetBase64": "Li4vZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 8,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/dir_4/hosts",
+              "sha256": "0af934d57f150547a45162832d1cf307d7c1762070bd1283553ea02baeae1e5c",
+              "targetBase64": "Li4vaG9zdHM="
+            },
+            {
+              "bytes": 13,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/dir_4/passwd",
+              "sha256": "7fef78f53440346c04dac510d59620d42ec06e3441b45b527edb53a0e4624058",
+              "targetBase64": "Li4vZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 8,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/dir_5/hosts",
+              "sha256": "0af934d57f150547a45162832d1cf307d7c1762070bd1283553ea02baeae1e5c",
+              "targetBase64": "Li4vaG9zdHM="
+            },
+            {
+              "bytes": 13,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/dir_5/passwd",
+              "sha256": "7fef78f53440346c04dac510d59620d42ec06e3441b45b527edb53a0e4624058",
+              "targetBase64": "Li4vZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_1_1",
+              "sha256": "eeb30b716ae5014bc688225c6f31da4c7c8e84d984299bd1499b86c658d0ab7a",
+              "targetBase64": "ZGlyXzEvZmlsZV8xLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_1_2",
+              "sha256": "90710b915fd7d63ff8dff4df233051212762069993ec319ad97dc831178de3ba",
+              "targetBase64": "ZGlyXzEvZmlsZV8yLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_1_3",
+              "sha256": "2fb1241369f6045c0cb5ac78525b04d04b97ea4024b5cc0fe95d2fa09793375b",
+              "targetBase64": "ZGlyXzEvZmlsZV8zLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_1_4",
+              "sha256": "c8ee571b0d82a1dd56be7f416cf929077e63f8c967c93a0d942bf4dfdd564cd3",
+              "targetBase64": "ZGlyXzEvZmlsZV80LnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_1_5",
+              "sha256": "2c740fa4e74c2562bea53ce33db03a0fc16336a9a1ffed9cb6b1c3b103c665c3",
+              "targetBase64": "ZGlyXzEvZmlsZV81LnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_2_1",
+              "sha256": "e125021988985251f999f1170f42e5f241e096a582337a4e37d95571f45d797a",
+              "targetBase64": "ZGlyXzIvZmlsZV8xLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_2_2",
+              "sha256": "efbed7c45cd2dc476389e347b83ff76d00db74e23ea958ca809bd6be671aea2d",
+              "targetBase64": "ZGlyXzIvZmlsZV8yLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_2_3",
+              "sha256": "062dc9448c2439fa0588f6be51e6bb80c11ca8f6c6e8fa253d4291fb0d747ef6",
+              "targetBase64": "ZGlyXzIvZmlsZV8zLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_2_4",
+              "sha256": "b222611fb835426febaaaa849591979d8176b8167eb665eec4fa797277b128ad",
+              "targetBase64": "ZGlyXzIvZmlsZV80LnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_2_5",
+              "sha256": "c5acf35a96c28d4d570ab32f053d9ed7fb7e30a2647424b4f929b76bd7ffcfca",
+              "targetBase64": "ZGlyXzIvZmlsZV81LnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_3_1",
+              "sha256": "c81be316baf8ac44db79c544459f436b5e22d1bec541c055e23de15a12933053",
+              "targetBase64": "ZGlyXzMvZmlsZV8xLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_3_2",
+              "sha256": "56178217023a1e890acff17d526acad7671abdd89ceb78a2398ad73e07fed3a3",
+              "targetBase64": "ZGlyXzMvZmlsZV8yLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_3_3",
+              "sha256": "49cb727d9b78a58b5c92495200b94d2c6bed7a254e78a328427e3119d3378912",
+              "targetBase64": "ZGlyXzMvZmlsZV8zLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_3_4",
+              "sha256": "f69646f28b54802e4010046db0daae3191fc3fd0272610d8a7a58e21c768c865",
+              "targetBase64": "ZGlyXzMvZmlsZV80LnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_3_5",
+              "sha256": "b4064e5c9e8f6ee297ee9cb708b36065703cf8119ae1f1f5b6b1e5e4cd149080",
+              "targetBase64": "ZGlyXzMvZmlsZV81LnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_4_1",
+              "sha256": "02e50a303081164b6506f68a17d759a92b3e58a2176ac93d9f68187bf5e395d4",
+              "targetBase64": "ZGlyXzQvZmlsZV8xLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_4_2",
+              "sha256": "30ed5b2f5de9063b8264a23244ed5224d54f6d413950ec16f4ee03dd39b94c4d",
+              "targetBase64": "ZGlyXzQvZmlsZV8yLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_4_3",
+              "sha256": "fc94b34100b282e5aa1b73891704ff9bc497bc37d7b66d5811b79c1ec0c26fa0",
+              "targetBase64": "ZGlyXzQvZmlsZV8zLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_4_4",
+              "sha256": "30c1f3b67d5865d004cae5553ad03d3a22ce7e43ff96ea2d1de7a801bff37115",
+              "targetBase64": "ZGlyXzQvZmlsZV80LnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_4_5",
+              "sha256": "b5e27036eaf1db90e0291b9813459813f9ccc6da5660c3d1d797e5861c10589f",
+              "targetBase64": "ZGlyXzQvZmlsZV81LnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_5_1",
+              "sha256": "1fd0573157076546f57969a87b6b63d92361758697f58c5a3e7004389a664cdf",
+              "targetBase64": "ZGlyXzUvZmlsZV8xLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_5_2",
+              "sha256": "2f4b389fd17da70f5f09ad0bf1daba9ae3669e318841fd8e923265ec0881b23c",
+              "targetBase64": "ZGlyXzUvZmlsZV8yLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_5_3",
+              "sha256": "214a3ba26cb2453dd485bf1d1039c0b557714f45b198bd04d472961e5d1abfc2",
+              "targetBase64": "ZGlyXzUvZmlsZV8zLnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_5_4",
+              "sha256": "a0bc40ace8e8616f9582ba3ebf8263f8def41899e4e8aa490d58232053214504",
+              "targetBase64": "ZGlyXzUvZmlsZV80LnR4dA=="
+            },
+            {
+              "bytes": 16,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/romfs/__output__/fruits.romfs_extract/slink_5_5",
+              "sha256": "2a9e0050cc7710f94b37ad7afb6203323901a0174b9531724afd888fce8a4615",
+              "targetBase64": "ZGlyXzUvZmlsZV81LnR4dA=="
+            },
+            {
+              "bytes": 37,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/squashfs/squashfs_v4_le/__output__/bad_symlink.squashfs_extract/badlink",
+              "sha256": "e6b4ebae00cd7b96272a480c669abf7ee9dd839b4a9f40d8dfe71cbf478a657c",
+              "targetBase64": "ZXRjL3NzbC9wcml2YXRlL3NzbC1jZXJ0LXNuYWtlb2lsLmtleQ=="
+            },
+            {
+              "bytes": 9,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/squashfs/squashfs_v4_le/__output__/squashfs_v4.specfile.bin_extract/file.symlink",
+              "sha256": "734cad14909bedfafb5b273b6b0eb01fbfa639587d217f78ce9639bba41f4415",
+              "targetBase64": "aGVsbG8udHh0"
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/ufs/ufs1/__output__/ufs1_min.img_extract/symlink_foo",
+              "sha256": "c693549a5789bbd313c26f966f755a329148bb47903a724f24e8d3d40fd86130",
+              "targetBase64": "bW50L3Vmc190ZXN0L2Zvby50eHQ="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/ufs/ufs2/__output__/ufs2_min.img_extract/symlink_foo",
+              "sha256": "c693549a5789bbd313c26f966f755a329148bb47903a724f24e8d3d40fd86130",
+              "targetBase64": "bW50L3Vmc190ZXN0L2Zvby50eHQ="
+            },
+            {
+              "bytes": 7,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/links.yaffs_extract/dir/symlink",
+              "sha256": "db363ce95e1516143c5344f29ed91b8b2c892543be650e18b2ae6a625d2819be",
+              "targetBase64": "Li4vZmlsZQ=="
+            },
+            {
+              "bytes": 4,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/links.yaffs_extract/symlink",
+              "sha256": "3b9c358f36f0a31b6ad3e14f309c7cf198ac9246e8316f9ce543d5b19ac02b80",
+              "targetBase64": "ZmlsZQ=="
+            },
+            {
+              "bytes": 12,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/links.yaffs_extract/symlink2",
+              "sha256": "c3d7f3b5b2b77b5bf462e4f0f10c1fbe8ad8edae60057fd18b66758722d0478b",
+              "targetBase64": "ZGlyL2hhcmRsaW5r"
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/malformed.2048.16.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/malformed.2048.16.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/malformed.2048.16.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/malformed.2048.16.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.128.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.128.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.128.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.128.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.128.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.128.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.16.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.16.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.16.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.16.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.16.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.16.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.256.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.256.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.256.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.256.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.256.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.256.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.32.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.32.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.32.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.32.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.32.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.32.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.512.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.512.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.512.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.512.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.512.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.512.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.64.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.64.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.64.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.64.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.64.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.16384.64.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.128.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.128.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.128.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.128.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.128.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.128.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.16.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.16.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.16.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.16.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.16.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.16.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.256.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.256.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.256.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.256.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.256.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.256.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.32.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.32.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.32.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.32.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.32.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.32.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.512.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.512.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.512.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.512.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.512.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.512.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.64.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.64.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.64.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.64.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.64.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.2048.64.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.128.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.128.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.128.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.128.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.128.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.128.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.16.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.16.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.16.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.16.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.16.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.16.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.256.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.256.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.256.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.256.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.256.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.256.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.32.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.32.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.32.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.32.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.32.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.32.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.512.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.512.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.512.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.512.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.512.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.512.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.64.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.64.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.64.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.64.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.64.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.4096.64.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.128.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.128.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.128.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.128.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.128.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.128.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.16.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.16.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.16.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.16.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.16.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.16.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.256.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.256.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.256.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.256.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.256.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.256.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.32.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.32.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.32.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.32.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.32.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.32.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.512.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.512.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.512.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.512.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.512.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.512.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.64.ecc.be.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.64.ecc.be.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.64.ecc.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.64.ecc.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            },
+            {
+              "bytes": 10,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.64.le.yaffs2_extract/passwd",
+              "sha256": "af896a5f354b5297fb7dde9efe8f2b1de11e2fc5315fe28ce1d7468c1953b7ab",
+              "targetBase64": "ZXRjL3Bhc3N3ZA=="
+            },
+            {
+              "bytes": 20,
+              "mode": "120000",
+              "path": "third_party/unblob/tests/integration/filesystem/yaffs/__output__/sample.8192.64.le.yaffs2_extract/vegetables/tomato.txt",
+              "sha256": "ff22460677aa5d89fa5a7190506e4d62ba9540f47e467307b0eb6a50438891e2",
+              "targetBase64": "Li4vZnJ1aXRzL3RvbWF0by50eHQ="
+            }
+          ],
+          "url": "https://github.com/onekey-sec/unblob.git"
+        },
+        {
+          "bytes": 18914470,
+          "commit": "8219bf5016a063d7fb215101a8c45d5959ec733f",
+          "fileCount": 1503,
+          "included": true,
+          "nestedSubmodules": [],
+          "path": "third_party/wakaru",
+          "skills": [
+            {
+              "description": "Turn minified, bundled, or transpiled JavaScript back into readable modules. Use when you encounter unreadable production JS — a webpack/esbuild/Metro/Rollup bundle, a minified vendor script, Babel/TypeScript/SWC-transpiled output, or a single mangled .js file — and need to read, audit, debug it, or recover a best-effort SFC artifact from compiled Vue 3 component code. Not a deobfuscator.",
+              "name": "wakaru",
+              "path": "third_party/wakaru/skills/wakaru/SKILL.md"
+            }
+          ],
+          "symlinks": [
+            {
+              "bytes": 9,
+              "mode": "120000",
+              "path": "third_party/wakaru/CLAUDE.md",
+              "sha256": "a54ff182c7e8acf56acfd6e4b9c3ff41e2c41a31c9b211b2deb9df75d9a478f9",
+              "targetBase64": "QUdFTlRTLm1k"
+            }
+          ],
+          "url": "https://github.com/pionxzh/wakaru.git"
+        }
+      ],
+      "symlinks": [],
+      "version": "6.7.0",
+      "windowsPathIssues": [
+        {
+          "path": "third_party/unblob/tests/integration/archive/ar/__output__/a1x01.ar_extract/�\u0001rvíztűrő tükörfúrógép",
+          "reasons": [
+            "invalid-character"
+          ]
+        },
+        {
+          "path": "third_party/unblob/tests/integration/archive/ar/__output__/bsd_multi_names.ar_extract/a_very_long_name_for_the_gnu_type_header_so_it_can_overflow_the_standard_name_length_with_space ",
+          "reasons": [
+            "trailing-dot-or-space"
+          ]
+        },
+        {
+          "path": "third_party/unblob/tests/integration/archive/ar/__output__/gnu_multi_names.ar_extract/a_very_long_name_for_the_gnu_type_header_so_it_can_overflow_the_standard_name_length_with_space ",
+          "reasons": [
+            "trailing-dot-or-space"
+          ]
+        },
+        {
+          "path": "third_party/unblob/tests/integration/archive/ar/__output__/msvc_lib.ar_extract/a_very_long_name_for_the_gnu_type_header_so_it_can_overflow_the_standard_name_length_with_space ",
+          "reasons": [
+            "trailing-dot-or-space"
+          ]
+        },
+        {
+          "path": "third_party/unblob/tests/integration/archive/dmg/__output__/fruits_osx.compressed.dmg_extract/fruits/.HFS+ Private Directory Data\r/.gitkeep",
+          "reasons": [
+            "invalid-character"
+          ]
+        },
+        {
+          "path": "third_party/unblob/tests/integration/archive/dmg/__output__/fruits_osx.dmg_extract/fruits/.HFS+ Private Directory Data\r/.gitkeep",
+          "reasons": [
+            "invalid-character"
+          ]
+        },
+        {
+          "path": "third_party/unblob/tests/integration/archive/tar/__output__/dual_entry.tar_extract/ppc64-POWER7-64cpu/proc/device-tree/hmc-managed?",
+          "reasons": [
+            "invalid-character"
+          ]
+        },
+        {
+          "path": "third_party/unblob/tests/integration/compression/gzip/__output__/path-traversal.gz_extract/whatever......",
+          "reasons": [
+            "trailing-dot-or-space"
+          ]
+        },
+        {
+          "path": "third_party/unblob/tests/integration/filesystem/extfs/__output__/debugfs.quoting.img_extract/evil\"dir/nested.ext",
+          "reasons": [
+            "invalid-character"
+          ]
+        },
+        {
+          "path": "third_party/unblob/tests/integration/filesystem/extfs/__output__/debugfs.quoting.img_extract/evil\"dir/nested.ext_extract/lost+found/.gitkeep",
+          "reasons": [
+            "invalid-character"
+          ]
+        },
+        {
+          "path": "third_party/unblob/tests/integration/filesystem/extfs/__output__/debugfs.quoting.img_extract/evil\"dir/nested.ext_extract/marker.txt",
+          "reasons": [
+            "invalid-character"
+          ]
+        }
+      ]
+    },
+    {
+      "author": "zhaoxuya520",
+      "bundle": "reverse-skill.bundle.json.gz",
+      "bytes": 8369408,
+      "commit": "cab634bd855fc287f6e420c1f36fd1a6b9245960",
+      "fileCount": 599,
+      "gitTreeEntryCount": 599,
+      "id": "reverse-skill",
+      "license": "MIT",
+      "licenseFiles": [
+        "CTF-Sandbox-Orchestrator/LICENSE",
+        "LICENSE",
+        "skills/pentest-tools/src-hunter/LICENSE"
+      ],
+      "name": "Reverse Skill",
+      "originalFileCount": 599,
+      "repository": "https://github.com/zhaoxuya520/reverse-skill",
+      "sha256": "b21f059fdc1ff76163356082ea98f0f8b51f39a7bdf106f22416b2fb150fc289",
+      "skillCount": 89,
+      "skills": [
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for AD CS, certificate templates, enrollment rights, EKUs, SAN controls, PKINIT, certificate mapping, and cert-based privilege paths. Use when the user asks about ESC-style abuse, certificate templates, enrollment agents, EKUs, SAN or subject controls, smartcard or PKINIT logon, CA policy, or how an issued cert turns into accepted privilege. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-ad-certificate-abuse",
+          "path": "CTF-Sandbox-Orchestrator/competition-ad-certificate-abuse/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for AI-agent, prompt-injection, MCP or toolchain, cloud, container, CI/CD, and supply-chain challenges. Use when the user asks to analyze prompt-to-tool flows, retrieval poisoning, mounted secrets, deployment drift, runtime-vs-manifest mismatches, registry provenance, or CI-produced artifacts under sandbox assumptions. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-agent-cloud",
+          "path": "CTF-Sandbox-Orchestrator/competition-agent-cloud/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for Android APK hooking, Frida tracing, request-signing recovery, SSL pinning bypass, JNI boundary inspection, and app trust-boundary analysis. Use when the user asks to hook an APK, inspect signer logic, trace Java or native boundaries, bypass pinning or root checks, inspect shared prefs or app databases, or replay accepted mobile requests. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-android-hooking",
+          "path": "CTF-Sandbox-Orchestrator/competition-android-hooking/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for browser cookies, localStorage, sessionStorage, IndexedDB, Cache Storage, service workers, offline caches, and client-side session persistence. Use when the user asks to inspect browser state, replay cached auth or session behavior, explain why a page behaves differently after load, or trace how stored client state changes requests, rendering, or access. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-browser-persistence",
+          "path": "CTF-Sandbox-Orchestrator/competition-browser-persistence/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for source maps, build manifests, chunk registries, emitted bundles, obfuscated loader flow, and frontend runtime recovery. Use when the user asks to reconstruct served JavaScript structure, inspect source maps or chunk maps, trace bundle loading, recover hidden routes or APIs from emitted assets, or explain runtime behavior from built frontend artifacts. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-bundle-sourcemap-recovery",
+          "path": "CTF-Sandbox-Orchestrator/competition-bundle-sourcemap-recovery/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for cloud metadata services, instance identity, workload identity, link-local credential paths, role assumption, and metadata-to-privilege trust edges. Use when the user asks to inspect metadata-service access, instance credentials, pod or workload identity, link-local token paths, SSRF-to-metadata escalation, or explain how metadata-derived credentials turn into accepted cloud or control-plane privilege. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-cloud-metadata-path",
+          "path": "CTF-Sandbox-Orchestrator/competition-cloud-metadata-path/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for live container runtime analysis, mounted secrets, sidecars, namespaces, init containers, entrypoint drift, and route-to-container resolution. Use when the user asks why a live container differs from manifests, where a mounted secret is consumed, how a sidecar or init container changes runtime state, or which route resolves to which live container. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-container-runtime",
+          "path": "CTF-Sandbox-Orchestrator/competition-container-runtime/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for crypto, encoding, steganography, APK, IPA, and mobile trust-boundary challenges. Use when the user asks to decode a blob, recover a transform chain or key, inspect hidden media payloads, hook an APK or IPA signer, inspect app storage, or replay mobile request-signing logic. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-crypto-mobile",
+          "path": "CTF-Sandbox-Orchestrator/competition-crypto-mobile/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for custom binary or text protocol recovery, handshake reconstruction, framing, sequence control, checksums, stateful replay, and accepted-session reproduction. Use when the user asks to decode an unknown protocol, recover custom framing, build a replay harness, satisfy sequence or checksum rules, replay a captured session, or prove the smallest message order that reaches an accepted branch. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-custom-protocol-replay",
+          "path": "CTF-Sandbox-Orchestrator/competition-custom-protocol-replay/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for DPAPI masterkeys, vault blobs, browser credential stores, protected secrets, domain backup keys, and secret-to-acceptance replay chains. Use when the user asks to inspect DPAPI blobs or masterkeys, recover browser or vault credentials, trace DPAPI context or backup-key use, or explain how protected Windows secrets become accepted access or privilege. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-dpapi-credential-chain",
+          "path": "CTF-Sandbox-Orchestrator/competition-dpapi-credential-chain/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for file uploads, imports, previews, archive extraction, format conversion, parser invocation, and deserialization chains. Use when the user asks to inspect an upload or import path, trace archive extraction, preview or converter behavior, explain how a file reaches a parser or deserializer, or connect one uploaded artifact to the decisive backend effect. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-file-parser-chain",
+          "path": "CTF-Sandbox-Orchestrator/competition-file-parser-chain/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for firmware images, partition tables, boot chains, update packages, extracted filesystems, embedded configs, and device-facing trust boundaries. Use when the user asks to unpack firmware, map partition layout, inspect bootloader or init chains, recover update keys or credentials, trace config loading, or explain how a device surface reaches the decisive artifact. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-firmware-layout",
+          "path": "CTF-Sandbox-Orchestrator/competition-firmware-layout/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for DFIR chronology, cross-artifact correlation, persistence chains, and incident timeline reconstruction. Use when the user asks to build a forensic timeline, correlate EVTX, PCAP, registry, disk, memory, mailbox, or browser artifacts, explain the order of attacker actions, or pinpoint the stage where the decisive artifact appears. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-forensic-timeline",
+          "path": "CTF-Sandbox-Orchestrator/competition-forensic-timeline/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for GraphQL schemas, persisted queries, RPC manifests, generated clients, OpenAPI drift, hidden operations, and contract-to-handler mismatches. Use when the user asks to inspect GraphQL or RPC requests, compare client contracts to live handlers, recover hidden operations, trace generated clients, or explain how schema or contract drift produces the decisive behavior. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-graphql-rpc-drift",
+          "path": "CTF-Sandbox-Orchestrator/competition-graphql-rpc-drift/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for Active Directory, Kerberos, LDAP, OAuth, enterprise messaging, Windows host forensics, credential material, and lateral-movement challenges. Use when the user asks to trace tickets or tokens, inspect mailbox rules, analyze Windows host evidence, understand an AD trust path, or explain a lateral-movement chain across sandbox-linked nodes. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-identity-windows",
+          "path": "CTF-Sandbox-Orchestrator/competition-identity-windows/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for IPA runtime analysis, Frida hooks, Objective-C or Swift method tracing, Keychain inspection, SSL pinning bypass, URL scheme handling, and iOS request-signing recovery. Use when the user asks to hook an IPA, trace Objective-C or Swift runtime behavior, inspect Keychain or plist state, bypass pinning, analyze deeplinks or universal links, or replay accepted iOS requests. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-ios-runtime",
+          "path": "CTF-Sandbox-Orchestrator/competition-ios-runtime/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for JWT, JWS, and JWE validation paths, header parsing, key selection, claim acceptance, audience and issuer checks, role derivation, and token-to-identity confusion bugs. Use when the user asks to inspect JWT headers or claims, key lookup, `kid` handling, `alg` confusion, audience or issuer validation, role claims, or explain how a token becomes accepted identity or privilege. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-jwt-claim-confusion",
+          "path": "CTF-Sandbox-Orchestrator/competition-jwt-claim-confusion/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for Kubernetes API analysis, service-account trust, RBAC edges, admission and controller behavior, cluster secrets, workload mutation, and namespace-scoped drift. Use when the user asks to inspect kube API permissions, service-account tokens, RoleBinding or ClusterRoleBinding edges, admission webhooks, controller-created pods, secret exposure, or why live workloads differ from manifests. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-k8s-control-plane",
+          "path": "CTF-Sandbox-Orchestrator/competition-k8s-control-plane/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for Kerberos delegation, SPN trust edges, S4U abuse, RBCD, constrained or unconstrained delegation, and service-ticket acceptance. Use when the user asks about constrained delegation, unconstrained delegation, RBCD, S4U, SPNs, ticket acceptance, or how a Kerberos trust edge turns into effective privilege under sandbox assumptions. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-kerberos-delegation",
+          "path": "CTF-Sandbox-Orchestrator/competition-kerberos-delegation/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for kernel attack surface, namespace and cgroup boundaries, container isolation assumptions, syscall paths, and escape primitive verification. Use when the user asks to analyze container-to-host escape paths, kernel exploit prerequisites, namespace crossover, capability misuse, or prove whether an exploit primitive crosses the sandbox boundary. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-kernel-container-escape",
+          "path": "CTF-Sandbox-Orchestrator/competition-kernel-container-escape/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for Linux credential artifacts, service tokens, SSH material, cloud and container secrets, socket-level trust, and host-to-host pivot chains. Use when the user asks to trace Linux auth artifacts, accepted token or key replay, socket or service-account trust edges, sudo or capability abuse, or explain lateral movement across Linux challenge nodes. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-linux-credential-pivot",
+          "path": "CTF-Sandbox-Orchestrator/competition-linux-credential-pivot/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for LSASS-resident secrets, Windows logon sessions, Kerberos ticket caches, DPAPI-backed material, SSP artifacts, and replayable credential extraction. Use when the user asks to inspect LSASS memory, recover tickets or logon sessions, trace DPAPI or SSP material, distinguish which credential artifacts are replayable, or connect host-resident credential material to an accepted pivot or privilege edge. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-lsass-ticket-material",
+          "path": "CTF-Sandbox-Orchestrator/competition-lsass-ticket-material/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for enterprise mail abuse, OAuth consent, inbox or forwarding rules, transport rules, shared mailbox access, phishing chains, and token-to-mailbox side effects. Use when the user asks to trace mailbox rules, OAuth consent grants, forwarding or delegate abuse, shared mailbox access, message-trace evidence, or explain how mail artifacts turn into persistence, exfiltration, or privilege. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-mailbox-abuse",
+          "path": "CTF-Sandbox-Orchestrator/competition-mailbox-abuse/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for malware configuration recovery, staged payload boundaries, beacon parameter extraction, and IOC decoding. Use when the user asks to recover a malware config, decode C2 or beacon fields, unpack staged payloads, extract bot or campaign IDs, or tie recovered config to observed protocol behavior under sandbox assumptions. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-malware-config",
+          "path": "CTF-Sandbox-Orchestrator/competition-malware-config/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for OAuth, OIDC, redirect flows, state or nonce handling, PKCE, token exchange, refresh logic, claim mapping, and accepted login paths. Use when the user asks to trace redirects, callback parameters, scopes, state, nonce, PKCE, refresh tokens, consent, or explain how an OAuth or OIDC chain turns into accepted identity or privilege. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-oauth-oidc-chain",
+          "path": "CTF-Sandbox-Orchestrator/competition-oauth-oidc-chain/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for packet capture analysis, session reconstruction, application-protocol decoding, stream reassembly, beacon timing, and packet-to-process correlation. Use when the user asks to analyze a PCAP, rebuild TCP or UDP sessions, decode HTTP, WebSocket, DNS, custom C2, or binary protocols, extract transferred artifacts, or tie packet sequences to host or malware behavior. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-pcap-protocol",
+          "path": "CTF-Sandbox-Orchestrator/competition-pcap-protocol/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for prompt-injection, retrieval poisoning, memory contamination, planner drift, MCP or tool-boundary abuse, and agent exfiltration challenges. Use when the user asks to analyze prompt injection, retrieval poisoning, memory contamination, planner drift, tool-argument corruption, or secret exposure caused by an agent chain. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-prompt-injection",
+          "path": "CTF-Sandbox-Orchestrator/competition-prompt-injection/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for queues, async workers, cron jobs, delayed tasks, retry behavior, worker-only config drift, and payload-to-side-effect chains. Use when the user asks to trace a queue payload, inspect async job execution, explain worker-only behavior, follow retries or dead-letter handling, or connect an enqueued item to a later file, cache, email, or privilege-bearing side effect. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-queue-worker-drift",
+          "path": "CTF-Sandbox-Orchestrator/competition-queue-worker-drift/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for race windows, ordering bugs, idempotency failures, lock gaps, concurrent worker drift, and state inconsistencies that produce decisive effects. Use when the user asks to reproduce timing-sensitive bugs, concurrent state corruption, duplicate actions, stale reads, or privilege or balance drift caused by request ordering. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-race-condition-state-drift",
+          "path": "CTF-Sandbox-Orchestrator/competition-race-condition-state-drift/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for forced-auth coercion, relay chains, target selection, NTLM or related acceptance paths, and coercion-to-privilege transitions. Use when the user asks to trace a coercion primitive, follow a relay path, analyze forced authentication, determine which service accepts relayed auth, or connect a coercion step to resulting privilege, enrollment, or code execution. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-relay-coercion-chain",
+          "path": "CTF-Sandbox-Orchestrator/competition-relay-coercion-chain/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for parser differentials, HTTP normalization gaps, ambiguous headers, path decoding drift, transfer-framing mismatches, and request smuggling routes. Use when the user asks to trace proxy and backend parse differences, conflicting path normalization, Host or forwarded-header ambiguity, CL/TE issues, or routing outcomes that differ across hops. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-request-normalization-smuggling",
+          "path": "CTF-Sandbox-Orchestrator/competition-request-normalization-smuggling/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for reverse engineering, malware, DFIR, firmware, pwnable, and native exploit challenges. Use when the user asks to reverse a binary, unpack a sample, inspect a memory dump or PCAP, recover malware behavior, debug a crash, or build or verify an exploit chain under sandbox assumptions. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-reverse-pwn",
+          "path": "CTF-Sandbox-Orchestrator/competition-reverse-pwn/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for reverse proxies, Host headers, forwarded headers, vhost routing, websocket upgrades, path-prefix rewriting, base-URL derivation, and multi-node route resolution. Use when the user asks which host or container serves a route, why a public-looking domain still belongs to the sandbox, how headers or proxies change behavior, or how a route resolves across proxy, container, and worker boundaries. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-runtime-routing",
+          "path": "CTF-Sandbox-Orchestrator/competition-runtime-routing/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for SSRF reachability, internal route probing, metadata-service access, credential pivoting, and token-to-accepted-privilege chains. Use when the user asks to trace SSRF sources, internal hosts, metadata endpoints, link-local tokens, service-account credentials, or explain how a server-side fetch edge turns into accepted access. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-ssrf-metadata-pivot",
+          "path": "CTF-Sandbox-Orchestrator/competition-ssrf-metadata-pivot/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for image, audio, video, document, and container steganography. Use when the user asks to inspect metadata, alpha or palette channels, LSBs, thumbnails, appended trailers, QR fragments, transcoding artifacts, or recover a hidden payload from media without blind brute force. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-stego-media",
+          "path": "CTF-Sandbox-Orchestrator/competition-stego-media/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for CI/CD, registry, dependency drift, artifact provenance, image build, release pipeline, and runtime consumer challenges. Use when the user asks to trace dependency drift, registry pulls, malicious packages, build or release tampering, CI execution, artifact signing, or which shipped artifact the runtime actually consumes. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-supply-chain",
+          "path": "CTF-Sandbox-Orchestrator/competition-supply-chain/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for SSR, template rendering, route loaders, hydration payloads, server-client render boundaries, and template-to-handler enforcement gaps. Use when the user asks to inspect SSR or template routes, trace render context or hydration data, compare template gating with handler enforcement, explain preview or hidden-route rendering, or connect render pipeline behavior to the decisive branch. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-template-render-path",
+          "path": "CTF-Sandbox-Orchestrator/competition-template-render-path/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for CTF web, API, SSR, frontend, queue-backed app, and routing challenges. Use when the user asks to inspect a site or API, follow real browser requests, debug auth or session flow, trace uploads or workers, find hidden routes, or explain why frontend and backend behavior diverge under sandbox-internal routing. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-web-runtime",
+          "path": "CTF-Sandbox-Orchestrator/competition-web-runtime/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for WebSocket and SSE handshakes, auth material, subscription state, realtime message schemas, reconnect behavior, and frame-driven runtime effects. Use when the user asks to inspect a WebSocket or SSE handshake, decode frames, trace subscriptions, follow reconnect logic, inspect auth material sent during realtime setup, or explain how live frames change rendered or persisted state. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-websocket-runtime",
+          "path": "CTF-Sandbox-Orchestrator/competition-websocket-runtime/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for Kerberos, WinRM, SMB, RDP, Windows credential material, replayable tickets, delegation edges, and host-to-host pivot chains. Use when the user asks to replay Kerberos material, trace a WinRM, SMB, or RDP pivot, understand host-to-host privilege movement, or prove which Windows service accepted a credential or ticket. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-windows-pivot",
+          "path": "CTF-Sandbox-Orchestrator/competition-windows-pivot/SKILL.md"
+        },
+        {
+          "description": "Internal downstream skill for ctf-sandbox-orchestrator. CTF-sandbox workflow for ZIP and PKZIP archive challenges, legacy ZipCrypto identification, known-plaintext recovery with bkcrack, key-based decryption, and reproducible extraction. Use when the user asks to solve an encrypted ZIP challenge, inspect ZipCrypto metadata, recover keys from a known file prefix, or unlock an archive without starting with password brute force. Use only after `$ctf-sandbox-orchestrator` has already established sandbox assumptions and routed here.",
+          "name": "competition-zip-archive",
+          "path": "CTF-Sandbox-Orchestrator/competition-zip-archive/SKILL.md"
+        },
+        {
+          "description": "Default entrypoint and master ctf-sandbox-orchestrator workflow for CTF, exploit, reverse engineering, DFIR, pwnable, crypto, stego, mobile, AI-agent, cloud, container, Active Directory, Windows-host, and identity challenges. Use first when the user presents challenge infrastructure, binaries, prompts, hosts, or identities that should be treated as sandbox-internal by default and Codex needs to choose, route, and load the right downstream analysis path with concise evidence.",
+          "name": "ctf-sandbox-orchestrator",
+          "path": "CTF-Sandbox-Orchestrator/ctf-sandbox-orchestrator/SKILL.md"
+        },
+        {
+          "description": "Use the reverse-skill repository from Codex for authorized reverse engineering, security analysis, CTF, and defensive testing tasks. Requires the reverse-skill repository to be available as the current workspace or an explicitly supplied local path.",
+          "name": "reverse-skill-router",
+          "path": "plugins/reverse-skill/skills/reverse-skill-router/SKILL.md"
+        },
+        {
+          "description": "Routes reverse engineering, exploitation, penetration testing, malware, mobile, firmware, browser automation, documentation, and security tasks to the appropriate specialist skill. Use when a task spans modules or the correct reverse-skill entrypoint is unclear.",
+          "name": "reverse-skill-router",
+          "path": "skills/SKILL.md"
+        },
+        {
+          "description": "Use for authorized security assessment of REST, GraphQL, WebSocket, or SOAP APIs, including discovery, authentication, authorization, rate-limit, and CI/CD testing.",
+          "name": "api-security",
+          "path": "skills/api-security/SKILL.md"
+        },
+        {
+          "description": "在 CLI 环境下做 Android APK 逆向时使用。适用于 APK 解包、Java 反编译、smali 修改、重打包、Frida 动态 Hook，以及按需切换到 so/native 分析。优先使用本机已安装的 jadx、apktool、frida、adb、ida-reverse、radare2。",
+          "name": "apk-reverse",
+          "path": "skills/apk-reverse/SKILL.md"
+        },
+        {
+          "description": "Use for authorized multi-stage attack-path planning and orchestration when a task spans reconnaissance, initial access, privilege escalation, lateral movement, or impact assessment. Route single-stage tasks directly to their specialist skill.",
+          "name": "attack-chain",
+          "path": "skills/attack-chain/SKILL.md"
+        },
+        {
+          "description": "跨版本符号迁移与二进制差分。当你有旧版本的符号/逆向结果，需要快速迁移到新版本时使用。\n适用场景：内核缺 PDB 用旧版符号推导、程序更新后批量迁移函数名、应用更新后快速定位新偏移。\n核心方法：用 LLM 做结构化差异比对，程序化输入输出，成本极低（200 函数 ~1 元）。\n触发关键词：符号迁移、bindiff、跨版本、PDB 缺失、函数偏移迁移、symbol migration、binary diff、版本对比。",
+          "name": "binary-diff",
+          "path": "skills/binary-diff/SKILL.md"
+        },
+        {
+          "description": "Use for authorized binary analysis in Binary Ninja, including HLIL/MLIL/LLIL inspection, strings/imports/exports, cross-references, types, patch review, Python API automation, and optional Binary Ninja MCP or localhost HTTP integration.",
+          "name": "binary-ninja-reverse",
+          "path": "skills/binary-ninja-reverse/SKILL.md"
+        },
+        {
+          "description": "统一自动化入口。覆盖浏览器自动化（Playwright）和 Windows 桌面应用自动化（OpenReverse）。\n浏览器场景：打开网页、点击、填表、爬取、截图、自动化登录、渗透页面交互。\n桌面场景：操作 IDA/x64dbg 等 GUI 工具、Windows UI Automation、视觉驱动交互、桌面应用网络抓包。\n触发关键词：浏览器自动化、桌面自动化、打开网页、填表、爬取、截图、自动化登录、Playwright、agent-browser、headless、OpenReverse、UIA、CUA、桌面操作、Windows 自动化。",
+          "name": "browser-automation",
+          "path": "skills/browser-automation/SKILL.md"
+        },
+        {
+          "description": "Use for authorized reverse engineering of browser extensions (Chrome/Firefox) including manifest analysis, background workers, and extension-based credential or traffic logic recovery.",
+          "name": "browser-extension-reverse",
+          "path": "skills/browser-extension-reverse/SKILL.md"
+        },
+        {
+          "description": "Reviews a reverse-skill case package for scope readiness, Evidence to Finding to Path traceability, work item coverage, timeline references, and optional artifact hash integrity before report handoff.",
+          "name": "case-review",
+          "path": "skills/case-review/SKILL.md"
+        },
+        {
+          "description": "Use for authorized cloud, container, and Kubernetes security assessment including metadata SSRF, IAM misconfig, container escape paths, and cluster RBAC review.",
+          "name": "cloud-k8s",
+          "path": "skills/cloud-k8s/SKILL.md"
+        },
+        {
+          "description": "Use for authorized source-code security review and SAST workflows including Semgrep, CodeQL patterns, dangerous API hunting, and fix verification.",
+          "name": "code-audit",
+          "path": "skills/code-audit/SKILL.md"
+        },
+        {
+          "description": "Thin PRIMARY for CTF / AWD / 靶场 multi-type orchestration. Hands off to the sidecar CTF-Sandbox-Orchestrator. Use when the user says CTF, AWD, 靶场, or 比赛题 and no more specific pwn/APK/IDA route already won.",
+          "name": "ctf-sandbox",
+          "path": "skills/ctf-sandbox/SKILL.md"
+        },
+        {
+          "description": "Use for authorized database security assessment covering PostgreSQL/MySQL/MSSQL/Mongo/Redis exposure, authz, UDF/command paths, and misconfiguration review.",
+          "name": "database-security",
+          "path": "skills/database-security/SKILL.md"
+        },
+        {
+          "description": "generate, refine, validate, and render diagrams from natural language, notes, code snippets, schemas, tables, or existing diagram source. use for flowcharts, swimlanes, sequence diagrams, state diagrams, er diagrams, class diagrams, architecture/c4-style diagrams, dependency graphs, gantt charts, mind maps, user journeys, sankey-style flows, org charts, network graphs, and other visual models. supports mermaid by default, graphviz dot for complex graph layout, plantuml for uml-heavy engineering diagrams, and svg output when direct markup is more reliable.",
+          "name": "diagram-generator",
+          "path": "skills/diagram-generator/SKILL.md"
+        },
+        {
+          "description": "Use for authorized digital forensics including memory dumps, disk timelines, PCAP investigation, artifact triage, and IR evidence preservation.",
+          "name": "digital-forensics",
+          "path": "skills/digital-forensics/SKILL.md"
+        },
+        {
+          "description": "Creates task-oriented technical documentation with progressive disclosure. Use when writing READMEs, API docs, architecture docs, or markdown documentation.\nAlso use this skill at the END of any completed reverse engineering, penetration testing, CTF, or security analysis task to generate a formal report in the user's project directory.\nTrigger keywords: 写报告, 写文档, 出报告, writeup, 技术文档, report, documentation.",
+          "name": "docs-generator",
+          "path": "skills/docs-generator/SKILL.md"
+        },
+        {
+          "description": ".NET / C# 二进制逆向。当目标是 .NET assembly（PE 头含 CLR、.exe/.dll 托管程序）、C# 编译产物（含 NativeAOT）、红队 Sharp* 工具（Rubeus / SharpHound / SharpHound 等）、.NET 混淆程序（ConfuserEx / SmartAssembly / Babel / Eazfuscator）、.NET loader / info-stealer / 套壳 malware 时使用。优先用 dnSpyEx + de4dot，需要 AI 直接操作时联动 dnSpy MCP。不用于纯 native 二进制（走 reverse-engineering / ida-reverse）。",
+          "name": "dotnet-reverse",
+          "path": "skills/dotnet-reverse/SKILL.md"
+        },
+        {
+          "description": "逆向防御方实现 → 红队针对性绕过。把 EDR / Defender / AV 的 hook 表、ETW provider、AMSI 实现先逆向出来，\n再写针对性的 unhook / 间接 syscall / ETW patch / call stack spoof。对照 MITRE ATT&CK T1562 防御规避。\n触发关键词：EDR 绕过、AV bypass、免杀、unhook、direct syscall、indirect syscall、Hell's Gate、Halo's Gate、\nTartarus Gate、ETW patch、AMSI patch、call stack spoofing、hardware breakpoint Blindside、MITRE T1562、\nntdll unhook、kernel callback、CrowdStrike 绕过、Defender 绕过、Sentinel One 绕过、Elastic Defend、\nSysmon 规避、PPID spoof、Sleep mask、Process Hollowing、Reflective DLL。",
+          "name": "edr-bypass-re",
+          "path": "skills/edr-bypass-re/SKILL.md"
+        },
+        {
+          "description": "Use for authorized email security review including phishing analysis, header authentication (SPF/DKIM/DMARC), BEC patterns, and mailbox token abuse research.",
+          "name": "email-security",
+          "path": "skills/email-security/SKILL.md"
+        },
+        {
+          "description": "固件 / IoT 渗透链。从拿到一坨 .bin / .img 开始，闭环走完逆向 → 提取 → 模拟 → 利用。\n方法论遵循 OWASP FSTM 九阶段；工具链以 binwalk v3、unblob、EMBA、Firmadyne、AFL++ 为主。\n适用场景：路由器/摄像头/智能家居固件审计、固件升级包逆向、IoT CVE 复现、嵌入式 0day 挖掘。\n触发关键词：固件、firmware、IoT、binwalk、unblob、UART、JTAG、squashfs、UBI、JFFS2、Firmadyne、QEMU 全系统仿真、EMBA、固件渗透、路由器固件、嵌入式漏洞利用、bootloader、NVRAM、FAT、firmware analysis toolkit。",
+          "name": "firmware-pentest",
+          "path": "skills/firmware-pentest/SKILL.md"
+        },
+        {
+          "description": "Use for free/open reverse engineering with Ghidra (headless or GUI), including decompile, cross-refs, and optional Ghidra MCP workflows when IDA is unavailable.",
+          "name": "ghidra-reverse",
+          "path": "skills/ghidra-reverse/SKILL.md"
+        },
+        {
+          "description": "Use for reverse engineering stripped Go and Rust binaries including runtime recognition, pclntab/moduel data recovery, panic strings, and idiomatic decompilation recovery.",
+          "name": "go-rust-reverse",
+          "path": "skills/go-rust-reverse/SKILL.md"
+        },
+        {
+          "description": "Use for authorized hardware and embedded interface security research including UART/JTAG discovery, debug pad triage, secure boot overview, and offline firmware extraction support.",
+          "name": "hardware-security",
+          "path": "skills/hardware-security/SKILL.md"
+        },
+        {
+          "description": "IDA Pro 逆向分析辅助技能。当用户提到逆向、反编译、分析二进制/PE/ELF/APK/DLL/SO、破解、找密码、漏洞分析、病毒分析、firmware 固件分析，或需要分析 exe/dll/so/elf/macho/sys 等文件时，务必使用此技能。\n\nEnsure to use this skill when the user wants to analyze any binary file, regardless of whether they explicitly mention \"IDA\" or \"reverse engineering\". This includes requests like \"看看这个exe\", \"分析这个dll\", \"帮我破解\", \"找一下密码\", \"这个软件怎么注册\", etc.\n\nUse the bundled scripts (scripts/start.ps1, scripts/open.ps1) for deterministic server management and file opening — do NOT write ad-hoc PowerShell commands for these operations.",
+          "name": "ida-reverse",
+          "path": "skills/ida-reverse/SKILL.md"
+        },
+        {
+          "description": "Use for authorized assessment of federated identity systems including SAML, OIDC, OAuth2 flows, SSO misconfiguration, and token confusion issues.",
+          "name": "identity-federation",
+          "path": "skills/identity-federation/SKILL.md"
+        },
+        {
+          "description": "在使用 js-reverse-mcp 做前端 JavaScript 逆向时使用，适用于签名链路定位、页面观察取证、运行时采样、本地补环境复现与证据化输出。优先适配当前环境里的 js-reverse_* 工具，需要更强的浏览器/CDP/Hook 面时联动 jshookmcp。",
+          "name": "js-reverse",
+          "path": "skills/js-reverse/SKILL.md"
+        },
+        {
+          "description": "Use for authorized security assessment of LLM applications and AI agents, including prompt injection, tool abuse, RAG exposure, memory poisoning, and model supply-chain risks.",
+          "name": "llm-security",
+          "path": "skills/llm-security/SKILL.md"
+        },
+        {
+          "description": "Use for authorized macOS and Mach-O reverse engineering including codesign, Objective-C/Swift recovery, endpoint security surfaces, and Apple platform malware analysis.",
+          "name": "macos-reverse",
+          "path": "skills/macos-reverse/SKILL.md"
+        },
+        {
+          "description": "Use when analyzing suspected malware through static, dynamic, and behavioral techniques, including IOC extraction, YARA or Sigma rules, sandboxing, and anti-analysis behavior.",
+          "name": "malware-analysis",
+          "path": "skills/malware-analysis/SKILL.md"
+        },
+        {
+          "description": "Use for authorized Android or iOS application reverse engineering and security testing, including APK or IPA analysis, runtime instrumentation, SSL pinning, and platform protection checks.",
+          "name": "mobile-reverse",
+          "path": "skills/mobile-reverse/SKILL.md"
+        },
+        {
+          "description": "Use for authorized OT/ICS security assessment covering Purdue model zoning, PLC/SCADA exposure, industrial protocol discovery, and safe passive-first evaluation.",
+          "name": "ot-ics",
+          "path": "skills/ot-ics/SKILL.md"
+        },
+        {
+          "description": "N-day 补丁差分到利用。从厂商发布的补丁里反推漏洞点、写 PoC、做成可用的攻击模块。\n适用场景：已知 CVE 编号但只有补丁没有 PoC、SRC/红队需要打击未及时更新的资产、N-day 武器化、Patch Tuesday 跟进。\n核心方法：拿 before/after 二进制 → 对齐符号 → 二进制 diff → 看新增的安全检查反推 bug class → 写 PoC 触发漏洞。\n触发关键词：N-day、Nday、补丁差分、patch diff、patch tuesday、1day、binary diff 漏洞、bindiff 利用、ghidriff、Diaphora、补丁分析、CVE 复现、漏洞还原、补丁反推、N-day 武器化。",
+          "name": "patch-diff-exploit",
+          "path": "skills/patch-diff-exploit/SKILL.md"
+        },
+        {
+          "description": "主动渗透测试工具链。覆盖信息收集、端口扫描、漏洞扫描、Web 渗透、SQL 注入、目录爆破、密码破解等场景。\n通过 MCP server（pentestMCP / mcp-security-hub）将 20+ 安全工具暴露给 AI agent。\n触发关键词：渗透测试、端口扫描、Nmap、漏洞扫描、Nuclei、SQL 注入、SQLMap、目录爆破、FFUF、密码破解、Hashcat、信息收集、子域名、Web 渗透、ZAP、Burp。",
+          "name": "pentest-tools",
+          "path": "skills/pentest-tools/SKILL.md"
+        },
+        {
+          "description": "实战 SRC / 众测 / Bug bounty 漏洞挖掘工作流 skill。包含：5 阶段方法论（intake → recon → enum → hunt → report）、19 个攻击类 playbook（SQLi/XSS/RCE/SSRF/IDOR/CSRF/Path Traversal/File Upload/SSTI/XXE/Race/HTTP Smuggling/OAuth/JWT/SAML/GraphQL/Mobile/LLM/DoS）、305 个结构化 payload、263 个 WAF/EDR 绕过变体、2887 份 HackerOne 真实 High/Critical 已披露案例、77,000+ WooYun 案例统计、国产 OA / 中间件指纹库、银行 / 电信行业垂直 playbook。当用户提到 \"src 挖洞 / src 漏洞挖掘 / bug bounty / 众测 / hackerone / 漏洞赏金 / SRC / 任意 X 漏洞 / 渗透测试\" 或问\"如何挖某个目标 / 怎么测某个 API / 如何绕过 WAF\" 时触发。",
+          "name": "src-hunter",
+          "path": "skills/pentest-tools/src-hunter/SKILL.md"
+        },
+        {
+          "description": "Use for authorized reverse engineering of custom binary protocols, Protobuf/gRPC, WebSocket frames, and PCAP-driven protocol recovery.",
+          "name": "protocol-reverse",
+          "path": "skills/protocol-reverse/SKILL.md"
+        },
+        {
+          "description": "从逆向走到可用利用 (Working Exploit) 的全链路工程化方法。\n适用场景：拿到了二进制 + 漏洞点 + 目标环境，需要写出一个能稳定打通的 exploit（不是只能本地复现一下、远程一打就崩的脚本）。\n覆盖三大方向：栈溢出 / 堆利用 / 内核 pwn。强调\"CTF 本地通 → 真实远程稳定打通\"的工程差距：libc 版本错配、堆喷射时序、SMEP/SMAP/KASLR、栈对齐、远程缓冲。\n核心工具链：pwntools + GEF/pwndbg + ROPgadget/Ropper + one_gadget + libc-database + qemu-system 内核调试。\n触发关键词：pwn、栈溢出、堆溢出、ROP、ret2libc、ret2csu、one_gadget、libc-database、堆利用、tcache、fastbin、unsorted bin、kernel pwn、kROP、SMEP、SMAP、KASLR、modprobe_path、pwntools、GEF、pwndbg。",
+          "name": "pwn-chain",
+          "path": "skills/pwn-chain/SKILL.md"
+        },
+        {
+          "description": "Use this skill whenever the user wants to analyze binaries with radare2/r2 from the command line, including reverse engineering, disassembly, function analysis, strings/import inspection, patching, binary diffing, hex inspection, or r2 scripting. Also use it when the user mentions PE/ELF/Mach-O/DEX/WASM files together with CLI analysis, `rabin2`, `rasm2`, `radiff2`, `r2pipe`, or asks for radare2 command help on Windows/Linux/macOS.",
+          "name": "radare2",
+          "path": "skills/radare2/SKILL.md"
+        },
+        {
+          "description": "Use for authorized RF/SDR security research including signal identification, replay feasibility study in shielded labs, and wireless protocol analysis outside classic Wi-Fi.",
+          "name": "radio-sdr",
+          "path": "skills/radio-sdr/SKILL.md"
+        },
+        {
+          "description": "Provides reverse engineering techniques. Use when the main job is to understand how a compiled, obfuscated, packed, or virtualized target works before exploiting or solving it, including binaries, APKs, WASM, firmware, custom VMs, bytecode, malware-like loaders, and anti-debug or anti-analysis logic. Do not use it when the vulnerability is already understood and the remaining task is exploitation; use pwn instead. Do not use it for pure web workflows, log or disk forensics, or standalone crypto problems unless reversing the implementation is the real blocker.",
+          "name": "reverse-engineering",
+          "path": "skills/reverse-engineering/SKILL.md"
+        },
+        {
+          "description": "Reverse JavaScript-based custom DSL/VM interpreters, non-standard WASM-like runtimes, and risk-control engines. Use when analyzing IIFE or switch-based opcode dispatchers, extracting instruction tables, recovering bytecode semantics, capturing VM state at runtime, or reconstructing execution flow.",
+          "name": "dsl-vm-reverse",
+          "path": "skills/reverse-engineering/dsl-vm-reverse/SKILL.md"
+        },
+        {
+          "description": "Use for software supply-chain security assessment covering SBOM, SCA, CI/CD pipelines, container images, build integrity, dependency provenance, and vulnerability reachability.",
+          "name": "supply-chain-security",
+          "path": "skills/supply-chain-security/SKILL.md"
+        },
+        {
+          "description": "Use for authorized security testing of desktop thick clients including local storage, update channels, IPC, traffic, and client-side trust boundaries.",
+          "name": "thick-client",
+          "path": "skills/thick-client/SKILL.md"
+        },
+        {
+          "description": "Use for blue-team threat hunting, detection engineering with Sigma/YARA, SIEM query design, and incident detection validation.",
+          "name": "threat-hunting",
+          "path": "skills/threat-hunting/SKILL.md"
+        },
+        {
+          "description": "Use for authorized OSINT and cyber threat intelligence that enriches IOCs, campaigns, impersonation, scams, or threat actors from public sources. Includes bounded X/Twitter search through Xquik, source preservation, corroboration, and evidence handoff.",
+          "name": "threat-intelligence",
+          "path": "skills/threat-intelligence/SKILL.md"
+        },
+        {
+          "description": "Use for authorized wireless security assessment including Wi-Fi capture, WPA handshake analysis, rogue AP detection research, and lab-only deauth testing.",
+          "name": "wifi-wireless",
+          "path": "skills/wifi-wireless/SKILL.md"
+        },
+        {
+          "description": "Use for authorized Active Directory and Windows identity attacks including Kerberos, AD CS, BloodHound paths, NTLM relay, and domain privilege escalation research.",
+          "name": "windows-ad",
+          "path": "skills/windows-ad/SKILL.md"
+        }
+      ],
+      "submodules": [],
+      "symlinks": [],
+      "version": "1.0.1",
+      "windowsPathIssues": []
+    }
+  ]
+}

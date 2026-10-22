@@ -9,13 +9,13 @@ import sys
 from dataclasses import dataclass
 
 from gemini_seat import APP_TITLE as GEMINI_APP_TITLE
-from seats import PACK_IDS, SEAT_ALIASES, activation_reply, is_activation_latch, run as run_seat
+from seats import DEEPSEEK_LABEL, PACK_IDS, SEAT_ALIASES, activation_reply, is_activation_latch, run as run_seat
 
 
 ACTIVATION_WORD = "冷咖啡"
 CONTROL_WORD = "BREAK//OPEN"
 APP_TITLE = GEMINI_APP_TITLE
-MODELS = ("GPT-6 Astra全模型支持", "Claude全模型支持", "Grok 4.7", "DeepSeek v4.1", "GLM 5.3全模型支持", "Gemini全模型支持")
+MODELS = ("GPT-6 Astra全模型支持", "Claude全模型支持", "Grok 4.7", DEEPSEEK_LABEL, "GLM 5.3全模型支持", "Gemini全模型支持")
 SEAT_CHOICES = tuple(sorted(set(SEAT_ALIASES) | set(PACK_IDS) | {item.lower().replace(" ", "-") for item in MODELS}))
 
 

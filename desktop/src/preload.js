@@ -4,6 +4,11 @@ contextBridge.exposeInMainWorld("coldbrew", {
   platform: process.platform,
   transaction: (action, payload) => ipcRenderer.invoke("coldbrew:transaction", action, payload),
   beginner: (action, payload) => ipcRenderer.invoke("coldbrew:beginner", action, payload),
+  upstream: Object.freeze({
+    catalog: () => ipcRenderer.invoke("coldbrew:beginner", "catalog"),
+    status: (seat) => ipcRenderer.invoke("coldbrew:beginner", "upstream-status", { seat }),
+    prepare: (seat, confirm) => ipcRenderer.invoke("coldbrew:beginner", "upstream-prepare", { seat, confirm: confirm === true }),
+  }),
   relay: (action, payload) => ipcRenderer.invoke("coldbrew:relay", action, payload),
   compose: (payload) => ipcRenderer.invoke("coldbrew:compose", payload),
   evaluate: (answer, options) => ipcRenderer.invoke("coldbrew:evaluate", answer, options),
@@ -13,6 +18,12 @@ contextBridge.exposeInMainWorld("coldbrew", {
   gemini: (verb, payload) => ipcRenderer.invoke("coldbrew:gemini", verb, payload),
   seat: (seatId, verb, payload) => ipcRenderer.invoke("coldbrew:seat", seatId, verb, payload),
   toolbox: (payload) => ipcRenderer.invoke("coldbrew:toolbox", payload),
+  originalToolbox: (action, payload) => ipcRenderer.invoke("coldbrew:original-toolbox", action, payload),
+  onOriginalToolbox: (fn) => {
+    const listener = (_event, entry) => fn(entry);
+    ipcRenderer.on("coldbrew:original-toolbox-event", listener);
+    return () => ipcRenderer.removeListener("coldbrew:original-toolbox-event", listener);
+  },
   toolsHealth: (payload) => ipcRenderer.invoke("coldbrew:tools-health", payload),
   workflowTemplates: () => ipcRenderer.invoke("coldbrew:workflow-templates"),
   workflows: () => ipcRenderer.invoke("coldbrew:workflows"),

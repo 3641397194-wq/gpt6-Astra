@@ -9,7 +9,7 @@ const http = require("node:http");
 const mcp = require("../src/lib/ida-mcp");
 
 function fixture() {
-  const home = fs.mkdtempSync(path.join(os.tmpdir(), "ida-mcp-"));
+  const home = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), "ida-mcp-"));
   const env = { APPDATA: path.join(home, "AppData"), WORKBUDDY_HOME: path.join(home, ".workbuddy"), LOCALAPPDATA: path.join(home, "Local") };
   fs.mkdirSync(path.join(home, ".codex"), { recursive: true });
   fs.mkdirSync(path.join(home, ".grok"), { recursive: true });
