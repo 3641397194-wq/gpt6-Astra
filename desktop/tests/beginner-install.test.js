@@ -123,7 +123,7 @@ test('mimo install lands in .config/mimocode and skips npm', () => {
   }
 });
 
-test('kimi k3 install lands in .kimi-code skills and skips config', () => {
+test('kimi k3.1 install lands in .kimi-code skills and skips config', () => {
   const base = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'cc-kimi-'));
   try {
     const user = path.join(base, '.kimi-code');

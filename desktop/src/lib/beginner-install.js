@@ -22,7 +22,7 @@ const CARDS = {
   workbuddy: { name: 'WorkBuddy', line: '搭档' },
   cursor: { name: 'Cursor', line: '.cursor' },
   mimo: { name: 'MiMo-V2.6-Pro', line: '.config' },
-  kimi: { name: 'Kimi K3', line: '.kimi-code' },
+  kimi: { name: 'Kimi K3.1', line: '.kimi-code' },
 };
 
 const LAUNCH = {

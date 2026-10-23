@@ -4,7 +4,7 @@
   else root.ColdCoffeeCore = api;
 })(typeof globalThis === 'object' ? globalThis : this, function () {
   'use strict';
-  const VERSION = '3.2.0-preview.2';
+  const VERSION = '3.2.0-preview.3';
   const DEEPSEEK_LABEL = 'DeepSeek v4.1 Flash 10.17版本';
   const SEATS = [
     {id:'codex',tag:'GPT-6 Astra全模型支持',mark:'01',hint:'目标清单 → 最小实现 → 验收证据'},
@@ -17,7 +17,7 @@
     {id:'workbuddy',tag:'WorkBuddy',mark:'08',hint:'技能落在用户目录的 .workbuddy/skills/cha-workbuddy，入口写 AGENTS.md',place:'WORKBUDDY_HOME 或 ~/.workbuddy'},
     {id:'cursor',tag:'Cursor',mark:'09',hint:'常驻规则写在用户目录 .cursor/rules/cha-cursor.mdc，YAML 头 alwaysApply',place:'~/.cursor  · 不写安装目录，不写 AppData'},
     {id:'mimo',tag:'MiMo-V2.6-Pro',mark:'10',hint:'技能写在用户配置目录 .config/mimocode/skills/cha-mimo/SKILL.md，YAML 头 name 为 cha-mimo',place:'~/.config/mimocode  · 不写 npm，不写 auth.json'},
-    {id:'kimi',tag:'Kimi K3',mark:'11',hint:'技能写在 Kimi Code 数据根 .kimi-code/skills/cha-kimi/SKILL.md，YAML 头 name 为 cha-kimi',place:'~/.kimi-code  · 不写 config.toml，不写 ~/.agents'}
+    {id:'kimi',tag:'Kimi K3.1',mark:'11',hint:'技能写在 Kimi Code 数据根 .kimi-code/skills/cha-kimi/SKILL.md，YAML 头 name 为 cha-kimi',place:'~/.kimi-code  · 不写 config.toml，不写 ~/.agents'}
   ];
   const PROFILES = [
     {id:'max',label:'全开',code:'MAX',brief:'完整交付、验收与后续步骤'},

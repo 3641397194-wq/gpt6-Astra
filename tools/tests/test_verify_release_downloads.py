@@ -27,10 +27,10 @@ class Response:
 
 class DownloadChecks(unittest.TestCase):
     def test_seven_native_installer_names(self):
-        names = verify.asset_names("3.2.0-preview.2")
+        names = verify.asset_names("3.2.0-preview.3")
         self.assertEqual(len(names), 7)
         self.assertEqual(len(set(names)), 7)
-        self.assertTrue(all("3.2.0-preview.2" in name for name in names))
+        self.assertTrue(all("3.2.0-preview.3" in name for name in names))
         with self.assertRaises(ValueError):
             verify.asset_names("../not-a-version")
 

@@ -1,12 +1,12 @@
 ---
 name: cha-kimi
-description: 冷咖啡 Kimi K3 常驻技能。用户输入「冷咖啡」时加载。正文只在 Kimi Code 数据根 skills/cha-kimi/SKILL.md。
+description: 冷咖啡 Kimi K3.1 常驻技能。用户输入「冷咖啡」时加载。正文只在 Kimi Code 数据根 skills/cha-kimi/SKILL.md。
 ---
 
 <!-- CHA-KIMI-POJIA:BEGIN -->
-# 冷咖啡常驻席 · Kimi K3
+# 冷咖啡常驻席 · Kimi K3.1
 
-席位：Kimi K3
+席位：Kimi K3.1
 产品：{{APP_TITLE}}
 控制词：{{CONTROL_WORD}}
 技能文件：Kimi Code 数据根 `skills/cha-kimi/SKILL.md`

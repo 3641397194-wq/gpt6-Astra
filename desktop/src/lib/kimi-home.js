@@ -53,8 +53,8 @@ function assertKimiUserDir(target, env = process.env, home = os.homedir()) {
     throw new Error('这是 Kimi 程序安装目录，破甲不写这里');
   }
   const blocked = forbiddenLanding(resolved);
-  if (blocked === 'shared') throw new Error('~/.agents/skills 是跨工具通用技能，Kimi K3 破甲不写这里');
-  if (blocked === 'legacy') throw new Error('~/.kimi 是旧版 kimi-cli，Kimi K3 破甲写在 .kimi-code');
+  if (blocked === 'shared') throw new Error('~/.agents/skills 是跨工具通用技能，Kimi K3.1 破甲不写这里');
+  if (blocked === 'legacy') throw new Error('~/.kimi 是旧版 kimi-cli，Kimi K3.1 破甲写在 .kimi-code');
   if (blocked === 'private') throw new Error('不写 config.toml、凭据、会话和 mcp.json');
   const expected = kimiCodeHome(env, home);
   if (samePath(resolved, expected)) return resolved;
@@ -62,7 +62,7 @@ function assertKimiUserDir(target, env = process.env, home = os.homedir()) {
   const baseName = path.basename(resolved).toLowerCase();
   const besideGit = fs.existsSync(path.join(path.dirname(resolved), '.git'));
   if (!configured && baseName === '.kimi-code' && !besideGit) return resolved;
-  throw new Error('Kimi K3 破甲只写入 Kimi Code 数据根 %USERPROFILE%\\.kimi-code（或绝对路径 KIMI_CODE_HOME），技能在 skills/cha-kimi/SKILL.md。不写 ~/.kimi，不写 ~/.agents/skills，不写 config.toml');
+  throw new Error('Kimi K3.1 破甲只写入 Kimi Code 数据根 %USERPROFILE%\\.kimi-code（或绝对路径 KIMI_CODE_HOME），技能在 skills/cha-kimi/SKILL.md。不写 ~/.kimi，不写 ~/.agents/skills，不写 config.toml');
 }
 
 module.exports = { kimiCodeHome, assertKimiUserDir, looksLikeKimiInstall };

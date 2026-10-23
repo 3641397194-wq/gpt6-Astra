@@ -5,7 +5,7 @@
   <p><strong>十一个软件 · 一键破甲 · 一键卸载</strong></p>
   <p>打勾，按一下。打开软件后发「冷咖啡」。不想要了，按卸载，文件回到写入之前。</p>
   <p><a href="#下载">下载</a> · <a href="#上手使用">上手使用</a> · <a href="#十一个软件">十一个软件</a> · <a href="#四页">四页</a> · <a href="#冷咖啡中转">冷咖啡中转</a> · <a href="#工具箱">工具箱</a> · <a href="#冷咖啡社群">三个 QQ 群</a></p>
-  <p><sub>3.2.0-preview.2 · 三个系统 · 十一个软件 · <a href="https://coldcoffeeai.com/">coldcoffeeai.com</a></sub></p>
+  <p><sub>3.2.0-preview.3 · 三个系统 · 十一个软件 · <a href="https://coldcoffeeai.com/">coldcoffeeai.com</a></sub></p>
 </div>
 
 <blockquote>
@@ -27,13 +27,13 @@
 </blockquote>
 
 <h2 id="下载">下载</h2>
-<p>三个系统都是 3.2.0-preview.2，和下面这张席位表是同一套：十一个软件，含 Kimi K3。金色条是闭源和定制。macOS 分别提供 Apple 芯片 arm64 和 Intel x64 安装包。原创工具箱直接内置运行。</p>
+<p>三个系统都是 3.2.0-preview.3，和下面这张席位表是同一套：十一个软件，含 Kimi K3.1。金色条是闭源和定制。macOS 分别提供 Apple 芯片 arm64 和 Intel x64 安装包。原创工具箱直接内置运行。</p>
 <table>
 <tr><th align="left">系统</th><th align="left">版本</th><th align="left">席位</th><th align="left">安装包</th></tr>
-<tr><td><strong>Windows</strong></td><td><code>3.2.0-preview.2</code></td><td>十一个，含 Kimi K3</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.2/ColdCoffee-Workbench-Windows-3.2.0-preview.2-x64.exe">免安装 .exe ↗</a></td></tr>
-<tr><td><strong>macOS Apple 芯片</strong></td><td><code>3.2.0-preview.2</code></td><td>十一个，含 Kimi K3，Apple 芯片 arm64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.2/ColdCoffee-Workbench-macOS-arm64-3.2.0-preview.2.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.2/ColdCoffee-Workbench-macOS-arm64-3.2.0-preview.2.zip">.zip ↗</a></td></tr>
-<tr><td><strong>macOS Intel</strong></td><td><code>3.2.0-preview.2</code></td><td>十一个，含 Kimi K3，Intel x64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.2/ColdCoffee-Workbench-macOS-x64-3.2.0-preview.2.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.2/ColdCoffee-Workbench-macOS-x64-3.2.0-preview.2.zip">.zip ↗</a></td></tr>
-<tr><td><strong>Linux</strong></td><td><code>3.2.0-preview.2</code></td><td>十一个，含 Kimi K3，x86_64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.2/ColdCoffee-Workbench-Linux-x86_64-3.2.0-preview.2.AppImage">.AppImage ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.2/ColdCoffee-Workbench-Linux-amd64-3.2.0-preview.2.deb">.deb ↗</a></td></tr>
+<tr><td><strong>Windows</strong></td><td><code>3.2.0-preview.3</code></td><td>十一个，含 Kimi K3.1</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.3/ColdCoffee-Workbench-Windows-3.2.0-preview.3-x64.exe">免安装 .exe ↗</a></td></tr>
+<tr><td><strong>macOS Apple 芯片</strong></td><td><code>3.2.0-preview.3</code></td><td>十一个，含 Kimi K3.1，Apple 芯片 arm64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.3/ColdCoffee-Workbench-macOS-arm64-3.2.0-preview.3.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.3/ColdCoffee-Workbench-macOS-arm64-3.2.0-preview.3.zip">.zip ↗</a></td></tr>
+<tr><td><strong>macOS Intel</strong></td><td><code>3.2.0-preview.3</code></td><td>十一个，含 Kimi K3.1，Intel x64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.3/ColdCoffee-Workbench-macOS-x64-3.2.0-preview.3.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.3/ColdCoffee-Workbench-macOS-x64-3.2.0-preview.3.zip">.zip ↗</a></td></tr>
+<tr><td><strong>Linux</strong></td><td><code>3.2.0-preview.3</code></td><td>十一个，含 Kimi K3.1，x86_64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.3/ColdCoffee-Workbench-Linux-x86_64-3.2.0-preview.3.AppImage">.AppImage ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.3/ColdCoffee-Workbench-Linux-amd64-3.2.0-preview.3.deb">.deb ↗</a></td></tr>
 </table>
 <p>Windows 双击打开。macOS 第一次若被拦住，在程序图标上右键，选打开。Linux 的 AppImage 先加上可执行权限。deb 用系统的安装器。</p>
 <pre><code>cd desktop
@@ -46,7 +46,7 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 
 <h2 id="上手使用">上手使用</h2>
 <ol>
-<li><strong>打开软件：</strong>Windows、macOS、Linux 都用 3.2.0-preview.2。macOS 按 Apple 芯片或 Intel 选择对应安装包。</li>
+<li><strong>打开软件：</strong>Windows、macOS、Linux 都用 3.2.0-preview.3。macOS 按 Apple 芯片或 Intel 选择对应安装包。</li>
 <li><strong>一键破甲：</strong>只勾你要写的软件，按一下。写入之前会先备份。只改勾上的软件。</li>
 <li><strong>发送口令：</strong>打开那个软件，对话框里单独发「冷咖啡」。不想要了，回到这里按一键卸载，文件回到写入之前。</li>
 </ol>
@@ -66,14 +66,14 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <tr><td>08</td><td><code translate="no">WorkBuddy</code></td><td><code>%USERPROFILE%\.workbuddy</code></td><td><code>~/.workbuddy</code></td><td><code>skills/cha-workbuddy/SKILL.md</code></td></tr>
 <tr><td>09</td><td><code translate="no">Cursor</code></td><td><code>%USERPROFILE%\.cursor</code></td><td><code>~/.cursor</code></td><td><code>rules/cha-cursor.mdc</code> 和 <code>skills/cha-cursor/SKILL.md</code></td></tr>
 <tr><td>10</td><td>MiMo-V2.6-Pro</td><td><code>%USERPROFILE%\.config\mimocode</code></td><td><code>~/.config/mimocode</code></td><td><code>skills/cha-mimo/SKILL.md</code></td></tr>
-<tr><td>11</td><td>Kimi K3</td><td><code>%USERPROFILE%\.kimi-code</code></td><td><code>~/.kimi-code</code></td><td><code>skills/cha-kimi/SKILL.md</code></td></tr>
+<tr><td>11</td><td>Kimi K3.1</td><td><code>%USERPROFILE%\.kimi-code</code></td><td><code>~/.kimi-code</code></td><td><code>skills/cha-kimi/SKILL.md</code></td></tr>
 </table>
 <p>上表列出原词包主文件。完整技能扩展还会在所选数据根写入 <code>.coldcoffee-upstream/</code>、<code>.coldcoffee-history/</code> 和独立技能入口。已确认格式的客户端会合并 REA / IDA 连接配置（包括 <code translate="no">Cursor</code> 的 <code>mcp.json</code>）；其余客户端保留手动接入说明。所有写入仅限勾选的软件，写前备份、写后校验。</p>
 <table>
 <tr><th align="left">软件</th><th align="left">不写</th></tr>
 <tr><td><code translate="no">Cursor</code></td><td>安装目录、<code>%APPDATA%\Cursor</code>、<code>skills-cursor</code>。环境变量 <code>CURSOR_HOME</code> 只有目录名仍是 <code>.cursor</code> 才用。规则头里有 <code>alwaysApply: true</code>。</td></tr>
 <tr><td>MiMo-V2.6-Pro</td><td>npm 安装目录、<code>auth.json</code>、<code>mimocode.json</code>。没设变量时在 <code>.config/mimocode</code>。设了绝对路径 <code>MIMOCODE_HOME</code> 才改写 <code>$MIMOCODE_HOME/config</code>。</td></tr>
-<tr><td>Kimi K3</td><td>程序目录、<code>config.toml</code>、凭据、会话、<code>mcp.json</code>、旧目录 <code>~/.kimi</code>、跨工具的 <code>~/.agents/skills</code>。设了绝对路径 <code>KIMI_CODE_HOME</code> 时，数据根就是这个目录，技能仍在它下面的 <code>skills/cha-kimi/SKILL.md</code>。</td></tr>
+<tr><td>Kimi K3.1</td><td>程序目录、<code>config.toml</code>、凭据、会话、<code>mcp.json</code>、旧目录 <code>~/.kimi</code>、跨工具的 <code>~/.agents/skills</code>。设了绝对路径 <code>KIMI_CODE_HOME</code> 时，数据根就是这个目录，技能仍在它下面的 <code>skills/cha-kimi/SKILL.md</code>。</td></tr>
 </table>
 
 <h2 id="四页">四页</h2>
