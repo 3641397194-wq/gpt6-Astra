@@ -10,6 +10,7 @@ const seatTransactions = new SeatTransactions();
 const { ActivationGate } = require("./lib/activation-gate");
 const activationGate = new ActivationGate();
 const { detectDirectory } = require("./lib/detect-directory");
+const localAgentSkills = require("./lib/local-agent-skills");
 const beginner = require("./lib/beginner-install");
 const idaToolbox = require("./lib/ida-toolbox");
 const idaMcp = require("./lib/ida-mcp");
@@ -39,6 +40,10 @@ const COMMUNITY = {
     { name: "一群", value: "1057540028" },
     { name: "二群", value: "1077074552" },
     { name: "三群", value: "618179023" },
+  ],
+  telegram: [
+    { name: "聊天群", value: "https://t.me/chachachachalkf", url: "https://t.me/chachachachalkf" },
+    { name: "频道", value: "https://t.me/chachachalkf", url: "https://t.me/chachachalkf" },
   ],
 };
 
@@ -98,7 +103,7 @@ function createMain() {
   });
   protectWindow(mainWindow);
   const seatArg = process.argv.find((item) => item.startsWith("--seat="));
-  const hash = process.argv.includes("--toolbox") ? "toolbox" : process.argv.includes("--relay") ? "relay" : process.argv.includes("--workflow") ? "workflow" : (seatArg ? seatArg.slice("--seat=".length) : "");
+  const hash = process.argv.includes("--toolbox") ? "toolbox" : process.argv.includes("--packs") ? "packs" : process.argv.includes("--relay") ? "relay" : process.argv.includes("--workflow") ? "workflow" : (seatArg ? seatArg.slice("--seat=".length) : "");
   mainWindow.loadFile(WORKBENCH_ENTRY, hash ? { hash } : {});
 }
 
@@ -144,6 +149,54 @@ handleTrusted("coldbrew:transaction", async (_event, action, payload = {}) => {
     return action === "deploy" ? seatTransactions.deploy(payload.id) : seatTransactions.restore(payload.id);
   }
   throw new Error("未知文件操作");
+});
+
+handleTrusted("coldbrew:local-skills", async (_event, action, payload = {}) => {
+  const id = String(payload.id || "");
+  if (action === "list") return localAgentSkills.list();
+  if (action === "select-default") {
+    const profile = workbenchCore.LOCAL_AGENT_PROFILES.find((item) => item.id === id);
+    const root = profile && localAgentSkills.suggestedSkillsRoot(id);
+    if (!profile || !root) throw new Error("这个席位需要手动选择 Agent Skills 目录");
+    return localAgentSkills.select(id, root);
+  }
+  if (action === "choose") {
+    const profile = workbenchCore.LOCAL_AGENT_PROFILES.find((item) => item.id === id);
+    if (!profile) throw new Error("未知本地 Agent 技能包");
+    const result = await dialog.showOpenDialog(mainWindow, {
+      title: `选择 ${profile.agent} 实际加载的 Skills 目录`,
+      properties: ["openDirectory", "createDirectory"],
+    });
+    return result.canceled ? { canceled: true } : localAgentSkills.select(id, result.filePaths[0]);
+  }
+  if (action === "preview") return localAgentSkills.preview(id);
+  if (action === "install") {
+    if (payload.confirm !== true) throw new Error("请先预览并确认本地技能文件");
+    const install = localAgentSkills.installInfo(id, payload.planId);
+    const confirm = await dialog.showMessageBox(mainWindow, {
+      type: "warning", title: "冷咖啡 · 本地技能安装",
+      message: `备份并写入 ${install.profile}`,
+      detail: install.installFile,
+      buttons: ["取消", "备份并安装"], defaultId: 0, cancelId: 0,
+    });
+    return confirm.response === 1 ? localAgentSkills.deploy(id, payload.planId) : { canceled: true };
+  }
+  if (action === "verify") return localAgentSkills.verify(id);
+  if (action === "history") return localAgentSkills.history(id);
+  if (action === "restore") {
+    if (payload.confirm !== true) throw new Error("请先确认恢复");
+    const history = localAgentSkills.history(id);
+    const entry = history.find((item) => item.id === payload.transactionId && item.status === "applied");
+    if (!entry) throw new Error("没有找到可恢复的安装版本");
+    const confirm = await dialog.showMessageBox(mainWindow, {
+      type: "warning", title: "冷咖啡 · 恢复本地技能",
+      message: "恢复这份技能文件写入前的状态？",
+      detail: entry.id,
+      buttons: ["取消", "恢复"], defaultId: 0, cancelId: 0,
+    });
+    return confirm.response === 1 ? localAgentSkills.restore(id, entry.id) : { canceled: true };
+  }
+  throw new Error("未知本地技能操作");
 });
 
 // The relay adapter starts in deterministic preview mode. The API-first screen

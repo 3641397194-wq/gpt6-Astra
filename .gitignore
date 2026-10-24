@@ -12,6 +12,8 @@ _gemini_js_home/
 _render_title_astra.py
 
 # Local preview QA images (not release assets)
+docs/local-agent-skills-preview.png
+docs/newbie-agent-skills-preview.png
 docs/assets/brand-header-v3.png
 docs/assets/coldcoffee-manga-v3.png
 docs/assets/community-v3.png

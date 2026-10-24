@@ -45,12 +45,14 @@
       undo.textContent = busy ? '请稍等…' : `一键卸载 · ${picked}`;
       undo.disabled = busy || !picked;
     }
-    board.replaceChildren(...rows.map((row) => {
+    const cards = [];
+    for (const row of rows) {
       const card = document.createElement('div');
       card.className = 'newbie-card' + (row.state ? ' is-' + row.state : '');
       card.setAttribute('role', 'button');
       card.tabIndex = busy ? -1 : 0;
       card.setAttribute('aria-pressed', row.picked ? 'true' : 'false');
+      if (row.kind === 'local-skill') card.dataset.skillId = row.skillId;
       const tick = document.createElement('i');
       tick.className = 'tick';
       const mark = document.createElement('span');
@@ -67,6 +69,20 @@
         code.textContent = shortPath(row.root);
         code.title = row.root;
         card.append(code);
+      }
+      if (row.kind === 'local-skill' && row.manualRoot) {
+        const box = document.createElement('div');
+        box.className = 'newbie-open';
+        const choose = document.createElement('button');
+        choose.type = 'button';
+        choose.textContent = row.skillsRoot ? '更换 Skills 目录' : '选择 Skills 目录';
+        choose.addEventListener('click', async (event) => {
+          event.stopPropagation();
+          try { await chooseSkillDirectory(row); }
+          catch (error) { status.textContent = error.message; }
+        });
+        box.append(choose);
+        card.append(box);
       }
       if (row.launchers?.length) {
         const box = document.createElement('div');
@@ -108,19 +124,33 @@
         card.style.transform = `rotateX(${(-y * 8).toFixed(2)}deg) rotateY(${(x * 10).toFixed(2)}deg)`;
       });
       card.addEventListener('pointerleave', () => { card.style.transform = ''; });
-      return card;
+      cards.push(card);
+    }
+    board.replaceChildren(...cards);
+  }
+
+  function skillRows(list) {
+    const marks = { 'grok-bot': 'GROK / SKILL', 'claude-duet': 'CLAUDE / SKILL', 'chatgpt-dot': 'CODEX / SKILL', 'meta-muse': 'LOCAL / SKILL' };
+    return list.map((profile) => ({
+      kind: 'local-skill', skillId: profile.id, manualRoot: !!profile.manualRoot,
+      name: profile.name, line: marks[profile.id] || 'LOCAL / SKILL',
+      ok: true, exists: !!profile.exists, installed: !!profile.installed,
+      skillsRoot: profile.skillsRoot || '', root: profile.installFile || profile.suggestedSkillsRoot || '',
+      state: '', picked: false,
+      stateText: profile.installed ? '已安装 · 勾选后可恢复' : profile.exists ? '已有同名文件 · 安装时会备份' : profile.manualRoot ? '选择实际 Skills 目录' : '本地技能 · 尚未安装',
     }));
   }
 
-  function fromScan(list) {
-    rows = list.map((row) => ({
+  function fromScan(list, skills = []) {
+    const seats = list.map((row) => ({
       ...row,
       picked: !!(row.ok && row.exists),
       state: '',
       stateText: !row.ok ? row.error : row.exists ? '发现了，已经替你勾上' : '这台电脑还没有，点一下也能装',
       launchers: row.launchers || [],
     }));
-    if (!rows.some((row) => row.picked)) rows.forEach((row) => { if (row.ok) row.picked = true; });
+    rows = [...seats, ...skillRows(skills)];
+    if (!seats.some((row) => row.picked)) seats.forEach((row) => { if (row.ok) row.picked = true; });
     status.textContent = desktop ? '点卡片可以去掉不想动的。只会改勾上的软件，原来的文件先备份。' : '现在看的是样子。用桌面上的冷咖啡破甲工作台打开，才会真的写入。';
     setStep(1);
     paint();
@@ -128,15 +158,69 @@
 
   async function load() {
     if (!desktop) {
-      fromScan(DEMO.map(([seat, name, line]) => ({ ok: true, seat, name, line, exists: seat === 'codex' || seat === 'claude' || seat === 'grok', root: seat === 'codex' ? '预览 · 不会写入' : '', launchers: seat === 'codex' ? [{ name: 'Codex', path: '' }] : [] })));
+      let skills = [];
+      try { skills = await localSkillCall('list'); }
+      catch { skills = window.ColdCoffeeCore.LOCAL_AGENT_PROFILES.map(profile => ({ id: profile.id, name: profile.name, manualRoot: profile.manualRoot, suggestedSkillsRoot: profile.root, exists: false, installed: false })); }
+      fromScan(DEMO.map(([seat, name, line]) => ({ ok: true, seat, name, line, exists: seat === 'codex' || seat === 'claude' || seat === 'grok', root: seat === 'codex' ? '预览 · 不会写入' : '', launchers: seat === 'codex' ? [{ name: 'Codex', path: '' }] : [] })), skills);
       return;
     }
     status.textContent = '正在认你电脑上的软件…';
     try {
-      fromScan(await window.coldbrew.beginner('scan'));
+      const [scan, skills] = await Promise.all([window.coldbrew.beginner('scan'), window.coldbrew.localSkills('list')]);
+      fromScan(scan, skills);
     } catch (error) {
       status.textContent = error.message;
     }
+  }
+
+  async function chooseSkillDirectory(row) {
+    if (!desktop && !window.coldbrew?.localSkills && !window.fetch) throw new Error('请在桌面版选择 Skills 目录');
+    const selected = await localSkillCall('choose', { id: row.skillId });
+    if (selected?.canceled) return;
+    row.skillsRoot = selected.root;
+    row.root = selected.installFile;
+    const checked = await localSkillCall('verify', { id: row.skillId });
+    row.exists = checked.checks.some((item) => item.exists);
+    row.installed = checked.ok;
+    row.stateText = checked.ok ? '已安装 · 勾选后可恢复' : row.exists ? '已有同名文件 · 安装时会备份' : '目录已选 · 可纳入一键破甲';
+    paint();
+  }
+
+  async function prepareSkillInstall(row) {
+    if (row.manualRoot) {
+      if (!row.skillsRoot) {
+        const selected = await localSkillCall('choose', { id: row.skillId });
+        if (selected?.canceled) return null;
+        row.skillsRoot = selected.root;
+        row.root = selected.installFile;
+      }
+    } else {
+      const selected = await localSkillCall('select-default', { id: row.skillId });
+      row.skillsRoot = selected.root;
+      row.root = selected.installFile;
+    }
+    const plan = await localSkillCall('preview', { id: row.skillId });
+    const result = await localSkillCall('install', { id: row.skillId, planId: plan.id, confirm: true });
+    return result?.canceled ? null : result;
+  }
+
+  async function restoreSkill(row) {
+    if (row.manualRoot) {
+      if (!row.skillsRoot) {
+        const selected = await localSkillCall('choose', { id: row.skillId });
+        if (selected?.canceled) return null;
+        row.skillsRoot = selected.root;
+        row.root = selected.installFile;
+      }
+    } else {
+      const selected = await localSkillCall('select-default', { id: row.skillId });
+      row.skillsRoot = selected.root;
+      row.root = selected.installFile;
+    }
+    const history = await localSkillCall('history', { id: row.skillId });
+    const latest = history.find((item) => item.status === 'applied');
+    if (!latest) throw new Error(`${row.name} · 没有可恢复的安装记录`);
+    return localSkillCall('restore', { id: row.skillId, transactionId: latest.id, confirm: true });
   }
 
   async function install() {
@@ -161,6 +245,12 @@
       status.textContent = `正在处理 ${row.name}`;
       paint();
       try {
+        if (row.kind === 'local-skill') {
+          const result = await prepareSkillInstall(row);
+          if (!result) { row.state = ''; row.stateText = '已取消'; paint(); continue; }
+          row.state = 'ok'; row.exists = true; row.installed = true; row.stateText = result.changed ? `已安装 · ${result.installFile}` : '已经是最新版本';
+          row.root = result.installFile; row.result = result; done += 1; paint(); continue;
+        }
         const result = await window.coldbrew.beginner('install', { seat: row.seat, confirm: true });
         if (result.ok !== true || result.verified !== true) throw new Error('安装后的文件校验未通过。' + (result.message || '请查看技能检查结果。'));
         row.state = 'ok';
@@ -178,7 +268,7 @@
     }
     busy = false;
     setStep(3);
-    status.textContent = done ? `${done} 个写好了。重启目标软件，单独发「冷咖啡」。` : '一个都没写成，看红字。';
+    status.textContent = done ? `${done} 项写好了。重启目标软件；Agent 技能按客户端刷新方式加载。` : '一个都没写成，看红字。';
     finale.hidden = !done;
     paint();
   }
@@ -212,6 +302,11 @@
       status.textContent = `正在撤回 ${row.name}`;
       paint();
       try {
+        if (row.kind === 'local-skill') {
+          const result = await restoreSkill(row);
+          if (!result) { row.state = ''; row.stateText = '已取消'; paint(); continue; }
+          row.state = 'ok'; row.exists = false; row.installed = false; row.stateText = '已恢复写入前状态'; row.result = null; done += 1; paint(); continue;
+        }
         const result = await window.coldbrew.beginner('uninstall', { seat: row.seat, confirm: true });
         row.state = result.ok ? 'ok' : 'bad';
         row.stateText = result.message;

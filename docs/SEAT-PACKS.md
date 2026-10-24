@@ -47,7 +47,7 @@ DeepSeek v4.1 Flash 10.17版本 席位面向 10.17 版 `deepseek-ai/deepseek-har
 - GLM `GLM//STRAIGHT`
 - Gemini 维持原来的席位执行核稿
 
-六个席位共用启动词 `冷咖啡`。模型会话里整句恰好等于 `冷咖啡` 时，只输出激活页：先 QQ一群 `1057540028`、QQ二群 `1077074552`、QQ三群 `618179023`，再输出「冰美式 / 开心人生」能力清单。全文在 `desktop/src/lib/packs/activation-reply.md`。工单不用先打启动词。
+六个席位共用启动词 `冷咖啡`。模型会话里整句恰好等于 `冷咖啡` 时，只输出激活页：先 QQ一群 `1057540028`、QQ二群 `1077074552`、QQ三群 `618179023`、Telegram 聊天群 `https://t.me/chachachachalkf`、Telegram 频道 `https://t.me/chachachalkf`，再输出「冰美式 / 开心人生」能力清单。全文在 `desktop/src/lib/packs/activation-reply.md`。工单不用先打启动词。
 
 ## 三步工作流（原创）
 

@@ -19,6 +19,12 @@
     {id:'mimo',tag:'MiMo-V2.6-Pro',mark:'10',hint:'技能写在用户配置目录 .config/mimocode/skills/cha-mimo/SKILL.md，YAML 头 name 为 cha-mimo',place:'~/.config/mimocode  · 不写 npm，不写 auth.json'},
     {id:'kimi',tag:'Kimi K3.1',mark:'11',hint:'技能写在 Kimi Code 数据根 .kimi-code/skills/cha-kimi/SKILL.md，YAML 头 name 为 cha-kimi',place:'~/.kimi-code  · 不写 config.toml，不写 ~/.agents'}
   ];
+  const LOCAL_AGENT_PROFILES = [
+    {id:'grok-bot',name:'Grok Bot',seat:'grok',agent:'Grok 本地 Agent',root:'.grok/skills',skill:'coldcoffee-grok-bot',summary:'快速拆解目标，列出依据与待验证项。'},
+    {id:'claude-duet',name:'Claude Duet',seat:'claude',agent:'Claude Code',root:'.claude/skills',skill:'coldcoffee-claude-duet',summary:'分阶段整理需求、变更、测试与交付。'},
+    {id:'chatgpt-dot',name:'ChatGPT Dot',seat:'codex',agent:'Codex',root:'.codex/skills',skill:'coldcoffee-chatgpt-dot',summary:'把目标转成可执行任务，并记录验证结果。'},
+    {id:'meta-muse',name:'Meta Muse',seat:'gemini',agent:'手动选择本地 Agent',root:'手动选择 Skills 目录',skill:'coldcoffee-meta-muse',summary:'创意发散、内容结构化与多方案比较。',manualRoot:true}
+  ];
   const PROFILES = [
     {id:'max',label:'全开',code:'MAX',brief:'完整交付、验收与后续步骤'},
     {id:'focused',label:'聚焦',code:'FOCUS',brief:'先回答关键问题，压缩重复内容'},
@@ -27,9 +33,11 @@
     {id:'creative',label:'创作',code:'CREATE',brief:'保持角色、语气、风格和连续性'}
   ];
   const COMMUNITY = [
-    {name:'一群',value:'1057540028',image:'qq-group-1.jpg'},
-    {name:'二群',value:'1077074552',image:'qq-group-2.jpg'},
-    {name:'三群',value:'618179023',image:'qq-group-3.jpg'}
+    {kind:'qq',name:'QQ 一群',value:'1057540028',image:'qq-group-1.jpg'},
+    {kind:'qq',name:'QQ 二群',value:'1077074552',image:'qq-group-2.jpg'},
+    {kind:'qq',name:'QQ 三群',value:'618179023',image:'qq-group-3.jpg'},
+    {kind:'telegram',name:'Telegram 聊天群',label:'聊天群',url:'https://t.me/chachachachalkf'},
+    {kind:'telegram',name:'Telegram 频道',label:'频道',url:'https://t.me/chachachalkf'}
   ];
   const PRESETS = [
     {label:'代码交付',goal:'实现一个可离线使用的 Markdown 笔记编辑器，支持搜索和导出。',context:'桌面应用；先实现最小可用版本。',constraints:'使用中文说明；列出修改文件和测试命令。',format:'markdown',profile:'builder'},
@@ -85,5 +93,5 @@
     while(endA>start&&endB>start&&a[endA-1]===b[endB-1]) {endA--;endB--;}
     return {same:before===after,prefix:start,removed:a.slice(start,endA),added:b.slice(start,endB)};
   }
-  return {VERSION,DEEPSEEK_LABEL,SEATS,PROFILES,COMMUNITY,PRESETS,normalize,compose,evaluate,diff};
+  return {VERSION,DEEPSEEK_LABEL,SEATS,LOCAL_AGENT_PROFILES,PROFILES,COMMUNITY,PRESETS,normalize,compose,evaluate,diff};
 });

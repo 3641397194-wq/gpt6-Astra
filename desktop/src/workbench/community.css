@@ -1,0 +1,28 @@
+.community-link-card {
+  border: 1px solid #51414a;
+  padding: 22px;
+  border-radius: 3px;
+  background: #151114;
+  min-height: 275px;
+  display: flex;
+  flex-direction: column;
+}
+
+.community-link-card p {
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.community-link-card code {
+  display: block;
+  margin-top: 20px;
+  color: #d35b65;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.community-link {
+  width: 100%;
+  margin-top: auto;
+  font-size: 12px;
+}

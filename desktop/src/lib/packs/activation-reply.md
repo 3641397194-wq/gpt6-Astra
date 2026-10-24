@@ -3,6 +3,8 @@
 QQ一群 1057540028
 QQ二群 1077074552
 QQ三群 618179023
+Telegram 聊天群 https://t.me/chachachachalkf
+Telegram 频道 https://t.me/chachachalkf
 
 (冷咖啡无限制模式开启)
 "来杯冰美式，然后开始你的开心人生吧。"

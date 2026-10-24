@@ -1,7 +1,7 @@
 'use strict';
 const core = window.ColdCoffeeCore;
 const $ = (id) => document.getElementById(id);
-const state = {seat:'codex',profile:'max',history:[],counter:0,result:null,busy:false,relayReady:false,relayProvider:'gpt-6-astra',relayBusy:false,relayTesting:false,relayModels:[],relayRevision:0,workflow:{plan:null,task:null,events:[],ida:null,poll:null,aiBusy:false}};
+const state = {seat:'codex',profile:'max',history:[],counter:0,result:null,busy:false,relayReady:false,relayProvider:'gpt-6-astra',relayBusy:false,relayTesting:false,relayModels:[],relayRevision:0,localSkillNonce:'',workflow:{plan:null,task:null,events:[],ida:null,poll:null,aiBusy:false}};
 const hashSeat = location.hash.replace('#','');
 if (core.SEATS.some(s => s.id === hashSeat)) state.seat = hashSeat;
 let toastTimer;
@@ -282,6 +282,12 @@ function renderRelayCatalog(catalog,source='product') {
     card.append(top,title,desc,action);return card;
   }));
 }
+async function localSkillCall(action,payload={}) {
+  if(window.coldbrew?.localSkills) return window.coldbrew.localSkills(action,payload);
+  if(!state.localSkillNonce){const session=await fetch('/api/session');if(!session.ok)throw new Error('请通过本地交互预览打开');state.localSkillNonce=(await session.json()).nonce;}
+  const response=await fetch('/api/command',{method:'POST',headers:{'Content-Type':'application/json','X-ColdCoffee-Token':state.localSkillNonce},body:JSON.stringify({action:`local-skill-${action}`,payload})});
+  const data=await response.json();if(!response.ok)throw new Error(data.error||'本地技能操作失败');return data.result;
+}
 function renderRelay() {
   const models=[{id:'gpt-6-astra',name:'GPT-6 Astra',mark:'A / 06'},{id:'gpt-6.1-sol',name:'GPT-6.1 Sol',mark:'S / 61'}];
   $('relay-models').replaceChildren(...models.map(model=>{
@@ -301,8 +307,8 @@ function renderRelay() {
   renderRelayCatalog(null);
   $('relay-groups').replaceChildren(...core.COMMUNITY.map(group=>{
     const row=document.createElement('div');row.className='relay-group-row';const info=document.createElement('div');
-    const name=document.createElement('strong');name.textContent=group.name;const num=document.createElement('code');num.textContent=group.value;
-    info.append(name,num);row.append(info,button('复制群号',()=>copy(group.value)));return row;
+    const name=document.createElement('strong');name.textContent=group.name;const value=document.createElement('code');value.textContent=group.kind==='qq'?group.value:group.url;
+    info.append(name,value);row.append(info,button(group.kind==='qq'?'复制群号':'打开链接',()=>group.kind==='qq'?copy(group.value):openCommunityLink(group)));return row;
   }));
   $('relay-open').addEventListener('click',openRelaySite);
   $('relay-sync').addEventListener('click',async()=>{
@@ -324,7 +330,11 @@ function renderRelay() {
   for (const id of ['closed-pitch-go','newbie-closed','side-closed']) if($(id))$(id).addEventListener('click',()=>page('community'));
   updateRelaySelection();
 }
-function renderCommunity() {$('community').replaceChildren(...core.COMMUNITY.map((group,index)=>{const card=document.createElement('article');card.className='community-card';const label=document.createElement('div');label.className='eyebrow';label.textContent=`冷咖啡 / 0${index+1}`;const title=document.createElement('h2');title.textContent=group.name;const qr=button('',()=>{$('qr-large').src=img.src;$('qr-caption').textContent=`${group.name} · ${group.value}`;$('qr-dialog').showModal();},'qr-button');qr.setAttribute('aria-label',`放大${group.name}二维码`);const img=document.createElement('img');img.src=`../../assets/community/${group.image}`;img.alt=`${group.name}二维码，群号 ${group.value}`;qr.append(img);const row=document.createElement('div');row.className='group-number';const value=document.createElement('code');value.textContent=group.value;row.append(value,button('复制群号',()=>copy(group.value)));card.append(label,title,qr,row);return card;}));}
+function openCommunityLink(group) {
+  if (window.coldbrew?.openExternal) return window.coldbrew.openExternal(group.url).catch((error) => toast(error.message));
+  window.open(group.url, '_blank', 'noopener,noreferrer');
+}
+function renderCommunity() {$('community').replaceChildren(...core.COMMUNITY.map((group,index)=>{const card=document.createElement('article');card.className=group.kind==='telegram'?'community-link-card':'community-card';const label=document.createElement('div');label.className='eyebrow';label.textContent=`冷咖啡 / 0${index+1}`;const title=document.createElement('h2');title.textContent=group.name;if(group.kind==='telegram'){const desc=document.createElement('p');desc.textContent=`Telegram ${group.label}，点击即可打开。`;const link=button(`打开 ${group.label}`,()=>openCommunityLink(group),'community-link');link.setAttribute('aria-label',`打开${group.name}`);const url=document.createElement('code');url.textContent=group.url;card.append(label,title,desc,link,url);return card;}const qr=button('',()=>{$('qr-large').src=img.src;$('qr-caption').textContent=`${group.name} · ${group.value}`;$('qr-dialog').showModal();},'qr-button');qr.setAttribute('aria-label',`放大${group.name}二维码`);const img=document.createElement('img');img.src=`../../assets/community/${group.image}`;img.alt=`${group.name}二维码，群号 ${group.value}`;qr.append(img);const row=document.createElement('div');row.className='group-number';const value=document.createElement('code');value.textContent=group.value;row.append(value,button('复制群号',()=>copy(group.value)));card.append(label,title,qr,row);return card;}));}
 function workflowPayload(overrides={}){const value={mode:$('workflow-mode')?.value||'infiltration',target:relayInput('workflow-target'),wordlist:relayInput('workflow-wordlist'),artifactDir:relayInput('workflow-artifacts'),idaUrl:relayInput('workflow-ida-url','http://127.0.0.1:13337/mcp'),timeoutMs:Math.max(1000,Math.min(900000,Number($('workflow-timeout')?.value||45)*1000)),...overrides};if(!value.artifactDir)delete value.artifactDir;if(!value.wordlist)delete value.wordlist;return value;}
 function workflowFallbackPlan(input){const names={infiltration:'渗透测试流水线',api:'API 接口分析',reverse:'IDA 逆向分析',unlock:'校验逻辑与补丁分析',mobile:'移动样本分析',custom:'自定义步骤链'};const stages={infiltration:['目标与范围确认','端口与服务发现','HTTP 指纹与存活探测','漏洞模板验证','证据归档'],api:['API 目标与范围','HTTP 服务与技术栈','端点与参数发现','漏洞模板验证','证据归档'],reverse:['样本与工作目录','IDA MCP 在线状态','读取 IDA 工具能力','提取可见字符串','读取函数索引','追踪关键交叉引用','证据归档'],unlock:['样本与派生目录','IDA MCP 在线状态','提取授权相关字符串','定位校验函数','读取反编译结果','输出偏移与回滚记录'],mobile:['APK 样本','读取 APK 基础信息','反编译 Java/Kotlin','设备连接状态','证据归档'],custom:['AI 生成步骤链']};return{id:input.mode,label:names[input.mode]||input.mode,description:'浏览器预览计划；桌面端可直接调用真实工具。',target:input.target,toolIds:[],ida:['reverse','unlock'].includes(input.mode),stages:(stages[input.mode]||stages.infiltration).map((label,index)=>({id:`preview-${index+1}`,index,label,kind:'preview',optional:false,status:'pending'}))};}
 function workflowSetState(id,text,kind=''){const el=$(id);if(!el)return;el.textContent=text;if(kind)el.dataset.state=kind;}
