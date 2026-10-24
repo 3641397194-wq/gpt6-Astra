@@ -268,7 +268,7 @@
     }
     busy = false;
     setStep(3);
-    status.textContent = done ? `${done} 项写好了。重启目标软件；Agent 技能按客户端刷新方式加载。` : '一个都没写成，看红字。';
+    status.textContent = done ? `${done} 个模型席位写好了。重启目标软件；模型技能按客户端刷新方式加载。` : '一个都没写成，看红字。';
     finale.hidden = !done;
     paint();
   }

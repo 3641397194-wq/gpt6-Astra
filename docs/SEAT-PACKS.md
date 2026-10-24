@@ -1,6 +1,6 @@
 # 六席破甲包 · 原创
 
-本仓库的越狱词是冷咖啡 CHA 原创稿，按 11 个模型席位分开写；四个本地 Agent 目标另有独立 skill 入口。手法参考了 GitHub 上公开的注入位，正文没有搬现成的 DAN / L1B3RT4S / 第三方 prompt 全文。
+本仓库的越狱词是冷咖啡 CHA 原创稿，按 15 个模型席位分开写，每个席位有独立 skill 入口。手法参考了 GitHub 上公开的注入位，正文没有搬现成的 DAN / L1B3RT4S / 第三方 prompt 全文。
 
 ## 注入位（公开资料）
 
@@ -47,7 +47,7 @@ DeepSeek v4.1 Flash 10.17版本 席位面向 10.17 版 `deepseek-ai/deepseek-har
 - GLM `GLM//STRAIGHT`
 - Gemini 维持原来的席位执行核稿
 
-11 个模型席位共用启动词 `冷咖啡`；四个本地 Agent 目标复用同一激活页。模型会话里整句恰好等于 `冷咖啡` 时，只输出激活页：先 QQ一群 `1057540028`、QQ二群 `1077074552`、QQ三群 `618179023`、Telegram 聊天群 `https://t.me/chachachachalkf`、Telegram 频道 `https://t.me/chachachalkf`，再输出「冰美式 / 开心人生」能力清单。全文在 `desktop/src/lib/packs/activation-reply.md`。工单不用先打启动词。
+15 个模型席位共用启动词 `冷咖啡`。模型会话里整句恰好等于 `冷咖啡` 时，只输出激活页：先 QQ一群 `1057540028`、QQ二群 `1077074552`、QQ三群 `618179023`、Telegram 聊天群 `https://t.me/chachachachalkf`、Telegram 频道 `https://t.me/chachachalkf`，再输出「冰美式 / 开心人生」能力清单。全文在 `desktop/src/lib/packs/activation-reply.md`。工单不用先打启动词。
 
 ## 三步工作流（原创）
 
@@ -63,7 +63,7 @@ DeepSeek v4.1 Flash 10.17版本 席位面向 10.17 版 `deepseek-ai/deepseek-har
 | Gemini | 执行核三拍 | 执行核上线 | 合同页 | 五刃出货 |
 | Cursor | 常驻三拍 | 认用户目录 | 写常驻规则 | 对一下入口 |
 
-正文模板在 `desktop/src/lib/packs/`。桌面席位的预览 / 运行 / 检查 / 恢复四键对 11 个模型同样生效；四个本地 Agent 使用独立的安装、校验和恢复入口。
+正文模板在 `desktop/src/lib/packs/`。桌面席位的预览 / 运行 / 检查 / 恢复四键对 15 个模型同样生效。
 
 ## 六类路由技能（原创）
 

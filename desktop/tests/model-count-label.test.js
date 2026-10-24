@@ -11,6 +11,7 @@ test('public pages and the software hero label the release as fifteen AI models'
   for (const relative of ['README.md', 'docs/index.html', 'docs/readme-preview.html', 'desktop/src/workbench/index.html']) {
     const source = fs.readFileSync(path.join(root, relative), 'utf8');
     assert.match(source, /十五个 AI 模型/, `${relative}: missing current model count label`);
+    assert.doesNotMatch(source, /11 个模型席位.*4 个本地 Agent 工作流/, `${relative}: stale split model/Agent label`);
   }
   assert.doesNotMatch(
     fs.readFileSync(path.join(root, 'desktop/src/workbench/index.html'), 'utf8'),

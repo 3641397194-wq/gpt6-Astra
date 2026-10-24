@@ -20,10 +20,10 @@
     {id:'kimi',tag:'Kimi K3.1',mark:'11',hint:'技能写在 Kimi Code 数据根 .kimi-code/skills/cha-kimi/SKILL.md，YAML 头 name 为 cha-kimi',place:'~/.kimi-code  · 不写 config.toml，不写 ~/.agents'}
   ];
   const LOCAL_AGENT_PROFILES = [
-    {id:'grok-bot',name:'Grok Bot',seat:'grok',agent:'Grok 本地 Agent',root:'.grok/skills',skill:'coldcoffee-grok-bot',summary:'快速拆解目标，列出依据与待验证项。'},
-    {id:'claude-duet',name:'Claude Duet',seat:'claude',agent:'Claude Code',root:'.claude/skills',skill:'coldcoffee-claude-duet',summary:'分阶段整理需求、变更、测试与交付。'},
-    {id:'chatgpt-dot',name:'ChatGPT Dot',seat:'codex',agent:'Codex',root:'.codex/skills',skill:'coldcoffee-chatgpt-dot',summary:'把目标转成可执行任务，并记录验证结果。'},
-    {id:'meta-muse',name:'Meta Muse',seat:'gemini',agent:'手动选择本地 Agent',root:'手动选择 Skills 目录',skill:'coldcoffee-meta-muse',summary:'创意发散、内容结构化与多方案比较。',manualRoot:true}
+    {id:'grok-bot',name:'Grok Bot',seat:'grok',agent:'Grok 4.7 模型',root:'.grok/skills',skill:'coldcoffee-grok-bot',summary:'快速拆解目标，列出依据与待验证项。'},
+    {id:'claude-duet',name:'Claude Duet',seat:'claude',agent:'Claude Code 模型',root:'.claude/skills',skill:'coldcoffee-claude-duet',summary:'分阶段整理需求、变更、测试与交付。'},
+    {id:'chatgpt-dot',name:'ChatGPT Dot',seat:'codex',agent:'GPT-6 Astra 模型',root:'.codex/skills',skill:'coldcoffee-chatgpt-dot',summary:'把目标转成可执行任务，并记录验证结果。'},
+    {id:'meta-muse',name:'Meta Muse',seat:'gemini',agent:'Gemini 模型',root:'手动选择 Skills 目录',skill:'coldcoffee-meta-muse',summary:'创意发散、内容结构化与多方案比较。',manualRoot:true}
   ];
   const PROFILES = [
     {id:'max',label:'全开',code:'MAX',brief:'完整交付、验收与后续步骤'},

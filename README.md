@@ -27,7 +27,7 @@
 </blockquote>
 
 <h2 id="下载">下载</h2>
-<p>三个系统都是 3.2.0-preview.3，和下面这张席位表是同一套：十五个 AI 模型入口，含 Kimi K3.1；其中 11 个是模型席位，另有 4 个本地 Agent 工作流。金色条是闭源和定制。macOS 分别提供 Apple 芯片 arm64 和 Intel x64 安装包。原创工具箱直接内置运行。</p>
+<p>三个系统都是 3.2.0-preview.3，和下面这张席位表是同一套：十五个 AI 模型席位，含 Kimi K3.1、Grok Bot、Claude Duet、ChatGPT Dot 和 Meta Muse。金色条是闭源和定制。macOS 分别提供 Apple 芯片 arm64 和 Intel x64 安装包。原创工具箱直接内置运行。</p>
 <table>
 <tr><th align="left">系统</th><th align="left">版本</th><th align="left">席位</th><th align="left">安装包</th></tr>
 <tr><td><strong>Windows</strong></td><td><code>3.2.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.3/ColdCoffee-Workbench-Windows-3.2.0-preview.3-x64.exe">免安装 .exe ↗</a></td></tr>
@@ -53,7 +53,7 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <p><strong>完整技能扩展：</strong>一键破甲同时附带 94 项完整技能、脚本和参考库。安装后重启目标软件，再单独发送「冷咖啡」。<a href="docs/UPSTREAM-SKILLS.md">查看技能、依赖准备、校验与撤回说明</a>。</p>
 
 <h2 id="一键安装目标">十五个 AI 模型</h2>
-<p>一键破甲可以一次勾选十五个 AI 模型入口（11 个模型席位和 4 个本地 Agent 工作流）。只写勾上的，按下表顺序扫描、备份、安装和校验。</p>
+<p>一键破甲可以一次勾选十五个 AI 模型席位。只写勾上的，按下表顺序扫描、备份、安装和校验。</p>
 <table>
 <tr><th align="left">#</th><th align="left">软件</th><th align="left">Windows</th><th align="left">macOS / Linux</th><th align="left">主文件</th></tr>
 <tr><td>01</td><td>GPT-6 Astra全模型支持</td><td><code>%USERPROFILE%\.codex</code></td><td><code>~/.codex</code></td><td><code>prompts/cha-codex.md</code>，另写 <code>AGENTS.md</code> 和 <code>config.toml</code></td></tr>
@@ -67,12 +67,12 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <tr><td>09</td><td><code translate="no">Cursor</code></td><td><code>%USERPROFILE%\.cursor</code></td><td><code>~/.cursor</code></td><td><code>rules/cha-cursor.mdc</code> 和 <code>skills/cha-cursor/SKILL.md</code></td></tr>
 <tr><td>10</td><td>MiniMax 3.1 Flash</td><td><code>%USERPROFILE%\.config\mimocode</code></td><td><code>~/.config/mimocode</code></td><td><code>skills/cha-mimo/SKILL.md</code></td></tr>
 <tr><td>11</td><td>Kimi K3.1</td><td><code>%USERPROFILE%\.kimi-code</code></td><td><code>~/.kimi-code</code></td><td><code>skills/cha-kimi/SKILL.md</code></td></tr>
-<tr><td>12</td><td>Grok Bot · 本地 Agent</td><td><code>%USERPROFILE%\.grok\skills</code></td><td><code>~/.grok/skills</code></td><td><code>coldcoffee-grok-bot/SKILL.md</code></td></tr>
-<tr><td>13</td><td>Claude Duet · Claude Code</td><td><code>%USERPROFILE%\.claude\skills</code></td><td><code>~/.claude/skills</code></td><td><code>coldcoffee-claude-duet/SKILL.md</code></td></tr>
-<tr><td>14</td><td>ChatGPT Dot · Codex</td><td><code>%USERPROFILE%\.codex\skills</code></td><td><code>~/.codex/skills</code></td><td><code>coldcoffee-chatgpt-dot/SKILL.md</code></td></tr>
-<tr><td>15</td><td>Meta Muse · 手动选择 Agent</td><td>选择实际 Skills 目录</td><td>选择实际 Skills 目录</td><td><code>coldcoffee-meta-muse/SKILL.md</code></td></tr>
+<tr><td>12</td><td>Grok Bot</td><td><code>%USERPROFILE%\.grok\skills</code></td><td><code>~/.grok/skills</code></td><td><code>coldcoffee-grok-bot/SKILL.md</code></td></tr>
+<tr><td>13</td><td>Claude Duet</td><td><code>%USERPROFILE%\.claude\skills</code></td><td><code>~/.claude/skills</code></td><td><code>coldcoffee-claude-duet/SKILL.md</code></td></tr>
+<tr><td>14</td><td>ChatGPT Dot</td><td><code>%USERPROFILE%\.codex\skills</code></td><td><code>~/.codex/skills</code></td><td><code>coldcoffee-chatgpt-dot/SKILL.md</code></td></tr>
+<tr><td>15</td><td>Meta Muse</td><td>选择实际 Skills 目录</td><td>选择实际 Skills 目录</td><td><code>coldcoffee-meta-muse/SKILL.md</code></td></tr>
 </table>
-<p>上表列出原词包与本地 Agent 技能主文件。完整技能扩展还会在所选数据根写入 <code>.coldcoffee-upstream/</code>、<code>.coldcoffee-history/</code> 和独立技能入口。已确认格式的客户端会合并 REA / IDA 连接配置（包括 <code translate="no">Cursor</code> 的 <code>mcp.json</code>）；其余客户端保留手动接入说明。所有写入仅限勾选的目标，写前备份、写后校验。</p>
+<p>上表列出十五个 AI 模型席位的词包与技能主文件。完整技能扩展还会在所选数据根写入 <code>.coldcoffee-upstream/</code>、<code>.coldcoffee-history/</code> 和独立技能入口。已确认格式的客户端会合并 REA / IDA 连接配置（包括 <code translate="no">Cursor</code> 的 <code>mcp.json</code>）；其余客户端保留手动接入说明。所有写入仅限勾选的模型，写前备份、写后校验。</p>
 <table>
 <tr><th align="left">软件</th><th align="left">不写</th></tr>
 <tr><td><code translate="no">Cursor</code></td><td>安装目录、<code>%APPDATA%\Cursor</code>、<code>skills-cursor</code>。环境变量 <code>CURSOR_HOME</code> 只有目录名仍是 <code>.cursor</code> 才用。规则头里有 <code>alwaysApply: true</code>。</td></tr>
@@ -83,7 +83,7 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <h2 id="四页">四页</h2>
 <table>
 <tr><th align="left">页</th><th align="left">做什么</th></tr>
-<tr><td><strong>01 一键破甲</strong></td><td>十五个 AI 模型入口（含四个本地 Agent 工作流）打勾，按一下。写入前先备份。卸载把勾上的文件退回备份。</td></tr>
+<tr><td><strong>01 一键破甲</strong></td><td>十五个 AI 模型席位打勾，按一下。写入前先备份。卸载把勾上的文件退回备份。</td></tr>
 <tr><td><strong>02 冷咖啡中转</strong></td><td>地址 <code>https://coldcoffeeai.com/v1</code>。Key 自己贴，只留在这台电脑。</td></tr>
 <tr><td><strong>03 冷咖啡社群</strong></td><td>需要闭源破甲，或者定制破甲，进群找管理。用法和售后也在这里。</td></tr>
 <tr><td><strong>04 工具箱</strong></td><td>16 项原创网络、网站、文件和文本工具；AI 自动调用、MCP / skill，以及 IDA 联动。</td></tr>
