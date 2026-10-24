@@ -24,7 +24,7 @@ function detectDirectory(seat,{env=process.env,home=os.homedir(),platform=proces
   const configured=String(env.MIMOCODE_HOME||'').trim();
   const xdg=String(env.XDG_CONFIG_HOME||'').trim();
   const target=assertMimoUserDir(mimoConfigDir(env,home),env,home);
-  add(target,configured?'MIMOCODE_HOME/config':xdg?'XDG_CONFIG_HOME/mimocode':'MiMo 用户配置目录');
+    add(target,configured?'MIMOCODE_HOME/config':xdg?'XDG_CONFIG_HOME/mimocode':'MiniMax 3.1 Flash 用户配置目录');
   return candidates[0];
  }
  if(seat==='kimi'){

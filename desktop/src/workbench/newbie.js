@@ -13,7 +13,7 @@
   const DEMO = [
     ['codex', 'Codex', 'GPT'], ['claude', 'Claude', 'Code'], ['grok', 'Grok', '4.7'], ['deepseek', window.ColdCoffeeCore.DEEPSEEK_LABEL, 'Harness'],
     ['glm53', 'GLM', '5.3'], ['gemini', 'Gemini', '全模型'], ['doubao', '豆包', '技能'], ['workbuddy', 'WorkBuddy', '搭档'],
-    ['cursor', 'Cursor', '.cursor'], ['mimo', 'MiMo-V2.6-Pro', '.config'], ['kimi', 'Kimi K3.1', '.kimi-code'],
+    ['cursor', 'Cursor', '.cursor'], ['mimo', 'MiniMax 3.1 Flash', '.config'], ['kimi', 'Kimi K3.1', '.kimi-code'],
   ];
 
   function toast(text) {

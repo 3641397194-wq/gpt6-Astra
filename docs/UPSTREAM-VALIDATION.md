@@ -7,8 +7,8 @@
 | 项目 | 结果 | 验证方式 |
 |---|---|---|
 | 两套固定来源与官方 REA 运行资源 | 11,671 个文件、94 个技能，逐文件 SHA-256 通过 | `python tools/vendor_upstream_skills.py --verify-only`；`desktop/tests/upstream-integrity.test.js` |
-| 11 个客户端的安装计划 | 每个安装根保留完整来源、94 个独立技能入口、来源及许可证 | 只生成合成目录的计划并核对全部资源；没有向个人目录安装 |
-| 原有词包与欢迎词 | 原文件未修改；11 个席位原词包回归通过 | `desktop/src/lib/seat-selftest.js`；`tools/seat_selftest.py` |
+| 15 个安装目标的安装计划 | 11 个模型席位加 4 个本地 Agent 目标；每个安装根保留完整来源、94 个独立技能入口、来源及许可证 | 只生成合成目录的计划并核对全部资源；没有向个人目录安装 |
+| 原有词包与欢迎词 | 原文件未修改；11 个模型席位和 4 个 Agent 目标回归通过 | `desktop/src/lib/seat-selftest.js`；`tools/seat_selftest.py` |
 | 安装、重复安装、撤回与中断恢复 | 合成配置及二进制资源测试通过 | 单文件合并、去重、冲突保护、路径检查、多目录补偿、写后校验 |
 | REA 官方运行时 | 6.7.0 的锁定依赖真实准备通过 | 在项目 `.coldbrew/upstream-runtime-smoke` 中经事务部署 1,777 个运行文件，再执行隔离的 `npm ci` |
 | REA MCP | `initialize` 与 `tools/list` 实际成功，返回 207 个工具 | `node tools/preview/verify-upstream-runtime.cjs`；没有执行分析任务 |

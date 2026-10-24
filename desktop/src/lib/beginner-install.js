@@ -21,7 +21,7 @@ const CARDS = {
   doubao: { name: '豆包', line: '技能' },
   workbuddy: { name: 'WorkBuddy', line: '搭档' },
   cursor: { name: 'Cursor', line: '.cursor' },
-  mimo: { name: 'MiMo-V2.6-Pro', line: '.config' },
+  mimo: { name: 'MiniMax 3.1 Flash', line: '.config' },
   kimi: { name: 'Kimi K3.1', line: '.kimi-code' },
 };
 

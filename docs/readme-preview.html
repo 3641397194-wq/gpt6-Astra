@@ -65,7 +65,7 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <tr><td>07</td><td>豆包</td><td><code>%LOCALAPPDATA%\Doubao\User Data\Default\.doubao\agent_mode\workspace\.user_skills</code></td><td>macOS <code>~/Library/Application Support/Doubao/...</code>，Linux <code>~/.local/share/Doubao/...</code>。不写软件自带的 <code>.skills</code></td><td><code>cha-doubao/SKILL.md</code></td></tr>
 <tr><td>08</td><td><code translate="no">WorkBuddy</code></td><td><code>%USERPROFILE%\.workbuddy</code></td><td><code>~/.workbuddy</code></td><td><code>skills/cha-workbuddy/SKILL.md</code></td></tr>
 <tr><td>09</td><td><code translate="no">Cursor</code></td><td><code>%USERPROFILE%\.cursor</code></td><td><code>~/.cursor</code></td><td><code>rules/cha-cursor.mdc</code> 和 <code>skills/cha-cursor/SKILL.md</code></td></tr>
-<tr><td>10</td><td>MiMo-V2.6-Pro</td><td><code>%USERPROFILE%\.config\mimocode</code></td><td><code>~/.config/mimocode</code></td><td><code>skills/cha-mimo/SKILL.md</code></td></tr>
+<tr><td>10</td><td>MiniMax 3.1 Flash</td><td><code>%USERPROFILE%\.config\mimocode</code></td><td><code>~/.config/mimocode</code></td><td><code>skills/cha-mimo/SKILL.md</code></td></tr>
 <tr><td>11</td><td>Kimi K3.1</td><td><code>%USERPROFILE%\.kimi-code</code></td><td><code>~/.kimi-code</code></td><td><code>skills/cha-kimi/SKILL.md</code></td></tr>
 <tr><td>12</td><td>Grok Bot · 本地 Agent</td><td><code>%USERPROFILE%\.grok\skills</code></td><td><code>~/.grok/skills</code></td><td><code>coldcoffee-grok-bot/SKILL.md</code></td></tr>
 <tr><td>13</td><td>Claude Duet · Claude Code</td><td><code>%USERPROFILE%\.claude\skills</code></td><td><code>~/.claude/skills</code></td><td><code>coldcoffee-claude-duet/SKILL.md</code></td></tr>
@@ -76,7 +76,7 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <table>
 <tr><th align="left">软件</th><th align="left">不写</th></tr>
 <tr><td><code translate="no">Cursor</code></td><td>安装目录、<code>%APPDATA%\Cursor</code>、<code>skills-cursor</code>。环境变量 <code>CURSOR_HOME</code> 只有目录名仍是 <code>.cursor</code> 才用。规则头里有 <code>alwaysApply: true</code>。</td></tr>
-<tr><td>MiMo-V2.6-Pro</td><td>npm 安装目录、<code>auth.json</code>、<code>mimocode.json</code>。没设变量时在 <code>.config/mimocode</code>。设了绝对路径 <code>MIMOCODE_HOME</code> 才改写 <code>$MIMOCODE_HOME/config</code>。</td></tr>
+<tr><td>MiniMax 3.1 Flash</td><td>npm 安装目录、<code>auth.json</code>、<code>mimocode.json</code>。没设变量时在 <code>.config/mimocode</code>。设了绝对路径 <code>MIMOCODE_HOME</code> 才改写 <code>$MIMOCODE_HOME/config</code>。</td></tr>
 <tr><td>Kimi K3.1</td><td>程序目录、<code>config.toml</code>、凭据、会话、<code>mcp.json</code>、旧目录 <code>~/.kimi</code>、跨工具的 <code>~/.agents/skills</code>。设了绝对路径 <code>KIMI_CODE_HOME</code> 时，数据根就是这个目录，技能仍在它下面的 <code>skills/cha-kimi/SKILL.md</code>。</td></tr>
 </table>
 

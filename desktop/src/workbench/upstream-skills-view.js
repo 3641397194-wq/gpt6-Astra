@@ -8,7 +8,7 @@
   const seats = [
     ['codex', 'Codex'], ['claude', 'Claude Code'], ['grok', 'Grok'], ['deepseek', window.ColdCoffeeCore?.DEEPSEEK_LABEL || 'DeepSeek Harness'],
     ['glm53', 'GLM / ZCode'], ['gemini', 'Gemini'], ['doubao', '豆包'], ['workbuddy', 'WorkBuddy'],
-    ['cursor', 'Cursor'], ['mimo', 'MiMo'], ['kimi', 'Kimi Code'],
+    ['cursor', 'Cursor'], ['mimo', 'MiniMax 3.1 Flash'], ['kimi', 'Kimi Code'],
   ];
   const number = (value) => Number.isFinite(Number(value)) ? Number(value).toLocaleString('zh-CN') : '—';
   const text = (tag, className, value) => {
