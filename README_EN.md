@@ -54,18 +54,18 @@ npm start
 
 Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). GitHub Actions builds all three packages on their native runners and tests the packaged UI and publishes installers plus SHA-256 checksums to GitHub Releases.
 
-All 11 model seats and four local Agent targets write an original CHA pack or skill into the selected local instruction directory. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
+All 11 model seats and four local Agent workflows write an original CHA pack or skill into the selected local instruction directory. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
 
 IDA user plugins resolve to `%APPDATA%\\Hex-Rays\\IDA Pro\\plugins` on Windows, `~/Library/Application Support/Hex-Rays/IDA Pro/plugins` on macOS, and `~/.idapro/plugins` on Linux. Set `IDAUSR` to override the user directory. The IDA MCP package cache follows each platform's user data directory; set `DOUBAO_USER_SKILLS` or `WORKBUDDY_HOME` when a client uses a custom location.
 
-## 02 / Fifteen Targets
+## 02 / Fifteen AI Models
 
-The 11 model seats are `GPT-6 Astra全模型支持 / Codex`, `Claude Code全模型支持`, `Grok 4.7`, `DeepSeek v4.1 Flash 10.17版本`, `GLM 5.3全模型支持`, `Gemini全模型支持`, `豆包`, `WorkBuddy`, `Cursor`, `MiniMax 3.1 Flash`, and `Kimi K3.1`. Four local Agent targets, `Grok Bot`, `Claude Duet`, `ChatGPT Dot`, and `Meta Muse`, are included in the same one-click installation page.
+The 11 model seats are `GPT-6 Astra全模型支持 / Codex`, `Claude Code全模型支持`, `Grok 4.7`, `DeepSeek v4.1 Flash 10.17版本`, `GLM 5.3全模型支持`, `Gemini全模型支持`, `豆包`, `WorkBuddy`, `Cursor`, `MiniMax 3.1 Flash`, and `Kimi K3.1`. Four local Agent workflows, `Grok Bot`, `Claude Duet`, `ChatGPT Dot`, and `Meta Muse`, are included as additional AI model entries on the same one-click installation page.
 
 The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Windows, macOS, and Linux. It installs only under `$DSH_HOME` (default `~/.dsh`), with a short `AGENTS.md` entry and `skills/cha-deepseek/SKILL.md`; the shared `$DSH_AGENTS_HOME` / `~/.agents` root remains untouched. See the [Harness installation notes](docs/SEAT-PACKS.md#deepseek-官方-harness-安装说明).
 
 <div align="center">
-  <img src="docs/assets/readme-noir-seats.svg" width="100%" alt="Fifteen model and local Agent targets" />
+  <img src="docs/assets/readme-noir-seats.svg" width="100%" alt="Fifteen AI model entries: eleven model seats and four local Agent workflows" />
 </div>
 
 ## 03 / Community Signal
@@ -106,7 +106,7 @@ The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Window
 
 ## Original toolbox / Downloads
 
-Release 3.2.0-preview.3: Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, Linux x64 AppImage/DEB. The homepage and desktop UI list 15 targets, including MiniMax 3.1 Flash, Kimi K3.1, and four local Agent workflows.
+Release 3.2.0-preview.3: Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model entries, including MiniMax 3.1 Flash, Kimi K3.1, and four local Agent workflows.
 
 [Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.3) · [Original toolbox and feature scope](docs/original-toolbox.md)
 
