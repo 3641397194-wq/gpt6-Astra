@@ -7,16 +7,18 @@ const os = require('node:os');
 const path = require('node:path');
 const { LOCAL_AGENT_PROFILES } = require('../src/shared/workbench-core');
 const localSkills = require('../src/lib/local-agent-skills');
+// macOS aliases /var to /private/var; fixtures must use a canonical root.
+const tempRoot = fs.realpathSync.native(os.tmpdir());
 
 function fixture(t) {
-  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'coldcoffee-local-skills-'));
+  const base = fs.mkdtempSync(path.join(tempRoot, 'coldcoffee-local-skills-'));
   t.after(() => fs.rmSync(base, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 }));
   return path.join(base, 'agent-skills');
 }
 
 test('four local Agent profiles stay independent from relay models and expose truthful target rules', () => {
   assert.deepEqual(LOCAL_AGENT_PROFILES.map(item => item.id), ['grok-bot', 'claude-duet', 'chatgpt-dot', 'meta-muse']);
-  const home = path.join(os.tmpdir(), 'coldcoffee-fixture-home');
+  const home = path.join(tempRoot, 'coldcoffee-fixture-home');
   assert.equal(localSkills.suggestedSkillsRoot('grok-bot', { home, env: {} }), path.join(home, '.grok', 'skills'));
   assert.equal(localSkills.suggestedSkillsRoot('claude-duet', { home, env: {} }), path.join(home, '.claude', 'skills'));
   assert.equal(localSkills.suggestedSkillsRoot('chatgpt-dot', { home, env: {} }), path.join(home, '.codex', 'skills'));
@@ -25,7 +27,7 @@ test('four local Agent profiles stay independent from relay models and expose tr
 });
 
 test('one-click card discovery checks default skill files without creating Agent directories', (t) => {
-  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'coldcoffee-local-skill-scan-'));
+  const base = fs.mkdtempSync(path.join(tempRoot, 'coldcoffee-local-skill-scan-'));
   t.after(() => fs.rmSync(base, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 }));
   const env = {
     GROK_HOME: path.join(base, 'grok-home'),

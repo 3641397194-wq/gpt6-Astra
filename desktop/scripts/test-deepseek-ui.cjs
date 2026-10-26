@@ -5,10 +5,15 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { chromium } = require('playwright');
 const beginner = require('../src/lib/beginner-install');
+const { LOCAL_AGENT_PROFILES } = require('../src/shared/workbench-core');
 
 const ROOT = path.resolve(__dirname, '../..');
 const OUTPUT = path.resolve(__dirname, '../work/deepseek-ui');
 const LABEL = 'DeepSeek v4.1 Flash 10.17版本';
+const EXPECTED_CARD_NAMES = [
+  'Codex', 'Claude', 'Grok', LABEL, 'GLM', 'Gemini', '豆包', 'WorkBuddy', 'Cursor',
+  'MiniMax 3.1 Flash', 'Kimi K3.1', 'Grok Bot', 'Claude Duet', 'ChatGPT Dot', 'Meta Muse',
+];
 const SIZES = [{ width: 1360, height: 1080 }, { width: 1080, height: 900 }];
 const MIME = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp' };
 // Pure renderer data: no bundled sources or customer installation are inspected.
@@ -57,12 +62,24 @@ async function launchBrowser() {
 }
 
 async function mockDesktop(context, platform) {
+  const fixtureRoot = path.join(OUTPUT, 'fixtures', platform);
   const scan = beginner.scanAll({ detect: (seat) => ({
-    root: path.join(OUTPUT, 'fixtures', platform, seat), exists: true,
+    root: path.join(fixtureRoot, seat), exists: true,
     source: 'ui-fixture', layout: seat === 'deepseek' ? 'deepseek-harness' : 'default',
   }) });
   assert.equal(scan.find(row => row.seat === 'deepseek').name, LABEL);
-  await context.addInitScript(({ rows, platform, catalog }) => {
+  // Match the bridge contract without calling local-agent-skills.list(), which
+  // would inspect real user installation paths. These directories are synthetic.
+  const skills = LOCAL_AGENT_PROFILES.map(profile => {
+    const skillsRoot = profile.manualRoot ? '' : path.join(fixtureRoot, profile.id, 'skills');
+    return {
+      ...profile, suggestedSkillsRoot: skillsRoot, skillsRoot,
+      installFile: skillsRoot ? path.join(skillsRoot, profile.skill, 'SKILL.md') : '',
+      exists: false, installed: false,
+    };
+  });
+  assert.deepEqual([...scan, ...skills].map(row => row.name), EXPECTED_CARD_NAMES);
+  await context.addInitScript(({ rows, skills, platform, catalog }) => {
     window.__deepseekUiCalls = [];
     const record = (method, action) => window.__deepseekUiCalls.push({ method, action });
     const noop = async () => null;
@@ -73,6 +90,11 @@ async function mockDesktop(context, platform) {
         if (action === 'scan') return rows;
         if (action === 'catalog') return catalog;
         throw new Error('Unexpected fixture beginner action: ' + action);
+      },
+      localSkills: async (action) => {
+        record('localSkills', action);
+        if (action === 'list') return skills;
+        throw new Error('Unexpected fixture localSkills action: ' + action);
       },
       transaction: async (action) => {
         record('transaction', action);
@@ -87,7 +109,7 @@ async function mockDesktop(context, platform) {
       onOriginalToolbox: () => () => {}, onWorkflow: () => () => {},
       relay: noop, openExternal: noop, minimize: noop, maximize: noop, close: noop,
     };
-  }, { rows: scan, platform, catalog: CATALOG });
+  }, { rows: scan, skills, platform, catalog: CATALOG });
 }
 
 async function measureLabel(locator) {
@@ -151,6 +173,10 @@ async function measureLabel(locator) {
           assert.equal(cells[4], 'skills/cha-deepseek/SKILL.md');
         } else {
           await page.locator('#page-packs.active').waitFor();
+          await page.locator('#newbie-cards .newbie-card').first().waitFor();
+          result.modelSeats = await page.locator('#newbie-cards .newbie-card strong').allTextContents();
+          assert.deepEqual(result.modelSeats, EXPECTED_CARD_NAMES, id + ': all 15 model seats render in order');
+          assert.equal(await page.locator('#newbie-cards .newbie-card').count(), 15, id + ': exactly 15 model cards');
           label = page.locator('#newbie-cards strong').filter({ hasText: /^DeepSeek/ });
           assert.equal(await label.count(), 1, id + ': one DeepSeek card');
           const sidebar = await page.locator('#seats .seat-line').filter({ hasText: 'DeepSeek' }).evaluate(element => {
@@ -167,6 +193,9 @@ async function measureLabel(locator) {
             assert.deepEqual(result.ipcCalls.filter(call => call.method === 'beginner'), [
               { method: 'beginner', action: 'scan' }, { method: 'beginner', action: 'catalog' },
             ]);
+            assert.deepEqual(result.ipcCalls.filter(call => call.method === 'localSkills'), [
+              { method: 'localSkills', action: 'list' },
+            ], id + ': model skill discovery is read-only');
             assert.equal(result.ipcCalls.some(call => call.method === 'transaction'), false);
           }
         }

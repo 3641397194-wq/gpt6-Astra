@@ -12,6 +12,12 @@ const workflow = fs.readFileSync(path.join(root, '.github/workflows/desktop-buil
 const version = fs.readFileSync(path.join(root, 'VERSION'), 'utf8').trim();
 const tag = `v${version}`;
 
+test('ordinary main pushes validate and package but never try to republish an existing VERSION', () => {
+  assert.match(workflow, /workflow_dispatch:\s+inputs:\s+publish_release:[\s\S]*?default:\s*false[\s\S]*?type:\s*boolean/);
+  assert.match(workflow, /if:\s*github\.ref == 'refs\/heads\/main' && github\.event_name == 'workflow_dispatch' && inputs\.publish_release == true/);
+  assert.doesNotMatch(workflow, /if:.*github\.event_name == 'push'.*refs\/heads\/main/);
+});
+
 function guardScript() {
   const step = workflow.indexOf('      - name: Publish release after all platforms pass');
   assert.ok(step >= 0, 'release publication step is missing');

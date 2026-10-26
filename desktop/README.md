@@ -25,4 +25,4 @@ npm run pack:win
 
 ## 三系统发布
 
-GitHub Actions 在原生 Windows、macOS arm64 / x64、Linux x64 环境中执行检查、构建及打包版 UI 测试。安装包仅在全部平台通过后公开到 GitHub Releases，附带 SHA256SUMS.txt。macOS 包未做 Apple Developer 签名和公证，首次打开按系统提示确认。
+GitHub Actions 在原生 Windows、macOS arm64 / x64、Linux x64 环境中执行检查、构建及打包版 UI 测试。日常提交会验证并上传各平台安装包到该次运行的 Artifacts，保留 14 天；发布新版时，先更新 `VERSION`、桌面端版本及对应发布说明，再在 `desktop-build` 的「Run workflow」中选择 `main` 并勾选 `publish_release`。安装包仅在全部平台通过后公开到 GitHub Releases，附带 SHA256SUMS.txt；已发布版本标签保留原提交，日常提交与文档更新不重复发布旧版本。macOS 包未做 Apple Developer 签名和公证，首次打开按系统提示确认。

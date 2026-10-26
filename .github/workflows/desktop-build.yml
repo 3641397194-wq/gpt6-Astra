@@ -5,6 +5,12 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      publish_release:
+        description: Publish this VERSION as a prerelease after every platform passes; use a new VERSION and tag.
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -118,7 +124,7 @@ jobs:
   release:
     name: Publish complete cross-platform release
     needs: package
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.publish_release == true
     runs-on: ubuntu-latest
     permissions:
       contents: write
