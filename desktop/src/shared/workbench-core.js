@@ -4,7 +4,7 @@
   else root.ColdCoffeeCore = api;
 })(typeof globalThis === 'object' ? globalThis : this, function () {
   'use strict';
-  const VERSION = '3.2.0-preview.3';
+  const VERSION = '3.2.0-preview.4';
   const DEEPSEEK_LABEL = 'DeepSeek v4.1 Flash 10.17版本';
   const SEATS = [
     {id:'codex',tag:'GPT-6 Astra全模型支持',mark:'01',hint:'目标清单 → 最小实现 → 验收证据'},
@@ -36,7 +36,7 @@
     {kind:'qq',name:'QQ 一群',value:'1057540028',image:'qq-group-1.jpg'},
     {kind:'qq',name:'QQ 二群',value:'1077074552',image:'qq-group-2.jpg'},
     {kind:'qq',name:'QQ 三群',value:'618179023',image:'qq-group-3.jpg'},
-    {kind:'telegram',name:'Telegram 聊天群',label:'聊天群',url:'https://t.me/chachachachalkf'},
+    {kind:'telegram',name:'Telegram 聊天群',label:'聊天群',url:'https://t.me/coolcoffeeai'},
     {kind:'telegram',name:'Telegram 频道',label:'频道',url:'https://t.me/chachachalkf'}
   ];
   const PRESETS = [

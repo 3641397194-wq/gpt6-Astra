@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.resolve(__dirname, '../..');
-const telegram = ['https://t.me/chachachachalkf', 'https://t.me/chachachalkf'];
+const telegram = ['https://t.me/coolcoffeeai', 'https://t.me/chachachalkf'];
 const groups = ['1057540028', '1077074552', '618179023'];
 
 for (const relative of ['README.md', 'README_EN.md', 'docs/index.html', 'docs/readme-preview.html']) {

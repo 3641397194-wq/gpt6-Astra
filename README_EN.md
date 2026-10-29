@@ -10,7 +10,7 @@
 
 ### gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持-MiniMax 3.1 Flash
 
-**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX RELEASE 3.2.0-preview.3**
+**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX RELEASE 3.2.0-preview.4**
 
 <sub>An original dark-manga visual system built from black ink, bone paper, a single crimson eye, and torn comic panels.</sub>
 
@@ -91,7 +91,7 @@ The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Window
 </p>
 
 <p align="center">
-  <strong>Telegram chat</strong> <a href="https://t.me/chachachachalkf"><code>t.me/chachachachalkf</code></a>
+  <strong>Telegram chat</strong> <a href="https://t.me/coolcoffeeai"><code>t.me/coolcoffeeai</code></a>
   &nbsp;|&nbsp;
   <strong>Telegram channel</strong> <a href="https://t.me/chachachalkf"><code>t.me/chachachalkf</code></a>
 </p>
@@ -106,8 +106,8 @@ The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Window
 
 ## Original toolbox / Downloads
 
-Release 3.2.0-preview.3: Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
+Release 3.2.0-preview.4: Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
 
-[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.3) · [Original toolbox and feature scope](docs/original-toolbox.md)
+[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.4) · [Original toolbox and feature scope](docs/original-toolbox.md)
 
 The 16 original tools run inside the application. AI automation provides a real tool/observation loop, with a 19-tool MCP server and an exportable skill. Larger exploitation, ticket/domain and remote-session modules remain future work.

@@ -42,7 +42,7 @@ const COMMUNITY = {
     { name: "三群", value: "618179023" },
   ],
   telegram: [
-    { name: "聊天群", value: "https://t.me/chachachachalkf", url: "https://t.me/chachachachalkf" },
+    { name: "聊天群", value: "https://t.me/coolcoffeeai", url: "https://t.me/coolcoffeeai" },
     { name: "频道", value: "https://t.me/chachachalkf", url: "https://t.me/chachachalkf" },
   ],
 };

@@ -106,7 +106,7 @@ test('isolated preview generation preserves the complete canonical README and is
       (_, attribute, quote) => attribute + quote + prefix);
     assert.equal(generatedBody(page), rebased);
     assert.deepEqual(downloadLinks(page), expected);
-    for (const preserved of ['免责声明 · Disclaimer', 'https://t.me/chachachachalkf',
+    for (const preserved of ['免责声明 · Disclaimer', 'https://t.me/coolcoffeeai',
       'https://t.me/chachachalkf', '1057540028', '1077074552', '618179023',
       '<td><code translate="no">WorkBuddy</code></td>', '<td><code translate="no">Cursor</code></td>']) {
       assert.ok(page.includes(preserved), `${relative}: lost ${preserved}`);

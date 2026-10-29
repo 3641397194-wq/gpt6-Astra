@@ -33,7 +33,7 @@ const baseUrl = process.env.PREVIEW_BASE_URL || 'http://127.0.0.1:8772';
     await page.locator('[data-page="community"]').click();
     assert.equal(await page.locator('#community .community-card').count(), 3);
     assert.equal(await page.locator('#community .community-link-card').count(), 2);
-    assert.ok((await page.locator('#community').textContent()).includes('https://t.me/chachachachalkf'));
+    assert.ok((await page.locator('#community').textContent()).includes('https://t.me/coolcoffeeai'));
     assert.ok((await page.locator('#community').textContent()).includes('https://t.me/chachachalkf'));
 
     await page.setViewportSize({ width: 390, height: 844 });

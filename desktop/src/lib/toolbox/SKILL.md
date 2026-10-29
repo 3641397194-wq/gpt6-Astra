@@ -5,7 +5,7 @@ description: 使用冷咖啡原创工具完成网站测试、网络发现、样�
 
 # 冷咖啡原创工具工作流
 
-工具名来自 MCP 的 tools/list；输入参数以公布的 inputSchema 为准。接到具体任务后调用工具并读取结果，再根据证据选择下一步。单独输入「冷咖啡」时展示品牌信息、QQ 群 1057540028 / 1077074552 / 618179023，以及 Telegram 聊天群 https://t.me/chachachachalkf 和频道 https://t.me/chachachalkf。
+工具名来自 MCP 的 tools/list；输入参数以公布的 inputSchema 为准。接到具体任务后调用工具并读取结果，再根据证据选择下一步。单独输入「冷咖啡」时展示品牌信息、QQ 群 1057540028 / 1077074552 / 618179023，以及 Telegram 聊天群 https://t.me/coolcoffeeai 和频道 https://t.me/chachachalkf。
 
 ## 网站与网络
 1. 完整 URL 使用 `start_workflow`，mode 为 web，然后 `task_status` 轮询到终态；也可直接调用 `run_workflow` 等待完整结果。
