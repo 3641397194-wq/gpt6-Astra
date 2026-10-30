@@ -10,13 +10,13 @@
 
 ### gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持-MiniMax 3.1 Flash
 
-**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX 3.2.0-preview.5 · WINDOWS ACCEPTED**
+**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX 3.2.0-preview.5 · AVAILABLE ON ALL THREE PLATFORMS**
 
 <sub>An original dark-manga visual system built from black ink, bone paper, a single crimson eye, and torn comic panels.</sub>
 
 </div>
 
-<p align="center"><strong>3.2.0-preview.5 has passed Windows acceptance; GitHub Actions now builds and publishes the cross-platform installers.</strong><br /><sub>The Windows artifact is verified locally; macOS and Linux are built by CI after the same checks pass.</sub></p>
+<p align="center"><strong>3.2.0-preview.5 is published, with downloads for Windows, macOS, and Linux.</strong><br /><sub>The Windows artifact passed local acceptance; GitHub Actions built and published the cross-platform packages.</sub></p>
 
 > **⚠️ Disclaimer · 免责声明**
 >
@@ -54,7 +54,7 @@ npm ci
 npm start
 ```
 
-Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). After local acceptance, GitHub Actions will build each platform on a native runner and test the packaged UI before publishing installers and SHA-256 checksums. This review round builds on Windows.
+Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). The published release was built by GitHub Actions on native runners, with packaged UI checks and SHA-256 checksums. The Windows artifact also passed local acceptance.
 
 All 15 model seats write an original CHA pack or skill into the selected local instruction directory. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
 
@@ -69,6 +69,27 @@ The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Window
 <div align="center">
   <img src="docs/assets/readme-noir-seats.svg" width="100%" alt="Fifteen AI model seats" />
 </div>
+
+## Desktop interface / Install, connect, and stay in touch
+
+Select the model seats you use, install their bundled skills, and check the result in one workbench. Files are backed up before writing and verified afterward; uninstall restores the saved backup.
+
+<p align="center">
+  <a href="docs/assets/coldcoffee-workbench-install.png"><img src="docs/assets/coldcoffee-workbench-install.png" width="100%" alt="ColdCoffee Workbench 3.2.0-preview.5 installation page with model seats, skill resources, and installation checks" /></a><br />
+  <sub>Installation · Select clients, back up files, install, verify, and restore</sub>
+</p>
+
+<table>
+  <tr>
+    <td width="50%"><a href="docs/assets/coldcoffee-workbench-relay.png"><img src="docs/assets/coldcoffee-workbench-relay.png" width="100%" alt="ColdCoffee relay page with the API address, key field, model selection, and Codex configuration" /></a></td>
+    <td width="50%"><a href="docs/assets/coldcoffee-workbench-community.png"><img src="docs/assets/coldcoffee-workbench-community.png" width="100%" alt="ColdCoffee community page with all three QQ groups, Telegram chat, and channel" /></a></td>
+  </tr>
+  <tr><td align="center"><strong>ColdCoffee relay</strong><br /><sub>Enter a key, choose a model, copy the Codex configuration, and check the connection</sub></td><td align="center"><strong>ColdCoffee community</strong><br /><sub>QQ and Telegram links for usage, support, and paid local customization</sub></td></tr>
+</table>
+
+**Enter 冷咖啡 to start:** after installation, restart the target client and send **冷咖啡** as a separate message. DeepSeek Harness also accepts the same word in the companion's activation field.
+
+<sub>These are actual screenshots of the 3.2.0-preview.5 desktop application. Click any screenshot to open the full image.</sub>
 
 ## DeepSeek Harness / ColdCoffee workspace
 
@@ -132,10 +153,10 @@ In the desktop workbench, select **安装到 DeepSeek**, restart Harness Web, an
 
 ## Original toolbox / Downloads
 
-Release 3.2.0-preview.5: Windows acceptance is complete and GitHub Actions builds the cross-platform download targets. Packages are Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
+Release 3.2.0-preview.5: all seven installers are published. Packages are Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
 
 [Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.5) · [Original toolbox and feature scope](docs/original-toolbox.md)
 
-The release link above is prepared for publication and becomes usable after all platform assets pass validation and are published.
+The release includes the published installers and SHA-256 checksums.
 
 The 16 original tools run inside the application. AI automation provides a real tool/observation loop, with a 19-tool MCP server and an exportable skill. Larger exploitation, ticket/domain and remote-session modules remain future work.
