@@ -2,6 +2,7 @@
 const TOML = require('smol-toml');
 const YAML = require('yaml');
 const JSONC = require('jsonc-parser');
+const path = require('node:path');
 const { SERVER } = require('./upstream-skills');
 
 function patchJson(text, item) {
@@ -103,4 +104,50 @@ function patchMcp(text, item) {
   throw new Error('未知 REA 客户端配置格式');
 }
 
-module.exports = { patchMcp, patchJson, patchToml, patchHarness };
+function patchHarnessPlugin(text, item) {
+  const id = 'coldcoffee-harness';
+  const desired = item.entry;
+  if (!desired || desired.id !== id || typeof desired.name !== 'string' || !path.isAbsolute(desired.name) || !desired.config || typeof desired.config !== 'object' || Array.isArray(desired.config)) throw new Error('冷咖啡 Harness 原生插件声明错误');
+  const doc = YAML.parseDocument(text.trim() ? text : '[]\n', { uniqueKeys: true });
+  if (doc.errors.length || !YAML.isSeq(doc.contents)) throw new Error('Harness cordis.patch.yml 应为有效的 YAML 补丁列表；原文件保持不变');
+  const value = doc.toJS({ maxAliasCount: 100 });
+  let found;
+  for (let index = 0; index < value.length; index += 1) {
+    const operation = value[index];
+    if (!operation || typeof operation !== 'object' || Array.isArray(operation)) throw new Error('Harness 补丁包含未知结构；请先整理后重试');
+    if (operation.id === id) throw new Error('Harness 已存在冷咖啡插件的后续覆盖补丁；请先检查配置');
+    if (operation.insert != null && !Array.isArray(operation.insert)) throw new Error('Harness insert 不是列表；原文件保持不变');
+    for (let at = 0; at < (operation.insert || []).length; at += 1) {
+      const entry = operation.insert[at];
+      if (!entry || entry.id !== id) continue;
+      if (found) throw new Error('Harness 包含重复冷咖啡原生插件入口；原文件保持不变');
+      if (Object.keys(operation).some(key => key !== 'insert')) throw new Error('冷咖啡插件所在的 Harness 插入补丁带条件分组；请先检查是否启用');
+      if (entry.config != null && (typeof entry.config !== 'object' || Array.isArray(entry.config))) throw new Error('冷咖啡 Harness 插件 config 应为对象');
+      found = [index, 'insert', at];
+    }
+  }
+  if (found) {
+    // Update managed leaf values instead of replacing the entry. YAML nodes,
+    // customer comments, additional options and other plugins retain ownership.
+    if (YAML.isAlias(doc.getIn(found, true)) || YAML.isAlias(doc.getIn([...found, 'config'], true))) throw new Error('冷咖啡 Harness 插件使用 YAML 别名；请先展开该入口后重试');
+    const current = value[found[0]].insert[found[2]];
+    const updates = [ [['name'], desired.name], ...Object.entries(desired.config).map(([key, val]) => [['config', key], val]) ];
+    let changed = false;
+    for (const [keys, next] of updates) {
+      const old = keys.reduce((obj, key) => obj?.[key], current);
+      if (JSON.stringify(old) === JSON.stringify(next)) continue;
+      const target = [...found, ...keys];
+      const previous = doc.getIn(target, true);
+      if (YAML.isScalar(previous) && (next === null || typeof next !== 'object')) previous.value = next;
+      else doc.setIn(target, next);
+      changed = true;
+    }
+    if (!changed) return text;
+  } else doc.contents.add(doc.createNode({ insert: [desired] }));
+  const result = doc.toString();
+  const checked = YAML.parseDocument(result, { uniqueKeys: true });
+  if (checked.errors.length || !YAML.isSeq(checked.contents)) throw new Error('Harness 原生插件合并结果校验失败');
+  return result;
+}
+
+module.exports = { patchMcp, patchJson, patchToml, patchHarness, patchHarnessPlugin };

@@ -18,7 +18,10 @@ const { WorkflowEngine, planWorkflow, healthCheckTools } = require("./lib/workfl
 const { RelayAdapter } = require("./lib/relay-adapter");
 const relayAdapter = new RelayAdapter();
 const { assertTrustedSender, protectWindow } = require("./lib/window-security");
+const { allowedExternalUrl } = require("./lib/external-links");
 const WORKBENCH_ENTRY = path.join(__dirname, "workbench", "index.html");
+// Review builds can be opened without taking focus from the user's current app.
+const PASSIVE_PREVIEW = process.argv.includes("--preview-passive");
 // electron-builder places extraResources outside app.asar on every platform.
 const TOOLBOX_ROOT = app.isPackaged ? path.join(process.resourcesPath, "toolbox") : path.join(__dirname, "lib", "toolbox");
 const { ToolboxEngine } = require(path.join(TOOLBOX_ROOT, "engine.js"));
@@ -393,7 +396,7 @@ handleTrusted("coldbrew:open-docs", async () => {
 
 handleTrusted("coldbrew:open-external", async (_event, value) => {
   const url = String(value || "").trim();
-  if (!/^https:\/\/(?:github\.com|(?:www\.)?coldcoffeeai\.com)(\/|$)/i.test(url)) throw new Error("这个链接打不开");
+  if (!allowedExternalUrl(url)) throw new Error("这个链接未列入应用的官方入口");
   await shell.openExternal(url);
   return url;
 });
@@ -407,11 +410,14 @@ handleTrusted("window:maximize", () => {
 handleTrusted("window:close", () => mainWindow?.close());
 
 app.whenReady().then(() => {
-  createSplash();
+  if (!PASSIVE_PREVIEW) createSplash();
   createMain();
   setTimeout(() => {
     if (splashWindow && !splashWindow.isDestroyed()) splashWindow.close();
-    if (mainWindow && !mainWindow.isDestroyed()) { mainWindow.show(); mainWindow.focus(); }
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      if (PASSIVE_PREVIEW) mainWindow.showInactive();
+      else { mainWindow.show(); mainWindow.focus(); }
+    }
   }, 1800);
 });
 

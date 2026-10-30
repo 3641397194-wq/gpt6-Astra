@@ -31,6 +31,8 @@ docs/assets/workbench-v3.png
 *.pfx
 auth.json
 credentials.json
+credential.dpapi
+preview-session.json
 *.log
 *.dmp
 

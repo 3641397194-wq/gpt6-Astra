@@ -10,11 +10,13 @@
 
 ### gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持-MiniMax 3.1 Flash
 
-**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX RELEASE 3.2.0-preview.4**
+**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX 3.2.0-preview.5 · WINDOWS ACCEPTED**
 
 <sub>An original dark-manga visual system built from black ink, bone paper, a single crimson eye, and torn comic panels.</sub>
 
 </div>
+
+<p align="center"><strong>3.2.0-preview.5 has passed Windows acceptance; GitHub Actions now builds and publishes the cross-platform installers.</strong><br /><sub>The Windows artifact is verified locally; macOS and Linux are built by CI after the same checks pass.</sub></p>
 
 > **⚠️ Disclaimer · 免责声明**
 >
@@ -52,7 +54,7 @@ npm ci
 npm start
 ```
 
-Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). GitHub Actions builds all three packages on their native runners and tests the packaged UI and publishes installers plus SHA-256 checksums to GitHub Releases.
+Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). After local acceptance, GitHub Actions will build each platform on a native runner and test the packaged UI before publishing installers and SHA-256 checksums. This review round builds on Windows.
 
 All 15 model seats write an original CHA pack or skill into the selected local instruction directory. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
 
@@ -67,6 +69,30 @@ The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Window
 <div align="center">
   <img src="docs/assets/readme-noir-seats.svg" width="100%" alt="Fifteen AI model seats" />
 </div>
+
+## DeepSeek Harness / ColdCoffee workspace
+
+ColdCoffee (冷咖啡) adds an ice-blue skin across the official Harness Web interface, an animated opening, and a companion panel for workflows, task records, community, and appearance. It reuses the bundled REA and reverse-skill resources and preserves the original activation word and complete welcome text.
+
+<p align="center">
+  <a href="docs/assets/deepseek-harness-opening.png"><img src="docs/assets/deepseek-harness-opening.png" width="100%" alt="ColdCoffee DeepSeek Harness opening with ice-blue artwork, relay and community links" /></a>
+</p>
+
+<table>
+  <tr>
+    <td width="50%"><a href="docs/assets/deepseek-harness-workspace.png"><img src="docs/assets/deepseek-harness-workspace.png" width="100%" alt="Official DeepSeek Harness Web interface with the ColdCoffee skin and companion" /></a></td>
+    <td width="50%"><a href="docs/assets/deepseek-harness-community.png"><img src="docs/assets/deepseek-harness-community.png" width="100%" alt="ColdCoffee community panel with all three QQ groups, Telegram and paid service links" /></a></td>
+  </tr>
+  <tr><td align="center"><sub>Harness Web · Host skin and workspace artwork</sub></td><td align="center"><sub>Community · QQ groups, Telegram chat and channel</sub></td></tr>
+</table>
+
+The six existing research entries cover Web and API security review, API identity and access review, staged research planning, REA reverse engineering and sample analysis, source review, and evidence/report preparation. Each entry resolves to an installed skill and submits work through the official Harness session service; status and findings follow actual events and tool results.
+
+In the desktop workbench, select **安装到 DeepSeek**, restart Harness Web, and enter **冷咖啡** in the companion. Installation backs up files before writing and verifies them afterward; uninstall restores the same transaction. See the [plugin guide, workflow mapping, and validation scope](docs/DEEPSEEK-PLUGIN.md).
+
+<sub>These are actual local screenshots of official Harness <code>0.2.1-rc.2</code> Web. UI behavior, skill mappings, native session creation/acceptance, and error reporting were checked. The validation process had no model API key: completed research tasks and successful REA tool calls remain to be tested. The standalone official Desktop package also needs a separate full launch check.</sub>
+
+[ColdCoffee paid API relay](https://coldcoffeeai.com/) · Closed-source workflows are paid local installation and customization services; existing subscriptions or another relay may be used. Contact an administrator privately through QQ groups **1057540028**, **1077074552**, or **618179023**. [Telegram chat](https://t.me/coolcoffeeai) · [Telegram channel](https://t.me/chachachalkf).
 
 ## 03 / Community Signal
 
@@ -106,8 +132,10 @@ The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Window
 
 ## Original toolbox / Downloads
 
-Release 3.2.0-preview.4: Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
+Release 3.2.0-preview.5: Windows acceptance is complete and GitHub Actions builds the cross-platform download targets. Packages are Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
 
-[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.4) · [Original toolbox and feature scope](docs/original-toolbox.md)
+[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.5) · [Original toolbox and feature scope](docs/original-toolbox.md)
+
+The release link above is prepared for publication and becomes usable after all platform assets pass validation and are published.
 
 The 16 original tools run inside the application. AI automation provides a real tool/observation loop, with a 19-tool MCP server and an exportable skill. Larger exploitation, ticket/domain and remote-session modules remain future work.

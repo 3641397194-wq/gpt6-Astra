@@ -91,6 +91,10 @@ function upstreamState(verified, root, readRuntime = statusRea) {
     verified: verified.ok === true,
     mcp: { ...desired, configured, message: configured ? desired.message : desired.configured
       ? 'REA 连接配置尚未匹配，请先执行一键安装并重新核对。' : (desired.message || '此客户端按所附说明手动连接 REA。') },
+    ...(summary.harnessPlugin ? { harnessPlugin: {
+      ...summary.harnessPlugin,
+      ...require('./harness-install').statusFromChecks(summary.harnessPlugin, root, verified.checks),
+    } } : {}),
     runtime: readRuntime(root),
   };
 }

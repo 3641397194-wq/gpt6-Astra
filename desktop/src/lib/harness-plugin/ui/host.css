@@ -1,0 +1,307 @@
+/*
+ * Cold Coffee's page-level skin.  The companion panel itself lives in a
+ * ShadowRoot; this file only styles the official Harness document while the
+ * `coldcoffee-harness-skin` marker is present on <html>.  Every selector is
+ * rooted at that marker so unloading the plugin leaves the host untouched.
+ */
+:root.coldcoffee-harness-skin {
+  color-scheme: dark;
+  --cc-host-ink: #e7f7ff;
+  --cc-host-muted: #8eacc1;
+  --cc-host-bg: #07111d;
+  --cc-host-surface: #0c1c2b;
+  --cc-host-surface-2: #10263a;
+  --cc-host-line: rgba(129, 207, 240, .18);
+  --cc-host-cyan: #76dcff;
+  --cc-host-blue: #4a9dff;
+  --cc-host-lilac: #b1b6ff;
+  --cc-host-focus: #8ce8ff;
+  --cc-host-control-glow: 0 0 0 1px rgba(127, 221, 252, .18), 0 6px 22px rgba(11, 111, 167, .12);
+}
+
+:root.coldcoffee-harness-skin body {
+  /* Official design tokens, verified against the shipped 0.2.1-rc.2 CSS.
+   * Defining these on body lets every official panel, menu, chat view and
+   * sidebar inherit the same palette without touching their hashed classes. */
+  --dsw-alias-bg-base: #081724 !important;
+  --dsw-alias-bg-layer-1: #0c2135 !important;
+  --dsw-alias-bg-layer-2: #102b42 !important;
+  --dsw-alias-bg-layer-3: #17374f !important;
+  --dsw-alias-bg-layer-4: #1d405b !important;
+  --dsw-alias-bg-module-platform: #0b2032 !important;
+  --dsw-alias-bg-overlay: #17384f !important;
+  --dsw-alias-bg-multi-select: #143149 !important;
+  --dsw-alias-bg-document-preview: #0c2132 !important;
+  --dsw-alias-label-document-preview: #a5ccdf !important;
+  --dsw-alias-bg-mask-1: rgba(0, 7, 16, .55) !important;
+  --dsw-alias-label-primary: #e5f6ff !important;
+  --dsw-alias-label-primary-bluish: #dbf4ff !important;
+  --dsw-alias-label-primary-dimmed: #bfdde9 !important;
+  --dsw-alias-label-primary-inverted: #082239 !important;
+  --dsw-alias-label-secondary: #b1d0e0 !important;
+  --dsw-alias-label-tertiary: #8eafc2 !important;
+  --dsw-alias-label-caption: #7699af !important;
+  --dsw-alias-label-dimmed: #526f84 !important;
+  --dsw-alias-label-primary-foreground: #051624 !important;
+  --dsw-alias-label-shimmer: #c1f6ff !important;
+  --dsw-alias-border-l1: rgba(136, 214, 241, .12) !important;
+  --dsw-alias-border-l2: rgba(136, 214, 241, .2) !important;
+  --dsw-alias-border-l2-darkmode-thin: rgba(136, 214, 241, .2) !important;
+  --dsw-alias-border-l3: rgba(136, 214, 241, .25) !important;
+  --dsw-alias-border-l4: rgba(136, 214, 241, .16) !important;
+  --dsw-alias-brand-primary: #7addff !important;
+  --dsw-alias-brand-text: #d9f6ff !important;
+  --dsw-alias-brand-primary-invert: #b7edff !important;
+  --dsw-alias-brand-primary-new-colorprimary-new-color: #71d9ff !important;
+  --dsw-alias-button-primary-fill: #9ae7ff !important;
+  --dsw-alias-button-primary-hover: #b4efff !important;
+  --dsw-alias-button-primary-dimmed: #15384f !important;
+  --dsw-alias-button-elevated-fill: #183c54 !important;
+  --dsw-alias-button-floating-fill: #15374e !important;
+  --dsw-alias-button-floating-hover: #215771 !important;
+  --dsw-alias-button-tool-bar-fill: rgba(78, 148, 184, .16) !important;
+  --dsw-alias-button-tool-bar-hover: rgba(87, 176, 216, .24) !important;
+  --dsw-alias-button-ghost-active-fill: rgba(83, 183, 226, .2) !important;
+  --dsw-alias-button-ghost-active-border: rgba(150, 230, 255, .34) !important;
+  --dsw-alias-switch-thumb: #c6e6f5 !important;
+  --dsw-alias-interactive-bg-hover: rgba(105, 193, 230, .14) !important;
+  --dsw-alias-interactive-bg-active: rgba(111, 204, 242, .22) !important;
+  --dsw-alias-interactive-bg-hover-accent: rgba(81, 166, 206, .24) !important;
+  --dsw-alias-interactive-bg-hover-solid: #173a50 !important;
+  --dsw-alias-markdown-code-block: #061421 !important;
+  --dsw-alias-markdown-code-block-banner: #0c2234 !important;
+  --dsw-alias-markdown-inline-code: rgba(85, 169, 211, .16) !important;
+  --dsw-alias-markdown-tag: rgba(85, 169, 211, .2) !important;
+  --dsw-alias-markdown-citation: #1a4057 !important;
+  --dsw-alias-markdown-placeholder: #102c41 !important;
+  --dsw-alias-markdown-code-segment-selected: #163b52 !important;
+  --dsw-alias-markdown-code-segment-unselected: #081927 !important;
+  --dsw-alias-scrollbar-bg-l2: rgba(105, 183, 220, .34) !important;
+  --dsw-alias-scrollbar-hover-l2: rgba(118, 220, 255, .6) !important;
+  --dsw-specific-input-major: #0c2133 !important;
+  --dsw-specific-login-input: #091b2c !important;
+  --dsw-specific-sidebar-fill: #0a1e30 !important;
+  --dsw-specific-sidebar-nav-item-active: rgba(70, 160, 207, .23) !important;
+  --dsw-specific-sidebar-nav-item-active-accent: rgba(89, 180, 225, .3) !important;
+  --dsw-specific-bubble: #10324a !important;
+  --dsw-specific-bubble-highlight: #194b66 !important;
+  --dsw-specific-selector: #102d43 !important;
+  --dsw-specific-tip: #14354b !important;
+  --dsw-menu-surface-fill: rgba(14, 36, 55, .97) !important;
+  --dsw-specific-menu: var(--dsw-menu-surface-fill) !important;
+  --dsw-alias-menu-icon: #a4d7eb !important;
+  --dsw-alias-menu-group-header-fill: rgba(16, 42, 61, .98) !important;
+  --dsw-alias-toast-bg: #173c54 !important;
+  --dsw-alias-toast-label: #dff7ff !important;
+  --dsw-alias-tooltip-bg: #183b51 !important;
+  --dsw-alias-link: #7addff !important;
+  --dsw-alias-state-business-primary: #6bd4ff !important;
+  --dsw-alias-state-business-tertiary: #123e58 !important;
+  --dsw-alias-state-idle-primary: #62879e !important;
+  --dsw-focus-ring-color: #8ce8ff !important;
+  min-height: 100vh;
+  color: var(--cc-host-ink) !important;
+  background:
+    radial-gradient(ellipse 90% 64% at 78% -12%, rgba(49, 151, 208, .28), transparent 67%),
+    radial-gradient(ellipse 62% 52% at 12% 92%, rgba(79, 90, 176, .18), transparent 72%),
+    linear-gradient(135deg, #06101a 0%, #081827 48%, #0a1b2b 100%) !important;
+}
+
+:root.coldcoffee-harness-skin body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: .2;
+  background-image:
+    radial-gradient(circle at 86% 17%, rgba(149, 236, 255, .7) 0 1px, transparent 2px),
+    radial-gradient(circle at 69% 62%, rgba(149, 236, 255, .5) 0 1px, transparent 2px),
+    linear-gradient(rgba(111, 205, 241, .032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(111, 205, 241, .032) 1px, transparent 1px);
+  background-size: 580px 430px, 810px 620px, 56px 56px, 56px 56px;
+  mask-image: linear-gradient(120deg, transparent 20%, rgba(0, 0, 0, .6) 52%, #000);
+}
+
+/* The current project's original illustration is a quiet atmosphere layer,
+ * never a new interactive surface or a replacement for the conversation. */
+:root.coldcoffee-harness-skin body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  /* Above #root's opaque official surfaces (z-index: 1), below official
+   * popovers/dialogs and the isolated companion. Pointer events stay off. */
+  z-index: 2;
+  pointer-events: none;
+  background-image: var(--cc-host-artwork, none);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center right;
+  opacity: var(--cc-host-artwork-opacity, .20);
+  filter: saturate(.95);
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(90deg, transparent 6%, rgba(0, 0, 0, .2) 25%, rgba(0, 0, 0, .58) 60%, #000 100%);
+}
+
+:root.coldcoffee-harness-skin #root {
+  position: relative;
+  z-index: 1;
+}
+
+/* The official page is intentionally addressed through semantic elements and
+ * ARIA roles instead of private utility class names.  This keeps the skin
+ * stable across Harness releases. */
+:root.coldcoffee-harness-skin body header,
+:root.coldcoffee-harness-skin body aside,
+:root.coldcoffee-harness-skin body nav {
+  color: var(--cc-host-ink) !important;
+  background: linear-gradient(180deg, rgba(11, 31, 47, .96), rgba(7, 19, 31, .94)) !important;
+  border-color: var(--cc-host-line) !important;
+}
+
+:root.coldcoffee-harness-skin body main,
+:root.coldcoffee-harness-skin body section {
+  border-color: var(--cc-host-line) !important;
+}
+
+:root.coldcoffee-harness-skin body :is(button, [role="button"], [role="tab"], [role="option"], [role="menuitem"]) {
+  border-color: var(--cc-host-line);
+  transition: background-color .16s ease, border-color .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+
+/* Keep the official filled/ghost/danger colors and icon geometry. A hover
+ * adds light rather than replacing the primary button's cyan fill. */
+@media (hover: hover) {
+  :root.coldcoffee-harness-skin body :is(button, [role="button"], [role="tab"], [role="option"], [role="menuitem"]):not(:disabled):not([aria-disabled="true"]):hover {
+    border-color: rgba(147, 225, 255, .38);
+    box-shadow: var(--cc-host-control-glow);
+    filter: brightness(1.08);
+  }
+
+  :root.coldcoffee-harness-skin body button[aria-label]:has(svg):not(:disabled):not([aria-disabled="true"]):hover {
+    box-shadow: inset 0 0 0 1px rgba(149, 229, 255, .22), 0 4px 16px rgba(10, 105, 159, .13);
+  }
+}
+
+:root.coldcoffee-harness-skin body :is(button, [role="button"], [role="tab"], [role="option"], [role="menuitem"], a[href]):focus-visible {
+  outline: 2px solid var(--cc-host-focus);
+  outline-offset: 3px;
+}
+
+:root.coldcoffee-harness-skin body :is(button, [role="button"]):not(:disabled):not([aria-disabled="true"]):active {
+  filter: brightness(.94);
+}
+
+:root.coldcoffee-harness-skin body :is(button, [role="tab"], [role="option"]):is([aria-pressed="true"], [aria-selected="true"], [aria-current="page"]),
+:root.coldcoffee-harness-skin body :is(button, [role="button"])[aria-haspopup][aria-expanded="true"] {
+  background-color: var(--dsw-alias-button-ghost-active-fill);
+  border-color: var(--dsw-alias-button-ghost-active-border);
+  box-shadow: inset 0 0 0 1px rgba(159, 232, 255, .2);
+}
+
+:root.coldcoffee-harness-skin body [role="switch"][aria-checked="true"] {
+  box-shadow: 0 0 0 1px rgba(194, 243, 255, .2), 0 0 16px rgba(89, 204, 246, .16);
+}
+
+/* Explained disabled controls remain hoverable for the host's tooltips. */
+:root.coldcoffee-harness-skin body :is(button, [role="button"], [role="tab"], [role="option"], [role="menuitem"]):is(:disabled, [aria-disabled="true"]) {
+  cursor: default;
+  filter: none;
+  box-shadow: none;
+}
+
+:root.coldcoffee-harness-skin body :is(
+  input:not(:where([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="hidden"], [type="button"], [type="submit"], [type="reset"], [type="image"])),
+  textarea,
+  select,
+  [contenteditable="true"],
+  [contenteditable="plaintext-only"]
+) {
+  color: var(--cc-host-ink) !important;
+  caret-color: var(--cc-host-cyan);
+  background: rgba(8, 24, 39, .84) !important;
+  border-color: var(--cc-host-line) !important;
+  box-shadow: inset 0 1px 10px rgba(0, 0, 0, .14);
+  transition: border-color .16s ease, box-shadow .16s ease;
+}
+
+@media (hover: hover) {
+  :root.coldcoffee-harness-skin body :is(input, textarea, select):not(:disabled):not([readonly]):hover {
+    border-color: rgba(144, 220, 249, .34) !important;
+  }
+}
+
+:root.coldcoffee-harness-skin body :is(input, textarea, select, [contenteditable="true"], [contenteditable="plaintext-only"]):not(:disabled):focus-visible {
+  border-color: rgba(151, 230, 255, .7) !important;
+  outline: 2px solid rgba(140, 232, 255, .56);
+  outline-offset: 2px;
+  box-shadow: inset 0 1px 10px rgba(0, 0, 0, .12), 0 0 16px rgba(77, 174, 221, .12);
+}
+
+:root.coldcoffee-harness-skin body :is(input, textarea, select, [contenteditable])[aria-invalid="true"] {
+  border-color: #ef9caf !important;
+  outline-color: #ef9caf;
+}
+
+:root.coldcoffee-harness-skin body :is(input, textarea, select):disabled {
+  color: var(--dsw-alias-label-caption) !important;
+  cursor: default;
+}
+
+:root.coldcoffee-harness-skin body :is(input[type="checkbox"], input[type="radio"], input[type="range"]) {
+  accent-color: var(--cc-host-cyan);
+}
+
+:root.coldcoffee-harness-skin body input::placeholder,
+:root.coldcoffee-harness-skin body textarea::placeholder {
+  color: #8baabd !important;
+}
+
+:root.coldcoffee-harness-skin body a {
+  color: var(--cc-host-cyan);
+}
+
+:root.coldcoffee-harness-skin body [role="dialog"],
+:root.coldcoffee-harness-skin body [role="menu"],
+:root.coldcoffee-harness-skin body [role="listbox"] {
+  color: var(--cc-host-ink) !important;
+  background: linear-gradient(145deg, #10283b, #0b1b2c) !important;
+  border-color: var(--cc-host-line) !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .42), 0 0 0 1px rgba(145, 221, 250, .18), inset 0 1px 0 rgba(197, 238, 255, .06) !important;
+  backdrop-filter: blur(20px) saturate(1.08);
+}
+
+:root.coldcoffee-harness-skin body dialog::backdrop {
+  background: rgba(1, 9, 19, .62);
+  backdrop-filter: blur(5px);
+}
+
+:root.coldcoffee-harness-skin body :is([role="menu"], [role="listbox"]) [role="separator"] {
+  border-color: rgba(141, 209, 238, .15);
+}
+
+:root.coldcoffee-harness-skin body pre,
+:root.coldcoffee-harness-skin body code {
+  color: #c9efff;
+  background: rgba(4, 13, 23, .65);
+  border-color: var(--cc-host-line);
+}
+
+:root.coldcoffee-harness-skin body ::selection {
+  color: #03101a;
+  background: var(--cc-host-cyan);
+}
+
+:root.coldcoffee-harness-skin body ::-webkit-scrollbar { width: 10px; height: 10px; }
+:root.coldcoffee-harness-skin body ::-webkit-scrollbar-track { background: rgba(3, 14, 24, .32); }
+:root.coldcoffee-harness-skin body ::-webkit-scrollbar-thumb { background: rgba(105, 183, 220, .36); border: 3px solid transparent; background-clip: padding-box; border-radius: 99px; }
+:root.coldcoffee-harness-skin body ::-webkit-scrollbar-thumb:hover { background: rgba(118, 220, 255, .62); border: 2px solid transparent; background-clip: padding-box; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root.coldcoffee-harness-skin body::before { opacity: .2; }
+  :root.coldcoffee-harness-skin body :is(button, [role="button"], [role="tab"], [role="option"], [role="menuitem"], input, textarea, select, [contenteditable]) { transition: none !important; }
+}
+
+@media (max-width: 620px) {
+  :root.coldcoffee-harness-skin body::after { opacity: calc(var(--cc-host-artwork-opacity, .20) * .65); background-position: 68% center; }
+}

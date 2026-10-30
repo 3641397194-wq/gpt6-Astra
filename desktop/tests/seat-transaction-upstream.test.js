@@ -122,6 +122,96 @@ test('asset install verifies exact bytes/mode and restores an existing user file
   if (process.platform !== 'win32') assert.equal(fs.statSync(target).mode & 0o777, oldMode);
 });
 
+test('verification reports every missing, changed, blocked and concurrently removed file without hiding healthy siblings', (t) => {
+  const root = temp(t), names = ['healthy', 'missing', 'changed', 'EPERM', 'EACCES', 'EBUSY', 'removed'];
+  const writes = names.map((name) => asAsset(path.join(root, `${name}.md`), 'expected bytes', 'fixture'));
+  for (const item of writes) if (!item.file.endsWith('missing.md')) fs.writeFileSync(item.file, item.data);
+  fs.writeFileSync(path.join(root, 'changed.md'), 'changed');
+  const originalRead = fs.readFileSync;
+  t.mock.method(fs, 'readFileSync', (file, ...args) => {
+    const name = path.basename(String(file), '.md');
+    if (['EPERM', 'EACCES', 'EBUSY'].includes(name)) throw Object.assign(new Error(`fixture private path: ${file}`), { code: name });
+    if (name === 'removed') { fs.unlinkSync(file); throw Object.assign(new Error('removed after stat'), { code: 'ENOENT' }); }
+    return originalRead(file, ...args);
+  });
+  const tx = withPlan(root, writes); tx.select(root);
+  const result = tx.verify('codex');
+  assert.equal(result.ok, false);
+  assert.equal(result.checks.length, names.length);
+  const checks = Object.fromEntries(result.checks.map((file) => [file.path, file]));
+  assert.deepEqual(checks['healthy.md'], { path: 'healthy.md', ok: true, exists: true, bytes: 14, code: null, message: '' });
+  for (const name of ['missing', 'removed']) {
+    assert.equal(checks[`${name}.md`].ok, false);
+    assert.equal(checks[`${name}.md`].exists, false);
+    assert.equal(checks[`${name}.md`].bytes, 0);
+    assert.equal(checks[`${name}.md`].code, 'ENOENT');
+  }
+  assert.equal(checks['changed.md'].code, 'CHECK_MISMATCH');
+  assert.equal(checks['changed.md'].bytes, 7);
+  for (const code of ['EPERM', 'EACCES', 'EBUSY']) {
+    const checked = checks[`${code}.md`];
+    assert.equal(checked.ok, false); assert.equal(checked.exists, true);
+    assert.equal(checked.bytes, 14); assert.equal(checked.code, code);
+    assert.match(checked.message, new RegExp(code));
+    assert.equal(checked.message.includes(root), false, 'diagnostics must use the relative check path instead of raw filesystem errors');
+  }
+  assert.equal(tx.pending.size, 0, 'a diagnostic check must not leave a deployable partial plan');
+});
+
+test('verification also isolates access errors while inspecting file identity', (t) => {
+  const root = temp(t), blocked = path.join(root, 'blocked.md'), healthy = path.join(root, 'healthy.md');
+  fs.writeFileSync(blocked, 'same'); fs.writeFileSync(healthy, 'same');
+  const tx = withPlan(root, [asAsset(blocked, 'same', 'fixture'), asAsset(healthy, 'same', 'fixture')]); tx.select(root);
+  const originalStat = fs.lstatSync;
+  t.mock.method(fs, 'lstatSync', (file, ...args) => {
+    if (file === blocked) throw Object.assign(new Error('fixture identity access denied'), { code: 'EACCES' });
+    return originalStat(file, ...args);
+  });
+  const result = tx.verify('codex');
+  assert.equal(result.ok, false);
+  assert.equal(result.checks[0].code, 'EACCES');
+  assert.equal(result.checks[0].exists, false, 'existence is only confirmed after metadata was observed');
+  assert.equal(result.checks[0].bytes, 0);
+  assert.equal(result.checks[1].ok, true);
+});
+
+test('verification keeps malformed configuration and path boundary violations as hard failures', (t) => {
+  const root = temp(t), settings = path.join(root, 'settings.json');
+  fs.writeFileSync(settings, '{ broken');
+  const broken = withPlan(root, [{ kind: 'settings', file: settings, name: 'GEMINI.md' }]); broken.select(root);
+  assert.throws(() => broken.verify('gemini'), /有效对象/);
+  const outside = withPlan(root, [asAsset(path.join(root, '..', 'outside.md'), 'bytes', 'fixture')]); outside.select(root);
+  assert.throws(() => outside.verify('codex'), /超出已选目录/);
+  assert.equal(fs.readFileSync(settings, 'utf8'), '{ broken');
+});
+
+test('runtime verification propagates captured file diagnostics without a second stat after the check', (t) => {
+  const root = temp(t), target = path.join(root, 'observed.md');
+  fs.writeFileSync(target, 'observed');
+  const spec = { home: root, pack: '', writes: [asAsset(target, 'observed', 'fixture')] };
+  const result = runtime.verify('codex', root, { planFn: () => spec, createTx: (selected, build) => {
+    const tx = new SeatTransactions({ plan: build }), verify = tx.verify.bind(tx);
+    tx.verify = (seat) => { const checked = verify(seat); fs.unlinkSync(target); return checked; };
+    return tx;
+  } });
+  assert.equal(result.ok, true, 'the reported result describes the completed check, not a later filesystem read');
+  assert.deepEqual(result.checks[0], { file: target, path: 'observed.md', exists: true, marker: true, ok: true, bytes: 8, code: null, message: '' });
+  assert.equal(fs.existsSync(target), false);
+
+  fs.writeFileSync(target, 'observed');
+  const originalRead = fs.readFileSync;
+  t.mock.method(fs, 'readFileSync', (file, ...args) => {
+    if (file === target) throw Object.assign(new Error('fixture busy file'), { code: 'EBUSY' });
+    return originalRead(file, ...args);
+  });
+  const blocked = runtime.verify('codex', root, { planFn: () => spec });
+  assert.equal(blocked.ok, false);
+  assert.equal(blocked.checks[0].path, 'observed.md');
+  assert.equal(blocked.checks[0].ok, false); assert.equal(blocked.checks[0].marker, false);
+  assert.equal(blocked.checks[0].exists, true); assert.equal(blocked.checks[0].bytes, 8);
+  assert.equal(blocked.checks[0].code, 'EBUSY'); assert.match(blocked.checks[0].message, /EBUSY/);
+});
+
 test('hash validation blocks install after preview and blocks restore after user edits, before touching sibling files', (t) => {
   const root = temp(t), config = path.join(root, 'config.toml'), skill = path.join(root, 'skills', 'new', 'SKILL.md');
   fs.writeFileSync(config, 'model = "keep"\n');
@@ -179,6 +269,31 @@ test('final verification catches an earlier installed resource disappearing and 
   } });
   tx.select(root);
   assert.throws(() => install(tx), /resource\.bin.*本次已写文件已回滚/);
+  assert.equal(fs.existsSync(resource), false);
+  assert.equal(fs.readFileSync(config, 'utf8'), 'old config');
+  assert.equal(tx.history()[0].status, 'rolled-back');
+});
+
+test('final verification reports a blocked resource by relative path and code and keeps strict rollback', (t) => {
+  const root = temp(t), resource = path.join(root, 'resource.bin'), config = path.join(root, 'config.txt');
+  fs.writeFileSync(config, 'old config');
+  let blockNextResourceRead = false;
+  const originalRead = fs.readFileSync;
+  t.mock.method(fs, 'readFileSync', (file, ...args) => {
+    if (file === resource && blockNextResourceRead) {
+      blockNextResourceRead = false;
+      throw Object.assign(new Error('fixture resource temporarily blocked'), { code: 'EPERM' });
+    }
+    return originalRead(file, ...args);
+  });
+  const tx = new SeatTransactions({ plan: () => ({ home: root, pack: '', writes: [
+    asAsset(resource, 'resource bytes', 'fixture'), { kind: 'file', file: config, body: 'new config' },
+  ] }), write(file, bytes, mode) {
+    atomic(file, bytes, mode);
+    if (file === config) blockNextResourceRead = true;
+  } });
+  tx.select(root);
+  assert.throws(() => install(tx), /resource\.bin.*EPERM.*本次已写文件已回滚/);
   assert.equal(fs.existsSync(resource), false);
   assert.equal(fs.readFileSync(config, 'utf8'), 'old config');
   assert.equal(tx.history()[0].status, 'rolled-back');
@@ -248,12 +363,14 @@ test('transaction guard detects directory junction and hardlink, while a missing
   fs.symlinkSync(outsideDirectory, symlink, process.platform === 'win32' ? 'junction' : 'dir');
   const linkTx = withPlan(root, [asAsset(path.join(symlink, 'file.txt'), 'replacement', 'REA')]); linkTx.select(root);
   assert.throws(() => linkTx.preview('codex'), /符號链接|符号链接|目录联接/);
+  assert.throws(() => linkTx.verify('codex'), /符号链接|目录联接/);
   assert.equal(fs.readFileSync(outside, 'utf8'), 'outside');
 
   const hard = path.join(root, 'hardlink');
   fs.linkSync(outside, hard);
   const hardTx = withPlan(root, [asAsset(hard, 'replacement', 'REA')]); hardTx.select(root);
   assert.throws(() => hardTx.preview('codex'), /硬链接/);
+  assert.throws(() => hardTx.verify('codex'), /硬链接/);
   const absent = path.join(root, 'nested', 'missing.txt');
   const normal = withPlan(root, [{ kind: 'file', file: absent, body: 'new' }]); normal.select(root);
   assert.equal(normal.preview('codex').files[0].exists, false);

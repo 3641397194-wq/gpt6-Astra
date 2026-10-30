@@ -7,6 +7,12 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '../..');
 const telegram = ['https://t.me/coolcoffeeai', 'https://t.me/chachachalkf'];
 const groups = ['1057540028', '1077074552', '618179023'];
+const { allowedExternalUrl } = require('../src/lib/external-links');
+
+test('desktop links open the current relay and both Telegram entries without widening the host boundary', () => {
+  for (const url of [...telegram, 'https://coldcoffeeai.com/', 'https://coldcoffeeai.com/keys', 'https://www.coldcoffeeai.com/', 'https://github.com/3641397194-wq/gpt6-Astra']) assert.equal(allowedExternalUrl(url), true, url);
+  for (const url of ['http://t.me/coolcoffeeai', 'https://t.me/unlisted-group', 'https://t.me/coolcoffeeai?next=other', 'https://t.me/coolcoffeeai#other', 'https://t.me:444/coolcoffeeai', 'https://t.me.evil.invalid/coolcoffeeai', 'https://github.com.evil.invalid/', 'https://user:password@coldcoffeeai.com/', 'file:///example', 'javascript:alert(1)']) assert.equal(allowedExternalUrl(url), false, url);
+});
 
 for (const relative of ['README.md', 'README_EN.md', 'docs/index.html', 'docs/readme-preview.html']) {
   test(`${relative} preserves the current Telegram chat/channel and all three QQ groups`, () => {

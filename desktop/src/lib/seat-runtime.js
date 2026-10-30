@@ -415,8 +415,8 @@ function verify(seatId, overrideHome, { planFn = plan, createTx } = {}) {
   for (const { root, tx } of transactionGroups(spec, { createTx })) {
     const result = tx.verify(seatId);
     checks.push(...result.checks.map((file) => ({
-      file: path.join(root, file.path), exists: file.exists, marker: file.ok,
-      bytes: file.exists ? fs.statSync(path.join(root, file.path)).size : 0,
+      file: path.join(root, file.path), path: file.path, exists: file.exists, marker: file.ok, ok: file.ok,
+      bytes: file.bytes, code: file.code, message: file.message,
     })));
   }
   const ok = checks.every((item) => item.exists && item.marker);

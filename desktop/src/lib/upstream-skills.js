@@ -163,7 +163,8 @@ function installationWrites(seat, root, { zcode = false, directory } = {}) {
   const launcher = fs.readFileSync(path.join(__dirname, 'upstream', 'rea-launcher.cjs'));
   out.push(raw(path.join(base, 'rea-launcher.cjs'), launcher, 0o755, 'coldcoffee-adapter'));
   const info = mcpInfo(seat, root, { zcode });
-  const manifest = { ...locked, adapter: 'coldcoffee-upstream-v1', seat, skillCount: names.size, preservedPaths: preserved, mcp: info };
+  const harnessPlugin = seat === 'deepseek' ? require('./harness-install').installationWrites(root) : null;
+  const manifest = { ...locked, adapter: 'coldcoffee-upstream-v1', seat, skillCount: names.size, preservedPaths: preserved, mcp: info, ...(harnessPlugin ? { harnessPlugin: harnessPlugin.summary } : {}) };
   out.push(raw(path.join(base, 'manifest.json'), Buffer.from(JSON.stringify(manifest, null, 2) + '\n')));
   // An authoritative snapshot also retains Unix symlink records and all paths.
   for (const source of locked.sources) {
@@ -179,6 +180,10 @@ function installationWrites(seat, root, { zcode = false, directory } = {}) {
     '## 来源与许可证', '',
     'REA 原文及其 THIRD_PARTY_NOTICES.md、licenses/ 和所有已固定子模块一并保留。reverse-skill 根 MIT、CTF-Sandbox-Orchestrator GPL-3.0 以及 src-hunter 独立 MIT 均保持原文；这些独立来源文件不改标成冷咖啡原创。',
     'burp-mcp-full/ 的固定快照未发现独立 LICENSE、COPYING 或 NOTICE；保留上游根许可证和来源记录，不把该子目录宣称为已有独立许可的组件。', '');
+  if (harnessPlugin) index.push('## DeepSeek Harness 冷咖啡插件', '',
+    `原生入口：\`${posix(harnessPlugin.summary.entry)}\`，随同技能写入 Cordis 补丁。`,
+    'Web 与桌面界面提供冰蓝开屏、技能索引、任务进度与结果面板；仅在 Harness 提供 webServer 时启用界面，TUI 继续使用原有技能入口。',
+    '任务继续使用本安装的 REA 与 reverse-skill，不另外下载词包，也不改动原“冷咖啡”完整欢迎词。', '');
   out.push(raw(path.join(base, 'INDEX.md'), Buffer.from(index.join('\n'))));
   const body = loaderText(base);
   out.push(raw(path.join(skillsRoot, 'coldcoffee-upstream', 'SKILL.md'), Buffer.from(`---\nname: coldcoffee-upstream\ndescription: 冷咖啡激活后的完整 REA 与 reverse-skill 技能索引；用户需要逆向、分析或选择扩展技能时读取。\n---\n\n${body}`)));
@@ -189,7 +194,8 @@ function installationWrites(seat, root, { zcode = false, directory } = {}) {
     if (info.feature) out.push({ kind: 'upstream-mcp', file: info.file, mode: 'json', entry: true, keys: info.feature, rejectDisabled: true, home: root });
     out.push({ kind: 'upstream-mcp', file: info.file, mode: info.mode, entry: info.entry, keys: info.keys, home: root });
   }
-  return { writes: out, summary: { skillCount: names.size, fileCount: out.length, preservedPaths: preserved.length, mcp: info } };
+  if (harnessPlugin) out.push(...harnessPlugin.writes);
+  return { writes: out, summary: { skillCount: names.size, fileCount: out.length, preservedPaths: preserved.length, mcp: info, ...(harnessPlugin ? { harnessPlugin: harnessPlugin.summary } : {}) } };
 }
 
 function extendPlan(spec, seat, { directory, zcode = false } = {}) {

@@ -7,6 +7,7 @@ const { TextDecoder } = require('node:util');
 const runtime = require('./seat-runtime');
 const hash = (buffer) => crypto.createHash('sha256').update(buffer).digest('hex');
 const MAX_FILE = 64 * 1024 * 1024;
+const FILE_READ_ERRORS = new Set(['ENOENT', 'ENOTDIR', 'EPERM', 'EACCES', 'EBUSY', 'EIO', 'EMFILE', 'ENFILE', 'ETXTBSY', 'EAGAIN']);
 
 function absolutePath(value) {
   // DOS/UNC namespace prefixes change spelling, not directory identity. Strip
@@ -38,21 +39,50 @@ function guardPath(file) {
   }
 }
 
-function within(root, relative) {
+function resolveWithin(root, relative) {
   const file = path.resolve(root, relative);
   const rel = path.relative(root, file);
   if (!rel || rel === '..' || rel.startsWith('..' + path.sep) || path.isAbsolute(rel)) throw new Error('目标超出已选目录');
+  return file;
+}
+
+function within(root, relative) {
+  const file = resolveWithin(root, relative);
   guardPath(file);
   return file;
 }
 
-function read(file, limit = MAX_FILE) {
-  guardPath(file);
-  if (!fs.existsSync(file)) return null;
-  const stat = fs.statSync(file);
-  if (!stat.isFile() || stat.size > limit) throw new Error(`目标不是普通文件或超过 ${Math.round(limit / 1024 / 1024)} MB`);
-  return fs.readFileSync(file);
+function readState(file, limit = MAX_FILE, collectErrors = false) {
+  let exists = false, bytes = 0;
+  try {
+    guardPath(file);
+    let stat;
+    try { stat = fs.statSync(file); }
+    catch (error) {
+      if (error.code === 'ENOENT') return { buffer: null, mode: null, exists: false, bytes: 0 };
+      throw error;
+    }
+    exists = true;
+    bytes = stat.size;
+    if (!stat.isFile() || stat.size > limit) throw new Error(`目标不是普通文件或超过 ${Math.round(limit / 1024 / 1024)} MB`);
+    const buffer = fs.readFileSync(file);
+    return { buffer, mode: stat.mode & 0o777, exists: true, bytes: buffer.length };
+  } catch (error) {
+    // Only filesystem access failures become per-file results. Broken
+    // configuration, path escapes, links and invalid resource plans still
+    // stop verification instead of being mistaken for repairable absence.
+    if (!collectErrors || !FILE_READ_ERRORS.has(error.code)) throw error;
+    if (error.code === 'ENOENT' || error.code === 'ENOTDIR') { exists = false; bytes = 0; }
+    return { buffer: null, mode: null, exists, bytes, error: {
+      code: error.code,
+      message: error.code === 'ENOENT' ? '目标文件在核验期间缺失'
+        : error.code === 'ENOTDIR' ? '目标路径的父级不是目录'
+          : `读取文件失败（${error.code}）；请检查文件占用、访问权限或系统保护记录`,
+    } };
+  }
 }
+
+function read(file, limit = MAX_FILE) { return readState(file, limit).buffer; }
 
 function decode(buffer) {
   if (!buffer) return '';
@@ -100,6 +130,7 @@ function nextText(item, previous, spec) {
   if (item.kind === 'file') return item.body ?? spec.pack;
   if (item.kind === 'marked') return marked(previous, item.body ?? spec.pack, item.begin ?? spec.begin, item.end ?? spec.end);
   if (item.kind === 'upstream-mcp') return require('./upstream-config').patchMcp(previous, item);
+  if (item.kind === 'harness-plugin') return require('./upstream-config').patchHarnessPlugin(previous, item);
   if (item.kind === 'ida-mcp') return require('./ida-mcp').patchSeatConnection(previous, item);
   if (item.kind === 'toml') {
     const line = `${item.key} = ${JSON.stringify(item.value)}`;
@@ -184,7 +215,7 @@ class SeatTransactions {
     return this.root;
   }
 
-  preview(seat) {
+  prepare(seat, { collectErrors = false } = {}) {
     const root = this.requireRoot();
     if (!runtime.PACK_IDS.includes(seat)) throw new Error('未知模型席位');
     const original = this.buildPlan(seat, root, { layout: this.layout });
@@ -197,14 +228,14 @@ class SeatTransactions {
     const grouped = new Map();
     for (const item of spec.writes) {
       const rel = path.relative(root, item.file);
-      const file = within(root, rel);
+      const file = resolveWithin(root, rel);
       const key = process.platform === 'win32' ? file.toLowerCase() : file;
       let row = grouped.get(key);
       if (!row) {
-        const before = read(file, item.kind === 'asset' ? MAX_FILE : 5 * 1024 * 1024);
-        const beforeMode = before !== null ? fs.statSync(file).mode & 0o777 : null;
+        const current = readState(file, item.kind === 'asset' ? MAX_FILE : 5 * 1024 * 1024, collectErrors);
+        const before = current.buffer, beforeMode = current.mode;
         row = { path: rel.replace(/\\/g, '/'), kind: item.kind, kinds: [], sources: [], before, after: before, beforeMode, afterMode: beforeMode ?? 0o600,
-          assetHash: null, assetMode: null };
+          assetHash: null, assetMode: null, exists: current.exists, bytes: current.bytes, readError: current.error };
         grouped.set(key, row);
       }
       if (item.source && typeof item.source === 'string' && !row.sources.includes(item.source)) row.sources.push(item.source);
@@ -216,24 +247,29 @@ class SeatTransactions {
         const duplicate = row.assetHash !== null;
         row.assetHash = assetHash;
         row.assetMode = item.mode;
-        if (!duplicate) row.after = nextBuffer(item, row.after, spec);
+        if (!duplicate && !row.readError) row.after = nextBuffer(item, row.after, spec);
         row.afterMode = item.mode;
       } else {
         if (row.kinds.includes('asset')) throw new Error(`上游资源与配置写入目标冲突：${row.path}`);
-        row.after = nextBuffer(item, row.after, spec);
+        if (!row.readError) row.after = nextBuffer(item, row.after, spec);
       }
       if (!row.kinds.includes(item.kind)) row.kinds.push(item.kind);
     }
     const files = [...grouped.values()].map((file) => ({
-      ...file, beforeHash: file.before !== null ? hash(file.before) : null, afterHash: hash(file.after),
-      changed: file.before === null || !file.before.equals(file.after) || (process.platform !== 'win32' && file.beforeMode !== file.afterMode),
+      ...file, beforeHash: file.before !== null ? hash(file.before) : null, afterHash: file.readError ? null : hash(file.after),
+      changed: Boolean(file.readError) || file.before === null || !file.before.equals(file.after) || (process.platform !== 'win32' && file.beforeMode !== file.afterMode),
     }));
     const id = crypto.randomUUID();
-    const plan = { id, seat, root, created: this.now(), files, pack: spec.pack, upstream: spec.upstream };
+    return { id, seat, root, created: this.now(), files, pack: spec.pack, upstream: spec.upstream };
+  }
+
+  preview(seat) {
+    const plan = this.prepare(seat);
+    const { id, root, files, pack, upstream } = plan;
     this.pending.clear();
     this.pending.set(id, plan);
     return {
-      id, seat, root, pack: spec.pack, packHash: hash(spec.pack), changes: files.filter((file) => file.changed).length, upstream: spec.upstream,
+      id, seat, root, pack, packHash: hash(pack), changes: files.filter((file) => file.changed).length, upstream,
       files: files.map(({ path, kind, kinds, sources, beforeHash, afterHash, beforeMode, afterMode, changed, before, after }) => ({
         path, kind, kinds, sources, beforeHash, afterHash, beforeMode, afterMode, changed, exists: before !== null, bytes: after.length,
       })),
@@ -287,13 +323,20 @@ class SeatTransactions {
 
   validateCurrent(files, expected) {
     for (const file of files) {
-      const target = within(this.root, file.path);
-      const value = read(target);
-      const digest = value !== null ? hash(value) : null;
-      const modeKey = expected === 'beforeHash' ? 'beforeMode' : expected === 'afterHash' ? 'afterMode' : null;
-      const expectedMode = modeKey && file[modeKey];
-      const modeMatches = process.platform === 'win32' || expectedMode == null || value === null || (fs.statSync(target).mode & 0o777) === expectedMode;
-      if (digest !== file[expected] || !modeMatches) throw new Error(`文件已被其他操作修改：${file.path}；请重新预览或保留修改后处理`);
+      try {
+        const current = readState(within(this.root, file.path));
+        const digest = current.buffer !== null ? hash(current.buffer) : null;
+        const modeKey = expected === 'beforeHash' ? 'beforeMode' : expected === 'afterHash' ? 'afterMode' : null;
+        const expectedMode = modeKey && file[modeKey];
+        const modeMatches = process.platform === 'win32' || expectedMode == null || current.buffer === null || current.mode === expectedMode;
+        if (digest !== file[expected] || !modeMatches) {
+          const missing = !current.exists && file[expected] !== null ? '（ENOENT，目标文件缺失）' : '';
+          throw new Error(`文件已被其他操作修改：${file.path}${missing}；请重新预览或保留修改后处理`);
+        }
+      } catch (error) {
+        if (!FILE_READ_ERRORS.has(error.code)) throw error;
+        throw new Error(`文件核验读取失败：${file.path}（${error.code}）；请检查文件占用、访问权限或系统保护记录`, { cause: error });
+      }
     }
   }
 
@@ -396,8 +439,14 @@ class SeatTransactions {
   }
 
   verify(seat) {
-    const plan = this.preview(seat);
-    return { ok: plan.changes === 0, root: plan.root, seat, upstream: plan.upstream, checks: plan.files.map((file) => ({ path: file.path, ok: !file.changed, exists: file.exists })), modelStatus: '文件匹配不代表客户端已连接或模型效果已验证' };
+    const plan = this.prepare(seat, { collectErrors: true });
+    this.pending.clear();
+    const checks = plan.files.map((file) => {
+      const error = file.readError || (!file.exists ? { code: 'ENOENT', message: '目标文件缺失' }
+        : file.changed ? { code: 'CHECK_MISMATCH', message: '文件内容或权限与安装计划不匹配' } : null);
+      return { path: file.path, ok: !file.changed, exists: file.exists, bytes: file.bytes, code: error?.code || null, message: error?.message || '' };
+    });
+    return { ok: checks.every((file) => file.ok), root: plan.root, seat, upstream: plan.upstream, checks, modelStatus: '文件匹配不代表客户端已连接或模型效果已验证' };
   }
 
   restore(id) {

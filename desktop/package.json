@@ -1,7 +1,7 @@
 {
   "name": "coldbrew-zero-desktop",
   "productName": "冷咖啡破甲工作台",
-  "version": "3.2.0-preview.4",
+  "version": "3.2.0-preview.5",
   "private": true,
   "description": "gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持破甲越狱 · BREAK//OPEN 工作台",
   "main": "src/main.js",
@@ -21,12 +21,14 @@
     "pack:win": "electron-builder --win portable --publish never",
     "pack:mac": "electron-builder --mac dmg zip --publish never",
     "pack:linux": "electron-builder --linux AppImage deb --publish never",
-    "test": "node --test tests/*.test.js src/lib/relay-adapter.test.js",
+    "test": "node --test --test-concurrency=4 tests/*.test.js src/lib/relay-adapter.test.js",
     "toolbox:mcp": "node src/lib/toolbox/mcp.js",
     "test:toolbox": "node --test tests/toolbox*.test.js",
     "test:toolbox:ui": "node scripts/test-original-toolbox-ui.cjs",
     "test:toolbox:packaged": "node scripts/test-packaged-toolbox.cjs",
     "test:deepseek:ui": "node scripts/test-deepseek-ui.cjs",
+    "test:harness:ui": "node scripts/test-harness-native-ui.cjs",
+    "preview:harness": "node ../tools/preview/deepseek-plugin-preview.cjs",
     "test:upstream:ui": "node scripts/test-upstream-skills-ui.cjs",
     "test:upstream:runtime": "node ../tools/preview/verify-upstream-runtime.cjs"
   },
@@ -63,6 +65,9 @@
       "!**/*.pfx",
       "!**/auth.json",
       "!**/credentials.json",
+      "!**/preview-session.json",
+      "!**/credential.dpapi",
+      "!**/*.bak-*",
       "!**/__pycache__/**",
       "!**/*.dmp"
     ],
@@ -96,6 +101,8 @@
           "!assets/readme-check-v3.png",
           "!assets/workbench-mobile-v3.png",
           "!assets/workbench-v3.png",
+          "!local-agent-skills-preview.png",
+          "!newbie-agent-skills-preview.png",
           "!**/*.log",
           "!**/.env",
           "!**/.env.*",
@@ -105,6 +112,9 @@
           "!**/*.pfx",
           "!**/auth.json",
           "!**/credentials.json",
+          "!**/preview-session.json",
+          "!**/credential.dpapi",
+          "!**/*.bak-*",
           "!**/__pycache__/**",
           "!**/*.dmp"
         ]

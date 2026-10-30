@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1050" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">冷咖啡 · 冰蓝看板娘</title>
+  <desc id="desc">原创蓝色短发成年女仆角色，戴白色花发卡，手持一杯冰咖啡。发丝、眼睛与光点有轻微动画。</desc>
+  <defs>
+    <linearGradient id="hair" x1="355" y1="179" x2="652" y2="567" gradientUnits="userSpaceOnUse"><stop stop-color="#e6faff"/><stop offset=".28" stop-color="#9bdcfc"/><stop offset=".68" stop-color="#65b9f1"/><stop offset="1" stop-color="#3b83c9"/></linearGradient>
+    <linearGradient id="fringe" x1="401" y1="190" x2="589" y2="465" gradientUnits="userSpaceOnUse"><stop stop-color="#e2f8ff"/><stop offset=".44" stop-color="#a3ddfc"/><stop offset="1" stop-color="#65a8e5"/></linearGradient>
+    <linearGradient id="hairDark" x1="324" y1="293" x2="680" y2="620" gradientUnits="userSpaceOnUse"><stop stop-color="#74bce8"/><stop offset="1" stop-color="#306399"/></linearGradient>
+    <linearGradient id="skin" x1="407" y1="329" x2="624" y2="599" gradientUnits="userSpaceOnUse"><stop stop-color="#fff9f3"/><stop offset=".73" stop-color="#ffece8"/><stop offset="1" stop-color="#f3d3d1"/></linearGradient>
+    <linearGradient id="dress" x1="508" y1="609" x2="492" y2="1044" gradientUnits="userSpaceOnUse"><stop stop-color="#263a55"/><stop offset=".6" stop-color="#121d31"/><stop offset="1" stop-color="#273a50"/></linearGradient>
+    <linearGradient id="white" x1="365" y1="635" x2="614" y2="1000" gradientUnits="userSpaceOnUse"><stop stop-color="#ffffff"/><stop offset=".57" stop-color="#eaf5ff"/><stop offset="1" stop-color="#bedcef"/></linearGradient>
+    <linearGradient id="iris" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0c437c"/><stop offset=".4" stop-color="#198ed0"/><stop offset=".75" stop-color="#66dcf4"/><stop offset="1" stop-color="#d1fbff"/></linearGradient>
+    <linearGradient id="glass" x1="237" y1="664" x2="340" y2="846" gradientUnits="userSpaceOnUse"><stop stop-color="#fff" stop-opacity=".9"/><stop offset=".35" stop-color="#d2f1ff" stop-opacity=".75"/><stop offset="1" stop-color="#6aacc9" stop-opacity=".55"/></linearGradient>
+    <linearGradient id="coffee" x1="243" y1="715" x2="335" y2="828" gradientUnits="userSpaceOnUse"><stop stop-color="#8c674c"/><stop offset=".36" stop-color="#b38a66"/><stop offset=".38" stop-color="#dcc4a2"/><stop offset=".65" stop-color="#e3cfb2"/><stop offset="1" stop-color="#b28764"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#b6eaff" stop-opacity=".5"/><stop offset="1" stop-color="#d9f4ff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="blush"><stop stop-color="#f2a2b3" stop-opacity=".52"/><stop offset="1" stop-color="#f5bec5" stop-opacity="0"/></radialGradient>
+    <filter id="shadow" x="-30%" y="-20%" width="160%" height="150%"><feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#4d91b4" flood-opacity=".13"/></filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="2.5"/></filter>
+    <style>
+      .cc-float{animation:cc-breathe 5.5s ease-in-out infinite;transform-origin:495px 880px}.cc-lock{animation:cc-lock 5.5s ease-in-out infinite;transform-origin:626px 262px}.cc-blink{animation:cc-blink 6.8s infinite;transform-box:fill-box;transform-origin:center}.cc-spark{animation:cc-spark 4.2s ease-in-out infinite}.cc-spark.b{animation-delay:1.7s}.cc-spark.c{animation-delay:2.5s}.cc-halo{animation:cc-halo 6s ease-in-out infinite;transform-origin:center}
+      @keyframes cc-breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}@keyframes cc-lock{0%,100%{transform:rotate(0)}50%{transform:rotate(1.8deg)}}@keyframes cc-blink{0%,43%,46%,81%,84%,100%{transform:scaleY(1)}44.5%,82.5%{transform:scaleY(.05)}}@keyframes cc-spark{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-9px)}}@keyframes cc-halo{0%,100%{opacity:.65}50%{opacity:1}}
+      @media(prefers-reduced-motion:reduce){.cc-float,.cc-lock,.cc-blink,.cc-spark,.cc-halo{animation:none}}
+    </style>
+  </defs>
+  <ellipse class="cc-halo" cx="490" cy="513" rx="362" ry="443" fill="url(#glow)"/>
+  <g stroke="#a7d9ed" stroke-width="1.1" opacity=".45"><circle cx="505" cy="444" r="304" stroke-dasharray="2 12"/><path d="M197 448a309 309 0 0 1 488-257M758 608a310 310 0 0 1-437 96"/></g>
+  <g class="cc-spark" fill="#8dcced"><path d="m226 266 3-13 3 13 13 3-13 3-3 13-3-13-13-3z"/><circle cx="732" cy="404" r="3"/><circle cx="202" cy="551" r="2"/></g>
+  <g class="cc-spark b" fill="#96d7ed"><path d="m723 245 2.5-10 2.5 10 10 2.5-10 2.5-2.5 10-2.5-10-10-2.5z"/><circle cx="315" cy="162" r="2.5"/><circle cx="754" cy="678" r="2"/></g>
+  <g class="cc-spark c" fill="#fff" stroke="#a3d8ed"><path d="m184 410 2-9 2 9 9 2-9 2-2 9-2-9-9-2z"/><circle cx="675" cy="116" r="3"/><circle cx="190" cy="688" r="3"/></g>
+  <g class="cc-float" filter="url(#shadow)">
+    <!-- Hair silhouette and the short bob behind the shoulders. -->
+    <path d="M333 282c13-85 72-135 163-138 119-6 203 66 208 184 3 50-15 90-8 139 5 34 21 67 17 105-27-8-47-22-57-39 7 26 10 53-3 76-36-22-65-34-106-37l-122 4c-38 10-57 28-74 38-17-19-23-49-18-77-12 20-28 30-51 34 17-39 8-72 10-106 2-53 25-95 41-183Z" fill="url(#hairDark)" stroke="#6696bd" stroke-width="2"/>
+    <path d="M346 343c-14 87-4 143-24 196 22-13 36-48 43-83m294-110c22 81 1 161 31 202-25-13-35-42-39-68" stroke="#b2e5fa" stroke-width="8" stroke-linecap="round" opacity=".4"/>
+    <!-- Soft neck and shoulders. -->
+    <path d="M456 521c8 40 7 60-9 78-18 19-53 16-72 46l37 73 185 2 37-76c-33-35-60-24-81-50-12-17-14-43-11-73Z" fill="url(#skin)" stroke="#d3b7b7" stroke-width="1.8"/>
+    <path d="M462 550c27 17 56 19 77 0-1 21-2 40 5 53-21 13-52 8-77-8 4-13 2-28-5-45Z" fill="#edc8c9" opacity=".5"/>
+    <!-- Main silhouette: shoulders and tailored dark dress. -->
+    <path d="M411 615c-45-11-74 1-99 28-37 40-44 123-47 168l-35 126c-6 28 10 53 33 62 37 15 68-6 82-37l35-81-9 157h277l-9-158 22 90c8 35 35 55 66 44 34-12 43-36 35-70l-24-127c-5-76-6-121-37-154-26-29-58-43-94-40l-76 48Z" fill="url(#dress)" stroke="#182c45" stroke-width="2"/>
+    <path d="m294 748-17 93 52 9 20-87m299-17 20 92 47-7-14-87" fill="#344b64" opacity=".65"/>
+    <!-- Puffy sleeve frills. -->
+    <path d="M326 634c-26 10-39 27-47 52l-11 71 16 6 4 12 19-1 11 12 15-6 17 5 7-14 22-3 1-17 15-8-12-43c-7-27-29-58-57-66Z" fill="url(#white)" stroke="#9dbed3" stroke-width="2"/>
+    <path d="M309 669c-16 28-17 52-20 78m40-88c-3 27-6 58-12 95m32-77c13 27 17 48 16 69" stroke="#b6d4e4" stroke-width="3" stroke-linecap="round"/>
+    <path d="m271 755 19 8 17-4 15 12 19-6 17 3 16-10" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+    <path d="M643 633c28 7 49 31 57 58l14 61-15 12-5 14-20-1-12 9-16-7-16 6-8-14-19-7 3-21-11-10 14-44c9-25 17-43 34-56Z" fill="url(#white)" stroke="#9dbed3" stroke-width="2"/>
+    <path d="M650 667c9 22 12 50 13 80m8-77c15 25 18 49 20 73m-52-61c-10 22-13 45-13 61" stroke="#b6d4e4" stroke-width="3" stroke-linecap="round"/>
+    <path d="m709 753-14 10-18-3-14 12-18-7-16 4-18-10" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+    <!-- White apron, lace straps and blue seam accents. -->
+    <path d="m406 622 37 53 62 13 67-15 30-52 17 14-31 96 3 130 38 177H381l34-178-2-130-29-90Z" fill="url(#white)" stroke="#9bbdd5" stroke-width="2"/>
+    <path d="m403 644 28 88-3 124-28 151m200-362-25 88 3 124 29 151" stroke="#fff" stroke-width="14" stroke-linecap="round"/>
+    <path d="m406 645 28 88-3 123-27 151m193-362-26 88 3 124 29 151" stroke="#badced" stroke-width="1.5" stroke-dasharray="3 5"/>
+    <path d="M445 761c20 14 92 17 111-1m-117 53c35 11 83 12 122-1m-64 70-7 123m29-123 13 123" stroke="#c6dfee" stroke-width="2" stroke-linecap="round"/>
+    <path d="M433 849c40-7 92-6 143 0l2 26c-53-12-104-12-150-1Z" fill="#87c6e5"/>
+    <path d="M454 859c-14-17-39-24-48-8-13 25 23 35 46 17-7 20-14 39-30 50l27 1c12-17 16-33 16-51 15 23 28 33 46 39l20-11c-30-9-43-19-59-33 27 8 51 3 48-14-3-18-40-13-54 9" fill="#9bd6ef" stroke="#5ba3cb" stroke-width="1.5"/>
+    <ellipse cx="462" cy="862" rx="10" ry="11" fill="#5badd4"/>
+    <!-- Collar and a tiny gem bow. -->
+    <path d="m450 598 53 35-41 41-48-54Zm102-1-49 36 41 41 47-56Z" fill="#fff" stroke="#b6cddd" stroke-width="2"/>
+    <path d="m500 640-31-13c-12-5-20 12-11 20l26 18-20 31 25-5 13-29 13 31 24 4-18-32 28-16c11-7 3-26-9-22l-33 13Z" fill="#253d57" stroke="#1c314a" stroke-width="1.5"/>
+    <path d="m503 643 11 10-10 14-10-14Z" fill="#78cbee" stroke="#e7faff" stroke-width="2"/>
+    <!-- Face and ears. -->
+    <path d="M381 371c-17-9-23 5-21 22 1 22 14 39 34 34l3-30Zm248 0c17-8 23 6 20 23-3 21-13 37-30 32l-4-30Z" fill="url(#skin)" stroke="#d1b2b4" stroke-width="2"/>
+    <path d="M380 327c-1-89 64-140 129-140 92 0 141 66 131 148l-14 95c-10 50-39 87-74 109-33 20-56 17-87 0-37-22-69-54-81-102Z" fill="url(#skin)" stroke="#d4b9b8" stroke-width="2.2"/>
+    <ellipse cx="416" cy="448" rx="37" ry="20" fill="url(#blush)"/>
+    <ellipse cx="591" cy="448" rx="36" ry="20" fill="url(#blush)"/>
+    <path d="m500 414-7 33 10 5" stroke="#d5b4b5" stroke-width="2" stroke-linecap="round"/>
+    <path d="M481 481c12 11 29 12 42 1" stroke="#b8808f" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M491 493c6 2 12 2 18 0" stroke="#fff8f5" stroke-width="3" stroke-linecap="round"/>
+    <path d="M399 347c14-8 33-7 47-1m112-2c14-5 30-3 40 4" stroke="#6d91ae" stroke-width="3" stroke-linecap="round"/>
+    <!-- Detailed anime eyes; the entire eye blinks without moving the face. -->
+    <g class="cc-blink">
+      <path d="M392 381c10-20 40-25 58-7l1 27c-14 22-41 26-56 7Z" fill="#fffdfc"/>
+      <path d="M553 374c18-17 42-12 53 7l-3 29c-14 18-39 15-52-4Z" fill="#fffdfc"/>
+      <ellipse cx="425" cy="394" rx="20" ry="28" fill="url(#iris)" stroke="#3b78a4" stroke-width="1.5"/>
+      <ellipse cx="579" cy="394" rx="20" ry="28" fill="url(#iris)" stroke="#3b78a4" stroke-width="1.5"/>
+      <ellipse cx="426" cy="388" rx="9" ry="17" fill="#164a72"/>
+      <ellipse cx="579" cy="388" rx="9" ry="17" fill="#164a72"/>
+      <path d="M412 407c8 7 18 8 27 0m127 0c8 7 18 8 26 0" stroke="#b9f7ff" stroke-width="2.5" stroke-linecap="round"/>
+      <ellipse cx="416" cy="380" rx="8" ry="9" fill="#fff"/><ellipse cx="570" cy="380" rx="8" ry="9" fill="#fff"/>
+      <circle cx="435" cy="400" r="4" fill="#e0fbff"/><circle cx="588" cy="400" r="4" fill="#e0fbff"/>
+      <circle cx="419" cy="412" r="2" fill="#fff"/><circle cx="575" cy="412" r="2" fill="#fff"/>
+      <path d="M389 381c18-22 46-23 63-6m99 0c19-15 43-13 57 8" stroke="#2e3d56" stroke-width="5" stroke-linecap="round"/>
+      <path d="m394 375-8-6m12 2-7-9m209 10 9-8m-5 15 10-4" stroke="#2e3d56" stroke-width="3" stroke-linecap="round"/>
+      <path d="M398 413c11 8 26 10 40 5m126 0c13 5 25 3 35-4" stroke="#b48e9c" stroke-width="1.6" stroke-linecap="round"/>
+    </g>
+    <!-- Sculpted front fringe, separated with fine blue strokes. -->
+    <path d="M337 310c8-95 64-158 165-158 112 0 184 71 184 178-14-26-24-53-36-69 11 74-15 123-26 173-9-50-20-84-39-118 4 45-16 90-34 123-2-42-12-69-26-95-4 38-23 65-48 85 11-34 13-66 10-96-13 27-23 47-48 69 7-29 9-49 5-76-17 32-37 49-59 65 3-28 0-57 0-77-10 35-30 69-41 82-6-34-6-58-7-86Z" fill="url(#fringe)" stroke="#6f9fc2" stroke-width="2"/>
+    <path d="M385 277c23-58 56-83 101-91m-58 109c21-53 43-80 71-95m-16 108c8-44 15-77 29-105m15 111c-2-47-6-82-5-106m47 105c-12-41-21-66-32-84m63 81c-16-31-30-54-48-72m90 90c-18-33-38-62-65-81" stroke="#e7faff" stroke-width="5" stroke-linecap="round" opacity=".66"/>
+    <path d="M381 251c22-33 50-54 78-65m-65 115c-5 27-13 49-25 70m76-93c5 32 0 59-7 83m49-76c6 35 7 60-1 87m37-91c18 39 24 79 23 111m27-103c21 38 28 68 30 96m24-76c17 37 22 60 23 88" stroke="#71afe0" stroke-width="1.7" stroke-linecap="round" opacity=".75"/>
+    <path d="M343 304c-13 60-21 111-3 177l20 62c11-17 18-41 16-64-11-77-6-110 14-161-19 21-34 29-47 40Z" fill="url(#hair)" stroke="#6799bf" stroke-width="2"/>
+    <path d="M354 352c-15 56-9 109 7 151" stroke="#d1f3ff" stroke-width="6" stroke-linecap="round" opacity=".7"/>
+    <g class="cc-lock">
+      <path d="M640 277c18 47 19 80 7 137-8 37-6 74 13 117 7-24 7-43 7-58 13 30 29 39 42 44-26-44-27-79-19-123 11-60-12-111-50-117Z" fill="url(#hair)" stroke="#6395bc" stroke-width="2"/>
+      <path d="M656 309c14 38 9 74 2 103-7 35 0 63 4 79" stroke="#d7f7ff" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+      <path d="M676 355c5 32-1 63-2 87" stroke="#4f99d2" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    <!-- Lace headband and original snow-flower hair ornaments. -->
+    <path d="M355 238c32-63 90-97 157-93 65 0 109 24 146 66l-12 16c-40-40-81-59-136-60-63-1-106 28-140 80Z" fill="#30475e"/>
+    <path d="M366 226c-7-17 3-29 17-26-5-20 8-30 22-21-1-21 13-29 26-17 4-23 20-26 31-10 9-23 28-20 33-4 10-21 26-16 30 0 16-19 31-12 31 5 17-13 32-5 29 13 17-7 31 5 24 21 19-4 30 10 22 25l-15 9c-33-33-73-53-125-53-53 0-97 23-125 61Z" fill="#fff" stroke="#a9c9de" stroke-width="1.8"/>
+    <path d="M380 211c43-46 85-62 130-60 48 0 88 17 121 49" stroke="#d5e9f5" stroke-width="2" stroke-dasharray="3 6"/>
+    <g transform="translate(367 254)">
+      <path d="m-10 10-37 29 8 18 28-17-6 41 18-15 10-56" fill="#e9f8ff" stroke="#95bad4" stroke-width="1.5"/>
+      <path d="M0-13c-19-33-40-7-22 10-30-3-27 26-4 25-15 24 14 39 25 15 10 25 37 11 25-12 26 2 28-27 3-28 15-23-13-40-27-10Z" fill="#fff" stroke="#b7d6e7" stroke-width="1.8"/>
+      <path d="M1-11C-9-25-21-9-9 0c-19 1-18 18-1 17-6 15 13 22 16 7 12 8 23-8 10-15 16-8 6-25-6-16Z" fill="#e2f5ff"/>
+      <circle cx="3" cy="9" r="7" fill="#94d6ee" stroke="#fff" stroke-width="2"/>
+      <circle cx="4" cy="7" r="2" fill="#fff"/>
+    </g>
+    <g transform="translate(642 242) scale(.74)">
+      <path d="m0 10 25 41 15-7-9-32 32 15-11-23L8-8" fill="#e7f7ff" stroke="#9dc5db" stroke-width="1.6"/>
+      <path d="M0-14c-19-27-38-6-22 10-28-4-28 24-6 26-14 20 11 36 23 14 11 23 35 8 23-12 25 1 25-26 2-27 13-22-13-35-20-11Z" fill="#fff" stroke="#afcede" stroke-width="2"/>
+      <circle cx="0" cy="7" r="8" fill="#a6deef"/><circle cx="-2" cy="4" r="3" fill="#fff"/>
+    </g>
+    <!-- Forearm and the offered iced coffee. -->
+    <path d="M292 780c-2 26-8 58-19 91-10 31-27 56-20 75 6 16 25 24 42 13 25-17 33-62 37-81l15-75Z" fill="url(#skin)" stroke="#d4b5b7" stroke-width="2"/>
+    <path d="m286 784 4 24 14 7 11-6 12 9 14-8 7-21-12-8-13 8-13-9-12 7Z" fill="#fff" stroke="#b2cfdf" stroke-width="1.5"/>
+    <path d="M282 924c17-39 28-75 25-108l-5-30c-3-17-17-21-24-11-4 7-3 23-1 32-12-5-25-4-28 6-4 11 1 19 11 23-13-5-23 1-23 10 0 9 8 15 18 18-13-2-21 5-17 16 4 12 24 18 44 17" fill="url(#skin)" stroke="#d4b5b7" stroke-width="1.8"/>
+    <g transform="rotate(-7 289 753)">
+      <path d="m276 650 4-65 8-1-2 67" fill="#8bd0ea" stroke="#5fa3c7" stroke-width="1.5"/>
+      <path d="m230 669 14 155c2 23 96 23 98 0l12-155Z" fill="url(#glass)" stroke="#74afce" stroke-width="2"/>
+      <path d="m239 711 11 108c1 15 84 16 86 0l8-108Z" fill="url(#coffee)"/>
+      <ellipse cx="292" cy="709" rx="51" ry="9" fill="#8e6d54"/>
+      <path d="m249 689 23-6 10 20-24 8Zm36-8 25 3-3 24-26-4Zm30 13 22-4 6 20-23 6Z" fill="#d5eff9" fill-opacity=".8" stroke="#eefaff" stroke-width="1.5"/>
+      <ellipse cx="292" cy="669" rx="62" ry="11" fill="#edf9ff" fill-opacity=".8" stroke="#7cb7d4" stroke-width="2"/>
+      <ellipse cx="292" cy="669" rx="52" ry="6" fill="#d6ecf7" fill-opacity=".6"/>
+      <path d="m236 679 9 94m88-41-4 63" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+      <g fill="#ecfaff" stroke="#abd7ea"><circle cx="326" cy="735" r="2.5"/><circle cx="252" cy="740" r="2"/><circle cx="324" cy="784" r="2"/></g>
+      <path d="M267 765c10-6 22-5 30 1 11-6 22 1 21 10-1 11-21 24-21 24s-24-9-27-19c-1-5-1-10-3-16Z" fill="#ecf8fc" fill-opacity=".86"/>
+      <path d="M294 774v12m-6-6h12" stroke="#83b4cc" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    <!-- Relaxed other hand and the blue lace cuff. -->
+    <path d="m659 789 19 103c4 20 11 35 6 48-4 11-12 20-19 17-8-2-5-13-6-23-7 15-17 20-23 13-4-5 0-13 0-24-6 14-16 14-20 8-4-5 0-15 1-23-9 7-17 4-17-4 0-13 16-38 19-58l-6-39Z" fill="url(#skin)" stroke="#d4b5b7" stroke-width="1.8"/>
+    <path d="m613 790 1 24 12 9 12-5 14 5 12-8 15-1-3-26-15 7-13-6-12 6-10-9Z" fill="#fff" stroke="#b1cddd" stroke-width="1.5"/>
+    <path d="M426 1012c51-9 99-8 153 0" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+  </g>
+</svg>

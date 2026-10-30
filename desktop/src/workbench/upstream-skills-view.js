@@ -5,6 +5,83 @@
   if (!panel) return;
   const desktop = typeof window.coldbrew?.beginner === 'function';
   const state = { catalog: null, nonce: null, busy: false, results: new Map(), generation: 0 };
+  const harnessNote = $('harness-feature-status');
+  function renderHarness(result) {
+    if (!harnessNote || result.seat !== 'deepseek') return;
+    const plugin = result.upstream?.harnessPlugin;
+    harnessNote.dataset.state = plugin?.installed ? 'ready' : 'pending';
+    harnessNote.textContent = plugin?.installed
+      ? '插件文件与连接配置已核验。重启 Harness Web，点击冷咖啡入口，发送「冷咖啡」开始。'
+      : (plugin?.message || '插件尚未通过核验。点击「安装到 DeepSeek」后重新检查。');
+  }
+  async function harnessAction(action) {
+    if (!harnessNote || state.busy) return;
+    if (!desktop && action === 'install') {
+      harnessNote.textContent = '请在冷咖啡桌面软件里安装；此页面用于查看界面。';
+      return;
+    }
+    const buttons = ['harness-feature-install', 'harness-feature-check'].map($).filter(Boolean);
+    buttons.forEach(button => { button.disabled = true; });
+    harnessNote.textContent = action === 'install' ? '正在备份并安装 DeepSeek 技能与原生插件…' : '正在核对 DeepSeek 插件文件和配置…';
+    state.busy = true;
+    try {
+      const result = await api(action, { seat: 'deepseek', confirm: action === 'install' });
+      renderResult(result);
+      if (action === 'install') window.dispatchEvent(new CustomEvent('coldcoffee:upstream-install', { detail: result }));
+    } catch (error) {
+      harnessNote.dataset.state = 'pending';
+      harnessNote.textContent = error.message || '请重新检查安装结果。';
+    } finally {
+      state.busy = false;
+      buttons.forEach(button => { button.disabled = false; });
+    }
+  }
+  $('harness-feature-install')?.addEventListener('click', () => harnessAction('install'));
+  $('harness-feature-check')?.addEventListener('click', () => harnessAction('upstream-status'));
+  $('harness-feature-relay')?.addEventListener('click', () => $('relay-open')?.click());
+  document.querySelectorAll('.harness-feature [data-harness-community]').forEach(button => {
+    button.addEventListener('click', () => document.querySelector('.nav[data-page="community"]')?.click());
+  });
+  const harnessGroups = $('harness-feature-groups');
+  const harnessFeedback = $('harness-feature-community-feedback');
+  const community = Array.isArray(window.ColdCoffeeCore?.COMMUNITY) ? window.ColdCoffeeCore.COMMUNITY : [];
+  if (harnessGroups) harnessGroups.replaceChildren(...community.map(group => {
+    const qq = group.kind === 'qq';
+    const entry = document.createElement(qq ? 'button' : 'a');
+    entry.className = 'harness-feature-group';
+    entry.dataset.kind = group.kind;
+    const label = document.createElement('span');
+    label.className = 'harness-feature-group-label';
+    label.textContent = group.name;
+    const value = document.createElement('strong');
+    value.className = 'harness-feature-group-value';
+    value.textContent = qq ? group.value : group.url;
+    const hint = document.createElement('span');
+    hint.className = 'harness-feature-group-hint';
+    hint.textContent = qq ? '点击复制群号' : '点击打开 Telegram';
+    entry.append(label, value, hint);
+    if (qq) {
+      entry.type = 'button';
+      entry.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(String(group.value));
+          if (harnessFeedback) harnessFeedback.textContent = `${group.name} ${group.value} 已复制，打开 QQ 搜群即可加入。`;
+        } catch {
+          if (harnessFeedback) harnessFeedback.textContent = `请手动复制 ${group.name}：${group.value}`;
+        }
+      });
+    } else {
+      entry.href = group.url;
+      entry.target = '_blank';
+      entry.rel = 'noopener noreferrer';
+      if (typeof window.coldbrew?.openExternal === 'function') entry.addEventListener('click', async event => {
+        event.preventDefault();
+        try { await window.coldbrew.openExternal(group.url); }
+        catch { if (harnessFeedback) harnessFeedback.textContent = `请复制链接到浏览器打开：${group.url}`; }
+      });
+    }
+    return entry;
+  }));
   const seats = [
     ['codex', 'Codex'], ['claude', 'Claude Code'], ['grok', 'Grok'], ['deepseek', window.ColdCoffeeCore?.DEEPSEEK_LABEL || 'DeepSeek Harness'],
     ['glm53', 'GLM / ZCode'], ['gemini', 'Gemini'], ['doubao', '豆包'], ['workbuddy', 'WorkBuddy'],
@@ -118,6 +195,7 @@
   }
 
   function renderResult(result) {
+    renderHarness(result);
     const upstream = result?.upstream;
     if (!upstream) throw new Error('安装结果缺少技能信息，请刷新后重新检查。');
     const seat = result.seat || $('upstream-seat').value;

@@ -1,0 +1,10 @@
+{
+  "name": "coldcoffee-harness-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "index.mjs",
+  "description": "冷咖啡 DeepSeek Harness 原生开屏与现有技能工作台",
+  "license": "MIT",
+  "engines": { "node": ">=22" }
+}
