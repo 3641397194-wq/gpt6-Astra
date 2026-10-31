@@ -144,7 +144,8 @@ async function runMode(mode, run) {
   const errors = [], browserRequests = [];
   const result = { mode, expectedCarrier: mode === 'desktop' ? 'dsh-app://app' : mode, checks: [] };
   const env = {};
-  for (const key of ['PATH', 'Path', 'SystemRoot', 'WINDIR', 'COMSPEC', 'PATHEXT', 'DISPLAY', 'WAYLAND_DISPLAY', 'XDG_RUNTIME_DIR']) if (process.env[key]) env[key] = process.env[key];
+  // xvfb-run keeps its disposable display cookie outside the isolated HOME.
+  for (const key of ['PATH', 'Path', 'SystemRoot', 'WINDIR', 'COMSPEC', 'PATHEXT', 'DISPLAY', 'XAUTHORITY', 'WAYLAND_DISPLAY', 'XDG_RUNTIME_DIR']) if (process.env[key]) env[key] = process.env[key];
   Object.assign(env, { USERPROFILE: f.profile, HOME: f.profile, APPDATA: path.join(f.profile, 'roaming'), LOCALAPPDATA: path.join(f.profile, 'local'), TEMP: path.join(f.profile, 'temp'), TMP: path.join(f.profile, 'temp'), DSH_HOME: path.join(f.profile, '.dsh') });
   try {
     application = await _electron.launch({
