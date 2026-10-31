@@ -12,7 +12,7 @@ import { randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
 export const name = 'coldcoffee-harness';
-export const VERSION = '0.1.0';
+export const VERSION = '0.1.1';
 export const COMMUNITY = Object.freeze({
   qq: ['1057540028', '1077074552', '618179023'],
   chat: 'https://t.me/coolcoffeeai',
@@ -175,7 +175,7 @@ export function createPluginRuntime(ctx, config = {}) {
     if (!installedSkills(home).includes(workflow.skill)) return { status: 409, body: { ok: false, code: 'SKILL_MISSING', message: '该工作流尚未安装。请在冷咖啡工作台重新安装 DeepSeek 技能。' } };
     const controller = contextService(ctx, 'sessionController');
     if (typeof controller?.create !== 'function' || typeof controller?.prompt !== 'function') {
-      return { status: 503, body: { ok: false, code: 'SESSION_API_MISSING', message: '当前 Harness 未加载会话接口；请使用官方 Web profile 启动。' } };
+      return { status: 503, body: { ok: false, code: 'SESSION_API_MISSING', message: '当前 Harness 尚未加载会话接口，请重启 Harness 后重试。' } };
     }
     const task = { id: randomUUID(), workflow: workflow.id, input: body.input.trim(), status: 'creating', createdAt: Date.now(), events: [] };
     tasks.push(task);

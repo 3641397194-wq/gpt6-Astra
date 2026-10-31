@@ -11,7 +11,7 @@
     const plugin = result.upstream?.harnessPlugin;
     harnessNote.dataset.state = plugin?.installed ? 'ready' : 'pending';
     harnessNote.textContent = plugin?.installed
-      ? '插件文件与连接配置已核验。重启 Harness Web，点击冷咖啡入口，发送「冷咖啡」开始。'
+      ? '插件文件与连接配置已核验。重启 Harness 桌面端或 Web，点击冷咖啡入口，发送「冷咖啡」开始。'
       : (plugin?.message || '插件尚未通过核验。点击「安装到 DeepSeek」后重新检查。');
   }
   async function harnessAction(action) {

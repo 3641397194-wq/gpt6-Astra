@@ -4,6 +4,10 @@
 
   if (document.getElementById('coldcoffee-harness-companion')) return;
   const config = window.COLDCOFFEE_HARNESS || {};
+  // Official Desktop serves dsh-app://app and forwards relative requests to
+  // its authenticated Host. Keep that route so the shell owns its cookie;
+  // direct loopback fetches bypass it and carry the wrong Origin.
+  const desktopProxy = window.location.protocol === 'dsh-app:' && window.location.host === 'app';
   // The page-level Ice Noir skin is opt-in and reversible.  The panel itself
   // remains fully isolated inside the ShadowRoot below.
   const hostDocument = document.documentElement;
@@ -128,12 +132,12 @@
 
   function endpoint(name) {
     const suffix = config[name] || ({ status: '/api/status', welcome: '/api/welcome', history: '/api/history', activate: '/api/activate', dispatch: '/api/tasks', settings: '/api/settings', cancel: '/api/tasks/cancel' })[name];
-    const base = String(config.apiBase || config.basePath || '/coldcoffee').replace(/\/$/, '');
+    const base = String((desktopProxy ? config.basePath : config.apiBase) || config.basePath || '/coldcoffee').replace(/\/$/, '');
     return `${base}/${String(suffix).replace(/^\//, '')}`;
   }
 
   async function api(name, body) {
-    if (config.apiBase === null && config.initialStatus && config.initialStatus.harness && config.initialStatus.harness.apiAvailable === false) throw new Error('当前桌面载体未提供本机接口，请在官方 Web 版打开冷咖啡面板。');
+    if (!desktopProxy && config.apiBase === null && config.initialStatus && config.initialStatus.harness && config.initialStatus.harness.apiAvailable === false) throw new Error('当前载体尚未提供本机接口，请确认 Harness 已启动。');
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 12000);
     try {
@@ -170,9 +174,9 @@
 
   async function refresh(silent) {
     if (state.refreshing || destroyed) return;
-    if (config.apiBase === null && config.initialStatus && config.initialStatus.harness && config.initialStatus.harness.apiAvailable === false) {
-      state.online = true;
-      state.error = '当前桌面载体未提供本机接口，请在官方 Web 版打开冷咖啡面板。';
+    if (!desktopProxy && config.apiBase === null && config.initialStatus && config.initialStatus.harness && config.initialStatus.harness.apiAvailable === false) {
+      state.online = false;
+      state.error = '当前载体尚未提供本机接口，请确认 Harness 已启动。';
       renderOverview(); renderTaskState(); renderFooter();
       return;
     }
@@ -308,6 +312,7 @@
       if (replacement) { replacement.focus({ preventScroll: true }); if (selection && typeof replacement.setSelectionRange === 'function') replacement.setSelectionRange(...selection); }
     }
     renderTaskState();
+    renderFooter();
     updateRefresh();
   }
 
@@ -353,7 +358,7 @@
 
   function renderFooter() {
     const footer = shadow.querySelector('[data-footer-state]');
-    if (footer) footer.textContent = state.online ? (canInteract() ? (config.preview ? '预览服务已连接' : '已连接 Harness 插件') : '插件已加载 · 请使用 Web 界面执行') : '等待 Harness 插件';
+    if (footer) footer.textContent = state.online ? (canInteract() ? (desktopProxy ? '已连接 Harness 桌面端' : config.preview ? '预览服务已连接' : '已连接 Harness 插件') : '插件已加载 · 等待本机接口') : '等待 Harness 插件';
     shadow.querySelectorAll('.cc-footer-state .cc-dot,.cc-launcher-sub .cc-dot').forEach((dot) => dot.classList.toggle('good', state.online));
   }
 
@@ -590,7 +595,6 @@
   }, { once: true });
   if (config.initialStatus && typeof config.initialStatus === 'object') {
     applyData(config.initialStatus);
-    state.online = Boolean(config.initialStatus.plugin && config.initialStatus.plugin.loaded);
   }
   render();
   refresh(true).finally(() => {

@@ -10,13 +10,13 @@
 
 ### gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持-MiniMax 3.1 Flash
 
-**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX 3.2.0-preview.5 · AVAILABLE ON ALL THREE PLATFORMS**
+**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX 3.2.0-preview.6 · THREE-PLATFORM RELEASE IN PREPARATION**
 
 <sub>An original dark-manga visual system built from black ink, bone paper, a single crimson eye, and torn comic panels.</sub>
 
 </div>
 
-<p align="center"><strong>3.2.0-preview.5 is published, with downloads for Windows, macOS, and Linux.</strong><br /><sub>The Windows artifact passed local acceptance; GitHub Actions built and published the cross-platform packages.</sub></p>
+<p align="center"><strong>3.2.0-preview.6 is being prepared for Windows, macOS, and Linux.</strong><br /><sub>This version adds the official Harness Desktop protocol path. Eight runtime acceptance checks passed against the official Windows build; release packages remain in preparation.</sub></p>
 
 > **⚠️ Disclaimer · 免责声明**
 >
@@ -54,7 +54,7 @@ npm ci
 npm start
 ```
 
-Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). The published release was built by GitHub Actions on native runners, with packaged UI checks and SHA-256 checksums. The Windows artifact also passed local acceptance.
+Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). GitHub Actions builds each platform on native runners, with packaged UI checks and SHA-256 checksums. Version 3.2.0-preview.6 is in release preparation.
 
 All 15 model seats write an original CHA pack or skill into the selected local instruction directory. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
 
@@ -93,7 +93,7 @@ Select the model seats you use, install their bundled skills, and check the resu
 
 ## DeepSeek Harness / ColdCoffee workspace
 
-ColdCoffee (冷咖啡) adds an ice-blue skin across the official Harness Web interface, an animated opening, and a companion panel for workflows, task records, community, and appearance. It reuses the bundled REA and reverse-skill resources and preserves the original activation word and complete welcome text.
+ColdCoffee (冷咖啡) adds an ice-blue skin across the official Harness Desktop / Web interface, an animated opening, and a companion panel for workflows, task records, community, and appearance. It reuses the bundled REA and reverse-skill resources and preserves the original activation word and complete welcome text.
 
 <p align="center">
   <a href="docs/assets/deepseek-harness-opening.png"><img src="docs/assets/deepseek-harness-opening.png" width="100%" alt="ColdCoffee DeepSeek Harness opening with ice-blue artwork, relay and community links" /></a>
@@ -107,11 +107,25 @@ ColdCoffee (冷咖啡) adds an ice-blue skin across the official Harness Web int
   <tr><td align="center"><sub>Harness Web · Host skin and workspace artwork</sub></td><td align="center"><sub>Community · QQ groups, Telegram chat and channel</sub></td></tr>
 </table>
 
+<sub>The three images above preserve the earlier official <code>0.2.1-rc.2</code> Web screenshots. The images below show the Windows Desktop acceptance run for this version.</sub>
+
+### Official Windows Desktop / Workflows and community
+
+<table>
+  <tr>
+    <td width="50%"><a href="docs/assets/deepseek-harness-desktop-workspace.png"><img src="docs/assets/deepseek-harness-desktop-workspace.png" width="100%" alt="Official Windows Harness Desktop 0.2.1-rc.5 with six existing ColdCoffee workflows and a connected Desktop status" /></a></td>
+    <td width="50%"><a href="docs/assets/deepseek-harness-desktop-community.png"><img src="docs/assets/deepseek-harness-desktop-community.png" width="100%" alt="Official Windows Harness Desktop 0.2.1-rc.5 with all three QQ groups, Telegram links, and the relay entry" /></a></td>
+  </tr>
+  <tr><td align="center"><sub>Windows Desktop · Six existing workflows</sub></td><td align="center"><sub>Windows Desktop · Community and relay</sub></td></tr>
+</table>
+
+<sub>These images show an isolated observation copy of the official <code>0.2.1-rc.5</code> bundle. All eight checks passed, including a task completed and recorded by the official SessionController against a local deterministic model fixture. Paid API calls, research findings, and real REA execution remain to be tested. Official Desktop runtime acceptance currently covers Windows; see the plugin guide for the exact scope.</sub>
+
+Install into the Harness data root used by Desktop (default `~/.dsh`, or your custom `$DSH_HOME`). The plugin uses relative `/coldcoffee` requests through the official `dsh-app://app` proxy, with Host authentication handled by the client. Model settings and tool permissions remain in Harness.
+
 The six existing research entries cover Web and API security review, API identity and access review, staged research planning, REA reverse engineering and sample analysis, source review, and evidence/report preparation. Each entry resolves to an installed skill and submits work through the official Harness session service; status and findings follow actual events and tool results.
 
-In the desktop workbench, select **安装到 DeepSeek**, restart Harness Web, and enter **冷咖啡** in the companion. Installation backs up files before writing and verifies them afterward; uninstall restores the same transaction. See the [plugin guide, workflow mapping, and validation scope](docs/DEEPSEEK-PLUGIN.md).
-
-<sub>These are actual local screenshots of official Harness <code>0.2.1-rc.2</code> Web. UI behavior, skill mappings, native session creation/acceptance, and error reporting were checked. The validation process had no model API key: completed research tasks and successful REA tool calls remain to be tested. The standalone official Desktop package also needs a separate full launch check.</sub>
+In the desktop workbench, select **安装到 DeepSeek**, fully quit and reopen official Harness Desktop, or restart Harness Web, and enter **冷咖啡** in the companion. Installation backs up files before writing and verifies them afterward; uninstall restores the same transaction. See the [plugin guide, workflow mapping, and validation scope](docs/DEEPSEEK-PLUGIN.md).
 
 [ColdCoffee paid API relay](https://coldcoffeeai.com/) · Closed-source workflows are paid local installation and customization services; existing subscriptions or another relay may be used. Contact an administrator privately through QQ groups **1057540028**, **1077074552**, or **618179023**. [Telegram chat](https://t.me/coolcoffeeai) · [Telegram channel](https://t.me/chachachalkf).
 
@@ -153,10 +167,10 @@ In the desktop workbench, select **安装到 DeepSeek**, restart Harness Web, an
 
 ## Original toolbox / Downloads
 
-Release 3.2.0-preview.5: all seven installers are published. Packages are Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
+Release 3.2.0-preview.6: all seven installers are in preparation. Packages are Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
 
-[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.5) · [Original toolbox and feature scope](docs/original-toolbox.md)
+[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.6) · [Original toolbox and feature scope](docs/original-toolbox.md)
 
-The release includes the published installers and SHA-256 checksums.
+After all platform checks pass, the release will include the seven installers and SHA-256 checksums.
 
 The 16 original tools run inside the application. AI automation provides a real tool/observation loop, with a 19-tool MCP server and an exportable skill. Larger exploitation, ticket/domain and remote-session modules remain future work.

@@ -104,7 +104,7 @@ test('missing tools or rejected prompt receipts never produce fake task success'
   assert.equal(missing.body.code, 'SKILL_MISSING');
 });
 
-test('HTTP routes require the page capability and exact local origin, including Desktop null-origin handling', async t => {
+test('HTTP routes require the capability and exact local origin; Desktop must use its owned proxy', async t => {
   const { createPluginRuntime } = await load();
   const f = fixture(t);
   let runtime;
@@ -124,14 +124,28 @@ test('HTTP routes require the page capability and exact local origin, including 
   const noToken = await fetch(`${boot.apiBase}/api/status`);
   assert.equal(noToken.status, 403);
   const headers = { 'X-ColdCoffee-Session': boot.token };
+  const wrongToken = await fetch(`${boot.apiBase}/api/status`, { headers: { 'X-ColdCoffee-Session': 'not-the-page-capability' } });
+  assert.equal(wrongToken.status, 403);
+  assert.equal((await wrongToken.json()).code, 'SESSION_REQUIRED');
   const good = await fetch(`${boot.apiBase}/api/status`, { headers });
   assert.equal(good.status, 200);
   assert.equal((await good.json()).activated, false);
   const external = await fetch(`${boot.apiBase}/api/status`, { headers: { ...headers, Origin: 'https://example.invalid' } });
   assert.equal(external.status, 403);
-  const desktop = await fetch(`${boot.apiBase}/api/status`, { headers: { ...headers, Origin: 'null' } });
-  assert.equal(desktop.status, 200);
-  assert.equal(desktop.headers.get('access-control-allow-origin'), 'null');
+  const desktopDirect = await fetch(`${boot.apiBase}/api/status`, { headers: { ...headers, Origin: 'dsh-app://app' } });
+  assert.equal(desktopDirect.status, 403);
+  assert.equal(desktopDirect.headers.get('access-control-allow-origin'), null);
+  const wrongHostStatus = await new Promise((resolve, reject) => {
+    const request = http.get(`${boot.apiBase}/api/status`, { headers: { ...headers, Host: 'foreign.invalid:4444' } }, response => {
+      response.resume();
+      resolve(response.statusCode);
+    });
+    request.on('error', reject);
+  });
+  assert.equal(wrongHostStatus, 403);
+  const legacyNullOrigin = await fetch(`${boot.apiBase}/api/status`, { headers: { ...headers, Origin: 'null' } });
+  assert.equal(legacyNullOrigin.status, 200);
+  assert.equal(legacyNullOrigin.headers.get('access-control-allow-origin'), 'null');
   const malformed = await fetch(`${boot.apiBase}/api/activate`, { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json' }, body: '{' });
   assert.equal(malformed.status, 400);
   assert.equal(runtime.status().activated, false);

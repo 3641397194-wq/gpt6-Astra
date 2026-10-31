@@ -5,10 +5,10 @@
   <p><strong>十五个 AI 模型 · 一键备份安装 · 一键卸载</strong></p>
   <p>打勾，按一下。打开软件后发「冷咖啡」。不想要了，按卸载，文件回到写入之前。</p>
   <p><a href="#软件界面">软件界面</a> · <a href="#deepseek-harness">DeepSeek 插件</a> · <a href="#下载">下载</a> · <a href="#上手使用">上手使用</a> · <a href="#一键安装目标">十五个 AI 模型</a> · <a href="#四页">四页</a> · <a href="#冷咖啡中转">冷咖啡中转</a> · <a href="#工具箱">工具箱</a> · <a href="#冷咖啡社群">三个 QQ 群</a></p>
-  <p><sub>3.2.0-preview.5 · 三系统已发布 · 十五个 AI 模型 · <a href="https://coldcoffeeai.com/">coldcoffeeai.com</a></sub></p>
+  <p><sub>3.2.0-preview.6 · 三系统发布准备中 · 十五个 AI 模型 · <a href="https://coldcoffeeai.com/">coldcoffeeai.com</a></sub></p>
 </div>
 
-<p align="center"><strong>3.2.0-preview.5 已发布，Windows、macOS、Linux 安装包均可下载。</strong><br /><sub>Windows 成品已完成本机验收，跨平台安装包由 GitHub Actions 构建并发布。以下下载入口对应本版本 Release。</sub></p>
+<p align="center"><strong>3.2.0-preview.6 发布准备中，Windows、macOS、Linux 安装包待检查通过后发布。</strong><br /><sub>本版新增官方 Harness Desktop 协议接入，已完成 Windows 官方成品的八项运行验收。以下入口预留给本版本 Release。</sub></p>
 
 <blockquote>
 <p><strong>⚠️ 免责声明 · Disclaimer</strong></p>
@@ -39,25 +39,32 @@
 <p><sub>以上为 3.2.0-preview.5 桌面软件实际界面截图，点击可查看原图。</sub></p>
 
 <h2 id="deepseek-harness">DeepSeek Harness · 冰蓝工作空间</h2>
-<p>把冷咖啡装进官方 Harness：冰晶开屏、整个 Web 界面的冰蓝皮肤、右下角助手，以及工作流、记录、社群和外观面板。复用已附带的 REA 与 reverse-skill，原启动词和完整欢迎词保留原样。</p>
+<p>把冷咖啡装进官方 Harness Desktop / Web：冰晶开屏、整个图形界面的冰蓝皮肤、右下角助手，以及工作流、记录、社群和外观面板。复用已附带的 REA 与 reverse-skill，原启动词和完整欢迎词保留原样。</p>
 <p align="center"><a href="docs/assets/deepseek-harness-opening.png"><img src="docs/assets/deepseek-harness-opening.png" width="100%" alt="冷咖啡 DeepSeek Harness 插件的冰晶开屏，展示品牌、中转与社群入口" /></a></p>
 <table>
 <tr><td width="50%"><a href="docs/assets/deepseek-harness-workspace.png"><img src="docs/assets/deepseek-harness-workspace.png" width="100%" alt="官方 DeepSeek Harness Web 界面的冷咖啡冰蓝皮肤与右下角助手" /></a></td><td width="50%"><a href="docs/assets/deepseek-harness-community.png"><img src="docs/assets/deepseek-harness-community.png" width="100%" alt="冷咖啡社群面板，包含三个 QQ 群、Telegram 与付费服务入口" /></a></td></tr>
 <tr><td align="center"><sub>官方 Harness Web · 冰蓝皮肤与独立壁纸</sub></td><td align="center"><sub>社群与服务 · 三个 QQ 群、TG 群与频道</sub></td></tr>
 </table>
+<p><sub>以上三张保留此前官方 <code>0.2.1-rc.2</code> Web 的实际界面；下方为本版新增的 Windows Desktop 验收截图。</sub></p>
+<h3>官方 Windows Desktop · 工作流与社群</h3>
+<table>
+<tr><td width="50%"><a href="docs/assets/deepseek-harness-desktop-workspace.png"><img src="docs/assets/deepseek-harness-desktop-workspace.png" width="100%" alt="官方 Windows Harness Desktop 0.2.1-rc.5 的冷咖啡工作流面板，显示六个既有技能入口与桌面连接状态" /></a></td><td width="50%"><a href="docs/assets/deepseek-harness-desktop-community.png"><img src="docs/assets/deepseek-harness-desktop-community.png" width="100%" alt="官方 Windows Harness Desktop 0.2.1-rc.5 的冷咖啡社群面板，显示三个 QQ 群、Telegram 与中转入口" /></a></td></tr>
+<tr><td align="center"><sub>Windows Desktop · 六个既有工作流</sub></td><td align="center"><sub>Windows Desktop · 全部社群与中转</sub></td></tr>
+</table>
+<p><sub>两图来自官方 <code>0.2.1-rc.5</code> bundle 的独立观察副本，使用隔离资料目录。八项验收已通过，官方 SessionController 已完成本机确定性模型 fixture 任务并记录输出；付费 API、真实研究成果与真实 REA 调用仍待实测。官方 Desktop 成品目前仅在 Windows 实测，详见插件说明。</sub></p>
+<p><strong>Desktop 也走官方接口：</strong>安装到 Desktop 实际使用的 Harness 数据根（默认 <code>~/.dsh</code> 或自定义 <code>$DSH_HOME</code>），重启后助手会通过客户端自带协议连接 Host。模型配置与工具权限仍由 Harness 管理。</p>
 <p><strong>六个现有研究入口：</strong>Web 与接口安全检查、API 与身份权限审计、分阶段研究任务编排、REA 逆向与样本分析、源码审计、证据整理与报告。每个入口指向已有技能，任务交给官方 Harness 会话执行；结论和工具状态依据实际返回记录。</p>
-<p><strong>开始使用：</strong>工作台点「安装到 DeepSeek」→ 重启 Harness Web → 在右下角助手输入「冷咖啡」。安装写前备份、写后核验，卸载按同一事务恢复。<a href="docs/DEEPSEEK-PLUGIN.md">查看插件说明、工作流与验收范围 ↗</a></p>
-<p><sub>以上为官方 <code>0.2.1-rc.2</code> 本机 Web 的实际界面截图。已检查界面、技能映射、原生会话创建/接收及错误回显；验证进程未配置模型 Key，模型研究任务完成与 REA 工具成功调用仍待实测。独立官方 Desktop 发行包的完整启动链另行验收。</sub></p>
+<p><strong>开始使用：</strong>工作台点「安装到 DeepSeek」→ 完整退出并重开官方 Harness Desktop，或重启 Harness Web → 在右下角助手输入「冷咖啡」。安装写前备份、写后核验，卸载按同一事务恢复。<a href="docs/DEEPSEEK-PLUGIN.md">查看插件说明、工作流与验收范围 ↗</a></p>
 <p><a href="https://coldcoffeeai.com/"><strong>冷咖啡付费 API 中转 ↗</strong></a> · 闭源工作流提供收费的本机安装与定制，可使用现有订阅或其他中转；进 <a href="#冷咖啡社群">QQ 群</a>私聊管理沟通。</p>
 
 <h2 id="下载">下载</h2>
-<p><strong>3.2.0-preview.5 下载入口：</strong>Windows、macOS、Linux 的七个安装包已发布。十五个 AI 模型席位，含 Kimi K3.1、Grok Bot、Claude Duet、ChatGPT Dot 和 Meta Muse；macOS 提供 Apple 芯片 arm64 和 Intel x64 安装包，原创工具箱继续内置运行。</p>
+<p><strong>3.2.0-preview.6 下载入口：</strong>Windows、macOS、Linux 的七个安装包发布准备中。十五个 AI 模型席位，含 Kimi K3.1、Grok Bot、Claude Duet、ChatGPT Dot 和 Meta Muse；macOS 提供 Apple 芯片 arm64 和 Intel x64 安装包，原创工具箱继续内置运行。</p>
 <table>
 <tr><th align="left">系统</th><th align="left">版本</th><th align="left">席位</th><th align="left">安装包</th></tr>
-<tr><td><strong>Windows</strong></td><td><code>3.2.0-preview.5</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.5/ColdCoffee-Workbench-Windows-3.2.0-preview.5-x64.exe">免安装 .exe ↗</a></td></tr>
-<tr><td><strong>macOS Apple 芯片</strong></td><td><code>3.2.0-preview.5</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Apple 芯片 arm64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.5/ColdCoffee-Workbench-macOS-arm64-3.2.0-preview.5.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.5/ColdCoffee-Workbench-macOS-arm64-3.2.0-preview.5.zip">.zip ↗</a></td></tr>
-<tr><td><strong>macOS Intel</strong></td><td><code>3.2.0-preview.5</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Intel x64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.5/ColdCoffee-Workbench-macOS-x64-3.2.0-preview.5.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.5/ColdCoffee-Workbench-macOS-x64-3.2.0-preview.5.zip">.zip ↗</a></td></tr>
-<tr><td><strong>Linux</strong></td><td><code>3.2.0-preview.5</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，x86_64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.5/ColdCoffee-Workbench-Linux-x86_64-3.2.0-preview.5.AppImage">.AppImage ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.5/ColdCoffee-Workbench-Linux-amd64-3.2.0-preview.5.deb">.deb ↗</a></td></tr>
+<tr><td><strong>Windows</strong></td><td><code>3.2.0-preview.6</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.6/ColdCoffee-Workbench-Windows-3.2.0-preview.6-x64.exe">免安装 .exe ↗</a></td></tr>
+<tr><td><strong>macOS Apple 芯片</strong></td><td><code>3.2.0-preview.6</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Apple 芯片 arm64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.6/ColdCoffee-Workbench-macOS-arm64-3.2.0-preview.6.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.6/ColdCoffee-Workbench-macOS-arm64-3.2.0-preview.6.zip">.zip ↗</a></td></tr>
+<tr><td><strong>macOS Intel</strong></td><td><code>3.2.0-preview.6</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Intel x64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.6/ColdCoffee-Workbench-macOS-x64-3.2.0-preview.6.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.6/ColdCoffee-Workbench-macOS-x64-3.2.0-preview.6.zip">.zip ↗</a></td></tr>
+<tr><td><strong>Linux</strong></td><td><code>3.2.0-preview.6</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，x86_64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.6/ColdCoffee-Workbench-Linux-x86_64-3.2.0-preview.6.AppImage">.AppImage ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.6/ColdCoffee-Workbench-Linux-amd64-3.2.0-preview.6.deb">.deb ↗</a></td></tr>
 </table>
 <p>Windows 双击打开。macOS 第一次若被拦住，在程序图标上右键，选打开。Linux 的 AppImage 先加上可执行权限。deb 用系统的安装器。</p>
 <pre><code>cd desktop
@@ -70,7 +77,7 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 
 <h2 id="上手使用">上手使用</h2>
 <ol>
-<li><strong>打开软件：</strong>下载 3.2.0-preview.5 对应系统的安装包；Windows 使用 portable EXE，macOS 按 Apple 芯片或 Intel 选择，Linux 使用 AppImage 或 DEB。</li>
+<li><strong>打开软件：</strong>下载 3.2.0-preview.6 对应系统的安装包；Windows 使用 portable EXE，macOS 按 Apple 芯片或 Intel 选择，Linux 使用 AppImage 或 DEB。</li>
 <li><strong>一键破甲：</strong>只勾你要写的软件，按一下。写入之前会先备份。只改勾上的软件。</li>
 <li><strong>发送口令：</strong>打开那个软件，对话框里单独发「冷咖啡」。不想要了，回到这里按一键卸载，文件回到写入之前。</li>
 </ol>

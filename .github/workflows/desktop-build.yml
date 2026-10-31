@@ -95,6 +95,16 @@ jobs:
       - name: Verify DeepSeek names and home-page layout
         working-directory: desktop
         run: npm run test:deepseek:ui
+      - name: Verify Harness Desktop transport on Windows and macOS
+        if: runner.os != 'Linux'
+        working-directory: desktop
+        run: npm run test:harness:desktop
+      - name: Verify Harness Desktop transport on Linux
+        if: runner.os == 'Linux'
+        working-directory: desktop
+        env:
+          COLDCOFFEE_UI_NO_SANDBOX: "1"
+        run: xvfb-run -a npm run test:harness:desktop
       - name: Build native packages
         working-directory: desktop
         env:

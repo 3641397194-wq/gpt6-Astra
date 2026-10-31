@@ -17,7 +17,13 @@ npm start
 npm run pack:win
 ```
 
-品牌启动词是 `冷咖啡`，控制词是 `BREAK//OPEN`，当前版本为 `3.2.0-preview.4`。桌面端一键安装页显示 15 个 AI 模型席位。DeepSeek 席位显示为 DeepSeek v4.1 Flash 10.17版本，在 Windows、macOS、Linux 三端对接 10.17 版官方 Harness `0.2.1-rc.2`；共享 `$DSH_AGENTS_HOME` / `~/.agents` 目录保留原样。详细安装合同见 [DeepSeek Harness 安装说明](../docs/SEAT-PACKS.md#deepseek-官方-harness-安装说明)。启动词 `冷咖啡` 会先打出三个 QQ 群号和 Telegram 聊天群/频道，再打出激活页。工单先口语归一再全自动打到 80 条小类三拍。
+品牌启动词是 `冷咖啡`，控制词是 `BREAK//OPEN`，当前版本为 `3.2.0-preview.6`（发布准备中）。桌面端一键安装页显示 15 个 AI 模型席位。DeepSeek 席位显示为 DeepSeek v4.1 Flash 10.17版本，在 Windows、macOS、Linux 三端对接 10.17 版官方 Harness `0.2.1-rc.2`；共享 `$DSH_AGENTS_HOME` / `~/.agents` 目录保留原样。详细安装合同见 [DeepSeek Harness 安装说明](../docs/SEAT-PACKS.md#deepseek-官方-harness-安装说明)。启动词 `冷咖啡` 会先打出三个 QQ 群号和 Telegram 聊天群/频道，再打出激活页。工单先口语归一再全自动打到 80 条小类三拍。
+
+## DeepSeek Harness Desktop 插件
+
+在工作台点击「安装到 DeepSeek」，选中官方 Desktop 实际使用的 Harness 数据根（默认 `~/.dsh`，自定义时为 `$DSH_HOME`），安装并核验后完整退出并重新打开官方 Desktop。右下角冷咖啡助手输入 `冷咖啡` 后即可选择工作流。Web 端继续使用相同插件及安装位置。
+
+插件 `0.1.1` 为官方 Desktop 的 `dsh-app://app` 页面接入原生协议代理：相对 `/coldcoffee` 请求由客户端转交给已有 Host，并由客户端管理宿主认证。插件沿用官方会话接口、模型配置与权限；桌面通道的实际验收进度见 [插件说明](../docs/DEEPSEEK-PLUGIN.md#已验证与待验收)。
 
 ## 原创工具箱 1.0
 
