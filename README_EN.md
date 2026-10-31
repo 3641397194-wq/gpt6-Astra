@@ -10,13 +10,13 @@
 
 ### gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持-MiniMax 3.1 Flash
 
-**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX 3.2.0-preview.6 · THREE-PLATFORM RELEASE IN PREPARATION**
+**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX 3.2.0-preview.6 · PUBLIC PRERELEASE ON THREE OPERATING SYSTEMS**
 
 <sub>An original dark-manga visual system built from black ink, bone paper, a single crimson eye, and torn comic panels.</sub>
 
 </div>
 
-<p align="center"><strong>3.2.0-preview.6 is being prepared for Windows, macOS, and Linux.</strong><br /><sub>This version adds the official Harness Desktop protocol path. Eight runtime acceptance checks passed against the official Windows build; release packages remain in preparation.</sub></p>
+<p align="center"><strong>3.2.0-preview.6 is published as a public prerelease, with all seven Workbench installers available for Windows, macOS, and Linux.</strong><br /><sub>All four platform checks and builds passed, and SHA256SUMS is published with the release. This version adds the official Harness Desktop protocol path; eight runtime acceptance checks passed against the official Windows build.</sub></p>
 
 > **⚠️ Disclaimer · 免责声明**
 >
@@ -54,7 +54,7 @@ npm ci
 npm start
 ```
 
-Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). GitHub Actions builds each platform on native runners, with packaged UI checks and SHA-256 checksums. Version 3.2.0-preview.6 is in release preparation.
+Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). GitHub Actions builds each platform on native runners, with packaged UI checks and SHA-256 checksums. Version 3.2.0-preview.6 is publicly available as a prerelease.
 
 All 15 model seats write an original CHA pack or skill into the selected local instruction directory. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
 
@@ -167,10 +167,10 @@ In the desktop workbench, select **安装到 DeepSeek**, fully quit and reopen o
 
 ## Original toolbox / Downloads
 
-Release 3.2.0-preview.6: all seven installers are in preparation. Packages are Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
+Release 3.2.0-preview.6: all seven Workbench installers are publicly available as a prerelease. Packages are Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
 
 [Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.6) · [Original toolbox and feature scope](docs/original-toolbox.md)
 
-After all platform checks pass, the release will include the seven installers and SHA-256 checksums.
+All four platform checks passed. The release includes the seven installers and SHA256SUMS.
 
 The 16 original tools run inside the application. AI automation provides a real tool/observation loop, with a 19-tool MCP server and an exportable skill. Larger exploitation, ticket/domain and remote-session modules remain future work.

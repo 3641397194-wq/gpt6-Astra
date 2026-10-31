@@ -5,10 +5,10 @@
   <p><strong>十五个 AI 模型 · 一键备份安装 · 一键卸载</strong></p>
   <p>打勾，按一下。打开软件后发「冷咖啡」。不想要了，按卸载，文件回到写入之前。</p>
   <p><a href="#软件界面">软件界面</a> · <a href="#deepseek-harness">DeepSeek 插件</a> · <a href="#下载">下载</a> · <a href="#上手使用">上手使用</a> · <a href="#一键安装目标">十五个 AI 模型</a> · <a href="#四页">四页</a> · <a href="#冷咖啡中转">冷咖啡中转</a> · <a href="#工具箱">工具箱</a> · <a href="#冷咖啡社群">三个 QQ 群</a></p>
-  <p><sub>3.2.0-preview.6 · 三系统发布准备中 · 十五个 AI 模型 · <a href="https://coldcoffeeai.com/">coldcoffeeai.com</a></sub></p>
+  <p><sub>3.2.0-preview.6 · 三系统已发布 · 十五个 AI 模型 · <a href="https://coldcoffeeai.com/">coldcoffeeai.com</a></sub></p>
 </div>
 
-<p align="center"><strong>3.2.0-preview.6 发布准备中，Windows、macOS、Linux 安装包待检查通过后发布。</strong><br /><sub>本版新增官方 Harness Desktop 协议接入，已完成 Windows 官方成品的八项运行验收。以下入口预留给本版本 Release。</sub></p>
+<p align="center"><strong>3.2.0-preview.6 已公开发布（预发布版），本工作台 Windows、macOS、Linux 的七个安装包均可下载。</strong><br /><sub>四个平台的检查与构建均通过，SHA256SUMS 随 Release 发布。本版新增官方 Harness Desktop 协议接入，已完成 Windows 官方成品的八项运行验收。</sub></p>
 
 <blockquote>
 <p><strong>⚠️ 免责声明 · Disclaimer</strong></p>
@@ -58,7 +58,7 @@
 <p><a href="https://coldcoffeeai.com/"><strong>冷咖啡付费 API 中转 ↗</strong></a> · 闭源工作流提供收费的本机安装与定制，可使用现有订阅或其他中转；进 <a href="#冷咖啡社群">QQ 群</a>私聊管理沟通。</p>
 
 <h2 id="下载">下载</h2>
-<p><strong>3.2.0-preview.6 下载入口：</strong>Windows、macOS、Linux 的七个安装包发布准备中。十五个 AI 模型席位，含 Kimi K3.1、Grok Bot、Claude Duet、ChatGPT Dot 和 Meta Muse；macOS 提供 Apple 芯片 arm64 和 Intel x64 安装包，原创工具箱继续内置运行。</p>
+<p><strong>3.2.0-preview.6 下载入口：</strong>本工作台 Windows、macOS、Linux 的七个安装包已发布，可直接下载，Release 同时提供 SHA256SUMS。十五个 AI 模型席位，含 Kimi K3.1、Grok Bot、Claude Duet、ChatGPT Dot 和 Meta Muse；macOS 提供 Apple 芯片 arm64 和 Intel x64 安装包，原创工具箱继续内置运行。</p>
 <table>
 <tr><th align="left">系统</th><th align="left">版本</th><th align="left">席位</th><th align="left">安装包</th></tr>
 <tr><td><strong>Windows</strong></td><td><code>3.2.0-preview.6</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.6/ColdCoffee-Workbench-Windows-3.2.0-preview.6-x64.exe">免安装 .exe ↗</a></td></tr>

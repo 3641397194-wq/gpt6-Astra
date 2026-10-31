@@ -2,7 +2,7 @@
 
 冷咖啡工作台为整个 DeepSeek Harness Desktop / Web 图形界面增加冰蓝皮肤，并提供冰晶看板娘开屏、技能状态、工作流入口和任务记录。插件复用软件已经附带的 REA 与 reverse-skill，没有另建一套重复技能包；原启动词、完整欢迎词、三个 QQ 群和 Telegram 入口继续保留。
 
-当前为 **3.2.0-preview.6**，内置插件版本 **0.1.1**，发布准备中。本版修复官方 Desktop 的协议请求路径；Windows 官方成品的八项运行验收已通过，README 中的七个下载入口预留给本版本 Release。
+当前为 **3.2.0-preview.6**，内置插件版本 **0.1.1**，已公开发布为预发布版。本工作台四个平台的检查与构建均通过，README 中的七个安装包均可下载，Release 附带 SHA256SUMS。本版修复官方 Desktop 的协议请求路径，Windows 官方成品的八项运行验收已通过。
 
 <p align="center"><a href="assets/deepseek-harness-opening.png"><img src="assets/deepseek-harness-opening.png" width="100%" alt="冷咖啡插件冰晶开屏，包含中转、社群与工作空间入口" /></a></p>
 
