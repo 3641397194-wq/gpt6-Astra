@@ -260,7 +260,16 @@ async function runMode(mode, run) {
       await panel.locator('[data-action="view"][data-view="community"]').click();
       assert.equal(await panel.locator('[data-footer-state]').textContent(), mode === 'desktop' ? '已连接 Harness 桌面端' : '已连接 Harness 插件');
       const community = await panel.locator('#cc-view-community').textContent();
-      for (const group of ['1057540028', '1077074552', '618179023']) assert.ok(community.includes(group));
+      for (const group of ['1057540028', '1077074552', '618179023', '1131239659']) assert.ok(community.includes(group));
+      assert.equal(await panel.locator('.cc-hub-count').textContent(), '6 个入口');
+      await panel.locator('[data-action="copy-qq"][data-value="1131239659"]').click();
+      await panel.locator('.cc-qr-card summary').click();
+      const qr = panel.locator('.cc-qr-card img');
+      await qr.waitFor({ state: 'visible' });
+      assert.deepEqual(await qr.evaluate(async image => { await image.decode(); return [image.naturalWidth, image.naturalHeight]; }), [1284, 2280]);
+      await panel.locator('.cc-qr-card summary').click();
+      await panel.locator('#cc-view-community').evaluate(element => { element.scrollTop = 0; });
+      await panel.locator('#cc-harness-panel').screenshot({ path: path.join(OUTPUT, `${mode}-community-four-groups.png`), animations: 'disabled' });
       for (const link of ['https://t.me/coolcoffeeai', 'https://t.me/chachachalkf', 'https://coldcoffeeai.com/']) assert.ok(await panel.locator(`#cc-view-community a[href="${link}"]`).count());
       result.checks.push('current QQ groups, Telegram chat/channel and relay promotion remain visible');
 

@@ -12,7 +12,7 @@ const ROOT = path.resolve(__dirname, '..');
 const PREVIEW = path.join(ROOT, 'work/deepseek-plugin-preview');
 const OUTPUT = path.join(PREVIEW, 'checks');
 const TASK = '只列出当前已安装技能的名称，不运行扫描、不修改文件';
-const QQ = ['1057540028', '1077074552', '618179023'];
+const QQ = ['1057540028', '1077074552', '618179023', '1131239659'];
 const LINKS = ['https://t.me/coolcoffeeai', 'https://t.me/chachachalkf'];
 const EXPECTED = [
   ['web', 'cc-rs-pentest-tools'], ['api', 'cc-rs-api-security'], ['chain', 'cc-rs-attack-chain'],
@@ -211,7 +211,7 @@ async function main() {
     await page.waitForTimeout(950);
     await page.screenshot({ path: path.join(OUTPUT, 'actual-settings.png') });
     result.screenshots.push('actual-settings.png');
-    check('animation preference changes actual plugin settings and all three QQ groups plus both Telegram links are correct', { qq: QQ, telegram: LINKS });
+    check('animation preference changes actual plugin settings and all four QQ groups plus both Telegram links are correct', { qq: QQ, telegram: LINKS });
     result.ok = result.browserErrors.length === 0;
     assert.equal(result.browserErrors.length, 0, 'Browser runtime errors');
   } finally {

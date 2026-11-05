@@ -14,6 +14,7 @@ const PLUGIN_FILES = Object.freeze([
   'ui/host.css',
   'ui/panel.js',
   'ui/rem-blue.svg',
+  'ui/qq-group-4.jpg',
 ]);
 const OPTIONAL_FILES = Object.freeze(['ui/rem-blue.png', 'ui/rem-blue.webp', 'ui/harness-background.png']);
 const MAX_ASSET_BYTES = 16 * 1024 * 1024;

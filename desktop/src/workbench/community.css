@@ -26,3 +26,16 @@
   margin-top: auto;
   font-size: 12px;
 }
+
+/* Keep the four QQ cards together, with the two Telegram entries below. */
+.community-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.community-link-card { grid-column: span 2; min-height: 220px; }
+.community-card { min-width: 0; }
+.community-card .group-number { flex-wrap: wrap; gap: 8px; }
+@media (max-width: 1200px) {
+  .community-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .community-link-card { grid-column: auto; }
+}
+@media (max-width: 700px) {
+  .community-grid { grid-template-columns: 1fr; }
+}

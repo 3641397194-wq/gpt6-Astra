@@ -66,6 +66,7 @@ test('the exact activation word gates real SessionController create and prompt c
   const activation = await runtime.api('POST', '/api/activate', { keyword: '冷咖啡' });
   assert.equal(activation.body.activated, true);
   assert.match(activation.body.text, /QQ三群 618179023/);
+  assert.match(activation.body.text, /QQ四群 1131239659/);
   assert.match(activation.body.text, /https:\/\/t\.me\/coolcoffeeai/);
   const dispatched = await runtime.api('POST', '/api/tasks', task);
   assert.equal(dispatched.status, 202);

@@ -3,6 +3,7 @@
 QQ一群 1057540028
 QQ二群 1077074552
 QQ三群 618179023
+QQ四群 1131239659
 Telegram 聊天群 https://t.me/coolcoffeeai
 Telegram 频道 https://t.me/chachachalkf
 

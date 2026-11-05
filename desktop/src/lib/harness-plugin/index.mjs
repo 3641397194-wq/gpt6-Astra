@@ -12,9 +12,9 @@ import { randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
 export const name = 'coldcoffee-harness';
-export const VERSION = '0.1.1';
+export const VERSION = '0.1.2';
 export const COMMUNITY = Object.freeze({
-  qq: ['1057540028', '1077074552', '618179023'],
+  qq: ['1057540028', '1077074552', '618179023', '1131239659'],
   chat: 'https://t.me/coolcoffeeai',
   channel: 'https://t.me/chachachalkf',
 });
@@ -92,7 +92,7 @@ export function createPluginRuntime(ctx, config = {}) {
   let webServer;
   let disposed = false;
   let welcome = readText(path.join(here, 'welcome.md')) || readText(path.join(here, '../packs/activation-reply.md'));
-  if (!welcome) welcome = `冷咖啡已激活\n\nQQ一群 ${COMMUNITY.qq[0]}\nQQ二群 ${COMMUNITY.qq[1]}\nQQ三群 ${COMMUNITY.qq[2]}\nTelegram 聊天群 ${COMMUNITY.chat}\nTelegram 频道 ${COMMUNITY.channel}`;
+  if (!welcome) welcome = `冷咖啡已激活\n\nQQ一群 ${COMMUNITY.qq[0]}\nQQ二群 ${COMMUNITY.qq[1]}\nQQ三群 ${COMMUNITY.qq[2]}\nQQ四群 ${COMMUNITY.qq[3]}\nTelegram 聊天群 ${COMMUNITY.chat}\nTelegram 频道 ${COMMUNITY.channel}`;
 
   function origin() {
     try {
@@ -281,12 +281,14 @@ export function createPluginRuntime(ctx, config = {}) {
     const assetUrl = imageAsset ? `data:${imageAsset[1]};base64,${fs.readFileSync(path.join(here, imageAsset[0])).toString('base64')}` : '';
     const backgroundFile = path.join(here, 'ui/harness-background.png');
     const backgroundUrl = regular(backgroundFile, 8 * 1024 * 1024) ? `data:image/png;base64,${fs.readFileSync(backgroundFile).toString('base64')}` : assetUrl;
+    const qqFourFile = path.join(here, 'ui/qq-group-4.jpg');
+    const qqFourUrl = regular(qqFourFile, 2 * 1024 * 1024) ? `data:image/jpeg;base64,${fs.readFileSync(qqFourFile).toString('base64')}` : '';
     const apiOrigin = origin();
     table.push({ kind: 'global', name: 'COLDCOFFEE_HARNESS', value: {
       basePath, apiBase: apiOrigin ? `${apiOrigin}${basePath}` : null, token,
       status: '/api/status', dispatch: '/api/tasks', welcome: '/api/welcome', history: '/api/history', settings: '/api/settings',
       version: VERSION, preview: config.preview === true, styleText: `${panelStyle}\n${themeStyle}`,
-      assetUrl, backgroundUrl,
+      assetUrl, backgroundUrl, qqFourUrl,
       initialStatus: runtimeStatus(),
     } });
     if (hostStyle) table.push({ kind: 'style', text: hostStyle });

@@ -126,7 +126,7 @@ function mcpInfo(seat, root, { zcode = false } = {}) {
 function loaderText(sourceRoot) {
   return [
     '# 冷咖啡 · 完整技能扩展入口', '',
-    '保留原“冷咖啡”启动词、完整欢迎词与三个 QQ 群号。此扩展只补充技能索引，不替换原词包。',
+    '保留原“冷咖啡”启动词、完整欢迎词与四个 QQ 群号。此扩展只补充技能索引，不替换原词包。',
     `激活后按任务读取 \`${posix(path.join(sourceRoot, 'INDEX.md'))}\`，选择相应技能原始入口；资源与脚本均以完整来源树中的原路径为准。`,
     'REA 需要工具时使用 coldcoffee-rea MCP；未连接时按所附运行说明修复或使用同一固定版本 CLI。不要用“技能已安装”代替真实工具结果。', '',
   ].join('\n');

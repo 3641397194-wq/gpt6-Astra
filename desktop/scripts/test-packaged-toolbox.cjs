@@ -25,6 +25,11 @@ assert.ok(fs.existsSync(executable), 'native packaged executable exists');
 const archive = path.join(resources, 'app.asar');
 const version = JSON.parse(asar.extractFile(archive, 'package.json').toString()).version;
 assert.equal(version, fs.readFileSync(path.join(root, '..', 'VERSION'), 'utf8').trim());
+const qr = fs.readFileSync(path.join(root, 'assets/community/qq-group-4.jpg'));
+for (const name of ['assets/community/qq-group-4.jpg', 'src/lib/harness-plugin/ui/qq-group-4.jpg']) {
+  assert.deepEqual(asar.extractFile(archive, path.normalize(name)), qr, 'packaged QQ four-group QR: ' + name);
+}
+assert.match(asar.extractFile(archive, path.normalize('src/lib/packs/activation-reply.md')).toString('utf8'), /QQ四群 1131239659/);
 for (const name of ['agent.js', 'binary.js', 'common.js', 'engine.js', 'ida.js', 'mcp.js', 'network.js', 'registry.js', 'SKILL.md']) {
   assert.ok(fs.existsSync(path.join(resources, 'toolbox', name)), 'MCP resource: ' + name);
 }

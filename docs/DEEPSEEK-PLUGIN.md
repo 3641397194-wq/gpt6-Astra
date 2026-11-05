@@ -1,20 +1,20 @@
 # 冷咖啡 · DeepSeek Harness 插件
 
-冷咖啡工作台为整个 DeepSeek Harness Desktop / Web 图形界面增加冰蓝皮肤，并提供冰晶看板娘开屏、技能状态、工作流入口和任务记录。插件复用软件已经附带的 REA 与 reverse-skill，没有另建一套重复技能包；原启动词、完整欢迎词、三个 QQ 群和 Telegram 入口继续保留。
+冷咖啡工作台为整个 DeepSeek Harness Desktop / Web 图形界面增加冰蓝皮肤，并提供冰晶看板娘开屏、技能状态、工作流入口和任务记录。插件复用软件已经附带的 REA 与 reverse-skill，没有另建一套重复技能包；原启动词、完整欢迎词、四个 QQ 群和 Telegram 入口继续保留。
 
-当前为 **3.2.0-preview.6**，内置插件版本 **0.1.1**，已公开发布为预发布版。本工作台四个平台的检查与构建均通过，README 中的七个安装包均可下载，Release 附带 SHA256SUMS。本版修复官方 Desktop 的协议请求路径，Windows 官方成品的八项运行验收已通过。
+当前为 **3.2.0-preview.7**，内置插件版本 **0.1.2**。本版新增 QQ 四群 `1131239659` 与随插件安装的原图二维码，社群面板统一为四个 QQ 群及 Telegram 聊天群/频道，共六个入口；点「QQ 四群 · 展开二维码」可扫码加入。Desktop 沿用原生协议请求路径，Windows 官方成品的八项运行验收已复测通过。
 
 <p align="center"><a href="assets/deepseek-harness-opening.png"><img src="assets/deepseek-harness-opening.png" width="100%" alt="冷咖啡插件冰晶开屏，包含中转、社群与工作空间入口" /></a></p>
 
 <table>
-<tr><td width="50%"><a href="assets/deepseek-harness-workspace.png"><img src="assets/deepseek-harness-workspace.png" width="100%" alt="官方 Harness Web 的冷咖啡冰蓝工作空间" /></a></td><td width="50%"><a href="assets/deepseek-harness-community.png"><img src="assets/deepseek-harness-community.png" width="100%" alt="冷咖啡助手的社群与服务面板" /></a></td></tr>
+<tr><td width="50%"><a href="assets/deepseek-harness-workspace.png"><img src="assets/deepseek-harness-workspace.png" width="100%" alt="官方 Harness Web 的冷咖啡冰蓝工作空间" /></a></td><td width="50%"><a href="assets/deepseek-harness-community-v7.png"><img src="assets/deepseek-harness-community-v7.png" width="100%" alt="冷咖啡助手的社群与服务面板" /></a></td></tr>
 <tr><td align="center"><sub>整个 Harness 的皮肤与独立壁纸</sub></td><td align="center"><sub>全部社群与收费定制入口</sub></td></tr>
 </table>
 
-截图来自独立预览目录内运行的官方 `0.2.1-rc.2` Web 界面，未使用个人浏览器资料或模型凭证。它们展示实际 UI；模型研究任务与工具执行的验收情况见下文。
+开屏与工作空间保留官方 `0.2.1-rc.2` Web 实测图。四群社群图来自本版插件的独立接口测试夹具，展示实际面板；下方桌面截图来自本版官方 Windows 观察副本。未使用个人浏览器资料或模型凭证，模型任务与工具执行的验收范围见下文。
 
 <table>
-<tr><td width="50%"><a href="assets/deepseek-harness-desktop-workspace.png"><img src="assets/deepseek-harness-desktop-workspace.png" width="100%" alt="官方 Windows Harness Desktop 0.2.1-rc.5 观察副本中的冷咖啡工作流面板" /></a></td><td width="50%"><a href="assets/deepseek-harness-desktop-community.png"><img src="assets/deepseek-harness-desktop-community.png" width="100%" alt="官方 Windows Harness Desktop 0.2.1-rc.5 观察副本中的冷咖啡社群面板" /></a></td></tr>
+<tr><td width="50%"><a href="assets/deepseek-harness-desktop-workspace-v7.png"><img src="assets/deepseek-harness-desktop-workspace-v7.png" width="100%" alt="官方 Windows Harness Desktop 0.2.1-rc.5 观察副本中的冷咖啡工作流面板" /></a></td><td width="50%"><a href="assets/deepseek-harness-desktop-community-v7.png"><img src="assets/deepseek-harness-desktop-community-v7.png" width="100%" alt="官方 Windows Harness Desktop 0.2.1-rc.5 观察副本中的冷咖啡社群面板" /></a></td></tr>
 <tr><td align="center"><sub>Windows Desktop · 六个既有工作流</sub></td><td align="center"><sub>Windows Desktop · 社群与中转</sub></td></tr>
 </table>
 
@@ -26,7 +26,7 @@
 2. 确认选中的是官方 Harness Desktop 实际使用的数据根：默认 `~/.dsh`，自定义时为 `$DSH_HOME`。完整退出并重新打开官方 Desktop；使用 Web 时重启 `dsh web --host 127.0.0.1 --no-open`，然后打开它打印的本机地址。终端 TUI 保留自己的界面。
 3. 开屏可以跳过。进入后点击右下角的「冷咖啡」，在启动框准确输入 `冷咖啡`。
 4. 选择工作流、写下任务，再点击开始。任务在官方 Harness 中创建会话，沿用它自己的模型配置和工具权限。
-5. 在「记录」查看接收、运行、完成或错误状态；「社群」集中展示三个 QQ 群与 Telegram 群/频道，「外观」管理整个 Harness 的皮肤、背景强度与开屏动画。
+5. 在「记录」查看接收、运行、完成或错误状态；「社群」集中展示四个 QQ 群与 Telegram 群/频道，「外观」管理整个 Harness 的皮肤、背景强度与开屏动画。
 
 模型 API 仍由使用者在 Harness 中配置。插件随包携带的是界面、技能和工具适配，发行文件中没有客户 API Key。
 
@@ -83,13 +83,13 @@ Windows 官方 Desktop 的八项实际运行验收全部通过：
 
 | 项目 | 当前证据与范围 |
 | --- | --- |
-| 干净 Home 安装 | 在新目录选择性安装原词包、六个既有技能及其原始文档和插件，111 个文件核验通过；此次范围未包含完整上游来源树 |
+| 干净 Home 安装 | 在新目录选择性安装原词包、六个既有技能及其原始文档和插件，112 个文件核验通过（含新增四群二维码）；此次范围未包含完整上游来源树 |
 | 官方 Cordis 注入 | 官方 bundle 加载冷咖啡插件，真实 Desktop 页面显示注入的开屏与助手 |
 | Host 状态与技能 | 状态请求经 `dsh-app://app` 官方代理取得结果，六项既有技能均可用 |
 | 激活与欢迎词 | 精确输入 `冷咖啡` 后激活，原欢迎词全文校验通过 |
 | 官方会话任务 | 真实 `SessionController` 对本机确定性 Messages fixture 创建会话并完成任务，状态为 `completed`，输出进入记录 |
 | 图像与外观 | 角色图、Blob 壁纸、皮肤切换与还原、动画设置通过实际界面检查 |
-| 社群与面板 | 三个 QQ 群、Telegram 群/频道、中转入口完整；切换面板后桌面连接状态保持准确 |
+| 社群与面板 | 四个 QQ 群、Telegram 群/频道、中转入口完整；切换面板后桌面连接状态保持准确 |
 | 协议请求路径 | 观测的 12 条插件请求全部经过 `dsh-app://app`，没有页面运行错误 |
 
 任务使用本机确定性 Messages fixture，记录到 2 次本机模型请求。它验证官方会话通道和结果记录；付费 API、真实研究成果及真实 REA 工具成功调用仍待实测，未读取个人模型凭证。
@@ -97,9 +97,9 @@ Windows 官方 Desktop 的八项实际运行验收全部通过：
 其他验收记录保留各自范围：
 
 - **此前 Web：**官方 `0.2.1-rc.2` 的 Cordis 注入、开屏、助手、皮肤、壁纸、动画与窄屏布局已通过界面检查。原生会话曾收到 `accepted: true`，随后因未配置模型 Key 显示真实错误；该轮 REA 为工具已注册、`connected: false`。
-- **此前完整安装：**`3.2.0-preview.5` 首次完整安装逐项核验 11870 文件通过，随后复查出现部分参考资料缺失并如实报告失败，见下文。本轮 `.6` 保留该历史记录，未重新执行 11870 文件的完整安装。
-- **Transport 与源码：**独立 Electron fixture 的 14 项 Desktop / Web / file 传输检查通过；完整源码检查 185 项测试中 184 通过、1 项 Windows 上的 POSIX 权限语义测试跳过、0 失败。传输 fixture 与上述官方成品八项验收分别记录。
-- **本工作台 Windows 包：**`.6` / 插件 `0.1.1` 成品检查通过，460 个归档成员未发现私人路径或真实 Key，9 个插件源码文件与包内内容逐字节一致。
+- **此前完整安装：**`3.2.0-preview.5` 首次完整安装逐项核验 11870 文件通过，随后复查出现部分参考资料缺失并如实报告失败，见下文。本轮保留该历史记录，未重新执行 11870 文件的完整安装。
+- **Transport 与源码：**独立 Electron fixture 的 14 项 Desktop / Web / file 传输检查通过；本轮源码检查 187 项测试中 186 通过、1 项 Windows 上的 POSIX 权限语义测试跳过、0 失败，15 组响应式界面检查通过。传输 fixture 与上述官方成品八项验收分别记录。
+- **此前工作台 Windows 包：**`.6` / 插件 `0.1.1` 成品检查通过，460 个归档成员未发现私人路径或真实 Key，9 个插件源码文件与包内内容逐字节一致。
 - **平台：**官方 Harness Desktop 成品本轮仅在 Windows 实测。macOS / Linux 的范围为本工作台安装包的构建检查与传输回归，官方 Harness 对应平台的成品运行另行验收。
 
 缺少本机接口的载体会显示说明并停用执行按钮。`accepted: true` 只说明 Harness 已接收任务；“已完成”取自对应会话的实际结束事件。
@@ -127,6 +127,7 @@ Windows 官方 Desktop 的八项实际运行验收全部通过：
 | QQ 一群 | `1057540028` |
 | QQ 二群 | `1077074552` |
 | QQ 三群 | `618179023` |
+| QQ 四群 | `1131239659` |
 | Telegram 交流群 | [t.me/coolcoffeeai](https://t.me/coolcoffeeai) |
 | Telegram 频道 | [t.me/chachachalkf](https://t.me/chachachalkf) |
 

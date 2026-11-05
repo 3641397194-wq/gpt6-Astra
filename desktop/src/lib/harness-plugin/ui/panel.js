@@ -4,6 +4,8 @@
 
   if (document.getElementById('coldcoffee-harness-companion')) return;
   const config = window.COLDCOFFEE_HARNESS || {};
+  const qqLabels = ['一', '二', '三', '四'];
+  const qqFourUrl = typeof config.qqFourUrl === 'string' && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(config.qqFourUrl) ? config.qqFourUrl : '';
   // Official Desktop serves dsh-app://app and forwards relative requests to
   // its authenticated Host. Keep that route so the shell owns its cookie;
   // direct loopback fetches bypass it and carry the wrong Origin.
@@ -201,7 +203,7 @@
 
   function community() {
     const data = state.data && state.data.community || {};
-    return { qq: Array.isArray(data.qq) && data.qq.length === 3 ? data.qq.map(String) : ['1057540028', '1077074552', '618179023'], chat: 'https://t.me/coolcoffeeai', channel: 'https://t.me/chachachalkf' };
+    return { qq: Array.isArray(data.qq) && data.qq.length === 4 ? data.qq.map(String) : ['1057540028', '1077074552', '618179023', '1131239659'], chat: 'https://t.me/coolcoffeeai', channel: 'https://t.me/chachachalkf' };
   }
 
   function relayPromoHTML() {
@@ -214,7 +216,7 @@
 
   function communityHTML() {
     const links = community();
-    return `${relayPromoHTML()}<section class="cc-community cc-community-hub" aria-label="冷咖啡全部社群"><div class="cc-section-top"><h2 class="cc-section-title">和冷咖啡，一起交流</h2><span class="cc-hub-count">5 个入口</span></div><p class="cc-community-sub">软件使用、版本消息、工作流交流。点群号复制，在 QQ 中搜索加入。</p><div class="cc-qq-grid">${links.qq.map((id, index) => `<button class="cc-qq" data-action="copy-qq" data-value="${escape(id)}" aria-label="复制 QQ ${['一', '二', '三'][index]}群群号 ${escape(id)}"><span class="cc-qq-label">QQ ${['一', '二', '三'][index]}群</span><span class="cc-qq-id">${escape(id)}</span><span class="cc-qq-hint">${icon('copy')}复制群号</span></button>`).join('')}</div><div class="cc-community-links"><a class="cc-community-link" href="${links.chat}" target="_blank" rel="noopener noreferrer">${icon('plane')}Telegram 交流群${icon('external')}</a><a class="cc-community-link" href="${links.channel}" target="_blank" rel="noopener noreferrer">${icon('plane')}Telegram 频道${icon('external')}</a></div></section><section class="cc-custom-service"><span class="cc-promo-kicker">闭源工作流 · 收费定制</span><h3>装在你的电脑，按你的需求定制。</h3><p>支持使用你自己的订阅或其他中转。进上方任一 QQ 群，私聊管理沟通方案与价格。</p><div class="cc-service-facts"><span>本机安装</span><span>私聊沟通</span><span>按需定制</span></div></section>`;
+    return `${relayPromoHTML()}<section class="cc-community cc-community-hub" aria-label="冷咖啡全部社群"><div class="cc-section-top"><h2 class="cc-section-title">和冷咖啡，一起交流</h2><span class="cc-hub-count">${links.qq.length + 2} 个入口</span></div><p class="cc-community-sub">四个 QQ 群，交流软件、工作流与版本更新。点群号复制，在 QQ 中搜索加入。</p><div class="cc-qq-grid">${links.qq.map((id, index) => `<button class="cc-qq" data-action="copy-qq" data-value="${escape(id)}" aria-label="复制 QQ ${qqLabels[index]}群群号 ${escape(id)}"><span class="cc-qq-label">QQ ${qqLabels[index]}群${index === 3 ? ' · 新群' : ''}</span><span class="cc-qq-id">${escape(id)}</span><span class="cc-qq-hint">${icon('copy')}复制群号</span></button>`).join('')}</div>${qqFourUrl ? `<details class="cc-qr-card"><summary>QQ 四群 · 展开二维码</summary><p>1131239659 · 扫码加入 AI 交流四群</p><img src="${qqFourUrl}" alt="QQ 四群二维码，群号 1131239659" /></details>` : ''}<div class="cc-community-links"><a class="cc-community-link" href="${links.chat}" target="_blank" rel="noopener noreferrer">${icon('plane')}Telegram 交流群${icon('external')}</a><a class="cc-community-link" href="${links.channel}" target="_blank" rel="noopener noreferrer">${icon('plane')}Telegram 频道${icon('external')}</a></div></section><section class="cc-custom-service"><span class="cc-promo-kicker">闭源工作流 · 收费定制</span><h3>装在你的电脑，按你的需求定制。</h3><p>支持使用你自己的订阅或其他中转。进上方任一 QQ 群，私聊管理沟通方案与价格。</p><div class="cc-service-facts"><span>本机安装</span><span>私聊沟通</span><span>按需定制</span></div></section>`;
   }
 
   function overviewHTML() {

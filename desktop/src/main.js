@@ -43,6 +43,7 @@ const COMMUNITY = {
     { name: "一群", value: "1057540028" },
     { name: "二群", value: "1077074552" },
     { name: "三群", value: "618179023" },
+    { name: "四群", value: "1131239659" },
   ],
   telegram: [
     { name: "聊天群", value: "https://t.me/coolcoffeeai", url: "https://t.me/coolcoffeeai" },

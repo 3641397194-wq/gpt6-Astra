@@ -5,6 +5,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { SeatTransactions } = require('./seat-transactions');
 const { LOCAL_AGENT_PROFILES } = require('../shared/workbench-core');
+const { activationReply } = require('./seat-packs');
 
 const profileById = (id) => {
   const profile = LOCAL_AGENT_PROFILES.find((item) => item.id === id);
@@ -30,7 +31,8 @@ function createState(id, skillsRoot) {
   const profile = profileById(id);
   if (typeof skillsRoot !== 'string' || !path.isAbsolute(skillsRoot)) throw new Error('请选择 Agent 实际加载的绝对 Skills 目录');
   const root = path.join(path.resolve(skillsRoot), profile.skill);
-  const body = fs.readFileSync(path.join(__dirname, 'packs', 'local-agent-skills', `${id}.md`), 'utf8');
+  const body = fs.readFileSync(path.join(__dirname, 'packs', 'local-agent-skills', `${id}.md`), 'utf8')
+    .replaceAll('{{ACTIVATION_REPLY}}', activationReply());
   const tx = new SeatTransactions({
     plan: (_seat, overrideHome) => ({
       home: overrideHome,

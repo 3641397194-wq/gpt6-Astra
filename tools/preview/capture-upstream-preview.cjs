@@ -43,10 +43,10 @@ const out = path.resolve(__dirname, '../../.coldbrew/upstream-preview');
       assert.equal((await page.locator('#upstream-sources').textContent()).includes(source.commit), false);
     }
     await page.locator('[data-page="community"]').click();
-    for (const group of ['1057540028', '1077074552', '618179023']) assert.ok((await page.locator('#page-community').textContent()).includes(group));
+    for (const group of ['1057540028', '1077074552', '618179023', '1131239659']) assert.ok((await page.locator('#page-community').textContent()).includes(group));
     assert.equal(await page.locator('img').evaluateAll((images) => images.filter((image) => image.offsetParent !== null).every((image) => image.complete && image.naturalWidth > 0)), true);
     assert.deepEqual(errors, []);
-    console.log('PASS: real preview catalog, clean source cards without metadata details, both source names retained, 94 searchable entries, isolated status API, 3 QQ groups, visible images, no browser errors.');
+    console.log('PASS: real preview catalog, clean source cards without metadata details, both source names retained, 94 searchable entries, isolated status API, 4 QQ groups, visible images, no browser errors.');
     console.log('Screenshots: ' + out);
   } finally { await browser.close(); }
 })().catch((error) => { console.error(error); process.exitCode = 1; });

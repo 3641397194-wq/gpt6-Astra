@@ -12,7 +12,7 @@ const { digest } = require('../src/lib/toolbox/common');
   let app, modelServer;
   try {
     const loader = path.join(path.dirname(require.resolve('playwright-core/package.json')), 'lib/server/electron/loader.js');
-    app = await electron.launch({ executablePath: packaged || require('electron'), args: ['-r', loader, '--enable-logging=stderr', ...(process.env.COLDCOFFEE_UI_NO_SANDBOX === '1' ? ['--no-sandbox'] : []), ...(packaged ? [] : [root]), '--toolbox', '--toolbox-workspace=' + data], env, timeout: 60000 });
+app = await electron.launch({ executablePath: packaged || require('electron'), args: ['-r', loader, '--enable-logging=stderr', ...(process.env.COLDCOFFEE_UI_NO_SANDBOX === '1' ? ['--no-sandbox'] : []), ...(packaged ? [] : [root]), '--preview-passive', '--user-data-dir=' + path.join(out, 'chromium-profile'), '--toolbox', '--toolbox-workspace=' + data], env, timeout: 60000 });
     let launchLog = ''; app.process().stderr?.on('data', data => { launchLog = (launchLog + data.toString()).slice(-6000); });
     let page; for (let i = 0; i < 600 && !page; i++) { page = app.windows().find(p => p.url().includes('/workbench/index.html')); if (!page) await new Promise(r => setTimeout(r, 100)); }
     if (!page) {

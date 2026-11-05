@@ -208,6 +208,32 @@ async function measureLabel(locator) {
         assert.ok(result.metrics.scrollHeight <= result.metrics.clientHeight + 1, id + ': no label vertical overflow');
         assert.deepEqual(result.pageErrors, [], id + ': no renderer errors');
         assert.deepEqual(result.blockedExternalRequests, [], id + ': all assets local');
+        const groups = ['1057540028', '1077074552', '618179023', '1131239659'];
+        if (test.kind === 'docs') {
+          const cards = page.locator('.markdown-body table').filter({ has: page.locator('img[src$="qq-group-4.jpg"]') });
+          assert.equal(await cards.count(), 1, id + ': one current four-group QR table');
+          assert.equal(await cards.locator('img').count(), 4, id + ': four original QR images');
+          await cards.scrollIntoViewIfNeeded();
+          for (const group of groups) assert.ok((await cards.textContent()).includes(group), id + ': group ' + group);
+          await cards.locator('img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
+          assert.ok(await cards.evaluate(element => element.getBoundingClientRect().right <= innerWidth + 1), id + ': QR table fits viewport');
+        } else {
+          const newbie = await page.locator('.newbie-groups').textContent();
+          for (const group of groups) assert.ok(newbie.includes(group), id + ': installer shortcut ' + group);
+          await page.locator('.nav[data-page="community"]').click();
+          await page.locator('#page-community.active').waitFor();
+          assert.equal(await page.locator('#community .community-card').count(), 4, id + ': four QQ cards');
+          assert.equal(await page.locator('#community .community-link-card').count(), 2, id + ': Telegram chat and channel');
+          const text = await page.locator('#community').textContent();
+          for (const group of groups) assert.ok(text.includes(group), id + ': community ' + group);
+          const card = page.locator('#community .community-card').filter({ hasText: '1131239659' });
+          await card.locator('.qr-button').click();
+          assert.equal(await page.locator('#qr-dialog').evaluate(element => element.open), true, id + ': QR enlargement opens');
+          assert.deepEqual(await page.locator('#qr-large').evaluate(async image => { await image.decode(); return [image.naturalWidth, image.naturalHeight]; }), [1284, 2280]);
+          await page.locator('#qr-close').click();
+          assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), id + ': community fits viewport');
+        }
+        await page.screenshot({ path: path.join(OUTPUT, 'community-' + id + '.png'), animations: 'disabled' });
         result.ok = true; console.log('PASS ' + id);
       } catch (error) {
         result.error = error.message; report.failures.push({ id, error: error.message }); console.error('FAIL ' + id + ': ' + error.message);
