@@ -96,7 +96,12 @@ if (process.platform === 'win32') {
     assert.equal((await page.evaluate(() => window.coldbrew.grokMemory('status'))).state.connected, false);
     await page.locator('#gm-connect').click();
     if (process.platform === 'win32') {
-      await page.waitForFunction(() => document.querySelector('#gm-connection').textContent.includes('已连接'), { timeout: 30000 });
+      // Native version/DPAPI probes plus the bounded RPC can exceed 30 seconds
+      // on a cold hosted runner. Fail immediately on a rendered terminal error.
+      await page.waitForFunction(() => document.querySelector('#gm-connection').dataset.connected === 'true' ||
+        document.querySelector('#gm-status').dataset.error === 'true', null, { timeout: 75000 });
+      assert.equal(await page.locator('#gm-connection').getAttribute('data-connected'), 'true',
+        'synthetic profile connects: ' + await page.locator('#gm-status').textContent());
       assert.match(await page.locator('#gm-checks').textContent(), /系统加密/);
       report.nativeCrypto = true;
       await page.locator('#gm-pull').click();
@@ -150,6 +155,19 @@ if (process.platform === 'win32') {
     }
     assert.deepEqual(report.browserErrors, []);
     report.ok = true;
+  } catch (error) {
+    // Only public IPC state and intercepted method names; never login material.
+    if (app) {
+      try {
+        const page = app.windows().find(item => item.url().includes('/workbench/index.html'));
+        const result = await page.evaluate(() => window.coldbrew.grokMemory('status'));
+        report.failure = { connected: result.state.connected, busy: result.state.busy,
+          phase: result.state.phase, error: result.state.error, checks: result.state.checks };
+        report.rpcCalls = await app.evaluate(() => globalThis.__coldcoffeeMemoryFixture?.calls || []);
+        console.error('Grok fixture diagnostics: ' + JSON.stringify({ failure: report.failure, rpcCalls: report.rpcCalls }));
+      } catch { /* Preserve the original failure if the test process has exited. */ }
+    }
+    throw error;
   } finally {
     fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2));
     if (app) await app.close();
