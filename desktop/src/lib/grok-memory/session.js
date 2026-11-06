@@ -7,19 +7,25 @@ const crypto = require('node:crypto');
 const { execFile } = require('node:child_process');
 const { MemoryError } = require('./errors');
 
-const NATIVE_SCRIPT = `
+// Fixed .NET-only operations avoid PowerShell module autoload, which can hang
+// in a newly isolated profile. Payloads travel on stdin, never in command args.
+const NATIVE_SCRIPTS = Object.freeze({ version: `
 $ErrorActionPreference = 'Stop'
-$data = [Console]::In.ReadToEnd() | ConvertFrom-Json
-if ($data.mode -eq 'version') {
-  [Console]::Out.Write((Get-Item -LiteralPath $data.path).VersionInfo.ProductVersion)
-} elseif ($data.mode -eq 'dpapi') {
-  Add-Type -AssemblyName System.Security
-  $bytes = [Convert]::FromBase64String($data.blob)
-  $plain = [Security.Cryptography.ProtectedData]::Unprotect($bytes, $null, [Security.Cryptography.DataProtectionScope]::CurrentUser)
+$target = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String([Console]::In.ReadToEnd()))
+[Console]::Out.Write([System.Diagnostics.FileVersionInfo]::GetVersionInfo($target).ProductVersion)
+`, dpapi: `
+$ErrorActionPreference = 'Stop'
+$framework = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()
+[void][System.Reflection.Assembly]::LoadFrom([System.IO.Path]::Combine($framework, 'System.Security.dll'))
+$bytes = [Convert]::FromBase64String([Console]::In.ReadToEnd())
+$plain = [System.Security.Cryptography.ProtectedData]::Unprotect($bytes, $null, [System.Security.Cryptography.DataProtectionScope]::CurrentUser)
+try {
   [Console]::Out.Write([Convert]::ToBase64String($plain))
+} finally {
   [Array]::Clear($plain, 0, $plain.Length)
-} else { exit 2 }
-`;
+  [Array]::Clear($bytes, 0, $bytes.Length)
+}
+` });
 
 function native(file, args, input = '', signal) {
   return new Promise((resolve, reject) => {
@@ -35,7 +41,11 @@ function native(file, args, input = '', signal) {
 
 function windowsHelper(input, signal, env = process.env) {
   const powershell = path.join(env.SystemRoot || 'C:\\Windows', 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe');
-  return native(powershell, ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', NATIVE_SCRIPT], JSON.stringify(input), signal);
+  const script = Object.hasOwn(NATIVE_SCRIPTS, input.mode) && NATIVE_SCRIPTS[input.mode];
+  const value = input.mode === 'version' ? input.path : input.blob;
+  if (!script || typeof value !== 'string') throw new MemoryError('DECRYPT');
+  const payload = input.mode === 'version' ? Buffer.from(value, 'utf8').toString('base64') : value;
+  return native(powershell, ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', script], payload, signal);
 }
 
 function decode64(text) {
