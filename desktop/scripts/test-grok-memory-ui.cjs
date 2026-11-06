@@ -20,7 +20,11 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
     const launch = fs.existsSync(chromium.executablePath()) ? {} : process.platform === 'win32' ? { channel: 'msedge' } : {};
     browser = await chromium.launch({ headless: true, ...launch });
     const context = await browser.newContext({ viewport: { width: 1500, height: 1100 } });
-    await context.exposeFunction('fixtureMemory', (action, payload) => f.controller.execute(action, payload));
+    await context.exposeFunction('fixtureMemory', async (action, payload) => {
+      // Force an IPC-like delay so cleanup checks cannot pass before disconnect.
+      if (action === 'disconnect') await new Promise(resolve => setTimeout(resolve, 40));
+      return f.controller.execute(action, payload);
+    });
     await context.addInitScript(({ seats, profiles }) => {
       window.coldbrew = { grokMemory: (action, payload) => window.fixtureMemory(action, payload),
         beginner: async () => seats.map(seat => ({ seat: seat.id, name: seat.tag, ok: true, exists: false, root: '', launchers: [] })),
@@ -113,7 +117,7 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
     await page.locator('#gm-bots button').last().click();
     assert.equal(await page.locator('.gm-item').count(), 0);
     await page.locator('#gm-close').click();
-    await page.waitForFunction(async () => !document.querySelector('#grok-memory').open && !(await window.coldbrew.grokMemory('status')).state.connected);
+    await page.waitForFunction(() => !document.querySelector('#grok-memory').open && document.querySelector('#gm-connection').dataset.connected === 'false');
     assert.equal(f.controller.session, null);
     assert.equal(await page.locator('#gm-text').inputValue(), '');
     assert.equal(report.errors.length, 0, report.errors.join('\n'));
