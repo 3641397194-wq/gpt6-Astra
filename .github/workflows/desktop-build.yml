@@ -42,7 +42,7 @@ jobs:
         run: npm run test:grok:desktop
         working-directory: desktop
         env:
-          COLDCOFFEE_NATIVE_DIAGNOSTIC: "1"
+          COLDCOFFEE_NATIVE_DIAGNOSTIC: "verify"
   check:
     if: inputs.native_diagnostic != true
     name: Source checks

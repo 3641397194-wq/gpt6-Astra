@@ -107,6 +107,16 @@ if (process.platform === 'win32') {
     await app.evaluate(async ({ protocol }, expectedToken) => {
       const fixture = { calls: [], entries: [], memories: [{ text: '回答先给结果，再说明依据。', scope: 'user', tier: 'log' }], seq: 1 };
       globalThis.__coldcoffeeMemoryFixture = fixture;
+      const cp = process.getBuiltinModule('child_process');
+      const originalExecFile = cp.execFile;
+      globalThis.__coldcoffeeNativeDiagnostics = [];
+      cp.execFile = function(file, args, options, callback) {
+        return originalExecFile.call(this, file, args, options, (error, stdout, stderr) => {
+          globalThis.__coldcoffeeNativeDiagnostics.push({ code: error?.code || 0, killed: !!error?.killed,
+            stderr: stderr.toString().slice(0, 5000) });
+          callback(error, stdout, stderr);
+        });
+      };
       const response = (doc, status = 200) => new Response(JSON.stringify(doc), { status, headers: { 'content-type': 'application/json' } });
       const body = value => Buffer.from(JSON.stringify(value)).toString('base64');
       protocol.handle('https', async request => {
@@ -203,6 +213,7 @@ if (process.platform === 'win32') {
         report.failure = { connected: result.state.connected, busy: result.state.busy,
           phase: result.state.phase, error: result.state.error, checks: result.state.checks };
         report.rpcCalls = await app.evaluate(() => globalThis.__coldcoffeeMemoryFixture?.calls || []);
+        console.error('SYNTHETIC_NATIVE_DIAGNOSTICS: ' + JSON.stringify(await app.evaluate(() => globalThis.__coldcoffeeNativeDiagnostics)));
         console.error('Grok fixture diagnostics: ' + JSON.stringify({ failure: report.failure, rpcCalls: report.rpcCalls }));
       } catch { /* Preserve the original failure if the test process has exited. */ }
     }
