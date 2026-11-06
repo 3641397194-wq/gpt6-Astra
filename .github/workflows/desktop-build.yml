@@ -11,6 +11,10 @@ on:
         required: false
         default: false
         type: boolean
+      native_diagnostic:
+        description: Run isolated native Windows process probes without publishing.
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -20,7 +24,27 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  native-diagnostic:
+    name: Isolated Windows native process probes
+    if: inputs.native_diagnostic == true
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci
+        working-directory: desktop
+      - name: Probe synthetic PowerShell process transport in Electron
+        run: npm run test:grok:desktop
+        working-directory: desktop
+        env:
+          COLDCOFFEE_NATIVE_DIAGNOSTIC: "1"
   check:
+    if: inputs.native_diagnostic != true
     name: Source checks
     runs-on: ubuntu-latest
     steps:

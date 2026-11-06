@@ -56,6 +56,39 @@ if (process.platform === 'win32') {
   const report = { ok: false, packaged: !!executable, isolatedProfile: true, nativeCrypto: false, checks: [], browserErrors: [] };
   try {
     app = await _electron.launch({ ...(executable ? { executablePath: executable } : {}), args, env, timeout: 60000 });
+    if (process.platform === 'win32' && process.env.COLDCOFFEE_NATIVE_DIAGNOSTIC === '1') {
+      const probes = await app.evaluate(async () => {
+        const { execFile, spawnSync } = process.getBuiltinModule('child_process');
+        const path = process.getBuiltinModule('path');
+        const powershell = path.join(process.env.SystemRoot, 'System32/WindowsPowerShell/v1.0/powershell.exe');
+        const script = "$ErrorActionPreference = 'Stop'\n$data = [Console]::In.ReadToEnd() | ConvertFrom-Json\n[Console]::Out.Write($data.value)\n";
+        const input = JSON.stringify({ value: 'fixture-ok' });
+        const results = [];
+        for (const [name, args] of [
+          ['plain-command', ['-Command', "[Console]::Out.Write('fixture-ok')"]],
+          ['json-command', ['-Command', script]],
+          ['json-encoded', ['-EncodedCommand', Buffer.from(script, 'utf16le').toString('base64')]],
+        ]) {
+          const started = Date.now();
+          const result = await new Promise(resolve => {
+            const child = execFile(powershell, ['-NoLogo', '-NoProfile', '-NonInteractive', ...args],
+              { windowsHide: true, timeout: 5000, encoding: 'buffer' }, (error, stdout, stderr) => resolve({
+                name, elapsed: Date.now() - started, code: error?.code || 0, killed: !!error?.killed,
+                expectedOutput: stdout.toString().trim() === 'fixture-ok', bytes: stdout.length, stderrBytes: stderr.length,
+              }));
+            child.stdin.on('error', () => {}); child.stdin.end(input);
+          });
+          results.push(result);
+        }
+        const started = Date.now();
+        const sync = spawnSync(powershell, ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', script],
+          { windowsHide: true, timeout: 5000, input, encoding: 'utf8' });
+        results.push({ name: 'json-sync', elapsed: Date.now() - started, code: sync.error?.code || sync.status,
+          expectedOutput: sync.stdout?.trim() === 'fixture-ok', stderrBytes: sync.stderr?.length });
+        return results;
+      });
+      console.log('NATIVE_PROBES: ' + JSON.stringify(probes));
+    }
     let page;
     for (let i = 0; i < 200 && !page; i++) { page = app.windows().find(item => item.url().includes('/workbench/index.html')); if (!page) await new Promise(resolve => setTimeout(resolve, 100)); }
     assert.ok(page, 'actual workbench window');
