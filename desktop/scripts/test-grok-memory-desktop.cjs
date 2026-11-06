@@ -66,6 +66,10 @@ if (process.platform === 'win32') {
         const results = [];
         for (const [name, args] of [
           ['plain-command', ['-Command', "[Console]::Out.Write('fixture-ok')"]],
+          ['raw-read', ['-Command', "[Console]::Out.Write([Console]::In.ReadToEnd())"]],
+          ['json-no-read', ['-Command', "$data = '{\"value\":\"fixture-ok\"}' | ConvertFrom-Json; [Console]::Out.Write($data.value)"]],
+          ['json-inline', ['-Command', "$data = [Console]::In.ReadToEnd() | ConvertFrom-Json; [Console]::Out.Write($data.value)"]],
+          ['read-markers', ['-Command', "[Console]::Error.WriteLine('before-read'); $raw=[Console]::In.ReadToEnd(); [Console]::Error.WriteLine('after-read'); $data=$raw | ConvertFrom-Json; [Console]::Error.WriteLine('after-json'); [Console]::Out.Write($data.value)"]],
           ['json-command', ['-Command', script]],
           ['json-encoded', ['-EncodedCommand', Buffer.from(script, 'utf16le').toString('base64')]],
         ]) {
@@ -74,7 +78,9 @@ if (process.platform === 'win32') {
             const child = execFile(powershell, ['-NoLogo', '-NoProfile', '-NonInteractive', ...args],
               { windowsHide: true, timeout: 5000, encoding: 'buffer' }, (error, stdout, stderr) => resolve({
                 name, elapsed: Date.now() - started, code: error?.code || 0, killed: !!error?.killed,
-                expectedOutput: stdout.toString().trim() === 'fixture-ok', bytes: stdout.length, stderrBytes: stderr.length,
+                expectedOutput: stdout.toString().trim() === 'fixture-ok', inputMatched: stdout.toString().trim() === input,
+                markers: ['before-read', 'after-read', 'after-json'].filter(value => stderr.toString().includes(value)),
+                bytes: stdout.length, stderrBytes: stderr.length,
               }));
             child.stdin.on('error', () => {}); child.stdin.end(input);
           });
