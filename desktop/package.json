@@ -1,7 +1,7 @@
 {
   "name": "coldbrew-zero-desktop",
   "productName": "冷咖啡破甲工作台",
-  "version": "3.2.0-preview.7",
+  "version": "3.2.0-preview.8",
   "private": true,
   "description": "gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持破甲越狱 · BREAK//OPEN 工作台",
   "main": "src/main.js",
@@ -31,7 +31,9 @@
     "test:harness:desktop": "node scripts/test-harness-desktop-transport.cjs",
     "preview:harness": "node ../tools/preview/deepseek-plugin-preview.cjs",
     "test:upstream:ui": "node scripts/test-upstream-skills-ui.cjs",
-    "test:upstream:runtime": "node ../tools/preview/verify-upstream-runtime.cjs"
+    "test:upstream:runtime": "node ../tools/preview/verify-upstream-runtime.cjs",
+    "test:grok:ui": "node scripts/test-grok-memory-ui.cjs",
+    "test:grok:desktop": "node scripts/test-grok-memory-desktop.cjs"
   },
   "dependencies": {
     "jsonc-parser": "3.3.1",
@@ -73,6 +75,11 @@
       "!**/*.dmp"
     ],
     "extraResources": [
+      {
+        "from": "resources/grok-memory",
+        "to": "grok-memory",
+        "filter": ["*.md", "*.txt", "*.json", "*.tar.gz"]
+      },
       {
         "from": "resources/upstream-skills",
         "to": "upstream-skills",

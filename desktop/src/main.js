@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, shell, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, shell, dialog, net } = require("electron");
 const path = require("node:path");
 const fs = require("node:fs");
 const { ACTIVATION_WORD, CONTROL_WORD, APP_TITLE, PROFILES, SEATS, CHANNELS, activate } = require("./lib/prompt-engine");
@@ -11,6 +11,19 @@ const { ActivationGate } = require("./lib/activation-gate");
 const activationGate = new ActivationGate();
 const { detectDirectory } = require("./lib/detect-directory");
 const localAgentSkills = require("./lib/local-agent-skills");
+let grokMemory;
+function getGrokMemory() {
+  if (!grokMemory) {
+    const { GrokMemoryController } = require("./lib/grok-memory/controller");
+    const { GrokMemoryClient, createRpc } = require("./lib/grok-memory/protocol");
+    grokMemory = new GrokMemoryController({
+      // Electron's network stack honors existing system proxy settings.
+      client: new GrokMemoryClient({ rpc: createRpc({ fetchImpl: (url, options) => net.fetch(url, options) }) }),
+      preset: () => require("./lib/seat-packs").activationReply(),
+    });
+  }
+  return grokMemory;
+}
 const beginner = require("./lib/beginner-install");
 const idaToolbox = require("./lib/ida-toolbox");
 const idaMcp = require("./lib/ida-mcp");
@@ -128,6 +141,8 @@ handleTrusted("coldbrew:activate", (_event, payload = {}) => activate({
   channel: payload.channel,
   prompt: payload.prompt,
 }));
+
+handleTrusted("coldbrew:grok-memory", (_event, action, payload) => getGrokMemory().execute(action, payload));
 
 handleTrusted("coldbrew:transaction", async (_event, action, payload = {}) => {
   if(action === "gate-create") return activationGate.create(payload.seat);
@@ -423,3 +438,4 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => app.quit());
+app.on("before-quit", () => grokMemory?.disconnect());

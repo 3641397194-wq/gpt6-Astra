@@ -1,0 +1,190 @@
+{
+  "repository": "https://github.com/Lniosy/souhun",
+  "commit": "b8fb8ed08d0657cb07675f31d5110b2da4c8744b",
+  "license": "MIT",
+  "archive": "souhun-b8fb8ed-source.tar.gz",
+  "archiveSha256": "e5788ebc69479aeac08c876740f3ae3434ff55041dcadcab1d4b090e95fe979e",
+  "fileCount": 36,
+  "files": [
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "bytes": 585,
+      "sha256": "027c92a57d08f8914acebac87d7e640bb70abe27937a9484c519e53b9c66ba76"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "bytes": 354,
+      "sha256": "2b5d801ccf81ebd68132873ccfe368ed58e7edd050b984632070cd2cea8b2b05"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 145,
+      "sha256": "94b526edd5d6bc951a36f916c5fe1cc06d1d9ff08a36437d29161c121936da7b"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 657,
+      "sha256": "4a311c3d0c9de5ec6799090789b72328214cd3574750812ac6f010ad4eb1b17e"
+    },
+    {
+      "path": "CONTRIBUTING.en.md",
+      "bytes": 1368,
+      "sha256": "ce4c464654c7341a00cd64de7e8a5a621d871295df463607ff880f090ba9e1ba"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 1283,
+      "sha256": "15691857890b7880c17ebe7b0b26cee9d93feedeec97ece6d10e93f7ffebb360"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1063,
+      "sha256": "1ea557a7e5c8a3c9eef84dee11cb9825d28afb0764bafbce4b67b8957f33c5a3"
+    },
+    {
+      "path": "README.en.md",
+      "bytes": 5599,
+      "sha256": "36fbc46f493a7eca67c7433c0b2cc37031c04ba563814c95d399458d28411439"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5555,
+      "sha256": "75d2e99b28127204aee2431d1bb6c333a4bf519f6abbde845c6c70b4ad3faa83"
+    },
+    {
+      "path": "SECURITY.en.md",
+      "bytes": 1230,
+      "sha256": "dd4ddf86121b208e3268dfd32c76d47c7647262fdd93ef1c5cee035cc283fb45"
+    },
+    {
+      "path": "SECURITY.md",
+      "bytes": 1163,
+      "sha256": "b9809c8936c4d6868add323acce7711bef8cf1b0d8cfbb273ac5dff790f3275b"
+    },
+    {
+      "path": "docs/build.en.md",
+      "bytes": 1978,
+      "sha256": "c6afc420443b1e9fa62681a6c413d750ff1d65ac94391fb4d7b49f86ea76507f"
+    },
+    {
+      "path": "docs/build.md",
+      "bytes": 1960,
+      "sha256": "7dc8fe8615c0cb4d495d7a138c41ce631dcd8e89386070348964031609586a2c"
+    },
+    {
+      "path": "docs/images/macos.png",
+      "bytes": 148077,
+      "sha256": "6c76c6d78a916d5d329449cf188f182df7cc4f44b50b329c3d0a303f873633bc"
+    },
+    {
+      "path": "docs/memory.en.md",
+      "bytes": 2150,
+      "sha256": "a511f398020f62905e85dbd50a15481dd6548d77158f6fff1abb037e028a0b98"
+    },
+    {
+      "path": "docs/memory.md",
+      "bytes": 2042,
+      "sha256": "f58a0121d11b400f9e846cb410fd5236c69267a43445e22940caa105c4322283"
+    },
+    {
+      "path": "docs/principle.en.md",
+      "bytes": 4540,
+      "sha256": "dfd3d6ad21d8c480cb12dac40014f8171f61c87661d4618cfb7d9a880007469d"
+    },
+    {
+      "path": "docs/principle.md",
+      "bytes": 4342,
+      "sha256": "70ad3a5e9c3d4bd5842f5084195184adeea45004e7dabd49a13e4381208f259c"
+    },
+    {
+      "path": "grok_client.py",
+      "bytes": 14127,
+      "sha256": "10c0c49a0c0a63ea73c6d53c9742926b8f735222e78bbb982d1e83a9e289ce34"
+    },
+    {
+      "path": "macapp/AppIcon.png",
+      "bytes": 984691,
+      "sha256": "86c62ccefa94db7b29a714620cc8e5b1ee38e51299b1b2aa908a11440967a283"
+    },
+    {
+      "path": "macapp/GrokMemory.swift",
+      "bytes": 44975,
+      "sha256": "f7f5cd8e6206f2a129ddf55bca0ccffd2f70e8b4a0df3c7e5d160643f5ebfc1d"
+    },
+    {
+      "path": "macapp/Info.plist",
+      "bytes": 966,
+      "sha256": "4655c4975566ed439d5dab0f0a14dbcd0578461c39a2d8774dd12a0a9a2a7052"
+    },
+    {
+      "path": "macapp/build.sh",
+      "bytes": 1631,
+      "sha256": "c0d206c9b9e36f03466b1fd1f7a56276ef1ce90aa7b1bea40ebb0ce64441d1b2"
+    },
+    {
+      "path": "macapp/crypt.c",
+      "bytes": 1123,
+      "sha256": "abe7dd26161d4daf894596bf2967af598295a13a41b04062aaddaa8cffbde5aa"
+    },
+    {
+      "path": "server.py",
+      "bytes": 3815,
+      "sha256": "bead9b0e27118ae88cc5d9e1a5bc7c3b7b18b2ed5a38a083eb8832c225b1b5c0"
+    },
+    {
+      "path": "static/index.html",
+      "bytes": 10181,
+      "sha256": "e337f647446e33d4c77bfbaaa5e0ece7c32c845e0d954650c43351d3a1c70f3b"
+    },
+    {
+      "path": "win/app.go",
+      "bytes": 4432,
+      "sha256": "b1690d8124a51543550a48867a7a3c7287eab9ed353eba39648fced4e83a3755"
+    },
+    {
+      "path": "win/assets/AppIcon.png",
+      "bytes": 18770,
+      "sha256": "5798fe1bc856bc7039431346cc7513819a23777f07bcf4fda85f6c35f03579e2"
+    },
+    {
+      "path": "win/build.sh",
+      "bytes": 329,
+      "sha256": "eea4b3bedfba7d49c28fae7487376f83e1fb3bd5ec261136ce30d24079991664"
+    },
+    {
+      "path": "win/client.go",
+      "bytes": 20750,
+      "sha256": "c79b9d59232cda841604c0e836668b4429fdc59e07e78039968ed3e64b0544c5"
+    },
+    {
+      "path": "win/console_windows.go",
+      "bytes": 465,
+      "sha256": "85c3d811b2053358fb63b55fe5b48d373284b8c40b540989c3d2b2f2a6021bca"
+    },
+    {
+      "path": "win/decrypt_windows.go",
+      "bytes": 2120,
+      "sha256": "dd11a88656172f810925d796864370229d039d44731ec1e7ddac8a4987ea9cb6"
+    },
+    {
+      "path": "win/go.mod",
+      "bytes": 221,
+      "sha256": "c647596f083b90dfaf2b5466743aabfe64f5caaa710efe516432c51a7f72bf5b"
+    },
+    {
+      "path": "win/go.sum",
+      "bytes": 827,
+      "sha256": "510583c9aa8fa8ae3959272d94a9e30927c2c98996084879d6c944cee2abe104"
+    },
+    {
+      "path": "win/main.go",
+      "bytes": 1784,
+      "sha256": "027da24498c08546351eabab3361686582a37cc7feb86a7bc72fdc66fd10971f"
+    },
+    {
+      "path": "win/ui.html",
+      "bytes": 13690,
+      "sha256": "68141d13d4afe66f3d748433c5260fdc465d1a98307b2142399c41d69b67bad5"
+    }
+  ]
+}

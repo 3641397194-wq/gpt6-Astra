@@ -64,6 +64,19 @@
       state.className = 'state';
       state.textContent = row.stateText;
       card.append(tick, mark, name, state);
+      if (row.skillId === 'grok-bot') {
+        const box = document.createElement('div');
+        box.className = 'newbie-open';
+        const memory = document.createElement('button');
+        memory.type = 'button';
+        memory.textContent = '管理 Bot 云端记忆';
+        memory.addEventListener('click', (event) => {
+          event.stopPropagation();
+          window.ColdCoffeeGrokMemory?.open();
+        });
+        box.append(memory);
+        card.append(box);
+      }
       if (row.root) {
         const code = document.createElement('code');
         code.textContent = shortPath(row.root);
@@ -113,6 +126,7 @@
         toggle();
       });
       card.addEventListener('keydown', (event) => {
+        if (event.target !== card) return;
         if (event.key !== 'Enter' && event.key !== ' ') return;
         event.preventDefault();
         toggle();

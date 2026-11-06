@@ -10,13 +10,13 @@
 
 ### gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持-MiniMax 3.1 Flash
 
-**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX 3.2.0-preview.7 · PUBLIC PRERELEASE ON THREE OPERATING SYSTEMS**
+**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX 3.2.0-preview.8 · PUBLIC PRERELEASE ON THREE OPERATING SYSTEMS**
 
 <sub>An original dark-manga visual system built from black ink, bone paper, a single crimson eye, and torn comic panels.</sub>
 
 </div>
 
-<p align="center"><strong>3.2.0-preview.7 is published as a public prerelease, with all seven Workbench installers available for Windows, macOS, and Linux.</strong><br /><sub>All four platform checks and builds passed, and SHA256SUMS is published with the release. This version adds the official Harness Desktop protocol path; eight runtime acceptance checks passed against the official Windows build.</sub></p>
+<p align="center"><strong>3.2.0-preview.8 is published as a public prerelease, with all seven Workbench installers available for Windows, macOS, and Linux.</strong><br /><sub>All four platform checks and builds passed, and SHA256SUMS is published with the release. This version adds the official Harness Desktop protocol path; eight runtime acceptance checks passed against the official Windows build.</sub></p>
 
 > **⚠️ Disclaimer · 免责声明**
 >
@@ -54,7 +54,7 @@ npm ci
 npm start
 ```
 
-Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). GitHub Actions builds each platform on native runners, with packaged UI checks and SHA-256 checksums. Version 3.2.0-preview.7 is publicly available as a prerelease.
+Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). GitHub Actions builds each platform on native runners, with packaged UI checks and SHA-256 checksums. Version 3.2.0-preview.8 is publicly available as a prerelease.
 
 All 15 model seats write an original CHA pack or skill into the selected local instruction directory. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
 
@@ -75,7 +75,7 @@ The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Window
 Select the model seats you use, install their bundled skills, and check the result in one workbench. Files are backed up before writing and verified afterward; uninstall restores the saved backup.
 
 <p align="center">
-  <a href="docs/assets/coldcoffee-workbench-install-v7.png"><img src="docs/assets/coldcoffee-workbench-install-v7.png" width="100%" alt="ColdCoffee Workbench 3.2.0-preview.7 installation page with model seats, skill resources, and installation checks" /></a><br />
+  <a href="docs/assets/coldcoffee-workbench-install-v7.png"><img src="docs/assets/coldcoffee-workbench-install-v7.png" width="100%" alt="ColdCoffee Workbench 3.2.0-preview.8 installation page with model seats, skill resources, and installation checks" /></a><br />
   <sub>Installation · Select clients, back up files, install, verify, and restore</sub>
 </p>
 
@@ -89,7 +89,7 @@ Select the model seats you use, install their bundled skills, and check the resu
 
 **Enter 冷咖啡 to start:** after installation, restart the target client and send **冷咖啡** as a separate message. DeepSeek Harness also accepts the same word in the companion's activation field.
 
-<sub>These screenshots show the actual Windows package of Workbench 3.2.0-preview.7, using an isolated test profile with no personal key. Community cards use the actual assets. Click any screenshot to open the full image.</sub>
+<sub>These screenshots show the actual Windows package of Workbench 3.2.0-preview.8, using an isolated test profile with no personal key. Community cards use the actual assets. Click any screenshot to open the full image.</sub>
 
 ## DeepSeek Harness / ColdCoffee workspace
 
@@ -158,9 +158,17 @@ In the desktop workbench, select **安装到 DeepSeek**, fully quit and reopen o
 
 ## Original toolbox / Downloads
 
-Release 3.2.0-preview.7: all seven Workbench installers are publicly available as a prerelease. Packages are Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
+## Grok Bot memory management
 
-[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.7) · [Original toolbox and feature scope](docs/original-toolbox.md)
+The existing Grok Bot model card now opens ColdCoffee's original memory interface. Connect the locally signed-in desktop client, select a Bot, pull/search/export memories, and preview a write or forget request before confirming. Choose account-wide or Bot-only scope and instruction or ordinary-fact tier. The complete ColdCoffee welcome preset retains all four QQ groups and both Telegram links.
+
+Bot acknowledgement, independent readback, and new-conversation behavior are shown as separate evidence stages. Local skill installation is distinct from cloud memory. Windows/macOS connection is supported; cloud requests may incur upstream usage. Tests use isolated fixtures rather than personal accounts. [Usage, verification limits and source attribution](docs/GROK-BOT-MEMORY.md).
+
+![Original Grok Bot memory UI, isolated test data](docs/assets/coldcoffee-grok-memory-v8.png)
+
+Release 3.2.0-preview.8: all seven Workbench installers are publicly available as a prerelease. Packages are Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
+
+[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.8) · [Original toolbox and feature scope](docs/original-toolbox.md)
 
 All four platform checks passed. The release includes the seven installers and SHA256SUMS.
 
