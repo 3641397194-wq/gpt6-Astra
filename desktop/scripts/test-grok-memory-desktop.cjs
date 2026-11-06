@@ -129,6 +129,7 @@ if (process.platform === 'win32') {
     report.rpcCalls = metrics.calls.length;
     report.checks.push('all service responses intercepted in-process; no real cloud request');
     await page.locator('#gm-close').click();
+    await page.waitForFunction(async () => !(await window.coldbrew.grokMemory('status')).state.connected);
     const closed = await page.evaluate(() => window.coldbrew.grokMemory('status'));
     assert.equal(closed.state.connected, false); assert.equal(closed.state.items.length, 0);
     if (process.env.COLDCOFFEE_CAPTURE_PAGES === '1') {

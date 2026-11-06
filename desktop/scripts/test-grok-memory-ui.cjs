@@ -113,7 +113,7 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
     await page.locator('#gm-bots button').last().click();
     assert.equal(await page.locator('.gm-item').count(), 0);
     await page.locator('#gm-close').click();
-    await page.waitForFunction(() => !document.querySelector('#grok-memory').open);
+    await page.waitForFunction(async () => !document.querySelector('#grok-memory').open && !(await window.coldbrew.grokMemory('status')).state.connected);
     assert.equal(f.controller.session, null);
     assert.equal(await page.locator('#gm-text').inputValue(), '');
     assert.equal(report.errors.length, 0, report.errors.join('\n'));
