@@ -62,7 +62,7 @@ if (process.platform === 'linux') env.COLDCOFFEE_UI_NO_SANDBOX = '1'; // CI laun
 const result = spawnSync(process.execPath, [path.join(__dirname, 'test-original-toolbox-ui.cjs')], { env, stdio: 'inherit', timeout: 180000 });
 if (result.error) throw result.error;
 assert.equal(result.status, 0, 'native packaged UI test passes');
-const grokResult = spawnSync(process.execPath, [path.join(__dirname, 'test-grok-memory-desktop.cjs')], { env, stdio: 'inherit', timeout: 120000 });
+const grokResult = spawnSync(process.execPath, [path.join(__dirname, 'test-grok-memory-desktop.cjs')], { env, stdio: 'inherit', timeout: 120000, killSignal: 'SIGKILL' });
 if (grokResult.error) throw grokResult.error;
 assert.equal(grokResult.status, 0, 'native packaged Grok memory IPC/crypto test passes');
 const gatewayResult = spawnSync(process.execPath, [path.join(__dirname, 'test-visual-gateway.cjs')], { env: { ...env, COLDCOFFEE_GATEWAY_RESOURCES: path.join(resources, 'magpie') }, stdio: 'inherit', timeout: 150000 });

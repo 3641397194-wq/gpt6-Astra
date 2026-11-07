@@ -20,7 +20,7 @@
 
 ## Visual routing
 
-Connect your ColdCoffee API key, read available models, preview the configuration changes and deploy to your client with a backup. Other compatible providers are supported. The original blue-eyed Ragdoll courier, illustrated in vintage hand-inked storybook style, follows the active route along a longer runway with a relaxed running cycle and a clear parking space outside model titles. History playback is explicit and makes no new model requests. Pause and reduced-motion controls are available.
+Connect your ColdCoffee API key, read available models, preview the configuration changes and deploy to your client with a backup. Other compatible providers are supported. The original blue-eyed Ragdoll courier, illustrated in vintage hand-inked storybook style, walks continuously out and back along the active route, turns at each endpoint and remains visible throughout. Completed requests finish with a smooth return. Explicit history playback loops through recorded paths without making new model requests. Pause and reduced-motion controls are available.
 
 <img src="docs/assets/coldcoffee-routing-v9.png" width="100%" alt="ColdCoffee actual routing and Ragdoll courier" />
 

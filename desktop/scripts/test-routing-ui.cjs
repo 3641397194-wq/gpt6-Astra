@@ -29,7 +29,7 @@ Object.assign(env, { USERPROFILE: profile, HOME: profile, APPDATA: path.join(pro
         if ((id === 'primary' && task.includes('failover')) || task.includes('all-fail')) { res.statusCode = 503; return res.end(JSON.stringify({ error: { type: 'server_error', message: `synthetic ${id} failure, ${key}` } })); }
         res.setHeader('content-type', 'text/event-stream');
         res.write(`data: ${JSON.stringify({ id: 'ui-routing', object: 'chat.completion.chunk', model: `${id}-model`, choices: [{ index: 0, delta: { content: '真实本机' }, finish_reason: null }] })}\n\n`);
-        if (task.includes('failover-slow')) await new Promise(resolve => { releaseStream = resolve; const timeout = setTimeout(resolve, 15000); timeout.unref(); });
+        if (task.includes('failover-slow')) await new Promise(resolve => { releaseStream = resolve; const timeout = setTimeout(resolve, 45000); timeout.unref(); });
         else await new Promise(r => setTimeout(r, task.includes('slow') ? 3500 : 1800));
         if (res.destroyed) return;
         res.end(`data: ${JSON.stringify({ id: 'ui-routing', object: 'chat.completion.chunk', model: `${id}-model`, choices: [{ index: 0, delta: { content: '路由验证通过' }, finish_reason: 'stop' }], usage: { prompt_tokens: 1200, completion_tokens: 20, total_tokens: 1220, prompt_tokens_details: { cached_tokens: 600 } } })}\n\ndata: [DONE]\n\n`);
@@ -123,6 +123,25 @@ Object.assign(env, { USERPROFILE: profile, HOME: profile, APPDATA: path.join(pro
     await page.waitForTimeout(420);
     const catAfter = await page.locator('.vg-courier').evaluate(node => ({ x: node.style.left, y: node.style.top }));
     assert.notDeepEqual(catBefore, catAfter, 'Ragdoll runs along the actual active route');
+    const walk = await page.evaluate(async () => {
+      const cat = document.querySelector('.vg-courier'), sprite = cat.firstElementChild;
+      const deadline = performance.now() + Number(cat.dataset.travelMs) * 2 + 1100;
+      const directions = new Set(), facings = new Set(); let minOpacity = 1, maxStep = 0, previous = null, returns = 0;
+      while (performance.now() < deadline) {
+        await new Promise(requestAnimationFrame);
+        const point = { x: parseFloat(cat.style.left), y: parseFloat(cat.style.top), direction: cat.dataset.direction };
+        directions.add(point.direction); facings.add(getComputedStyle(sprite).transform);
+        minOpacity = Math.min(minOpacity, Number(getComputedStyle(cat).opacity), Number(getComputedStyle(sprite).opacity));
+        if (previous) { maxStep = Math.max(maxStep, Math.hypot(point.x - previous.x, point.y - previous.y)); if (previous.direction === 'backward' && point.direction === 'forward') returns++; }
+        previous = point;
+      }
+      return { directions: [...directions].sort(), facings: [...facings], minOpacity, maxStep, returns };
+    });
+    assert.deepEqual(walk.directions, ['backward', 'forward']); assert.ok(walk.returns >= 1, 'the cat comes home before starting another trip');
+    assert.equal(walk.minOpacity, 1, 'no fade or invisible restart during either direction');
+    assert.ok(walk.maxStep < 24, 'no teleport at the turn or gateway');
+    assert.ok(walk.facings.some(value => value.startsWith('matrix(-1,')), 'the cat faces left when returning');
+    report.courierRoundTrip = walk;
     assert.equal(await page.locator('.vg-courier-layer').evaluate(node => getComputedStyle(node).pointerEvents), 'none');
     await page.locator('#vg-courier-toggle').click();
     assert.equal(await page.locator('.vg-courier').getAttribute('data-moving'), 'false');
@@ -132,10 +151,13 @@ Object.assign(env, { USERPROFILE: profile, HOME: profile, APPDATA: path.join(pro
     assert.equal(await page.locator('#vg-courier-replay').isDisabled(), true);
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.waitForFunction(() => document.querySelector('.vg-courier').dataset.moving === 'true');
-    report.checks.push('Ragdoll follows the true backup branch on a longer runway at a slower pace; pause, reduced motion and replay preserve actual route evidence without extra model calls');
+    report.checks.push('Ragdoll continuously walks out and back, faces the return direction, remains fully visible and never teleports at endpoints; pause, reduced motion and replay preserve actual route evidence');
     await page.locator('.vg-flow-card').scrollIntoViewIfNeeded(); await capture('03-live-failover');
+    const beforeDone = await page.locator('.vg-courier').evaluate(node => ({ x: parseFloat(node.style.left), y: parseFloat(node.style.top) }));
     releaseStream(); releaseStream = null;
     await switching; await page.evaluate(() => window.ColdCoffeeVisual.refresh());
+    const afterDone = await page.locator('.vg-courier').evaluate(node => ({ x: parseFloat(node.style.left), y: parseFloat(node.style.top) }));
+    assert.ok(Math.hypot(afterDone.x - beforeDone.x, afterDone.y - beforeDone.y) < 50, 'completed requests do not snap the cat to the model');
     const done = (await snapshot()).routes.at(-1);
     assert.equal(done.actualProvider, 'backup'); assert.equal(done.actualModel, 'backup-model'); assert.equal(done.group.subs[0].id, 'nested-backup');
     assert.equal(await page.locator('#vg-branches .vg-nested-group').count(), 1);
@@ -163,6 +185,7 @@ Object.assign(env, { USERPROFILE: profile, HOME: profile, APPDATA: path.join(pro
     await concurrent;
     report.checks.push('viewing a historical request stays accurate when setup model changes or a different request streams concurrently');
     await page.locator('#vg-route-select').selectOption(String(done.id));
+    await page.waitForTimeout(350);
     await page.locator('#vg-flow-detail').click(); assert.match(await page.locator('#vg-detail-dialog').textContent(), /下一次实际尝试/); await page.locator('[data-vg-close="vg-detail-dialog"]').click();
     const branch = page.locator('#vg-branches .vg-branch').first(); await branch.locator('summary').click(); assert.equal(await branch.getAttribute('open'), null); await branch.locator('summary').click();
     report.checks.push('branch collapse/expand and full evidence timeline are functional');
@@ -211,6 +234,7 @@ Object.assign(env, { USERPROFILE: profile, HOME: profile, APPDATA: path.join(pro
         window.scrollTo(0, document.querySelector('.vg-flow-card').offsetTop - 95);
       });
       await app.evaluate(({ BrowserWindow }) => { const w = BrowserWindow.getAllWindows().find(w => w.webContents.getURL().includes('/workbench/')); w.setTitle('冷咖啡 · 多分支路由增强 · 独立本机预览'); w.showInactive(); });
+      await page.locator('#vg-courier-replay').click();
       await capture('preview-opened');
       const opened = { ok: true, pid: app.process().pid, executablePath, nativeDesktop: true, isolatedReview: true, externalModelRequests: 0, routeId: done.id, tries: done.tries.map(t => ({ provider: t.provider, status: t.status })), screenshot: path.join(output, 'preview-opened.png') };
       fs.writeFileSync(path.join(output, 'opened.json'), JSON.stringify(opened, null, 2)); console.log(JSON.stringify(opened, null, 2));

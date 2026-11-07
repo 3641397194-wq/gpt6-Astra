@@ -54,17 +54,28 @@ if (process.platform === 'win32') {
   if (process.platform === 'linux' && process.env.COLDCOFFEE_UI_NO_SANDBOX === '1') args.unshift('--no-sandbox');
   if (executable && process.platform === 'win32') env.PORTABLE_EXECUTABLE_FILE = executable;
   const report = { ok: false, packaged: !!executable, isolatedProfile: true, nativeCrypto: false, checks: [], browserErrors: [] };
+  const phase = name => { report.phase = name; console.log('[grok-native] ' + name); };
+  const bounded = (work, ms, name) => {
+    let timer;
+    return Promise.race([work, new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(name + ' timed out')), ms); })]).finally(() => clearTimeout(timer));
+  };
   try {
+    phase('launch');
     app = await _electron.launch({ ...(executable ? { executablePath: executable } : {}), args, env, timeout: 60000 });
+    phase('workbench-window');
     let page;
     for (let i = 0; i < 200 && !page; i++) { page = app.windows().find(item => item.url().includes('/workbench/index.html')); if (!page) await new Promise(resolve => setTimeout(resolve, 100)); }
     assert.ok(page, 'actual workbench window');
     page.on('pageerror', error => report.browserErrors.push(error.message));
-    await page.waitForFunction(() => document.querySelectorAll('#newbie-cards .newbie-card').length === 15);
+    // Hidden/background windows may suspend RAF on macOS. Wake the actual
+    // window before waiting for startup, and poll readiness on a bounded timer.
     await app.evaluate(({ BrowserWindow }) => {
       const win = BrowserWindow.getAllWindows().find(item => item.webContents.getURL().includes('/workbench/index.html'));
       win.webContents.setBackgroundThrottling(false); win.setContentSize(1500, 1100); win.showInactive();
     });
+    phase('model-cards');
+    await page.waitForFunction(() => document.querySelectorAll('#newbie-cards .newbie-card').length === 15, null, { polling: 100, timeout: 30000 });
+    phase('intercept-rpc');
     await app.evaluate(async ({ protocol }, expectedToken) => {
       const fixture = { calls: [], entries: [], memories: [{ text: '回答先给结果，再说明依据。', scope: 'user', tier: 'log' }], seq: 1 };
       globalThis.__coldcoffeeMemoryFixture = fixture;
@@ -91,9 +102,11 @@ if (process.platform === 'win32') {
         return response({}, 404);
       });
     }, token);
+    phase('memory-dialog');
     await page.locator('.nav[data-page="packs"]').click();
     await page.locator('[data-skill-id="grok-bot"]').getByRole('button', { name: '管理 Bot 云端记忆' }).click();
     assert.equal((await page.evaluate(() => window.coldbrew.grokMemory('status'))).state.connected, false);
+    phase('connect');
     await page.locator('#gm-connect').click();
     if (process.platform === 'win32') {
       // Native version/DPAPI probes plus the bounded RPC can exceed 30 seconds
@@ -121,9 +134,10 @@ if (process.platform === 'win32') {
       await page.locator('#gm-prepare').click();
       await page.locator('#gm-confirm:not([hidden])').waitFor();
     } else {
-      await page.waitForFunction(() => document.querySelector('#gm-status').dataset.error === 'true');
+      await page.waitForFunction(() => document.querySelector('#gm-status').dataset.error === 'true', null, { polling: 100, timeout: 30000 });
       report.checks.push('trusted IPC and actionable missing-profile/platform error without personal data');
     }
+    phase('capture');
     await page.evaluate(async () => {
       await document.fonts.ready; await Promise.all([...document.images].map(image => image.decode().catch(() => {})));
       document.querySelector('#grok-memory').scrollTop = 0;
@@ -133,6 +147,7 @@ if (process.platform === 'win32') {
     assert.ok(!metrics.calls.includes('unexpected-origin')); assert.ok(!metrics.calls.includes('bad-auth'));
     report.rpcCalls = metrics.calls.length;
     report.checks.push('all service responses intercepted in-process; no real cloud request');
+    phase('disconnect');
     await page.locator('#gm-close').click();
     await page.waitForFunction(() => !document.querySelector('#grok-memory').open && document.querySelector('#gm-connection').dataset.connected === 'false');
     const closed = await page.evaluate(() => window.coldbrew.grokMemory('status'));
@@ -156,21 +171,27 @@ if (process.platform === 'win32') {
     assert.deepEqual(report.browserErrors, []);
     report.ok = true;
   } catch (error) {
+    console.error('[grok-native] failed at ' + report.phase + ': ' + error.message);
     // Only public IPC state and intercepted method names; never login material.
     if (app) {
       try {
         const page = app.windows().find(item => item.url().includes('/workbench/index.html'));
-        const result = await page.evaluate(() => window.coldbrew.grokMemory('status'));
+        const result = await bounded(page.evaluate(() => window.coldbrew.grokMemory('status')), 4000, 'IPC diagnostics');
         report.failure = { connected: result.state.connected, busy: result.state.busy,
           phase: result.state.phase, error: result.state.error, checks: result.state.checks };
-        report.rpcCalls = await app.evaluate(() => globalThis.__coldcoffeeMemoryFixture?.calls || []);
+        report.rpcCalls = await bounded(app.evaluate(() => globalThis.__coldcoffeeMemoryFixture?.calls || []), 4000, 'RPC diagnostics');
         console.error('Grok fixture diagnostics: ' + JSON.stringify({ failure: report.failure, rpcCalls: report.rpcCalls }));
       } catch { /* Preserve the original failure if the test process has exited. */ }
     }
     throw error;
   } finally {
     fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2));
-    if (app) await app.close();
+    if (app) {
+      phase('close');
+      try { await bounded(app.close(), 8000, 'Electron close'); }
+      catch (error) { app.process().kill('SIGKILL'); report.ok = false; report.cleanupError = error.message; throw error; }
+      finally { fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2)); }
+    }
   }
   console.log(JSON.stringify(report, null, 2));
 })().catch(error => { console.error(error); process.exitCode = 1; });

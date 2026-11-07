@@ -11,25 +11,28 @@ window.ColdCoffeeCourier = Object.freeze({ create({ $, page }) {
   const sprite = document.createElement('div'); sprite.className = 'vg-courier-sprite'; actor.append(sprite); layer.append(svg, actor); flow.append(layer);
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   let enabled = true; try { enabled = (localStorage.getItem('coldcoffee.courierMotion.v1') ?? localStorage.getItem('coldcoffee.collieMotion.v1')) !== 'off'; } catch {}
-  let route = null, evidence = window.ColdCoffeeRouting.courier(null), signature = '', started = performance.now(), replay = null, frame = 0, layoutFrame = 0, length = 0, travelMs = 3800, disposed = false;
-  const restMs = 1000;
+  let route = null, evidence = window.ColdCoffeeRouting.courier(null), replay = null, frame = 0, layoutFrame = 0, length = 0, travelMs = 3800, disposed = false;
+  let amount = 0, direction = 1, lastTick = 0, restUntil = 0, settling = false, point = null, retarget = null, pathSignature = '', relocate = false;
+  const turnPauseMs = 260;
+  actor.style.opacity = '1';
   const visible = () => !document.hidden && page.classList.contains('active') && flow.clientWidth > 0;
   const animated = () => enabled && !motion.matches;
+  const walking = () => animated() && (evidence.phase === 'running' || !!replay || settling);
   function targetNode(target) {
     if (!target) return null;
     const seat = [...flow.querySelectorAll('.vg-seat')].find(node => node.dataset.seat === target.id && (!target.model || node.dataset.model === target.model));
     return seat?.closest('.vg-branch')?.querySelector('.vg-branch-title') || null;
   }
   function view() {
-    if (replay) return { phase: 'replay', target: route.tries[replay.index], label: `记录回放 · 第 ${replay.index + 1} / ${route.tries.length} 次实际尝试` };
+    if (replay) return { phase: 'replay', target: route.tries[replay.index], label: `记录回放 · 往返巡线 · 第 ${replay.index + 1} / ${route.tries.length} 次实际尝试` };
     return evidence;
   }
   function status() {
     const state = view();
     flow.dataset.courier = state.phase; flow.dataset.courierRoute = route ? String(route.id) : '';
     actor.dataset.phase = state.phase; actor.dataset.seat = state.target?.id || '';
-    actor.dataset.moving = String(animated() && ['running', 'replay'].includes(state.phase));
-    label.textContent = state.label + (!enabled ? ' · 动效已暂停' : motion.matches ? ' · 系统静态显示' : '');
+    actor.dataset.moving = String(walking());
+    label.textContent = (settling && state.phase === 'failed' ? '请求异常 · 布偶猫回程中' : state.label + (settling ? ' · 布偶猫完成往返中' : '')) + (!enabled ? ' · 动效已暂停' : motion.matches ? ' · 系统静态显示' : '');
     toggle.textContent = enabled ? '布偶猫动效 · 开' : '布偶猫动效 · 关'; toggle.setAttribute('aria-pressed', String(enabled));
     replayButton.disabled = !route?.done || !route?.tries?.length || !animated();
     replayButton.textContent = replay ? '停止记录回放' : '回放所选路径';
@@ -50,59 +53,69 @@ window.ColdCoffeeCourier = Object.freeze({ create({ $, page }) {
     const finish = end ? { x: (boundary.left - bounds.left) / sx - clearance, y: (end.top + end.height / 2 - bounds.top) / sy + 9 } : { x: start.x + 1, y: start.y };
     svg.setAttribute('viewBox', `0 0 ${flow.clientWidth} ${flow.clientHeight}`);
     const bend = Math.max(30, Math.abs(finish.x - start.x) * .45);
-    path.setAttribute('d', stacked ? `M ${start.x} ${start.y} C ${start.x} ${start.y + 70}, ${finish.x - 16} ${finish.y - 70}, ${finish.x} ${finish.y}` : `M ${start.x} ${start.y} C ${start.x + bend} ${start.y}, ${finish.x - bend} ${finish.y}, ${finish.x} ${finish.y}`);
+    const geometry = stacked ? `M ${start.x} ${start.y} C ${start.x} ${start.y + 70}, ${finish.x - 16} ${finish.y - 70}, ${finish.x} ${finish.y}` : `M ${start.x} ${start.y} C ${start.x + bend} ${start.y}, ${finish.x - bend} ${finish.y}, ${finish.x} ${finish.y}`;
+    if ((geometry !== pathSignature || relocate) && point && animated()) retarget = { from: point, started: performance.now() };
+    relocate = false; pathSignature = geometry; path.setAttribute('d', geometry);
     path.dataset.phase = state.phase; path.style.opacity = node ? '1' : '0';
     length = path.getTotalLength();
     travelMs = Math.min(6400, Math.max(3800, length * 16));
     flow.dataset.courierDistance = String(Math.round(length)); actor.dataset.travelMs = String(Math.round(travelMs));
-    position(progress(performance.now())); ensureFrame();
+    position(performance.now()); ensureFrame();
   }
   function schedule() { if (!disposed && !layoutFrame) layoutFrame = requestAnimationFrame(measure); }
-  function progress(now) {
-    if (!animated() || !['running', 'replay'].includes(view().phase)) return 1;
-    return Math.min(1, ((now - (replay?.started || started)) % (travelMs + restMs)) / travelMs);
-  }
-  function position(amount) {
+  function position(now) {
     if (!length) return;
     const distance = length * Math.min(1, Math.max(0, amount)), p = path.getPointAtLength(distance);
     const before = path.getPointAtLength(Math.max(0, distance - 2)), after = path.getPointAtLength(Math.min(length, distance + 2));
-    actor.style.left = p.x + 'px'; actor.style.top = p.y + 'px';
-    sprite.style.transform = after.x < before.x ? 'scaleX(-1)' : '';
-    const movingPhase = ['running', 'replay'].includes(view().phase), elapsed = performance.now() - (replay?.started || started), cycle = elapsed % (travelMs + restMs);
-    actor.dataset.moving = String(animated() && movingPhase && amount < 1);
-    // A short rest and soft restart replace the old abrupt jump to the gateway.
-    actor.style.opacity = animated() && movingPhase ? String(Math.min(1, cycle / 180, (travelMs + restMs - cycle) / 220)) : '1';
+    let x = p.x, y = p.y;
+    if (retarget && animated()) {
+      const t = Math.min(1, Math.max(0, (now - retarget.started) / 300)), eased = 1 - (1 - t) ** 3;
+      x = retarget.from.x + (x - retarget.from.x) * eased; y = retarget.from.y + (y - retarget.from.y) * eased;
+      if (t === 1) retarget = null;
+    } else retarget = null;
+    point = { x, y }; actor.style.left = x + 'px'; actor.style.top = y + 'px';
+    const backwards = (after.x - before.x) * direction < 0;
+    sprite.style.transform = backwards ? 'scaleX(-1)' : '';
+    actor.dataset.direction = direction < 0 ? 'backward' : 'forward';
+    actor.dataset.progress = String(amount); actor.dataset.moving = String(walking());
   }
   function tick(now) {
-    frame = 0; if (disposed || !visible() || !animated()) return;
-    if (replay && now - replay.started >= travelMs + restMs) {
-      replay.index++; replay.started = now;
-      if (replay.index >= route.tries.length) replay = null;
-      status(); measure();
+    frame = 0; if (disposed || !visible() || !animated()) { lastTick = 0; return; }
+    const elapsed = lastTick ? Math.min(80, Math.max(0, now - lastTick)) : 0; lastTick = now;
+    if (walking() && now >= restUntil) {
+      amount = Math.min(1, Math.max(0, amount + direction * elapsed / travelMs));
+      if (amount === 1 && direction > 0) { direction = -1; restUntil = now + turnPauseMs; }
+      else if (amount === 0 && direction < 0) {
+        direction = 1; restUntil = now + turnPauseMs;
+        // Route changes happen at the shared gateway, never by teleporting the cat.
+        if (replay) { replay.index = (replay.index + 1) % route.tries.length; status(); measure(); }
+        else if (settling) { settling = false; status(); }
+      }
     }
-    position(progress(now)); ensureFrame();
+    position(now); ensureFrame();
   }
   function ensureFrame() {
-    if (!frame && visible() && animated() && ['running', 'replay'].includes(view().phase)) frame = requestAnimationFrame(tick);
+    if (!frame && visible() && animated() && (walking() || retarget)) frame = requestAnimationFrame(tick);
   }
   function render(next) {
     const nextEvidence = window.ColdCoffeeRouting.courier(next);
-    const nextSignature = JSON.stringify([next?.id, nextEvidence.phase, nextEvidence.target?.id, nextEvidence.target?.model, next?.tries?.length]);
-    if (next?.id !== route?.id || !next?.done) replay = null;
+    if (next?.id !== route?.id) {
+      replay = null; settling = false; amount = 0; direction = 1; lastTick = 0; restUntil = 0; relocate = !!point;
+    } else if (!next?.done) { replay = null; settling = false; }
+    else if (!route?.done && nextEvidence.target) settling = animated();
     route = next; evidence = nextEvidence;
-    if (signature !== nextSignature) { signature = nextSignature; started = performance.now(); }
     status(); schedule();
   }
   toggle.onclick = () => {
-    enabled = !enabled; replay = null;
+    enabled = !enabled; replay = null; lastTick = 0;
     try { localStorage.setItem('coldcoffee.courierMotion.v1', enabled ? 'on' : 'off'); } catch {}
     status(); schedule();
   };
   replayButton.onclick = () => {
     if (!route?.done || !route.tries?.length || !animated()) return;
-    replay = replay ? null : { index: 0, started: performance.now() }; status(); schedule();
+    replay = replay ? null : { index: 0 }; settling = false; lastTick = 0; restUntil = 0; status(); schedule();
   };
-  const visibility = () => { if (frame) { cancelAnimationFrame(frame); frame = 0; } status(); schedule(); };
+  const visibility = () => { if (frame) { cancelAnimationFrame(frame); frame = 0; } lastTick = 0; status(); schedule(); };
   const resize = new ResizeObserver(schedule); resize.observe(flow); resize.observe($('vg-branches'));
   const pageObserver = new MutationObserver(visibility); pageObserver.observe(page, { attributes: true, attributeFilter: ['class'] });
   flow.addEventListener('toggle', schedule, true); document.addEventListener('visibilitychange', visibility); motion.addEventListener('change', visibility);
