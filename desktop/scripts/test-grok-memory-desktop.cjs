@@ -51,6 +51,13 @@ if (process.platform === 'win32') {
   const executable = process.env.COLDCOFFEE_APP_EXECUTABLE;
   const loader = path.join(path.dirname(require.resolve('playwright-core/package.json')), 'lib/server/electron/loader.js');
   const args = [...(executable ? ['-r', loader] : [root]), '--preview-passive', '--packs', '--force-device-scale-factor=1', '--user-data-dir=' + path.join(profile, 'chromium')];
+  // This fixture has an empty HOME and no real credentials. Chromium's macOS
+  // OSCrypt checks the login Keychain even for isEncryptionAvailable(), which
+  // can wait for an interactive access prompt on an unsigned CI app. Keep this
+  // synthetic IPC test isolated with Chromium's supported test Keychain; the
+  // shipped app and Windows native DPAPI coverage keep their normal settings.
+  // chromium/134.0.6998.205/components/os_crypt/sync/os_crypt_mac.mm:105-123
+  if (process.platform === 'darwin') args.push('--use-mock-keychain');
   if (process.platform === 'linux' && process.env.COLDCOFFEE_UI_NO_SANDBOX === '1') args.unshift('--no-sandbox');
   if (executable && process.platform === 'win32') env.PORTABLE_EXECUTABLE_FILE = executable;
   const report = { ok: false, packaged: !!executable, isolatedProfile: true, nativeCrypto: false, checks: [], browserErrors: [] };
@@ -172,6 +179,19 @@ if (process.platform === 'win32') {
     report.ok = true;
   } catch (error) {
     console.error('[grok-native] failed at ' + report.phase + ': ' + error.message);
+    if (app && process.platform === 'darwin') {
+      // Inspect only this disposable fixture process, outside its event loop,
+      // so a blocked native main thread still yields actionable CI evidence.
+      const sampleFile = path.join(output, 'fixture-main-thread.txt');
+      const sample = spawnSync('/usr/bin/sample', [String(app.process().pid), '2', '-file', sampleFile],
+        { encoding: 'utf8', timeout: 6000, stdio: 'pipe' });
+      report.nativeSample = { status: sample.status, captured: fs.existsSync(sampleFile) };
+      if (report.nativeSample.captured) {
+        const text = fs.readFileSync(sampleFile, 'utf8');
+        const thread = text.match(/Call graph:[\s\S]*?(?=\n {4}\+.*Thread_|\nTotal number|$)/)?.[0] || '';
+        console.error('[grok-native] fixture main-thread sample:\n' + thread.split('\n').slice(0, 65).join('\n'));
+      }
+    }
     // Only public IPC state and intercepted method names; never login material.
     if (app) {
       try {
