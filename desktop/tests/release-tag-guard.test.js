@@ -18,6 +18,12 @@ test('ordinary main pushes validate and package but never try to republish an ex
   assert.doesNotMatch(workflow, /if:.*github\.event_name == 'push'.*refs\/heads\/main/);
 });
 
+test('publication repairs the default Latest and verifies both tag and latest installer URLs', () => {
+  assert.match(workflow, /gh release edit "\$tag"[^\n]*--draft=false --prerelease=false --latest/);
+  assert.match(workflow, /verify_release_downloads\.py[^\n]*--check-latest/);
+  assert.match(workflow, /name: Save public download verification\s+if: always\(\)/);
+});
+
 function guardScript() {
   const step = workflow.indexOf('      - name: Publish release after all platforms pass');
   assert.ok(step >= 0, 'release publication step is missing');

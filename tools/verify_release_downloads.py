@@ -23,6 +23,35 @@ def asset_names(version):
     ]
 
 
+def check_latest_release(repo, version, opener=urllib.request.urlopen):
+    """The seven tag URLs can pass while GitHub's default Latest still breaks."""
+    expected = asset_names(version)
+    url = f"https://api.github.com/repos/{repo}/releases/latest"
+    request = urllib.request.Request(url, headers={
+        "User-Agent": "ColdCoffee-public-download-check",
+        "Accept": "application/vnd.github+json",
+        "Cache-Control": "no-cache",
+    })
+    with opener(request, timeout=35) as response:
+        if response.status != 200:
+            raise ValueError(f"Latest release metadata returned HTTP {response.status}")
+        raw = response.read(1048577)
+    if len(raw) > 1048576:
+        raise ValueError("Latest release metadata is unexpectedly large")
+    data = json.loads(raw)
+    if not isinstance(data, dict):
+        raise ValueError("Latest release metadata must be an object")
+    if data.get("tag_name") != f"v{version}":
+        raise ValueError(f"Latest points at {data.get('tag_name')!r}, expected v{version}")
+    if data.get("draft") is not False or data.get("prerelease") is not False:
+        raise ValueError("GitHub Latest must be a published, non-prerelease release")
+    names = {asset.get("name") for asset in data.get("assets", []) if isinstance(asset, dict)}
+    missing = sorted(set(expected) - names)
+    if missing:
+        raise ValueError("Latest release is missing installers: " + ", ".join(missing))
+    return {"url": url, "status": 200, "tag": data["tag_name"], "installers": len(expected)}
+
+
 def check_asset(url, opener=urllib.request.urlopen):
     request = urllib.request.Request(url, headers={
         "User-Agent": "ColdCoffee-public-download-check",
@@ -58,11 +87,16 @@ def main(argv=None):
     parser.add_argument("--repo", default="3641397194-wq/gpt6-Astra")
     parser.add_argument("--version", default=(Path(__file__).resolve().parents[1] / "VERSION").read_text().strip())
     parser.add_argument("--attempts", type=int, choices=range(1, 11), default=3)
+    parser.add_argument("--check-latest", action="store_true",
+                        help="Also check GitHub's default Latest and all seven latest/download aliases")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
     if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", args.repo):
         parser.error("Expected OWNER/REPOSITORY")
-    urls = [f"https://github.com/{args.repo}/releases/download/v{args.version}/{name}" for name in asset_names(args.version)]
+    names = asset_names(args.version)
+    urls = [f"https://github.com/{args.repo}/releases/download/v{args.version}/{name}" for name in names]
+    if args.check_latest:
+        urls.extend(f"https://github.com/{args.repo}/releases/latest/download/{name}" for name in names)
 
     def probe(url):
         for attempt in range(args.attempts):
@@ -77,6 +111,16 @@ def main(argv=None):
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         checks = list(pool.map(probe, urls))
     report = {"version": args.version, "anonymous": True, "ok": all(item["ok"] for item in checks), "checks": checks}
+    if args.check_latest:
+        for attempt in range(args.attempts):
+            try:
+                report["latest"] = {"ok": True, **check_latest_release(args.repo, args.version)}
+                break
+            except Exception as error:
+                report["latest"] = {"ok": False, "error": str(error)}
+                if attempt + 1 < args.attempts:
+                    time.sleep(min(2 ** attempt, 8))
+        report["ok"] = report["ok"] and report["latest"]["ok"]
     text = json.dumps(report, indent=2) + "\n"
     if args.output:
         args.output.write_text(text, encoding="utf-8")

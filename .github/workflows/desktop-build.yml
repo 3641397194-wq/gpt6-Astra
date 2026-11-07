@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       publish_release:
-        description: Publish this VERSION as a prerelease after every platform passes; use a new VERSION and tag.
+        description: Publish this VERSION as the default Latest download after every platform passes; use a new VERSION and tag.
         required: false
         default: false
         type: boolean
@@ -186,6 +186,15 @@ jobs:
           else
             gh release create "$tag" "${files[@]}" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "冷咖啡工作台 $version" --draft --prerelease --notes-file out/RELEASE_NOTES.md
           fi
-          gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false --prerelease
+          # GitHub ignores prereleases for /releases/latest, even with --latest.
+          # VERSION/release notes still identify preview builds explicitly.
+          gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false --prerelease=false --latest
       - name: Verify installers are downloadable without signing in
-        run: python3 tools/verify_release_downloads.py --repo "$GITHUB_REPOSITORY" --attempts 6 --output release-download-check.json
+        run: python3 tools/verify_release_downloads.py --repo "$GITHUB_REPOSITORY" --attempts 6 --check-latest --output release-download-check.json
+      - name: Save public download verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-download-check
+          path: release-download-check.json
+          if-no-files-found: warn
