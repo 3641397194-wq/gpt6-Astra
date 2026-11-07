@@ -1,22 +1,28 @@
 <div align="center">
 
-<img src="docs/assets/readme-noir-hero.svg" width="100%" alt="ColdBrew Zero dark manga hero" />
+<img src="docs/assets/coldcoffee-cover-v9.webp" width="100%" alt="ColdCoffee original ink and crimson heroine" />
 
 <br />
 
-<img src="docs/assets/product-icon.png" width="96" alt="ColdBrew Zero product icon" />
+<img src="desktop/assets/brand-v6/icon.png" width="96" alt="ColdCoffee product icon" />
 
 # ColdBrew Zero / CHA
 
 ### gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持-MiniMax 3.1 Flash
 
-**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX 3.2.0-preview.8 · PUBLIC PRERELEASE ON THREE OPERATING SYSTEMS**
+**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX 3.2.0-preview.9 · PUBLIC PRERELEASE ON THREE OPERATING SYSTEMS**
 
 <sub>An original dark-manga visual system built from black ink, bone paper, a single crimson eye, and torn comic panels.</sub>
 
 </div>
 
-<p align="center"><strong>3.2.0-preview.8 is published as a public prerelease, with all seven Workbench installers available for Windows, macOS, and Linux.</strong><br /><sub>All four platform checks and builds passed, and SHA256SUMS is published with the release. This version adds the official Harness Desktop protocol path; eight runtime acceptance checks passed against the official Windows build.</sub></p>
+<p align="center"><strong>3.2.0-preview.9 · A visual AI gateway for Windows, macOS, and Linux.</strong><br /><sub>Read models, preview client configuration, connect, and inspect actual requests, nested routes, failover attempts and context usage. Installer checksums accompany the release.</sub></p>
+
+## Visual routing
+
+Connect your ColdCoffee API key, read available models, preview the configuration changes and deploy to your client with a backup. Other compatible providers are supported. The original blue-eyed Ragdoll courier, illustrated in vintage hand-inked storybook style, follows the active route along a longer runway with a relaxed running cycle and a clear parking space outside model titles. History playback is explicit and makes no new model requests. Pause and reduced-motion controls are available.
+
+<img src="docs/assets/coldcoffee-routing-v9.png" width="100%" alt="ColdCoffee actual routing and Ragdoll courier" />
 
 > **⚠️ Disclaimer · 免责声明**
 >
@@ -54,7 +60,7 @@ npm ci
 npm start
 ```
 
-Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). GitHub Actions builds each platform on native runners, with packaged UI checks and SHA-256 checksums. Version 3.2.0-preview.8 is publicly available as a prerelease.
+Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). GitHub Actions builds each platform on native runners, with packaged UI checks and SHA-256 checksums. Version 3.2.0-preview.9 is publicly available as a prerelease.
 
 All 15 model seats write an original CHA pack or skill into the selected local instruction directory. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
 
@@ -75,7 +81,7 @@ The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Window
 Select the model seats you use, install their bundled skills, and check the result in one workbench. Files are backed up before writing and verified afterward; uninstall restores the saved backup.
 
 <p align="center">
-  <a href="docs/assets/coldcoffee-workbench-install-v7.png"><img src="docs/assets/coldcoffee-workbench-install-v7.png" width="100%" alt="ColdCoffee Workbench 3.2.0-preview.8 installation page with model seats, skill resources, and installation checks" /></a><br />
+  <a href="docs/assets/coldcoffee-workbench-install-v7.png"><img src="docs/assets/coldcoffee-workbench-install-v7.png" width="100%" alt="ColdCoffee Workbench 3.2.0-preview.9 installation page with model seats, skill resources, and installation checks" /></a><br />
   <sub>Installation · Select clients, back up files, install, verify, and restore</sub>
 </p>
 
@@ -89,7 +95,7 @@ Select the model seats you use, install their bundled skills, and check the resu
 
 **Enter 冷咖啡 to start:** after installation, restart the target client and send **冷咖啡** as a separate message. DeepSeek Harness also accepts the same word in the companion's activation field.
 
-<sub>These screenshots show the actual Windows package of Workbench 3.2.0-preview.8, using an isolated test profile with no personal key. Community cards use the actual assets. Click any screenshot to open the full image.</sub>
+<sub>These screenshots show the actual Windows package of Workbench 3.2.0-preview.9, using an isolated test profile with no personal key. Community cards use the actual assets. Click any screenshot to open the full image.</sub>
 
 ## DeepSeek Harness / ColdCoffee workspace
 
@@ -166,9 +172,9 @@ Bot acknowledgement, independent readback, and new-conversation behavior are sho
 
 ![Original Grok Bot memory UI, isolated test data](docs/assets/coldcoffee-grok-memory-v8.png)
 
-Release 3.2.0-preview.8: all seven Workbench installers are publicly available as a prerelease. Packages are Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
+Release 3.2.0-preview.9: all seven Workbench installers are publicly available as a prerelease. Packages are Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
 
-[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.8) · [Original toolbox and feature scope](docs/original-toolbox.md)
+[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.9) · [Original toolbox and feature scope](docs/original-toolbox.md)
 
 All four platform checks passed. The release includes the seven installers and SHA256SUMS.
 

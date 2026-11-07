@@ -23,8 +23,9 @@ function mainFixture() {
   }
   class Empty {}
   const electron = {
-    app: { isPackaged: false, whenReady: () => ({ then(fn) { fn(); } }), on() {} },
+    app: { isPackaged: false, whenReady: () => ({ then(fn) { fn(); } }), on() {}, getPath: () => '/synthetic/user-data' },
     BrowserWindow: Window, ipcMain: { handle(channel, handler) { handlers.set(channel, handler); } },
+    screen: { getPrimaryDisplay: () => ({ workAreaSize: { width: 1920, height: 1080 } }) },
     dialog: {}, shell: { openPath: async () => { calls.push(['open']); return ''; } },
   };
   const beginner = {
@@ -39,6 +40,7 @@ function mainFixture() {
     './lib/relay-adapter': { RelayAdapter: Empty },
     './lib/beginner-install': beginner,
     './lib/window-security': { assertTrustedSender, protectWindow },
+    './lib/window-view': { attachWindowView: () => ({ execute: () => ({ percent: 100 }) }) },
     './lib/upstream-skills': { catalog: () => ({ skillCount: 94, sources: ['synthetic-rea', 'synthetic-reverse'] }) },
   };
   vm.runInNewContext(fs.readFileSync(path.join(src, 'main.js'), 'utf8'), {

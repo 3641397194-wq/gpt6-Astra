@@ -1,0 +1,20 @@
+{
+  "name": "ColdCoffee original vintage storybook Ragdoll route courier",
+  "created": "2026-11-07",
+  "model": "gpt-image-2.6",
+  "quality": "high",
+  "size": "3840x2160",
+  "background": "transparent",
+  "layout": {
+    "columns": 4,
+    "rows": 2,
+    "cellWidth": 960,
+    "cellHeight": 1080,
+    "runFrames": [0, 1, 2, 3, 4, 5],
+    "idleFrame": 6,
+    "arrivedFrame": 7
+  },
+  "sha256": "77983c9d13f6133378654ee9b5d5a5bece2ee7a886a51a65eb73402fb4e04688",
+  "artwork": "Original blue-eyed bicolor Ragdoll cat in vintage hand-inked storybook and cel-animation style, ivory fur, warm gray markings, dusty sapphire eyes and a faded burgundy ribbon. Generated from an original animation sprite prompt. No reference files uploaded.",
+  "processing": "Original generated PNG retained with verified PNG chunk CRCs and end marker; CSS clips atlas cells. Route motion implemented separately in ColdCoffee. No image provider credentials included."
+}

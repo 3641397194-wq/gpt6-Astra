@@ -41,3 +41,8 @@ desktop/work/
 
 # Local editor backups never enter a release
 *.bak-*
+
+# Verified gateway executables are prepared at build time, never user data.
+desktop/resources/magpie/*/magpie
+desktop/resources/magpie/*/magpie.exe
+*.secret

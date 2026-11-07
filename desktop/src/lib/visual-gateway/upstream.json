@@ -1,0 +1,16 @@
+{
+  "name": "Magpie",
+  "version": "0.1.3186",
+  "license": "MIT",
+  "copyright": "Copyright (c) 2026 yetone",
+  "source": "https://github.com/yetone/magpie",
+  "commit": "f9a88c4fbeec771f71f2d05fbb77ce1a6239d035",
+  "release": "https://github.com/yetone/magpie-releases/releases/tag/v0.1.3186",
+  "binaries": {
+    "win32-x64": { "asset": "magpie-windows-amd64.exe", "sha256": "63f870106f34c6f1ff72e36e400fb53636d8f6164b9c518960ef699cafd48ed1" },
+    "darwin-x64": { "asset": "magpie-cli-darwin-amd64", "sha256": "64e896a60ae5c93b6f0c808fc79525889feafab108241bb421b71483a0b964f6" },
+    "darwin-arm64": { "asset": "magpie-cli-darwin-arm64", "sha256": "a18226cf972344294344311664b1b036e4a43913255ab6edbb53a5ed96213e42" },
+    "linux-x64": { "asset": "magpie-cli-linux-amd64", "sha256": "f5b06e5b708833917bfdd76002a6b32f5b3cb32f4af4d79ea90ab1e0c24b1027" },
+    "linux-arm64": { "asset": "magpie-cli-linux-arm64", "sha256": "266a7b83e2696a4c565675644a64e26e7e89fbd0719e58bd79b4dc8f2864a55c" }
+  }
+}

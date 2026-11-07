@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, shell, dialog, net } = require("electron");
+const { app, BrowserWindow, ipcMain, shell, dialog, net, safeStorage, screen } = require("electron");
 const path = require("node:path");
 const fs = require("node:fs");
 const { ACTIVATION_WORD, CONTROL_WORD, APP_TITLE, PROFILES, SEATS, CHANNELS, activate } = require("./lib/prompt-engine");
@@ -30,6 +30,22 @@ const idaMcp = require("./lib/ida-mcp");
 const { WorkflowEngine, planWorkflow, healthCheckTools } = require("./lib/workflow");
 const { RelayAdapter } = require("./lib/relay-adapter");
 const relayAdapter = new RelayAdapter();
+let visualGateway;
+function getVisualGateway() {
+  if (!visualGateway) {
+    const { VisualGateway } = require('./lib/visual-gateway/controller');
+    const fixtureHome = process.env.COLDCOFFEE_GATEWAY_TEST_HOME;
+    visualGateway = new VisualGateway({
+      directory: fixtureHome || path.join(app.getPath('userData'), 'visual-gateway'),
+      resources: app.isPackaged ? path.join(process.resourcesPath, 'magpie') : path.join(__dirname, '..', 'resources', 'magpie'),
+      storage: safeStorage,
+      fetchImpl: (url, options) => net.fetch(url, options),
+      ...(fixtureHome ? { home: path.join(fixtureHome, 'customer'), env: {}, port: 0 } : {}),
+      emit: event => { if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('coldbrew:gateway-event', event); },
+    });
+  }
+  return visualGateway;
+}
 const { assertTrustedSender, protectWindow } = require("./lib/window-security");
 const { allowedExternalUrl } = require("./lib/external-links");
 const WORKBENCH_ENTRY = path.join(__dirname, "workbench", "index.html");
@@ -66,6 +82,7 @@ const COMMUNITY = {
 
 let splashWindow;
 let mainWindow;
+let windowView;
 
 function emitWorkflow(event) {
   if (mainWindow && !mainWindow.isDestroyed()) {
@@ -89,9 +106,9 @@ function createSplash() {
     frame: false,
     resizable: false,
     show: false,
-    backgroundColor: "#090707",
+    backgroundColor: "#0b0b0d",
     title: "冷咖啡中转",
-    icon: path.join(__dirname, "..", "assets", "icon-v4.png"),
+    icon: path.join(__dirname, "..", "assets", "brand-v6", "icon.png"),
     webPreferences: { contextIsolation: true, sandbox: true },
   });
   protectWindow(splashWindow);
@@ -100,16 +117,17 @@ function createSplash() {
 }
 
 function createMain() {
+  const room = screen.getPrimaryDisplay().workAreaSize;
   mainWindow = new BrowserWindow({
-    width: 1360,
-    height: 860,
-    minWidth: 1080,
-    minHeight: 700,
+    width: Math.min(1480, room.width),
+    height: Math.min(960, room.height),
+    minWidth: Math.min(900, room.width),
+    minHeight: Math.min(620, room.height),
     frame: false,
     show: false,
-    backgroundColor: "#080707",
+    backgroundColor: "#0b0b0d",
     title: "冷咖啡中转",
-    icon: path.join(__dirname, "..", "assets", "icon-v4.png"),
+    icon: path.join(__dirname, "..", "assets", "brand-v6", "icon.png"),
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -119,8 +137,9 @@ function createMain() {
     },
   });
   protectWindow(mainWindow);
+  windowView = require('./lib/window-view').attachWindowView(mainWindow, path.join(app.getPath('userData'), 'display-preferences.json'));
   const seatArg = process.argv.find((item) => item.startsWith("--seat="));
-  const hash = process.argv.includes("--toolbox") ? "toolbox" : process.argv.includes("--packs") ? "packs" : process.argv.includes("--relay") ? "relay" : process.argv.includes("--workflow") ? "workflow" : (seatArg ? seatArg.slice("--seat=".length) : "");
+  const hash = process.argv.includes("--toolbox") ? "toolbox" : process.argv.includes("--packs") ? "packs" : process.argv.includes("--relay") ? "relay" : process.argv.includes("--workflow") ? "workflow" : (seatArg ? seatArg.slice("--seat=".length) : "visual");
   mainWindow.loadFile(WORKBENCH_ENTRY, hash ? { hash } : {});
 }
 
@@ -143,6 +162,29 @@ handleTrusted("coldbrew:activate", (_event, payload = {}) => activate({
 }));
 
 handleTrusted("coldbrew:grok-memory", (_event, action, payload) => getGrokMemory().execute(action, payload));
+
+handleTrusted('coldbrew:gateway', async (_event, action, payload = {}) => {
+  const gateway = getVisualGateway();
+  if (action === 'console') {
+    await gateway.start();
+    const consoleWindow = new BrowserWindow({ width: 1220, height: 850, parent: mainWindow, title: '冷咖啡 · 完整引擎', backgroundColor: '#101116', show: false, webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, partition: 'coldcoffee-magpie-console' } });
+    consoleWindow.on('page-title-updated', event => { event.preventDefault(); });
+    const engine = gateway.engine;
+    await consoleWindow.webContents.session.cookies.set({ url: engine.webUrl, name: `magpie_web_${engine.webPort}`, value: engine.webKey, httpOnly: true, sameSite: 'lax' });
+    const own = url => { try { return new URL(url).origin === engine.webUrl; } catch { return false; } };
+    consoleWindow.webContents.on('will-navigate', (event, url) => { if (!own(url)) event.preventDefault(); });
+    consoleWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+    consoleWindow.once('ready-to-show', () => { if (!consoleWindow.isDestroyed()) consoleWindow.showInactive(); });
+    try { await consoleWindow.loadURL(engine.webUrl); }
+    catch {
+      if (consoleWindow.isDestroyed()) return { ok: false, canceled: true };
+      consoleWindow.close();
+      throw new Error('完整引擎控制台加载中断，请稍后重新打开');
+    }
+    return { ok: true };
+  }
+  return gateway.execute(action, payload);
+});
 
 handleTrusted("coldbrew:transaction", async (_event, action, payload = {}) => {
   if(action === "gate-create") return activationGate.create(payload.seat);
@@ -418,6 +460,7 @@ handleTrusted("coldbrew:open-external", async (_event, value) => {
 });
 
 handleTrusted("window:minimize", () => mainWindow?.minimize());
+handleTrusted('window:view', (_event, action) => windowView.execute(action));
 handleTrusted("window:maximize", () => {
   if (!mainWindow) return false;
   if (mainWindow.isMaximized()) mainWindow.unmaximize(); else mainWindow.maximize();
@@ -438,4 +481,11 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => app.quit());
-app.on("before-quit", () => grokMemory?.disconnect());
+let gatewayQuitting = false;
+app.on("before-quit", event => {
+  grokMemory?.disconnect();
+  if (visualGateway && !gatewayQuitting) {
+    event.preventDefault(); gatewayQuitting = true;
+    visualGateway.stop().finally(() => app.quit());
+  }
+});

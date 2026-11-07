@@ -1,0 +1,12 @@
+{
+  "name": "ColdCoffee original visual identity, edition 6",
+  "created": "2026-11-07",
+  "model": "gpt-image-2.6",
+  "quality": "high",
+  "artwork": "Original adult anime heroine and matching portrait icon generated for ColdCoffee.",
+  "sourceSha256": {
+    "hero-girl.png": "cd0744a3e5b07036fb5e5d307150b0393fa4224334dcc7a695b456c242c549d2",
+    "icon-girl.png": "63bc896f4094dc06d5df8bbf663f1b60cf1881a6e6e2ea145730ca870f41275c"
+  },
+  "processing": "Format conversion, rounded icon alpha and platform size variants."
+}

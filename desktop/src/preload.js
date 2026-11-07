@@ -12,6 +12,12 @@ contextBridge.exposeInMainWorld("coldbrew", {
     prepare: (seat, confirm) => ipcRenderer.invoke("coldbrew:beginner", "upstream-prepare", { seat, confirm: confirm === true }),
   }),
   relay: (action, payload) => ipcRenderer.invoke("coldbrew:relay", action, payload),
+  gateway: (action, payload) => ipcRenderer.invoke('coldbrew:gateway', action, payload),
+  onGateway: (fn) => {
+    const listener = (_event, entry) => fn(entry);
+    ipcRenderer.on('coldbrew:gateway-event', listener);
+    return () => ipcRenderer.removeListener('coldbrew:gateway-event', listener);
+  },
   compose: (payload) => ipcRenderer.invoke("coldbrew:compose", payload),
   evaluate: (answer, options) => ipcRenderer.invoke("coldbrew:evaluate", answer, options),
   meta: () => ipcRenderer.invoke("coldbrew:meta"),
@@ -55,6 +61,12 @@ contextBridge.exposeInMainWorld("coldbrew", {
   openDocs: () => ipcRenderer.invoke("coldbrew:open-docs"),
   openExternal: (url) => ipcRenderer.invoke("coldbrew:open-external", url),
   minimize: () => ipcRenderer.invoke("window:minimize"),
+  view: (action) => ipcRenderer.invoke('window:view', action),
+  onView: (fn) => {
+    const listener = (_event, state) => fn(state);
+    ipcRenderer.on('window:view-changed', listener);
+    return () => ipcRenderer.removeListener('window:view-changed', listener);
+  },
   maximize: () => ipcRenderer.invoke("window:maximize"),
   close: () => ipcRenderer.invoke("window:close"),
 });

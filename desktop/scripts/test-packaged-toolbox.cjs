@@ -65,4 +65,7 @@ assert.equal(result.status, 0, 'native packaged UI test passes');
 const grokResult = spawnSync(process.execPath, [path.join(__dirname, 'test-grok-memory-desktop.cjs')], { env, stdio: 'inherit', timeout: 120000 });
 if (grokResult.error) throw grokResult.error;
 assert.equal(grokResult.status, 0, 'native packaged Grok memory IPC/crypto test passes');
+const gatewayResult = spawnSync(process.execPath, [path.join(__dirname, 'test-visual-gateway.cjs')], { env: { ...env, COLDCOFFEE_GATEWAY_RESOURCES: path.join(resources, 'magpie') }, stdio: 'inherit', timeout: 150000 });
+if (gatewayResult.error) throw gatewayResult.error;
+assert.equal(gatewayResult.status, 0, 'shipped gateway starts with verified digest, sponsor ads disabled and complete open-source notices');
 console.log('PASS: packaged version, MCP resources, exclusions and real native GUI / IPC flow.');

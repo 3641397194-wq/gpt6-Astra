@@ -1,7 +1,7 @@
 .newbie{--mx:72%;--my:28%;position:relative;isolation:isolate;overflow:hidden;min-height:680px;margin:0 0 8px;padding:26px 26px 18px;border:1px solid #6a3d48;border-left:4px solid #e53543;background:
  radial-gradient(520px 320px at var(--mx) var(--my), rgba(229,53,67,.34), transparent 62%),
  linear-gradient(105deg, rgba(6,5,6,.94) 0%, rgba(6,5,6,.78) 42%, rgba(6,5,6,.28) 100%),
- url("../../assets/coldcoffee-manga-v5.jpg") 78% 30% / cover no-repeat;
+ url("../../assets/brand-v6/hero.webp") 78% 30% / cover no-repeat;
 box-shadow:8px 10px 0 #000a}
 .newbie:before{content:"";position:absolute;inset:auto -80px -120px auto;width:420px;height:420px;border:1px solid rgba(229,53,67,.45);border-radius:50%;z-index:0;animation:newbie-spin 28s linear infinite;pointer-events:none}
 .newbie:after{content:"";position:absolute;inset:auto -20px -60px auto;width:280px;height:280px;border:1px dashed rgba(241,237,231,.35);border-radius:50%;z-index:0;animation:newbie-spin 18s linear infinite reverse;pointer-events:none}

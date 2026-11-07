@@ -1,3 +1,6 @@
 # Preserve vendored audit resources byte-for-byte on Windows and macOS/Linux.
 /desktop/resources/grok-memory/* -text
 /desktop/resources/grok-memory/*.tar.gz binary
+/desktop/resources/magpie/* -text
+/desktop/resources/legal/* -text
+/desktop/assets/route-ragdoll/* -text

@@ -367,3 +367,16 @@ if(window.coldbrew){document.body.classList.add('desktop');$('environment').text
 document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key==='Enter'&&$('page-work')?.classList.contains('active')){event.preventDefault();$('compose-form').requestSubmit();}});
 renderSeats();renderProfiles();renderRelay();renderCommunity();bindToolbox();bindWorkflow();refreshRelayStatus();
 window.addEventListener('DOMContentLoaded',()=>{if(location.hash==='#relay')page('relay');});
+
+// The original toolbox and task composer use the same local gateway after a
+// visual connection. This field contains a local sentinel, never a vendor key.
+window.addEventListener('coldcoffee:gateway-ready', async event => {
+  const { baseUrl, model } = event.detail || {};
+  if (!/^http:\/\/127\.0\.0\.1:\d+\/v1$/.test(baseUrl || '')) return;
+  $('relay-api-base').value = baseUrl;
+  $('relay-api-key').value = 'coldcoffee-local';
+  try {
+    await configureRelayFromForm();
+    if (state.relayModels.includes(model)) { $('relay-provider').value = model; updateRelaySelection(); }
+  } catch (error) { toast(error.message); }
+});

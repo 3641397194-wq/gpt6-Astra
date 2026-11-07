@@ -6,7 +6,7 @@
   dialog.setAttribute('aria-labelledby', 'gm-title');
   // Static UI only. All account/bot/memory data below is rendered with textContent.
   dialog.innerHTML = `
-    <header class="gm-top"><div class="gm-brand"><img src="../../assets/brand-avatar-v4.png" alt="冷咖啡"><div><strong>冷咖啡 · Grok Bot</strong><small>记忆管理 / 本机连接</small></div></div><div class="gm-top-actions"><span id="gm-connection" class="gm-pill">尚未连接</span><button id="gm-close" type="button" aria-label="关闭记忆管理">关闭 ×</button></div></header>
+    <header class="gm-top"><div class="gm-brand"><img src="../../assets/brand-v6/avatar.webp" alt="冷咖啡"><div><strong>冷咖啡 · Grok Bot</strong><small>记忆管理 / 本机连接</small></div></div><div class="gm-top-actions"><span id="gm-connection" class="gm-pill">尚未连接</span><button id="gm-close" type="button" aria-label="关闭记忆管理">关闭 ×</button></div></header>
     <section class="gm-hero"><span class="gm-eyebrow">让偏好成为下次对话的起点</span><h2 id="gm-title">把你的习惯，<em>交给记忆。</em></h2><p>连接已登录的 Grok Bot，读取、搜索、写入或忘掉记忆。范围和正文先看清，再确认。冷咖啡原欢迎词可以一键填入，完整保留四个 QQ 群与 Telegram 入口。</p><div class="gm-steps"><span>01 连接本机登录</span><span>02 选择 Bot 与范围</span><span>03 预览 → 确认 → 读回</span></div></section>
     <div class="gm-toolbar"><button id="gm-connect" class="gm-primary" type="button">连接 / 重新检测</button><button id="gm-disconnect" type="button" disabled>断开连接</button><button id="gm-cancel" type="button" disabled>停止等待</button><p>连接仅检测登录和读取 Bot 列表。记忆操作会请求 Grok Bot 云端服务，可能产生服务端用量。</p></div>
     <div class="gm-grid">
