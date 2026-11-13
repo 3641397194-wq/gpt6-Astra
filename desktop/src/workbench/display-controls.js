@@ -7,6 +7,16 @@
   controls.setAttribute('role', 'group'); controls.setAttribute('aria-label', '界面缩放');
   controls.innerHTML = '<button id="view-smaller" type="button" aria-label="缩小界面" title="缩小 · Ctrl + −">−</button><button id="view-reset" type="button" aria-label="恢复默认大小" title="恢复默认大小 · Ctrl + 0">100%</button><button id="view-larger" type="button" aria-label="放大界面" title="放大 · Ctrl + ＋">＋</button>';
   document.querySelector('.window-actions').before(controls);
+  const feedback = document.createElement('p');
+  feedback.id = 'view-feedback'; feedback.className = 'display-feedback'; feedback.hidden = true;
+  feedback.setAttribute('role', 'status'); feedback.setAttribute('aria-live', 'polite');
+  document.body.append(feedback);
+  function inform(message = '') {
+    if (feedback.textContent !== message) feedback.textContent = message;
+    feedback.hidden = !message;
+    controls.classList.toggle('has-warning', !!message);
+    controls.title = message || '界面缩放';
+  }
   const maximize = document.getElementById('maximize');
   function render(state) {
     document.getElementById('view-reset').textContent = `${state.percent}%`;
@@ -15,13 +25,14 @@
     maximize.textContent = state.maximized ? '❐' : '□';
     maximize.setAttribute('aria-label', state.maximized ? '还原窗口' : '最大化');
     maximize.title = state.maximized ? '还原窗口' : '最大化';
+    inform(state.preferenceError || '');
   }
   let pending = false;
   async function change(action) {
     if (pending) return;
     pending = true;
     try { render(await api.view(action)); }
-    catch (error) { console.error('Display preference:', error.message); }
+    catch { inform('界面缩放未完成，请重试。'); }
     finally { pending = false; }
   }
   for (const [id, action] of [['view-smaller', 'out'], ['view-reset', 'reset'], ['view-larger', 'in']]) document.getElementById(id).onclick = () => change(action);

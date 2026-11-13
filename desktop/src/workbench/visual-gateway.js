@@ -21,14 +21,14 @@
     for (const node of [...button.childNodes]) if (node.nodeType === Node.TEXT_NODE) node.remove();
     const mark = document.createElement('span'); mark.className = 'shell-nav-icon'; mark.setAttribute('aria-hidden', 'true'); mark.innerHTML = icon(button.dataset.page); button.prepend(mark);
   });
-  const version = document.querySelector('.topbar .version');
-  if (version) version.textContent = '可视化融合 · 路由增强预览';
   const subtitle = document.querySelector('.brand strong span'); if (subtitle) subtitle.textContent = '可视化工作台';
   const oldRelayLabel = document.querySelector('.nav[data-page="relay"] span:not(.shell-nav-icon)'); if (oldRelayLabel) oldRelayLabel.textContent = '高级接入';
   const page = document.createElement('section'); page.id = 'page-visual'; page.className = 'page vg';
   page.innerHTML = `
     <header class="vg-heading"><img class="vg-hero-art" src="../../assets/brand-v6/hero.webp" alt="冷咖啡原创白发女生与咖啡主视觉"><div class="vg-hero-copy"><div class="vg-hero-eyebrow"><span class="vg-kicker">冷咖啡 · 可视化工作台</span><span id="vg-engine" class="vg-pill">网关准备中</span></div><h1>连接你的 AI<span>，</span><br>掌控每一步<span>。</span></h1><p>中转、模型、工作流与每次请求，都在这里。</p><div class="vg-heading-actions"><button id="vg-setup" class="vg-primary">一键接入 AI <span>→</span></button><button id="vg-demo" class="vg-secondary">体验可视化 ↗</button><span class="vg-hero-note">备份后接入 · 随时可撤回</span></div></div><span class="vg-hero-sign">一杯冷咖啡，一起开工。</span></header>
     <div id="vg-banner" class="vg-banner" role="status" hidden></div>
+    <div id="vg-connection" class="vg-connection" data-state="starting"><div><strong id="vg-connection-title">正在连接本机网关</strong><span id="vg-connection-note" role="status">首次启动请稍候，接入配置会保留。</span></div><button id="vg-retry" type="button" class="vg-secondary" hidden>重新连接</button></div>
+    <p id="vg-config-warning" class="vg-config-warning" role="status" hidden></p>
     <div class="vg-stats"><div><span>最近请求</span><strong id="vg-count">0</strong><small>经过本机网关</small></div><div><span>成功响应</span><strong id="vg-success">—</strong><small id="vg-success-note">等待第一条请求</small></div><div><span>平均耗时</span><strong id="vg-latency">—</strong><small>已完成请求</small></div><div><span>当前模型</span><strong id="vg-model-stat" class="vg-stat-model">等待连接</strong><small id="vg-model-note">以中转实际列表为准</small></div></div>
     <div class="vg-grid">
       <section class="vg-card vg-flow-card"><div class="vg-card-head"><div><span class="vg-live-dot"></span><h2>实时路由</h2><span class="vg-subtle" id="vg-flow-label">等待第一条请求</span></div><button id="vg-groups-open" class="vg-secondary">管理路由组</button></div>
@@ -67,7 +67,12 @@
   `;
   document.querySelector('main').prepend(page);
   const $ = id => document.getElementById(id);
-  const state = { snapshot: null, clients: [], models: [], client: 'codex', selected: '', routeId: null, private: true, stage: 1, plan: null, polling: false, sending: false, formBusy: false, stream: '', historySignature: '', legacySignature: '', restoreConfirm: false };
+  for (const [selectId, searchId, noteId] of [['vg-model-select', 'vg-model-search', 'vg-model-results'], ['vg-setup-model', 'vg-setup-model-search', 'vg-setup-model-results']]) {
+    const search = Object.assign(document.createElement('input'), { id: searchId, type: 'search', placeholder: '搜索模型名称或中转…', autocomplete: 'off', className: 'vg-model-search' });
+    search.setAttribute('aria-label', '搜索模型名称或中转'); search.setAttribute('aria-controls', selectId);
+    $(selectId).before(search); $(selectId).after(Object.assign(document.createElement('p'), { id: noteId, className: 'vg-small-note vg-model-results' }));
+  }
+  const state = { snapshot: null, clients: [], models: [], client: 'codex', selected: '', routeId: null, private: true, stage: 1, plan: null, polling: null, starting: false, connectionError: '', lastSync: 0, modelQuery: '', modelSignature: '', setupRevision: 0, sending: false, formBusy: false, stream: '', historySignature: '', legacySignature: '', restoreConfirm: false };
   const panel = window.ColdCoffeeRoutingPanel.create({ $, state, call: (action, input) => call(action, input), number: value => number(value), detailRoute: route => detailRoute(route), detailContext: (route, kind, index) => detailContext(route, kind, index), changed: () => render() });
   const courier = window.ColdCoffeeCourier.create({ $, page });
   const parts = { system: ['系统提示', '#e4576b'], tools: ['工具说明', '#be596b'], skills: ['技能', '#cda78c'], memory: ['工作说明', '#b5b8bf'], files: ['文件内容', '#78998e'], results: ['工具结果', '#a17d78'], chat: ['会话内容', '#939ba8'] };
@@ -76,6 +81,27 @@
   const call = (action, payload) => window.coldbrew?.gateway ? window.coldbrew.gateway(action, payload) : Promise.reject(new Error('请在冷咖啡桌面软件中使用网关'));
   const tell = message => { $('vg-banner').hidden = !message; $('vg-banner').textContent = message || ''; };
   const status = message => { $('vg-setup-status').textContent = message || ''; };
+  const currentSetup = revision => revision === state.setupRevision && $('vg-setup-dialog').open;
+  function lockSetup(busy) {
+    state.formBusy = busy;
+    $('vg-setup-dialog').setAttribute('aria-busy', String(busy));
+    $('vg-setup-dialog').querySelectorAll('input, select, button:not([data-vg-close])').forEach(control => { control.disabled = busy; });
+    if (!busy) { $('vg-remember').disabled = !state.snapshot?.encryption; $('vg-connect').disabled = !state.selected; }
+  }
+  function connectionStatus() {
+    const running = !!state.snapshot?.engine?.running, error = state.connectionError || state.snapshot?.engine?.error;
+    const stale = !!state.connectionError;
+    $('vg-connection').dataset.state = state.starting ? 'starting' : stale || !running ? 'offline' : 'ready';
+    $('vg-connection-title').textContent = state.starting ? '正在连接本机网关' : stale ? '连接暂时中断 · 正在自动重试' : running ? '本机网关已连接' : '本机网关尚未启动';
+    $('vg-connection-note').textContent = state.starting ? '请稍候，接入配置会保留。' : error || (running ? `数据已同步${state.lastSync ? ' · ' + new Date(state.lastSync).toLocaleTimeString('zh-CN', { hour12: false }) : ''} · 接入软件后即可查看真实请求` : '点「重新连接」恢复本机网关，无需重复填写 Key。');
+    $('vg-retry').hidden = !state.starting && running && !stale;
+    $('vg-retry').disabled = state.starting; $('vg-retry').textContent = state.starting ? '连接中…' : '重新连接';
+    $('vg-engine').textContent = state.starting ? '◌ 网关连接中' : stale ? '○ 数据同步中断' : running ? '● 网关已就绪' : '○ 网关未启动';
+    $('vg-engine').dataset.ready = String(running && !stale);
+    $('vg-copy-connection').disabled = !running || stale || !state.selected;
+    const warnings = state.snapshot?.warnings || [];
+    $('vg-config-warning').hidden = !warnings.length; $('vg-config-warning').textContent = warnings.join(' ');
+  }
   function show() {
     document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p === page));
     document.querySelectorAll('.nav').forEach(n => n.classList.toggle('active', n === nav));
@@ -99,8 +125,10 @@
     }
   }
   async function openSetup(value = 1) {
-    $('vg-setup-dialog').showModal(); stage(value);
-    try { state.clients = await call('clients'); renderClients(); } catch (error) { status(error.message); }
+    const revision = ++state.setupRevision;
+    if (!$('vg-setup-dialog').open) $('vg-setup-dialog').showModal(); stage(value);
+    if (state.formBusy) status('上一项操作仍在完成，请稍候。');
+    try { const clients = await call('clients'); if (currentSetup(revision)) { state.clients = clients; renderClients(); lockSetup(state.formBusy); } } catch (error) { if (currentSetup(revision)) status(error.message); }
   }
   function renderClients() {
     $('vg-clients').replaceChildren(...state.clients.map(client => {
@@ -108,25 +136,39 @@
       const mark = document.createElement('b'); mark.textContent = client.id === 'codex' ? '⌘' : client.id === 'claude' ? '✳' : '≈';
       const name = document.createElement('strong'); name.textContent = client.name;
       const note = document.createElement('span'); note.textContent = client.connected ? '已写入接入配置' : client.detected ? '发现配置目录' : '连接时创建配置';
-      button.append(mark, name, note); button.addEventListener('click', () => { state.client = client.id; state.plan = null; renderClients(); render(); }); return button;
+      button.disabled = state.formBusy;
+      button.append(mark, name, note); button.addEventListener('click', () => { if (state.formBusy) return; state.client = client.id; state.plan = null; state.restoreConfirm = false; $('vg-restore').textContent = '恢复接入前配置'; renderClients(); render(); }); return button;
     }));
   }
   function syncModels() {
     const models = state.snapshot?.availableModels || (state.snapshot?.providers || []).filter(p => p.hasKey).flatMap(p => p.models.map(m => ({ id: `${p.id}/${m}`, name: m, provider: p.name })));
-    const signature = JSON.stringify(models);
-    if (signature === JSON.stringify(state.models)) {
-      for (const id of ['vg-model-select', 'vg-setup-model']) $(id).value = state.selected;
-      return;
-    }
     state.models = models;
+    const previous = state.selected;
     if (!models.some(m => m.id === state.selected)) state.selected = models.find(m => /gpt-6-astra|gpt-6\.1-sol|deepseek-flash/.test(m.id))?.id || models[0]?.id || '';
-    for (const id of ['vg-model-select', 'vg-setup-model']) {
-      const options = models.length ? models.map(model => { const option = document.createElement('option'); option.value = model.id; option.textContent = `${model.name} · ${model.provider}`; return option; }) : [Object.assign(document.createElement('option'), { value: '', textContent: '先连接中转' })];
-      $(id).replaceChildren(...options); $(id).value = state.selected;
+    if (previous !== state.selected) {
+      state.plan = null; $('vg-plan').hidden = true; $('vg-connect').textContent = '检查配置变更 →';
     }
+    renderModelOptions();
     const selectedProvider = $('vg-provider-select').value;
-    $('vg-provider-select').replaceChildren(...[...new Map([{ id: 'coldcoffee', name: '冷咖啡中转' }, ...(state.snapshot?.providers || []), { id: 'new', name: '＋ 添加其他中转' }].map(p => [p.id, p])).values()].map(p => Object.assign(document.createElement('option'), { value: p.id, textContent: p.name })));
-    if ([...$('vg-provider-select').options].some(o => o.value === selectedProvider)) $('vg-provider-select').value = selectedProvider;
+    const providers = [...new Map([{ id: 'coldcoffee', name: '冷咖啡中转' }, ...(state.snapshot?.providers || []), { id: 'new', name: '＋ 添加其他中转' }].map(p => [p.id, p])).values()].map(p => ({ id: p.id, name: p.name }));
+    const providerSignature = JSON.stringify(providers);
+    if (providerSignature !== state.providerSignature) {
+      state.providerSignature = providerSignature;
+      $('vg-provider-select').replaceChildren(...providers.map(p => Object.assign(document.createElement('option'), { value: p.id, textContent: p.name })));
+      if ([...$('vg-provider-select').options].some(o => o.value === selectedProvider)) $('vg-provider-select').value = selectedProvider;
+    }
+  }
+  function renderModelOptions() {
+    const query = state.modelQuery.trim().toLocaleLowerCase(), signature = JSON.stringify([state.models, query, state.selected]);
+    if (signature === state.modelSignature) return; state.modelSignature = signature;
+    const matches = state.models.filter(m => `${m.id} ${m.name} ${m.provider}`.toLocaleLowerCase().includes(query));
+    const selected = state.models.find(m => m.id === state.selected), retained = selected && !matches.some(m => m.id === selected.id);
+    const visible = retained ? [selected, ...matches] : matches;
+    for (const [id, note] of [['vg-model-select', 'vg-model-results'], ['vg-setup-model', 'vg-setup-model-results']]) {
+      const options = visible.length ? visible.map(m => Object.assign(document.createElement('option'), { value: m.id, textContent: `${retained && m.id === state.selected ? '当前已选 · ' : ''}${m.name} · ${m.provider}` })) : [Object.assign(document.createElement('option'), { value: '', textContent: state.models.length ? '没有匹配模型' : '先连接中转' })];
+      $(id).replaceChildren(...options); $(id).value = state.selected;
+      $(note).textContent = !state.models.length ? '验证中转后读取实际可用模型。' : `${query ? '匹配 ' + matches.length + ' / ' : '共 '}${state.models.length} 个模型${retained ? ' · 保留当前选择' : ''}`;
+    }
   }
   function currentRoute() {
     const rows = state.snapshot?.routes || [];
@@ -137,7 +179,7 @@
     syncModels();
     const s = state.snapshot, routes = s.routes || [], route = currentRoute(), engine = s.engine;
     const client = state.clients.find(c => c.id === state.client);
-    $('vg-engine').textContent = engine.running ? '● 网关已就绪' : '○ 网关未启动'; $('vg-engine').dataset.ready = String(engine.running);
+    connectionStatus();
     $('vg-port').textContent = engine.running ? `本机 :${engine.port}` : '点击重新启动';
     const agentNames = { codex: 'Codex', claude: 'Claude Code', 'claude-code': 'Claude Code', dsh: 'DeepSeek Harness', 'ColdCoffee-Workbench': '冷咖啡工作台' };
     $('vg-client-name').textContent = route?.demo ? '冷咖啡演示' : route ? agentNames[route.agent] || route.agent || 'AI 客户端' : client?.name || '你的 AI 软件';
@@ -159,7 +201,9 @@
     $('vg-flow-status').textContent = running ? `请求 #${route.id} · 正在响应 · ${number(route.bytes)} 字节` : route ? `${route.status >= 400 || route.error ? '请求异常' : '已完成'} · HTTP ${route.status || '—'} · ${((route.ms || 0) / 1000).toFixed(2)} 秒${route.demo ? ' · 本机演示' : ''}` : '一键接入后，请求会在这里实时显示。';
     $('vg-step-client').classList.toggle('done', !!client); $('vg-step-relay').classList.toggle('done', state.models.length > 0); $('vg-step-connect').classList.toggle('done', client?.connected === true);
     $('vg-send').disabled = state.sending || !state.selected; $('vg-demo').disabled = state.sending;
-    $('vg-remember').disabled = !s.encryption;
+    $('vg-connect').disabled = state.formBusy || !state.selected;
+    $('vg-remember').disabled = state.formBusy || !s.encryption;
+    if (!s.encryption) $('vg-remember').checked = false;
     $('vg-key-note').textContent = s.encryption ? 'Key 使用系统加密保存；截图和连接配置中隐藏真实 Key。' : '当前系统加密存储尚未就绪，Key 仅用于本次运行。';
     if (engine.running && state.selected) {
       const signature = engine.url + '|' + state.selected;
@@ -219,9 +263,24 @@
       if (!data.items?.length) content.textContent = '此分类未保留逐项内容。';
     } catch (error) { content.textContent = error.message; }
   }
-  async function refresh() {
-    if (state.polling) return; state.polling = true;
-    try { state.snapshot = await call('snapshot'); render(); } catch (error) { tell(error.message); } finally { state.polling = false; }
+  function refresh() {
+    if (state.polling) return state.polling;
+    state.polling = (async () => {
+      try { state.snapshot = await call('snapshot'); state.connectionError = ''; state.lastSync = Date.now(); render(); return true; }
+      catch (error) { state.connectionError = error.message; connectionStatus(); return false; }
+      finally { state.polling = null; }
+    })();
+    return state.polling;
+  }
+  async function reconnect() {
+    if (state.starting) return; state.starting = true; connectionStatus();
+    try {
+      if (state.polling) await state.polling;
+      state.snapshot = await call('status'); state.clients = await call('clients');
+      if (!state.snapshot.engine.running) await call('start');
+      state.clients = await call('clients'); await refresh();
+    } catch (error) { state.connectionError = error.message; }
+    finally { state.starting = false; if (state.snapshot) render(); else connectionStatus(); }
   }
   async function send(demo, text) {
     if (state.sending) return; state.sending = true; state.stream = ''; $('vg-response').textContent = '';
@@ -230,7 +289,8 @@
     catch (error) { tell(error.message); } finally { state.sending = false; await refresh(); }
   }
   $('vg-setup').onclick = () => openSetup(); $('vg-quick-start').onclick = () => openSetup(); $('vg-client-node').onclick = () => openSetup(1); $('vg-relay-node').onclick = () => openSetup(2); $('vg-model-node').onclick = () => openSetup(state.models.length ? 3 : 2);
-  $('vg-hub-node').onclick = async () => { if (!state.snapshot?.engine.running) { try { await call('start'); await refresh(); } catch (error) { tell(error.message); } } else { tell('冷咖啡网关在本机运行，点击「完整引擎」使用高级功能；组件信息见「关于与开源许可」。'); } };
+  $('vg-hub-node').onclick = () => { if (!state.snapshot?.engine.running || state.connectionError) reconnect(); else tell('冷咖啡网关在本机运行，点击「完整引擎」使用高级功能；组件信息见「关于与开源许可」。'); };
+  $('vg-retry').onclick = reconnect;
   $('vg-next-relay').onclick = () => stage(2);
   document.querySelectorAll('[data-vg-close]').forEach(b => b.onclick = () => $(b.dataset.vgClose).close());
   document.querySelectorAll('[data-vg-back]').forEach(b => b.onclick = () => { if (!state.formBusy) stage(Number(b.dataset.vgBack)); });
@@ -238,21 +298,40 @@
   $('vg-key-toggle').onclick = () => { const input = $('vg-key'); input.type = input.type === 'password' ? 'text' : 'password'; $('vg-key-toggle').textContent = input.type === 'password' ? '显示' : '隐藏'; };
   $('vg-provider-select').onchange = () => { const id = $('vg-provider-select').value, provider = state.snapshot?.providers.find(p => p.id === id); $('vg-other-provider').hidden = id === 'coldcoffee'; $('vg-base').value = provider?.baseUrl || (id === 'coldcoffee' ? 'https://coldcoffeeai.com/v1' : ''); $('vg-provider-name').value = provider?.name || ''; $('vg-key').value = ''; $('vg-key').placeholder = provider?.hasKey ? '已保存 · 留空使用现有 Key' : '填入这个中转的 API Key'; $('vg-protocol').value = provider?.wireApi || 'auto'; };
   $('vg-relay-form').onsubmit = async event => {
-    event.preventDefault(); if (state.formBusy) return; state.formBusy = true; $('vg-verify').disabled = true; status('正在验证 Key 并获取真实模型列表…');
+    event.preventDefault(); if (state.formBusy) return;
+    if (state.snapshot?.configuring) { status('中转配置正在更新，请稍候再试。'); return; }
+    const revision = state.setupRevision;
+    lockSetup(true); status('正在验证 Key 并获取真实模型列表…');
     const selected = $('vg-provider-select').value;
     const id = selected === 'new' ? `relay-${Date.now().toString(36)}` : selected;
     try {
       await call('configure', { id, name: $('vg-provider-name').value, baseUrl: selected === 'coldcoffee' ? 'https://coldcoffeeai.com/v1' : $('vg-base').value, key: $('vg-key').value, remember: $('vg-remember').checked, wireApi: $('vg-protocol').value });
-      $('vg-key').value = ''; await refresh(); stage(3); status(`验证通过，读取到 ${state.models.length} 个可用模型。`);
-    } catch (error) { status(error.message); } finally { state.formBusy = false; $('vg-verify').disabled = false; }
+      if (currentSetup(revision)) $('vg-key').value = '';
+      const synced = await refresh();
+      if (currentSetup(revision)) {
+        if (synced) { stage(3); status(`验证通过，读取到 ${state.models.length} 个可用模型。`); }
+        else status('中转已验证，模型列表同步暂时中断，请点击重新连接后继续。');
+      }
+    } catch (error) { if (currentSetup(revision)) status(error.message); }
+    finally { lockSetup(false); }
+  };
+  for (const id of ['vg-model-search', 'vg-setup-model-search']) $(id).oninput = () => {
+    state.modelQuery = $(id).value;
+    for (const searchId of ['vg-model-search', 'vg-setup-model-search']) $(searchId).value = state.modelQuery;
+    renderModelOptions();
   };
   for (const id of ['vg-model-select', 'vg-setup-model']) $(id).onchange = () => { state.selected = $(id).value; state.plan = null; $('vg-connect').textContent = '检查配置变更 →'; $('vg-plan').hidden = true; $('vg-model-select').value = state.selected; $('vg-setup-model').value = state.selected; render(); };
   $('vg-connect').onclick = async () => {
-    if (state.formBusy) return; state.formBusy = true; $('vg-connect').disabled = true;
+    if (state.formBusy) return;
+    if (!state.selected) { status('先验证中转并选择模型。'); return; }
+    const revision = state.setupRevision, client = state.client, model = state.selected, installSkills = $('vg-with-skills').checked;
+    lockSetup(true);
     try {
       if (!state.plan) {
         status('正在按目标软件的原生配置格式检查变更…');
-        const plan = await call('plan', { client: state.client, model: state.selected });
+        const plan = await call('plan', { client, model });
+        if (!currentSetup(revision)) return;
+        if (client !== state.client || model !== state.selected) { status('所选模型已更新，请重新检查配置变更。'); return; }
         if (plan.unchanged) { status(plan.message); return; }
         state.plan = plan; const list = document.createElement('ul');
         for (const file of plan.files) list.append(Object.assign(document.createElement('li'), { textContent: `${file.action} · ${file.name}` }));
@@ -261,26 +340,32 @@
       } else {
         status('正在保存备份并写入配置…');
         const result = await call('connect', { id: state.plan.id }); state.plan = null;
-        if ($('vg-with-skills').checked) {
-          status('接入配置已写入，正在安装工作流与技能包…');
-          try { await window.coldbrew.beginner('install', { seat: state.client, confirm: true }); }
+        if (installSkills) {
+          if (currentSetup(revision)) status('接入配置已写入，正在安装工作流与技能包…');
+          try { await window.coldbrew.beginner('install', { seat: client, confirm: true }); }
           catch (error) { tell(`中转已接入；技能安装需继续处理：${error.message}。可到「一键破甲」重试。`); }
         }
-        state.clients = await call('clients'); renderClients(); $('vg-plan').hidden = true;
-        $('vg-connected').hidden = false; $('vg-restart-note').textContent = result.restart; $('vg-connect').hidden = true;
-        status('配置已写入；真实调用状态将在请求经过网关后更新。'); await refresh();
+        state.clients = await call('clients'); renderClients();
+        if (currentSetup(revision)) {
+          $('vg-plan').hidden = true; $('vg-connected').hidden = false; $('vg-restart-note').textContent = result.restart; $('vg-connect').hidden = true;
+          status('配置已写入；真实调用状态将在请求经过网关后更新。');
+        } else tell(`接入配置已写入。${result.restart || '请重新打开目标软件。'}`);
+        await refresh();
       }
-    } catch (error) { state.plan = null; $('vg-connect').textContent = '重新检查配置 →'; status(error.message); }
-    finally { state.formBusy = false; $('vg-connect').disabled = false; }
+    } catch (error) { if (currentSetup(revision)) { state.plan = null; $('vg-connect').textContent = '重新检查配置 →'; status(error.message); } }
+    finally { lockSetup(false); }
   };
-  $('vg-setup-dialog').addEventListener('close', () => { $('vg-key').value = ''; $('vg-key').type = 'password'; $('vg-connect').hidden = false; $('vg-connect').textContent = '检查配置变更 →'; $('vg-plan').hidden = true; state.plan = null; });
+  $('vg-setup-dialog').addEventListener('close', () => { state.setupRevision++; $('vg-key').value = ''; $('vg-key').type = 'password'; $('vg-key-toggle').textContent = '显示'; $('vg-connect').hidden = false; $('vg-connect').textContent = '检查配置变更 →'; $('vg-plan').hidden = true; state.plan = null; });
   $('vg-copy-word').onclick = () => navigator.clipboard.writeText('冷咖啡').then(() => status('已复制「冷咖啡」，到目标软件发送。')).catch(() => status('启动口令：冷咖啡'));
   $('vg-finish').onclick = () => { $('vg-setup-dialog').close(); show(); };
   $('vg-install').onclick = () => go('packs'); $('vg-site').onclick = () => external('https://coldcoffeeai.com/'); $('vg-buy').onclick = () => external('https://coldcoffeeai.com/'); $('vg-community').onclick = () => go('community'); $('vg-custom').onclick = () => go('community');
   $('vg-demo').onclick = () => send(true); $('vg-test-form').onsubmit = event => { event.preventDefault(); send(false, $('vg-test-input').value); };
   $('vg-flow-detail').onclick = () => { const route = currentRoute(); if (route) detailRoute(route); else tell('先体验可视化或发送一条真实请求，再查看详情。'); };
   $('vg-cancel').onclick = () => call('cancel').catch(error => tell(error.message));
-  $('vg-copy-connection').onclick = () => navigator.clipboard.writeText(`API Base URL: ${state.snapshot?.engine.url}/v1\nAPI Key: coldcoffee-local\nModel: ${state.selected || '先连接中转再选择模型'}`).then(() => tell('已复制本机连接信息，其中包含的是本机凭据。')).catch(() => tell('请从连接信息区域手动复制本机地址。'));
+  $('vg-copy-connection').onclick = () => {
+    if (!state.snapshot?.engine.running || state.connectionError || !state.selected) { tell('先连接网关并选择模型，再复制可用的连接信息。'); return; }
+    navigator.clipboard.writeText(`API Base URL: ${state.snapshot.engine.url}/v1\nAPI Key: coldcoffee-local\nModel: ${state.selected}`).then(() => tell('已复制本机连接信息，其中包含的是本机凭据。')).catch(() => tell('请从连接信息区域手动复制本机地址。'));
+  };
   $('vg-restore').onclick = async () => {
     if (!state.restoreConfirm) { state.restoreConfirm = true; $('vg-restore').textContent = '确认恢复所选软件'; tell('再次点击确认恢复；接入后又发生变化的配置会保留，并提示你检查。'); return; }
     state.restoreConfirm = false; $('vg-restore').textContent = '恢复接入前配置';
@@ -297,16 +382,10 @@
     if (event.type === 'chunk') { state.stream += event.text; $('vg-response').textContent = state.stream; }
     if (event.type === 'begin') refresh();
   });
-  const timer = setInterval(() => { if (!document.hidden && page.classList.contains('active')) refresh(); }, 1000);
+  const timer = setInterval(() => { if (!document.hidden && page.classList.contains('active') && !state.starting) refresh(); }, 1000);
   window.addEventListener('beforeunload', () => { clearInterval(timer); observer.disconnect(); unsubscribe?.(); });
   const hash = location.hash.slice(1);
   if (!hash || hash === 'visual') show(); else if (['packs', 'relay', 'community', 'toolbox'].includes(hash)) go(hash);
   window.ColdCoffeeVisual = Object.freeze({ show, refresh });
-  (async () => {
-    try {
-      state.snapshot = await call('status'); state.clients = await call('clients'); render();
-      if (!state.snapshot.engine.running) await call('start');
-      state.clients = await call('clients'); await refresh();
-    } catch (error) { tell(error.message); if (state.snapshot) render(); }
-  })();
+  reconnect();
 })();

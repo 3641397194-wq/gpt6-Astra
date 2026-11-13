@@ -5,10 +5,10 @@
   <p><strong>十五个 AI 模型 · 一键备份安装 · 一键卸载</strong></p>
   <p>打勾，按一下。打开软件后发「冷咖啡」。不想要了，按卸载，文件回到写入之前。</p>
   <p><a href="#软件界面">软件界面</a> · <a href="#deepseek-harness">DeepSeek 插件</a> · <a href="#下载">下载</a> · <a href="#上手使用">上手使用</a> · <a href="#一键安装目标">十五个 AI 模型</a> · <a href="#四页">四页</a> · <a href="#冷咖啡中转">冷咖啡中转</a> · <a href="#工具箱">工具箱</a> · <a href="#冷咖啡社群">四个 QQ 群</a></p>
-  <p><sub>3.2.0-preview.9 · 三系统已发布 · 十五个 AI 模型 · <a href="https://coldcoffeeai.com/">coldcoffeeai.com</a></sub></p>
+  <p><sub>3.2.0-preview.10 · 三系统已发布 · 十五个 AI 模型 · <a href="https://coldcoffeeai.com/">coldcoffeeai.com</a></sub></p>
 </div>
 
-<p align="center"><strong>3.2.0-preview.9 · 可视化融合与多分支路由。</strong><br /><sub>原创女生主视觉、大字号与缩放控制；真实请求时间线、主备切换、嵌套组和上下文明细。Windows、macOS、Linux 下载与校验文件见下方。</sub></p>
+<p align="center"><strong>3.2.0-preview.10 · 更顺的路由，更稳的连接。</strong><br /><sub>保留原创女生、布偶猫与大字号；新增模型搜索、断线重试与配置恢复。真实请求时间线、主备切换、嵌套组和上下文明细集中查看。</sub></p>
 
 <blockquote>
 <p><strong>⚠️ 免责声明 · Disclaimer</strong></p>
@@ -30,13 +30,20 @@
 
 <h2 id="可视化路由">冷咖啡 · 中转与路由，一眼看清</h2>
 <p><strong>接入更简单，过程看得见。</strong>购买冷咖啡中转 Key，填入软件后读取模型、预览接入配置、确认写入。也支持自行添加其他中转；写入前备份，随时恢复。原创中古手绘风蓝眼布偶猫沿实际传输线路连续来回走，端点转身、全程可见；请求结束后平滑回程，主备切换跟随网关记录。历史路径可主动往返回放，动效也可随时暂停。</p>
-<p align="center"><a href="docs/assets/coldcoffee-routing-v9.png"><img src="docs/assets/coldcoffee-routing-v9.png" width="100%" alt="冷咖啡新版真实多分支与嵌套路由界面，展示失败切换、备用线路和决策时间线" /></a><br /><sub>独立测试资料目录与本机合成供应商 · 展示真实路由过程，无个人 Key</sub></p>
+<p align="center"><a href="docs/assets/coldcoffee-routing-v10.png"><img src="docs/assets/coldcoffee-routing-v10.png" width="100%" alt="冷咖啡新版真实多分支与嵌套路由界面，展示失败切换、备用线路和决策时间线" /></a><br /><sub>独立测试资料目录与本机合成供应商 · 展示真实路由过程，无个人 Key</sub></p>
 <table>
 <tr><th align="left">实时路由</th><th align="left">上下文与接入</th></tr>
 <tr><td>主备与嵌套路由、命中与排除原因、每次尝试的状态和耗时</td><td>上下文分类、工具名称与次数、缓存率、剩余窗口和主动展开原文</td></tr>
 <tr><td>基础路由组编辑、成员排序、会话保持、历史请求与跟随最新</td><td>Codex、Claude Code、DeepSeek Harness 的配置预览、确认接入与原样恢复</td></tr>
 </table>
 <p>复杂条件、权重和其他高级设置从软件内「完整引擎 / 高级功能」进入。<a href="https://coldcoffeeai.com/"><strong>开通冷咖啡付费中转 ↗</strong></a> · 需要收费本机闭源工作流与定制，进下方 QQ 群找管理。</p>
+
+<p><strong>本次升级：</strong>模型多时可按名称或中转搜索；连接失败可直接重试，恢复后错误提示自动清除。向导关闭后清空密钥输入，迟到的旧结果不会覆盖新操作。配置损坏会先保留原文件备份，缩放保存失败也会明确提醒。<a href="docs/release-notes-3.2.0-preview.10.md">查看本版更新与使用说明 ↗</a></p>
+
+<details><summary>展开查看：模型搜索与接入预览</summary>
+<p><img src="docs/assets/coldcoffee-model-search-v10.png" width="100%" alt="冷咖啡接入向导的模型搜索，保留当前选择并预览待更新的配置" /></p>
+<p><sub>独立测试数据界面：搜索不会清掉当前选择，确认前可检查将更新的文件。图中模型列表为合成测试数据，不代表中转站实时商品清单。</sub></p>
+</details>
 
 <h2 id="软件界面">软件界面 · 安装、接入、社群</h2>
 <p><strong>勾选安装，写前备份，写后核验。</strong>十五个 AI 模型席位集中在一页，完整技能随包安装；随时检查安装状态，需要撤回时按备份恢复。</p>
@@ -79,14 +86,14 @@
 <p><a href="https://coldcoffeeai.com/"><strong>冷咖啡付费 API 中转 ↗</strong></a> · 闭源工作流提供收费的本机安装与定制，可使用现有订阅或其他中转；进 <a href="#冷咖啡社群">QQ 群</a>私聊管理沟通。</p>
 
 <h2 id="下载">下载</h2>
-<p><strong>统一下载入口：</strong><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/latest">最新版下载页 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.9">本版固定下载页 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases">全部历史版本 ↗</a>。分享请复制下载页或下表的完整链接，保留版本号和文件名；校验文件在同一发布页的 Assets 中。</p>
-<p><strong>3.2.0-preview.9 下载入口：</strong>本工作台 Windows、macOS、Linux 的七个安装包已发布，可直接下载，Release 同时提供 SHA256SUMS。十五个 AI 模型席位，含 Kimi K3.1、Grok Bot、Claude Duet、ChatGPT Dot 和 Meta Muse；macOS 提供 Apple 芯片 arm64 和 Intel x64 安装包，原创工具箱继续内置运行。</p>
+<p><strong>统一下载入口：</strong><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/latest">最新版下载页 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.10">本版固定下载页 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases">全部历史版本 ↗</a>。分享请复制下载页或下表的完整链接，保留版本号和文件名；校验文件在同一发布页的 Assets 中。</p>
+<p><strong>3.2.0-preview.10 下载入口：</strong>本工作台 Windows、macOS、Linux 的七个安装包已发布，可直接下载，Release 同时提供 SHA256SUMS。十五个 AI 模型席位，含 Kimi K3.1、Grok Bot、Claude Duet、ChatGPT Dot 和 Meta Muse；macOS 提供 Apple 芯片 arm64 和 Intel x64 安装包，原创工具箱继续内置运行。</p>
 <table>
 <tr><th align="left">系统</th><th align="left">版本</th><th align="left">席位</th><th align="left">安装包</th></tr>
-<tr><td><strong>Windows</strong></td><td><code>3.2.0-preview.9</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.9/ColdCoffee-Workbench-Windows-3.2.0-preview.9-x64.exe">免安装 .exe ↗</a></td></tr>
-<tr><td><strong>macOS Apple 芯片</strong></td><td><code>3.2.0-preview.9</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Apple 芯片 arm64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.9/ColdCoffee-Workbench-macOS-arm64-3.2.0-preview.9.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.9/ColdCoffee-Workbench-macOS-arm64-3.2.0-preview.9.zip">.zip ↗</a></td></tr>
-<tr><td><strong>macOS Intel</strong></td><td><code>3.2.0-preview.9</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Intel x64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.9/ColdCoffee-Workbench-macOS-x64-3.2.0-preview.9.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.9/ColdCoffee-Workbench-macOS-x64-3.2.0-preview.9.zip">.zip ↗</a></td></tr>
-<tr><td><strong>Linux</strong></td><td><code>3.2.0-preview.9</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，x86_64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.9/ColdCoffee-Workbench-Linux-x86_64-3.2.0-preview.9.AppImage">.AppImage ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.9/ColdCoffee-Workbench-Linux-amd64-3.2.0-preview.9.deb">.deb ↗</a></td></tr>
+<tr><td><strong>Windows</strong></td><td><code>3.2.0-preview.10</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.10/ColdCoffee-Workbench-Windows-3.2.0-preview.10-x64.exe">免安装 .exe ↗</a></td></tr>
+<tr><td><strong>macOS Apple 芯片</strong></td><td><code>3.2.0-preview.10</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Apple 芯片 arm64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.10/ColdCoffee-Workbench-macOS-arm64-3.2.0-preview.10.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.10/ColdCoffee-Workbench-macOS-arm64-3.2.0-preview.10.zip">.zip ↗</a></td></tr>
+<tr><td><strong>macOS Intel</strong></td><td><code>3.2.0-preview.10</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Intel x64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.10/ColdCoffee-Workbench-macOS-x64-3.2.0-preview.10.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.10/ColdCoffee-Workbench-macOS-x64-3.2.0-preview.10.zip">.zip ↗</a></td></tr>
+<tr><td><strong>Linux</strong></td><td><code>3.2.0-preview.10</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，x86_64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.10/ColdCoffee-Workbench-Linux-x86_64-3.2.0-preview.10.AppImage">.AppImage ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.2.0-preview.10/ColdCoffee-Workbench-Linux-amd64-3.2.0-preview.10.deb">.deb ↗</a></td></tr>
 </table>
 <p>Windows 双击打开。macOS 第一次若被拦住，在程序图标上右键，选打开。Linux 的 AppImage 先加上可执行权限。deb 用系统的安装器。</p>
 <pre><code>cd desktop
@@ -99,7 +106,7 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 
 <h2 id="上手使用">上手使用</h2>
 <ol>
-<li><strong>打开软件：</strong>下载 3.2.0-preview.9 对应系统的安装包；Windows 使用 portable EXE，macOS 按 Apple 芯片或 Intel 选择，Linux 使用 AppImage 或 DEB。</li>
+<li><strong>打开软件：</strong>下载 3.2.0-preview.10 对应系统的安装包；Windows 使用 portable EXE，macOS 按 Apple 芯片或 Intel 选择，Linux 使用 AppImage 或 DEB。</li>
 <li><strong>一键破甲：</strong>只勾你要写的软件，按一下。写入之前会先备份。只改勾上的软件。</li>
 <li><strong>发送口令：</strong>打开那个软件，对话框里单独发「冷咖啡」。不想要了，回到这里按一键卸载，文件回到写入之前。</li>
 </ol>

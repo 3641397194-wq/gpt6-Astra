@@ -5,6 +5,7 @@ const crypto = require('node:crypto');
 const net = require('node:net');
 const { spawn } = require('node:child_process');
 const { once } = require('node:events');
+const { readConfig } = require('./config-store');
 const PIN = require('./upstream.json');
 
 async function freePort(preferred = 0) {
@@ -39,8 +40,10 @@ class MagpieEngine {
     const env = { ...process.env, HOME: home, USERPROFILE: home, APPDATA: path.join(home, 'AppData', 'Roaming'), LOCALAPPDATA: path.join(home, 'AppData', 'Local'), XDG_CONFIG_HOME: config, XDG_CACHE_HOME: path.join(this.directory, 'cache'), XDG_DATA_HOME: path.join(home, '.local', 'share'), XDG_STATE_HOME: path.join(home, '.local', 'state'), MAGPIE_NO_ACCOUNTS: '1', DO_NOT_TRACK: '1', MAGPIE_WEB_KEY: this.webKey, MAGPIE_THEME: 'dark' };
     for (const key of Object.keys(env)) if (/^(CODEX_HOME|CLAUDE_CONFIG_DIR|DSH_HOME|GEMINI_CLI_HOME|KIMI_SHARE_DIR|QWEN_HOME|REASONIX_HOME|ANTE_HOME|MAGPIE_)/.test(key) && !['MAGPIE_NO_ACCOUNTS', 'MAGPIE_WEB_KEY', 'MAGPIE_THEME'].includes(key)) delete env[key];
     Object.assign(env, { CODEX_HOME: path.join(home, '.codex'), CLAUDE_CONFIG_DIR: path.join(home, '.claude'), DSH_HOME: path.join(home, '.dsh'), MAGPIE_PARTNERS: 'off' });
-    let previous = {}; const settings = path.join(config, 'magpie', 'settings.json');
-    if (fs.existsSync(settings)) previous = JSON.parse(fs.readFileSync(settings, 'utf8'));
+    const settings = path.join(config, 'magpie', 'settings.json');
+    const saved = readConfig(settings, {});
+    const previous = saved.value;
+    if (saved.recovered) this.configWarning = '网关设置格式损坏，已保留原文件备份并恢复默认设置。';
     fs.writeFileSync(settings, JSON.stringify({ ...previous, lang: 'zh', theme: 'dark', noAccountDiscovery: true, noStats: true, noAutoUpdate: true, autoRestart: false, gatewayMode: 'on' }), { mode: 0o600 });
     const portFile = path.join(this.directory, 'gateway-port.json');
     let savedPort = 0;

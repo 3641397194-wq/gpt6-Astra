@@ -8,7 +8,7 @@ const { once } = require('node:events');
 const { _electron } = require('playwright');
 const root = path.resolve(__dirname, '..');
 const reviewing = process.argv.includes('--review');
-const output = path.join(root, 'work/routing-ui'); fs.mkdirSync(output, { recursive: true });
+const output = process.env.COLDCOFFEE_ROUTING_TEST_OUTPUT || path.join(root, 'work/routing-ui'); fs.mkdirSync(output, { recursive: true });
 const profile = path.join(output, crypto.randomUUID()); fs.mkdirSync(path.join(profile, 'Temp'), { recursive: true });
 const env = {};
 for (const key of ['PATH', 'Path', 'SystemRoot', 'WINDIR', 'COMSPEC', 'PATHEXT']) if (process.env[key]) env[key] = process.env[key];
@@ -29,7 +29,10 @@ Object.assign(env, { USERPROFILE: profile, HOME: profile, APPDATA: path.join(pro
         if ((id === 'primary' && task.includes('failover')) || task.includes('all-fail')) { res.statusCode = 503; return res.end(JSON.stringify({ error: { type: 'server_error', message: `synthetic ${id} failure, ${key}` } })); }
         res.setHeader('content-type', 'text/event-stream');
         res.write(`data: ${JSON.stringify({ id: 'ui-routing', object: 'chat.completion.chunk', model: `${id}-model`, choices: [{ index: 0, delta: { content: '真实本机' }, finish_reason: null }] })}\n\n`);
-        if (task.includes('failover-slow')) await new Promise(resolve => { releaseStream = resolve; const timeout = setTimeout(resolve, 45000); timeout.unref(); });
+        if (task.includes('failover-slow')) {
+          const pulse = setInterval(() => { if (!res.destroyed) res.write(`data: ${JSON.stringify({ id: 'ui-routing', object: 'chat.completion.chunk', model: `${id}-model`, choices: [{ index: 0, delta: { content: '·' }, finish_reason: null }] })}\n\n`); }, 180);
+          try { await new Promise(resolve => { releaseStream = resolve; const timeout = setTimeout(resolve, 45000); timeout.unref(); }); } finally { clearInterval(pulse); }
+        }
         else await new Promise(r => setTimeout(r, task.includes('slow') ? 3500 : 1800));
         if (res.destroyed) return;
         res.end(`data: ${JSON.stringify({ id: 'ui-routing', object: 'chat.completion.chunk', model: `${id}-model`, choices: [{ index: 0, delta: { content: '路由验证通过' }, finish_reason: 'stop' }], usage: { prompt_tokens: 1200, completion_tokens: 20, total_tokens: 1220, prompt_tokens_details: { cached_tokens: 600 } } })}\n\ndata: [DONE]\n\n`);
@@ -55,6 +58,7 @@ Object.assign(env, { USERPROFILE: profile, HOME: profile, APPDATA: path.join(pro
       fs.writeFileSync(path.join(output, name + '.png'), Buffer.from(png, 'base64'));
     };
     await page.locator('#vg-demo').click(); await page.waitForFunction(() => document.querySelector('#vg-flow-status').textContent.includes('HTTP 200'));
+    assert.match(await page.locator('#vg-route-explanation').textContent(), /只有 1 条候选连接/);
     assert.equal(await page.locator('#vg-treemap [data-kind="remaining"]').count(), 1);
     assert.ok(await page.locator('#vg-context-items .vg-content-row').count() >= 4);
     await page.locator('[data-context-mode="content"]').click(); assert.equal(await page.locator('#vg-treemap [data-kind="remaining"]').count(), 0);
@@ -119,9 +123,26 @@ Object.assign(env, { USERPROFILE: profile, HOME: profile, APPDATA: path.join(pro
     assert.equal(await page.locator('.vg-courier').getAttribute('data-seat'), live.tries[1].id);
     assert.ok(Number(await page.locator('#vg-flow').getAttribute('data-courier-distance')) >= 170, 'the cat has a real runway, beyond the former short node gap');
     assert.ok(Number(await page.locator('.vg-courier').getAttribute('data-travel-ms')) >= 3800, 'travel is slower and scales with route distance');
-    const catBefore = await page.locator('.vg-courier').evaluate(node => ({ x: node.style.left, y: node.style.top }));
+    const stableBefore = await page.evaluate(() => {
+      window.__routingStable = [...document.querySelectorAll('#vg-branches .vg-branch, #vg-branches .vg-seat')];
+      window.__routingStable.find(node => node.classList.contains('vg-seat')).focus();
+      return document.querySelector('#vg-flow-status').textContent;
+    });
+    await page.waitForTimeout(500); await page.evaluate(() => window.ColdCoffeeVisual.refresh());
+    const stableAfter = await page.evaluate(() => ({
+      retained: [...document.querySelectorAll('#vg-branches .vg-branch, #vg-branches .vg-seat')].every((node, i) => node === window.__routingStable[i]),
+      focusRetained: document.activeElement === window.__routingStable.find(node => node.classList.contains('vg-seat')),
+      status: document.querySelector('#vg-flow-status').textContent,
+      composite: getComputedStyle(document.querySelector('.vg-courier')).willChange,
+    }));
+    assert.equal(stableAfter.retained, true, 'stream updates keep branch/seat DOM identities');
+    assert.equal(stableAfter.focusRetained, true, 'stream updates do not steal keyboard focus');
+    assert.notEqual(stableAfter.status, stableBefore, 'verification spans actual new streaming bytes');
+    assert.equal(stableAfter.composite, 'transform');
+    report.checks.push('continuous streaming updates preserve branch nodes and keyboard focus; motion uses compositor transforms');
+    const catBefore = await page.locator('.vg-courier').evaluate(node => ({ x: node.dataset.x, y: node.dataset.y }));
     await page.waitForTimeout(420);
-    const catAfter = await page.locator('.vg-courier').evaluate(node => ({ x: node.style.left, y: node.style.top }));
+    const catAfter = await page.locator('.vg-courier').evaluate(node => ({ x: node.dataset.x, y: node.dataset.y }));
     assert.notDeepEqual(catBefore, catAfter, 'Ragdoll runs along the actual active route');
     const walk = await page.evaluate(async () => {
       const cat = document.querySelector('.vg-courier'), sprite = cat.firstElementChild;
@@ -129,7 +150,7 @@ Object.assign(env, { USERPROFILE: profile, HOME: profile, APPDATA: path.join(pro
       const directions = new Set(), facings = new Set(); let minOpacity = 1, maxStep = 0, previous = null, returns = 0;
       while (performance.now() < deadline) {
         await new Promise(requestAnimationFrame);
-        const point = { x: parseFloat(cat.style.left), y: parseFloat(cat.style.top), direction: cat.dataset.direction };
+        const point = { x: Number(cat.dataset.x), y: Number(cat.dataset.y), direction: cat.dataset.direction };
         directions.add(point.direction); facings.add(getComputedStyle(sprite).transform);
         minOpacity = Math.min(minOpacity, Number(getComputedStyle(cat).opacity), Number(getComputedStyle(sprite).opacity));
         if (previous) { maxStep = Math.max(maxStep, Math.hypot(point.x - previous.x, point.y - previous.y)); if (previous.direction === 'backward' && point.direction === 'forward') returns++; }
@@ -153,10 +174,10 @@ Object.assign(env, { USERPROFILE: profile, HOME: profile, APPDATA: path.join(pro
     await page.waitForFunction(() => document.querySelector('.vg-courier').dataset.moving === 'true');
     report.checks.push('Ragdoll continuously walks out and back, faces the return direction, remains fully visible and never teleports at endpoints; pause, reduced motion and replay preserve actual route evidence');
     await page.locator('.vg-flow-card').scrollIntoViewIfNeeded(); await capture('03-live-failover');
-    const beforeDone = await page.locator('.vg-courier').evaluate(node => ({ x: parseFloat(node.style.left), y: parseFloat(node.style.top) }));
+    const beforeDone = await page.locator('.vg-courier').evaluate(node => ({ x: Number(node.dataset.x), y: Number(node.dataset.y) }));
     releaseStream(); releaseStream = null;
     await switching; await page.evaluate(() => window.ColdCoffeeVisual.refresh());
-    const afterDone = await page.locator('.vg-courier').evaluate(node => ({ x: parseFloat(node.style.left), y: parseFloat(node.style.top) }));
+    const afterDone = await page.locator('.vg-courier').evaluate(node => ({ x: Number(node.dataset.x), y: Number(node.dataset.y) }));
     assert.ok(Math.hypot(afterDone.x - beforeDone.x, afterDone.y - beforeDone.y) < 50, 'completed requests do not snap the cat to the model');
     const done = (await snapshot()).routes.at(-1);
     assert.equal(done.actualProvider, 'backup'); assert.equal(done.actualModel, 'backup-model'); assert.equal(done.group.subs[0].id, 'nested-backup');
@@ -178,7 +199,12 @@ Object.assign(env, { USERPROFILE: profile, HOME: profile, APPDATA: path.join(pro
     await page.locator('#vg-route-select').selectOption(String(first.id));
     assert.equal(await page.locator('#vg-branches .vg-seat[data-state="hit"][data-provider="primary"]').count(), 1);
     const concurrent = send('route-concurrent-slow');
-    await page.waitForFunction(async () => (await window.coldbrew.gateway('snapshot')).routes.some(r => !r.done));
+    let concurrentObserved = false;
+    for (const deadline = Date.now() + 10000; Date.now() < deadline;) {
+      if ((await snapshot()).routes.some(r => !r.done)) { concurrentObserved = true; break; }
+      await page.waitForTimeout(80);
+    }
+    assert.equal(concurrentObserved, true, 'the concurrent request reaches the actual gateway before checking historical selection');
     await page.evaluate(() => window.ColdCoffeeVisual.refresh());
     assert.equal(await page.locator('#vg-flow').getAttribute('data-flow'), 'done');
     assert.equal(await page.locator('#vg-route-select').inputValue(), String(first.id));

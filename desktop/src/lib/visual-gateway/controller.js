@@ -6,21 +6,39 @@ const { CredentialBridge, baseUrl } = require('./bridge');
 const { MagpieEngine } = require('./engine');
 const { ClientConnector } = require('./clients');
 const { projector, totalsView, groupRevision } = require('./trace-view');
+const { readConfig, object } = require('./config-store');
 const PIN = require('./upstream.json');
+const RECOVERY_REQUIRED = '中转更新与恢复未完成，网关接入已停用。请检查本机存储权限后重新验证该中转。';
+
+function validRelays(value) {
+  if (!object(value) || (value.version !== undefined && value.version !== 1) || !Array.isArray(value.providers)) return false;
+  const ids = new Set();
+  return value.providers.every(provider => {
+    if (!object(provider) || typeof provider.id !== 'string' || !/^[a-z][a-z0-9-]{0,63}$/.test(provider.id) || provider.id === 'local-demo' || ids.has(provider.id) || provider.demo ||
+        typeof provider.name !== 'string' || typeof provider.baseUrl !== 'string' || !Array.isArray(provider.models) ||
+        ![undefined, 'auto', 'chat', 'responses'].includes(provider.wireApi) ||
+        provider.models.length > 5000 || provider.models.some(model => typeof model !== 'string' || !model || model.length >= 300 || /[\s\x00-\x1f]/.test(model))) return false;
+    try { baseUrl(provider.baseUrl); } catch { return false; }
+    ids.add(provider.id); return true;
+  });
+}
 
 class VisualGateway {
   constructor({ directory, resources, storage, fetchImpl = fetch, home, env, emit = () => {}, port }) {
     this.directory = directory; this.emit = emit; this.fetchImpl = fetchImpl; this.providers = []; this.busy = false;
     fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
     this.configFile = path.join(directory, 'relays.json');
-    if (fs.existsSync(this.configFile)) this.providers = JSON.parse(fs.readFileSync(this.configFile, 'utf8')).providers || [];
+    const config = readConfig(this.configFile, { version: 1, providers: [] }, validRelays);
+    this.providers = config.value.providers;
+    this.configWarning = config.recovered ? '中转列表格式损坏，已保留原文件备份。请重新添加中转，现有客户端配置保持原样。' : '';
     this.vault = new KeyVault(path.join(directory, 'keys'), storage);
     this.bridge = new CredentialBridge({ vault: this.vault, providers: () => this.providers, fetchImpl });
     this.engine = new MagpieEngine({ directory, resources, port });
     this.clients = new ClientConnector({ directory: path.join(directory, 'backups'), engine: this.engine, home, env });
     this.traceSalt = require('node:crypto').randomBytes(32); this.catalog = null; this.catalogTime = 0;
   }
-  async start() {
+  async start(recoveryId = null) {
+    if (this.transactionFailureId && recoveryId !== this.transactionFailureId) throw new Error(RECOVERY_REQUIRED);
     if (this.starting) return this.starting;
     if (this.engine.status().running) return this.status();
     this.starting = (async () => {
@@ -32,7 +50,8 @@ class VisualGateway {
   }
   persist() { fs.writeFileSync(this.configFile + '.tmp', JSON.stringify({ version: 1, providers: this.providers.filter(p => !p.demo) }), { mode: 0o600 }); fs.renameSync(this.configFile + '.tmp', this.configFile); }
   status() {
-    return { engine: this.engine.status(), encryption: this.vault.persistent(), busy: this.busy,
+    return { engine: this.engine.status(), encryption: this.vault.persistent(), busy: this.busy, configuring: this.configuring === true,
+      warnings: [this.configWarning, this.engine.configWarning, this.transactionWarning].filter(Boolean),
       providers: this.providers.filter(p => !p.demo).map(p => ({ id: p.id, name: p.name, baseUrl: p.baseUrl, wireApi: p.wireApi, models: p.models, hasKey: this.vault.has(p.id), remembered: p.remembered === true })),
       attribution: { name: PIN.name, version: PIN.version, license: PIN.license, source: PIN.source },
     };
@@ -47,11 +66,20 @@ class VisualGateway {
       ...(provider.demo ? { contexts: { 'visual-demo': 32768 } } : {}),
     });
   }
-  async configure(input) {
+  async configure(input = {}) {
     if (this.busy) throw new Error('请等待当前请求结束后再更新中转');
+    if (this.configuring) throw new Error('正在验证并保存中转，请稍候再试');
+    this.configuring = true;
+    let result;
+    try { result = await this.configureProvider(input); }
+    finally { this.configuring = false; }
+    return { ...result, ...this.status() };
+  }
+  async configureProvider(input) {
     const id = input.id || 'coldcoffee';
     this.vault.file(id);
     if (id === 'local-demo') throw new Error('该标识用于本机演示');
+    if (this.transactionFailureId && this.transactionFailureId !== id) throw new Error(RECOVERY_REQUIRED);
     const old = this.providers.find(p => p.id === id);
     const key = String(input.key || '') || this.vault.get(id);
     if (!key || /[\r\n]/.test(key)) throw new Error('请先填入自己的 API Key');
@@ -62,22 +90,49 @@ class VisualGateway {
     const response = await this.fetchImpl(`${base}/models`, { headers: { authorization: `Bearer ${key}` }, redirect: 'error', signal: AbortSignal.timeout(25000) });
     if (!response.ok) throw new Error(`中转验证未通过（HTTP ${response.status}），请检查 Key、余额与 API 地址`);
     let data; try { data = await response.json(); } catch { throw new Error('模型接口返回格式有误，请核对 API 地址'); }
-    const list = Array.isArray(data.data) ? data.data : Array.isArray(data.models) ? data.models : [];
-    const models = [...new Set(list.map(m => typeof m === 'string' ? m : m?.id).filter(m => typeof m === 'string' && m.length < 300 && !/[\s\x00-\x1f]/.test(m)))];
+    const list = Array.isArray(data?.data) ? data.data : Array.isArray(data?.models) ? data.models : [];
+    const models = [...new Set(list.map(m => typeof m === 'string' ? m : m?.id).filter(m => typeof m === 'string' && m.length > 0 && m.length < 300 && !/[\s\x00-\x1f]/.test(m)))];
     if (!models.length) throw new Error('接口尚未返回可用模型，请在中转站检查 Key 的模型权限');
     if (models.length > 5000) throw new Error('模型列表过大，请检查中转接口');
     const remember = input.remember === true;
     const provider = { id, name: id === 'coldcoffee' ? '冷咖啡中转' : String(input.name || '自定义中转').slice(0, 40), baseUrl: base, wireApi: ['chat', 'responses'].includes(input.wireApi) ? input.wireApi : 'auto', models, remembered: remember };
+    // Start with the last committed provider list. A failed cold start must
+    // not persist a new native provider before the transaction can roll back.
+    await this.start(id);
     const oldKey = this.vault.get(id);
-    this.vault.put(id, key, remember);
-    this.providers = this.providers.filter(p => p.id !== id).concat(provider);
-    try { await this.start(); await this.syncProvider(provider); this.persist(); }
-    catch (error) {
-      this.providers = this.providers.filter(p => p.id !== id).concat(old ? [old] : []);
-      if (oldKey) this.vault.put(id, oldKey, old?.remembered === true); else this.vault.remove(id);
-      throw error;
+    const previousProviders = this.providers;
+    let keyUpdated = false, engineAttempted = false;
+    try {
+      this.vault.put(id, key, remember); keyUpdated = true;
+      this.providers = this.providers.filter(p => p.id !== id).concat(provider);
+      engineAttempted = true; await this.syncProvider(provider); this.persist();
     }
-    return { ok: true, models: models.map(m => `${id}/${m}`), ...this.status() };
+    catch (error) {
+      this.providers = previousProviders; this.catalog = null; this.catalogTime = 0;
+      const rollbackErrors = [];
+      if (keyUpdated) {
+        try { if (oldKey) this.vault.put(id, oldKey, old?.remembered === true); else this.vault.remove(id); }
+        catch (rollbackError) { rollbackErrors.push(rollbackError); }
+      }
+      if (engineAttempted) {
+        try {
+          if (old) await this.syncProvider(old);
+          else await this.engine.api('provider/delete', { id });
+        } catch (rollbackError) { rollbackErrors.push(rollbackError); }
+      }
+      if (rollbackErrors.length || this.transactionFailureId === id) {
+        // Fail closed if local credentials and the native engine disagree.
+        // Causes stay in the main process; the renderer receives fixed text.
+        this.transactionFailureId = id;
+        this.transactionWarning = RECOVERY_REQUIRED;
+        const stopped = await Promise.allSettled([this.engine.stop(), this.bridge.stop()]);
+        rollbackErrors.push(...stopped.filter(result => result.status === 'rejected').map(result => result.reason));
+        throw new Error(this.transactionWarning, { cause: new AggregateError([error, ...rollbackErrors], 'Provider transaction rollback failed') });
+      }
+      throw new Error('中转更新未完成，已恢复原配置，请检查连接与本机存储后重试。', { cause: error });
+    }
+    if (this.transactionFailureId === id) { this.transactionWarning = ''; this.transactionFailureId = ''; }
+    return { ok: true, models: models.map(m => `${id}/${m}`) };
   }
   async snapshot() {
     if (!this.engine.status().running) return { ...this.status(), routes: [], seq: 0, totals: totalsView(), catalog: null, availableModels: [] };
@@ -125,6 +180,16 @@ class VisualGateway {
   models() { return this.catalog?.availableModels || this.providers.filter(p => !p.demo && this.vault.has(p.id)).flatMap(p => p.models.map(model => ({ id: `${p.id}/${model}`, name: model, provider: p.name }))); }
   async send(input = {}) {
     if (this.busy) throw new Error('当前请求仍在返回，请稍候');
+    if (this.configuring) throw new Error('中转正在更新，请等待保存完成后再发送');
+    this.busy = true;
+    const controller = new AbortController(); this.abort = controller;
+    try { return await this.sendRequest(input, controller); }
+    catch (error) {
+      const message = controller.signal.aborted ? '请求已停止' : this.vault.scrub(error.message);
+      this.emit({ type: 'error', message, demo: input.demo === true }); throw new Error(message);
+    } finally { this.busy = false; this.abort = null; }
+  }
+  async sendRequest(input, controller) {
     const demo = input.demo === true;
     const model = demo ? 'local-demo/visual-demo' : String(input.model || '');
     if (!demo) { await this.start(); await this.readCatalog(true); }
@@ -135,8 +200,7 @@ class VisualGateway {
       const provider = { id: 'local-demo', name: '本机演示模型', demo: true, models: ['visual-demo'], wireApi: 'chat' };
       this.providers.push(provider); await this.syncProvider(provider);
     }
-    this.busy = true;
-    const controller = new AbortController(); this.abort = controller;
+    controller.signal.throwIfAborted();
     this.emit({ type: 'begin', demo, model });
     const messages = demo ? [
       { role: 'system', content: '你是冷咖啡连接演示助手。以下内容只用于本机可视化展示。\n\n# 工作说明\n展示请求经过网关的过程，准确说明本机演示与实际中转的区别。\n'.repeat(12) },
@@ -159,32 +223,29 @@ class VisualGateway {
       }
       if (safeEnd > emitted) { this.emit({ type: 'chunk', text: this.vault.scrub(output.slice(emitted, safeEnd)), demo }); emitted = safeEnd; }
     };
-    try {
-      const response = await fetch(`${this.engine.url}/v1/chat/completions`, {
-        method: 'POST', headers: { authorization: 'Bearer coldcoffee-local', 'content-type': 'application/json', 'user-agent': 'ColdCoffee-Workbench/3.2', 'x-session-id': 'coldcoffee-visual-preview' },
-        body: JSON.stringify({ model, messages, stream: true, max_tokens: demo ? 512 : 256, ...(demo ? { tools: [{ type: 'function', function: { name: 'connection_status', description: '读取本机演示连接状态；此工具仅为展示上下文结构', parameters: { type: 'object', properties: {} } } }] } : {}) }),
-        signal: controller.signal,
-      });
-      if (!response.ok) throw new Error(`模型请求未完成（HTTP ${response.status}），请查看请求记录`);
-      let buffer = '';
-      const decoder = new TextDecoder();
-      const line = value => {
-        if (!value.startsWith('data:')) return;
-        const data = value.slice(5).trim(); if (!data || data === '[DONE]') return;
-        let part; try { part = JSON.parse(data); } catch { return; }
-        if (part.error) throw new Error('模型流返回错误，请检查请求记录');
-        const chunk = part.choices?.[0]?.delta?.content || '';
-        if (typeof chunk === 'string' && chunk) { output += chunk; emitSafe(false); }
-      };
-      for await (const chunk of response.body) {
-        buffer += decoder.decode(chunk, { stream: true });
-        const lines = buffer.split(/\r?\n/); buffer = lines.pop(); for (const value of lines) line(value);
-        if (output.length > 512000) throw new Error('响应内容达到本次预览上限');
-      }
-      if (buffer) line(buffer);
-      emitSafe(true); this.emit({ type: 'end', demo }); return { ok: true, demo, text: this.vault.scrub(output) };
-    } catch (error) { const message = controller.signal.aborted ? '请求已停止' : this.vault.scrub(error.message); this.emit({ type: 'error', message, demo }); throw new Error(message); }
-    finally { this.busy = false; this.abort = null; }
+    const response = await fetch(`${this.engine.url}/v1/chat/completions`, {
+      method: 'POST', headers: { authorization: 'Bearer coldcoffee-local', 'content-type': 'application/json', 'user-agent': 'ColdCoffee-Workbench/3.2', 'x-session-id': 'coldcoffee-visual-preview' },
+      body: JSON.stringify({ model, messages, stream: true, max_tokens: demo ? 512 : 256, ...(demo ? { tools: [{ type: 'function', function: { name: 'connection_status', description: '读取本机演示连接状态；此工具仅为展示上下文结构', parameters: { type: 'object', properties: {} } } }] } : {}) }),
+      signal: controller.signal,
+    });
+    if (!response.ok) throw new Error(`模型请求未完成（HTTP ${response.status}），请查看请求记录`);
+    let buffer = '';
+    const decoder = new TextDecoder();
+    const line = value => {
+      if (!value.startsWith('data:')) return;
+      const data = value.slice(5).trim(); if (!data || data === '[DONE]') return;
+      let part; try { part = JSON.parse(data); } catch { return; }
+      if (part.error) throw new Error('模型流返回错误，请检查请求记录');
+      const chunk = part.choices?.[0]?.delta?.content || '';
+      if (typeof chunk === 'string' && chunk) { output += chunk; emitSafe(false); }
+    };
+    for await (const chunk of response.body) {
+      buffer += decoder.decode(chunk, { stream: true });
+      const lines = buffer.split(/\r?\n/); buffer = lines.pop(); for (const value of lines) line(value);
+      if (output.length > 512000) throw new Error('响应内容达到本次预览上限');
+    }
+    if (buffer) line(buffer);
+    emitSafe(true); this.emit({ type: 'end', demo }); return { ok: true, demo, text: this.vault.scrub(output) };
   }
   async execute(action, input = {}) {
     try {
@@ -211,7 +272,7 @@ class VisualGateway {
         return { text: fs.readFileSync(path.join(legal, 'THIRD_PARTY_NOTICES.md'), 'utf8'), notices: fs.readFileSync(path.join(legal, 'OPEN_SOURCE_NOTICES.txt'), 'utf8') };
       }
       throw new Error('未知可视化操作');
-    } catch (error) { throw new Error(this.vault.scrub(error.message)); }
+    } catch (error) { throw new Error(this.vault.scrub(error.message), { cause: error }); }
   }
   async stop() { this.abort?.abort(); await this.engine.stop(); await this.bridge.stop(); }
 }

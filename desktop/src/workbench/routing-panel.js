@@ -9,7 +9,9 @@ window.ColdCoffeeRoutingPanel = Object.freeze({ create({ $, state, call, number,
   const option = (value, text) => Object.assign(document.createElement('option'), { value, textContent: text });
   const current = () => state.snapshot?.routes?.find(r => r.id === state.routeId) || state.snapshot?.routes?.at(-1);
   const second = ms => `${((ms || 0) / 1000).toFixed(2)} 秒`;
-  let graphSignature = '', selectSignature = '', contextSignature = '', groupsSignature = '', mode = 'window', contextKind = 'all', edit = null, editingMembers = [], saving = false;
+  let graphSignature = '', storySignature = '', selectSignature = '', contextSignature = '', groupsSignature = '', mode = 'window', contextKind = 'all', edit = null, editingMembers = [], saving = false, renderedRoute = null;
+  const branchNodes = new Map();
+  const setText = (node, value) => { if (node.textContent !== value) node.textContent = value; };
   const openBranches = new Set();
 
   function decisionList(route) {
@@ -34,6 +36,7 @@ window.ColdCoffeeRoutingPanel = Object.freeze({ create({ $, state, call, number,
     return parent;
   }
   function render(route) {
+    renderedRoute = route;
     const totals = state.snapshot?.totals || {};
     for (const [suffix, name] of [['requests', 'requests'], ['rerouted', 'rerouted'], ['errors', 'errors']]) $(`vg-total-${suffix}`).textContent = number(totals[name]);
     const routes = state.snapshot?.routes || [];
@@ -45,47 +48,69 @@ window.ColdCoffeeRoutingPanel = Object.freeze({ create({ $, state, call, number,
     }
     $('vg-route-name').textContent = route ? route.group ? `${route.group.name} · 路由组` : route.model : '等待网关记录';
     const seats = R.candidates(route);
-    $('vg-route-policy').textContent = route ? `${route.group ? R.policy(route.group.routing) + ' · ' + R.affinity(route.group.affinity) + ' · ' : ''}${seats.filter(s => !s.excluded).length} 条候选连接 · ${(route.tries || []).length} 次实际尝试${route.actualName ? ` · 实际命中：${route.actualName} / ${route.actualModel || '未上报模型名'}` : ''}` : '候选顺序、成员状态和决策说明，全部来自网关记录。';
+    const count = seats.filter(s => !s.excluded).length;
+    $('vg-route-policy').textContent = route ? `${route.group ? R.policy(route.group.routing) + ' · ' + R.affinity(route.group.affinity) + ' · ' : ''}${count} 条候选连接 · ${(route.tries || []).length} 次实际尝试${route.actualName ? ` · 实际命中：${route.actualName} / ${route.actualModel || '未上报模型名'}` : ''}` : '候选顺序、成员状态和决策说明，全部来自网关记录。';
+    let explanation = $('vg-route-explanation');
+    if (!explanation) { explanation = el('p', 'vg-route-explanation'); explanation.id = 'vg-route-explanation'; $('vg-route-policy').after(explanation); }
+    setText(explanation, !route ? '客户端 → 冷咖啡网关 → 上游连接。先连接中转，再体验一条请求。' : count === 1 ? '本次只有 1 条候选连接，没有可切换的分支。需要主备或轮询时，可在「管理路由组」添加其他已验证的模型。' : count > 1 ? '亮起的分支是实际尝试；备用连接不会被重复调用。点分支展开连接，点连接查看这条请求的完整记录。' : '网关正在准备候选；等待实际记录后再显示流向。');
     $('vg-request-id').textContent = route ? `#${route.id} · ${route.time ? new Date(route.time).toLocaleTimeString('zh-CN', { hour12: false }) : ''}` : '';
-    const signature = JSON.stringify([route, state.private]);
+    // Streaming byte/time changes are not topology changes. Retain each branch
+    // and seat so focus, disclosure state and the courier path stay stable.
+    const signature = JSON.stringify([seats.map(s => [s.id, s.via, s.provider, s.model, s.excluded, s.name, s.routing]), route?.group?.subs?.map(g => [g.id, g.ref, g.name, g.routing])]);
+    const grouped = new Map();
+    for (const s of seats) {
+      const key = JSON.stringify([s.via || [], s.provider, s.model, s.excluded]);
+      if (!grouped.has(key)) grouped.set(key, []); grouped.get(key).push(s);
+    }
     if (signature !== graphSignature) {
       graphSignature = signature;
       const host = $('vg-branches'); host.replaceChildren();
-      const containers = new Map(), grouped = new Map();
-      for (const s of seats) {
-        const key = JSON.stringify([s.via || [], s.provider, s.model, s.excluded]);
-        if (!grouped.has(key)) grouped.set(key, []); grouped.get(key).push(s);
-      }
+      const containers = new Map(); branchNodes.clear();
       for (const [key, members] of grouped) {
         const head = members[0];
         const parent = branchGroup(route, head.via, host, containers);
         const branch = el('details', 'vg-branch'); branch.dataset.branch = key;
-        const status = ['running', 'hit', 'failed', 'pending', 'standby', 'excluded'].find(s => members.some(m => m.status === s));
-        branch.dataset.state = status; branch.open = !openBranches.has('closed:' + key);
+        branch.open = !openBranches.has('closed:' + key);
         branch.addEventListener('toggle', () => { if (branch.open) openBranches.delete('closed:' + key); else openBranches.add('closed:' + key); });
         const title = el('summary', 'vg-branch-title');
         const labels = el('div'); labels.append(el('strong', '', head.name || head.provider || '引擎成员'), el('code', '', head.model || '模型未记录'));
         title.append(el('span', 'vg-branch-dot'), labels, el('span', 'vg-branch-policy', `${R.policy(head.routing)} · ${members.length} 条连接`));
         const body = el('div', 'vg-branch-seats');
+        const nodes = [];
         for (const s of members) {
-          const seat = button('', () => detailRoute(route), 'vg-seat'); seat.dataset.state = s.status; seat.dataset.provider = s.provider || ''; seat.dataset.seat = s.id; seat.dataset.model = s.model || '';
+          const seat = button('', () => detailRoute(renderedRoute), 'vg-seat'); seat.dataset.provider = s.provider || ''; seat.dataset.seat = s.id; seat.dataset.model = s.model || '';
           const text = el('div', 'vg-seat-copy');
-          text.append(el('strong', '', `${s.label || '连接'} ${members.indexOf(s) + 1}`), el('span', '', s.note));
-          const info = [];
-          if (s.known) info.push(`额度已用 ${Math.round((s.used || 0) * 100)}%`);
-          if (s.window) info.push(`窗口 ${number(s.window)}`);
-          if (s.fast) info.push('快速模式');
-          if (s.fixed) info.push(`固定推理 ${s.fixed}`);
-          if (s.fallback) info.push('后备连接');
-          if (s.reserve) info.push(`保留序位 ${s.reserve}`);
-          if (s.attempts.length) info.push(s.attempts.map(t => `尝试 ${t.step} · ${!t.done ? '响应中' : 'HTTP ' + (t.status || '—')} · ${second(t.ms)}`).join(' / '));
-          if (info.length) text.append(el('small', '', info.join(' · ')));
-          seat.append(el('i'), text, el('b', '', { hit: '已命中', running: '响应中', failed: '异常', standby: '备用', pending: '等待', excluded: '未入选' }[s.status])); body.append(seat);
+          const name = el('strong'), note = el('span'), info = el('small'), badge = el('b');
+          text.append(name, note, info); seat.append(el('i'), text, badge); body.append(seat);
+          nodes.push({ seat, name, note, info, badge });
         }
         branch.append(title, body); parent.append(branch);
+        branchNodes.set(key, { branch, nodes });
       }
-      if (!seats.length) host.append(el('div', 'vg-routing-empty', route ? route.error || '网关正在准备候选，尚未上报尝试。' : '接入中转后，多模型、多连接与嵌套路由会在这里展开。点击「体验可视化」先看一条真实本机请求。'));
-      $('vg-route-story').replaceChildren(...decisionList(route));
+      if (!seats.length) host.append(el('div', 'vg-routing-empty'));
+    }
+    if (!seats.length) setText($('vg-branches').firstElementChild, route ? route.error || '网关正在准备候选，尚未上报尝试。' : '接入中转后，多模型、多连接与嵌套路由会在这里展开。点击「体验可视化」先看一条真实本机请求。');
+    for (const [key, members] of grouped) {
+      const { branch, nodes } = branchNodes.get(key);
+      branch.dataset.state = ['running', 'hit', 'failed', 'pending', 'standby', 'excluded'].find(s => members.some(m => m.status === s));
+      members.forEach((s, index) => {
+        const node = nodes[index]; node.seat.dataset.state = s.status;
+        setText(node.name, `${s.label || '连接'} ${index + 1}`); setText(node.note, s.note);
+        const info = [];
+        if (s.known) info.push(`额度已用 ${Math.round((s.used || 0) * 100)}%`);
+        if (s.window) info.push(`窗口 ${number(s.window)}`);
+        if (s.fast) info.push('快速模式');
+        if (s.fixed) info.push(`固定推理 ${s.fixed}`);
+        if (s.fallback) info.push('后备连接');
+        if (s.reserve) info.push(`保留序位 ${s.reserve}`);
+        if (s.attempts.length) info.push(s.attempts.map(t => `尝试 ${t.step} · ${!t.done ? '响应中' : 'HTTP ' + (t.status || '—')} · ${second(t.ms)}`).join(' / '));
+        setText(node.info, info.join(' · ')); node.info.hidden = !info.length;
+        setText(node.badge, { hit: '已命中', running: '响应中', failed: '异常', standby: '备用', pending: '等待', excluded: '未入选' }[s.status]);
+      });
+    }
+    const steps = R.story(route), nextStorySignature = JSON.stringify(steps);
+    if (nextStorySignature !== storySignature) {
+      storySignature = nextStorySignature; $('vg-route-story').replaceChildren(...decisionList(route));
       if (!route) $('vg-route-story').append(el('li', 'vg-no-requests', '等待第一条真实网关记录。'));
     }
     if ($('vg-groups-dialog').open && !saving) renderGroups();

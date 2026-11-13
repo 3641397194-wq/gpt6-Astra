@@ -12,8 +12,8 @@ window.ColdCoffeeCourier = Object.freeze({ create({ $, page }) {
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   let enabled = true; try { enabled = (localStorage.getItem('coldcoffee.courierMotion.v1') ?? localStorage.getItem('coldcoffee.collieMotion.v1')) !== 'off'; } catch {}
   let route = null, evidence = window.ColdCoffeeRouting.courier(null), replay = null, frame = 0, layoutFrame = 0, length = 0, travelMs = 3800, disposed = false;
-  let amount = 0, direction = 1, lastTick = 0, restUntil = 0, settling = false, point = null, retarget = null, pathSignature = '', relocate = false;
-  const turnPauseMs = 260;
+  let amount = 0, direction = 1, lastTick = 0, restUntil = 0, settling = false, point = null, retarget = null, pathSignature = '', samples = [];
+  const turnPauseMs = 150;
   actor.style.opacity = '1';
   const visible = () => !document.hidden && page.classList.contains('active') && flow.clientWidth > 0;
   const animated = () => enabled && !motion.matches;
@@ -32,7 +32,8 @@ window.ColdCoffeeCourier = Object.freeze({ create({ $, page }) {
     flow.dataset.courier = state.phase; flow.dataset.courierRoute = route ? String(route.id) : '';
     actor.dataset.phase = state.phase; actor.dataset.seat = state.target?.id || '';
     actor.dataset.moving = String(walking());
-    label.textContent = (settling && state.phase === 'failed' ? '请求异常 · 布偶猫回程中' : state.label + (settling ? ' · 布偶猫完成往返中' : '')) + (!enabled ? ' · 动效已暂停' : motion.matches ? ' · 系统静态显示' : '');
+    const caption = (settling && state.phase === 'failed' ? '请求异常 · 布偶猫回程中' : state.label + (settling ? ' · 布偶猫完成往返中' : '')) + (!enabled ? ' · 动效已暂停' : motion.matches ? ' · 系统静态显示' : '');
+    if (label.textContent !== caption) label.textContent = caption;
     toggle.textContent = enabled ? '布偶猫动效 · 开' : '布偶猫动效 · 关'; toggle.setAttribute('aria-pressed', String(enabled));
     replayButton.disabled = !route?.done || !route?.tries?.length || !animated();
     replayButton.textContent = replay ? '停止记录回放' : '回放所选路径';
@@ -54,30 +55,45 @@ window.ColdCoffeeCourier = Object.freeze({ create({ $, page }) {
     svg.setAttribute('viewBox', `0 0 ${flow.clientWidth} ${flow.clientHeight}`);
     const bend = Math.max(30, Math.abs(finish.x - start.x) * .45);
     const geometry = stacked ? `M ${start.x} ${start.y} C ${start.x} ${start.y + 70}, ${finish.x - 16} ${finish.y - 70}, ${finish.x} ${finish.y}` : `M ${start.x} ${start.y} C ${start.x + bend} ${start.y}, ${finish.x - bend} ${finish.y}, ${finish.x} ${finish.y}`;
-    if ((geometry !== pathSignature || relocate) && point && animated()) retarget = { from: point, started: performance.now() };
-    relocate = false; pathSignature = geometry; path.setAttribute('d', geometry);
+    if (geometry !== pathSignature) {
+      pathSignature = geometry; path.setAttribute('d', geometry);
+      length = path.getTotalLength();
+      // SVG geometry is measured only on a layout/path change, not 3 times per
+      // animation frame. Interpolation keeps the travel speed uniform on curves.
+      const count = Math.max(24, Math.ceil(length / 5));
+      samples = Array.from({ length: count + 1 }, (_, i) => { const p = path.getPointAtLength(length * i / count); return { x: p.x, y: p.y }; });
+      if (point && animated()) {
+        const next = sample(amount);
+        retarget = { from: point, started: performance.now(), duration: Math.min(1400, Math.max(500, Math.hypot(point.x - next.x, point.y - next.y) * 4)) };
+      }
+    }
     path.dataset.phase = state.phase; path.style.opacity = node ? '1' : '0';
-    length = path.getTotalLength();
-    travelMs = Math.min(6400, Math.max(3800, length * 16));
+    travelMs = Math.max(3800, length * 16);
     flow.dataset.courierDistance = String(Math.round(length)); actor.dataset.travelMs = String(Math.round(travelMs));
     position(performance.now()); ensureFrame();
   }
   function schedule() { if (!disposed && !layoutFrame) layoutFrame = requestAnimationFrame(measure); }
+  function sample(progress) {
+    if (!samples.length) return { x: 0, y: 0 };
+    const value = Math.min(1, Math.max(0, progress)) * (samples.length - 1), index = Math.floor(value), t = value - index;
+    const a = samples[index], b = samples[Math.min(index + 1, samples.length - 1)];
+    return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+  }
   function position(now) {
     if (!length) return;
-    const distance = length * Math.min(1, Math.max(0, amount)), p = path.getPointAtLength(distance);
-    const before = path.getPointAtLength(Math.max(0, distance - 2)), after = path.getPointAtLength(Math.min(length, distance + 2));
+    const p = sample(amount), before = sample(amount - .005), after = sample(amount + .005);
     let x = p.x, y = p.y;
     if (retarget && animated()) {
-      const t = Math.min(1, Math.max(0, (now - retarget.started) / 300)), eased = 1 - (1 - t) ** 3;
+      const t = Math.min(1, Math.max(0, (now - retarget.started) / retarget.duration)), eased = t * t * (3 - 2 * t);
       x = retarget.from.x + (x - retarget.from.x) * eased; y = retarget.from.y + (y - retarget.from.y) * eased;
       if (t === 1) retarget = null;
     } else retarget = null;
-    point = { x, y }; actor.style.left = x + 'px'; actor.style.top = y + 'px';
+    point = { x, y }; actor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -85%)`;
+    actor.dataset.x = String(x); actor.dataset.y = String(y);
     const backwards = (after.x - before.x) * direction < 0;
     sprite.style.transform = backwards ? 'scaleX(-1)' : '';
     actor.dataset.direction = direction < 0 ? 'backward' : 'forward';
-    actor.dataset.progress = String(amount); actor.dataset.moving = String(walking());
+    actor.dataset.progress = String(amount); actor.dataset.moving = String(walking() && now >= restUntil);
   }
   function tick(now) {
     frame = 0; if (disposed || !visible() || !animated()) { lastTick = 0; return; }
@@ -100,7 +116,10 @@ window.ColdCoffeeCourier = Object.freeze({ create({ $, page }) {
   function render(next) {
     const nextEvidence = window.ColdCoffeeRouting.courier(next);
     if (next?.id !== route?.id) {
-      replay = null; settling = false; amount = 0; direction = 1; lastTick = 0; restUntil = 0; relocate = !!point;
+      // Following a new streaming request must not send the courier back to x=0.
+      // Keep the current leg and turn naturally; geometry changes ease in place.
+      replay = null; settling = false;
+      if (!next || !route) { amount = 0; direction = 1; lastTick = 0; restUntil = 0; }
     } else if (!next?.done) { replay = null; settling = false; }
     else if (!route?.done && nextEvidence.target) settling = animated();
     route = next; evidence = nextEvidence;

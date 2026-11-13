@@ -9,10 +9,11 @@
 .vg-courier-trail path { stroke: #cf879c; stroke-width: 1.6; stroke-dasharray: 3 6; stroke-linecap: round; opacity: .8; }
 .vg-courier-trail path[data-phase='arrived'] { stroke: #9ec0ad; }
 .vg-courier-trail path[data-phase='failed'] { stroke: #af7183; }
-.vg-courier { position: absolute; width: 88px; height: 99px; transform: translate(-50%, -85%); filter: drop-shadow(0 3px 3px #050307a0); will-change: left, top; }
+.vg-courier { position: absolute; left: 0; top: 0; width: 88px; height: 99px; transform: translate3d(0, 0, 0) translate(-50%, -85%); filter: drop-shadow(0 3px 3px #050307a0); will-change: transform; }
 .vg-courier-sprite { width: 100%; height: 100%; background-image: url('../../assets/route-ragdoll/atlas.png'); background-size: 400% 200%; background-position: 66.666667% 100%; background-repeat: no-repeat; }
 .vg-courier[data-phase='arrived'] .vg-courier-sprite { background-position: 100% 100%; }
-.vg-courier[data-moving='true'] .vg-courier-sprite { animation: vg-courier-run 1.08s steps(1, end) infinite; }
+.vg-courier-sprite { animation: vg-courier-run .9s steps(1, end) infinite paused; }
+.vg-courier[data-moving='true'] .vg-courier-sprite { animation-play-state: running; }
 .vg-courier[data-phase='arrived']::after, .vg-courier[data-phase='failed']::after { position: absolute; right: 2px; top: 15px; content: '✓'; font: bold 11px/18px 'Segoe UI', sans-serif; color: #c5edd0; text-align: center; width: 18px; height: 18px; border-radius: 50%; background: #24342b; border: 1px solid #70927c; }
 .vg-courier[data-phase='failed']::after { content: '!'; color: #efc4cd; background: #39232a; border-color: #966070; }
 @keyframes vg-courier-run {

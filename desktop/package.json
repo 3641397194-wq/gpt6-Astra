@@ -1,7 +1,7 @@
 {
   "name": "coldbrew-zero-desktop",
   "productName": "冷咖啡破甲工作台",
-  "version": "3.2.0-preview.9",
+  "version": "3.2.0-preview.10",
   "private": true,
   "description": "gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持破甲越狱 · BREAK//OPEN 工作台",
   "main": "src/main.js",
@@ -39,7 +39,9 @@
     "test:gateway:ui": "node scripts/test-visual-gateway-ui.cjs",
     "test:display:ui": "node scripts/test-display-ui.cjs",
     "test:brand:ui": "node scripts/test-brand-ui.cjs",
-    "test:routing:ui": "node scripts/test-routing-ui.cjs"
+    "test:routing:ui": "node scripts/test-routing-ui.cjs",
+    "test:gateway:usability": "node scripts/test-gateway-usability-ui.cjs",
+    "test:display:resilience": "node scripts/test-display-resilience.cjs"
   },
   "dependencies": {
     "jsonc-parser": "3.3.1",

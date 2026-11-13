@@ -7,6 +7,7 @@
 .vg-route-heading > div { min-width: 0; flex: 1; }
 .vg-route-heading strong { font-size: 18px; color: #f2e9ed; overflow-wrap: anywhere; }
 .vg-route-heading p { color: #b5a7af; font-size: 14px; margin: 6px 0 0; }
+.vg-route-heading .vg-route-explanation { margin-top: 10px; max-width: 900px; line-height: 1.7; color: #cbb8c2; }
 .vg-route-heading label { color: #b5a7af; font-size: 13px; width: min(36%, 390px); flex-shrink: 0; }
 .vg-route-heading select { margin-top: 6px; padding: 9px; font-size: 14px; }
 .vg-flow.vg-routing { grid-template-columns: minmax(230px, .75fr) minmax(0, 2.3fr); column-gap: clamp(210px, 18vw, 280px); row-gap: 28px; min-height: 240px; padding: 34px 24px 32px; align-items: center; }
@@ -45,6 +46,7 @@
 .vg-seat-copy strong { font-size: 14px; color: #d9c5d1; }
 .vg-seat-copy span { font-size: 14px; color: #c7b6c0; overflow-wrap: anywhere; }
 .vg-seat-copy small { font-size: 13px; color: #a893a2; width: 100%; overflow-wrap: anywhere; }
+.vg-seat-copy small[hidden] { display: none; }
 .vg-seat > b { font-size: 13px; font-weight: 400; color: #bfa3b4; flex-shrink: 0; }
 .vg-seat[data-state="hit"] > b { color: #b4d0ba; }
 .vg-seat[data-state="failed"] > b { color: #f39bb1; }

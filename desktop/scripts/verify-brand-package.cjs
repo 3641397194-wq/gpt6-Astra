@@ -18,7 +18,7 @@ for (const name of ['hero.webp', 'avatar.webp', 'icon.png', 'icon.ico', 'provena
   assert.equal(sha(packed), sha(fs.readFileSync(path.join(root, relative))), relative);
   report.artwork.push({ file: relative, sha256: sha(packed), bytes: packed.length });
 }
-for (const file of ['src/workbench/brand-refresh.css', 'src/workbench/visual-gateway.css', 'src/workbench/visual-gateway.js', 'src/workbench/routing-panel.js', 'src/workbench/routing-panel.css', 'src/shared/routing-view.js', 'src/lib/visual-gateway/trace-view.js', 'src/lib/visual-gateway/controller.js', 'src/workbench/index.html', 'src/splash/index.html', 'src/splash/splash.css', 'src/main.js']) {
+for (const file of ['src/workbench/brand-refresh.css', 'src/workbench/visual-gateway.css', 'src/workbench/visual-gateway.js', 'src/workbench/routing-panel.js', 'src/workbench/routing-panel.css', 'src/shared/routing-view.js', 'src/lib/visual-gateway/trace-view.js', 'src/lib/visual-gateway/controller.js', 'src/lib/visual-gateway/engine.js', 'src/lib/visual-gateway/vault.js', 'src/lib/visual-gateway/config-store.js', 'src/lib/window-view.js', 'src/workbench/display-controls.js', 'src/workbench/display-controls.css', 'src/workbench/index.html', 'src/splash/index.html', 'src/splash/splash.css', 'src/main.js']) {
   assert.equal(sha(extract(file)), sha(fs.readFileSync(path.join(root, file))), file);
 }
 const privatePath = /(?:^|\/)(?:work|\.git|ImageProvider|keys)(?:\/|$)|(?:^|\/)(?:\.env(?:\..*)?|auth\.json|credentials\.json|credential\.dpapi|preview-session\.json)$|\.(?:secret|pem|p12|pfx|dmp)$/i;

@@ -1,6 +1,7 @@
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
+const { randomUUID } = require('node:crypto');
 
 const ZOOM_STEPS = Object.freeze([0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2]);
 function readZoom(file) {
@@ -14,21 +15,35 @@ function readZoom(file) {
 // buttons each applying a different scale to the same document.
 function attachWindowView(window, file) {
   let zoom = readZoom(file);
+  let preferenceError = '';
   const contents = window.webContents;
-  const status = () => ({ zoom, percent: Math.round(zoom * 100), maximized: window.isMaximized(), min: zoom === ZOOM_STEPS[0], max: zoom === ZOOM_STEPS.at(-1) });
+  const status = () => ({ zoom, percent: Math.round(zoom * 100), maximized: window.isMaximized(), min: zoom === ZOOM_STEPS[0], max: zoom === ZOOM_STEPS.at(-1), preferenceSaved: !preferenceError, preferenceError });
   const emit = () => { if (!window.isDestroyed() && !contents.isDestroyed()) contents.send('window:view-changed', status()); };
+  function persist() {
+    const temporary = `${file}.${randomUUID()}.tmp`;
+    try {
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(temporary, JSON.stringify({ zoom }), { mode: 0o600, flag: 'wx' });
+      fs.renameSync(temporary, file);
+      preferenceError = '';
+    } catch {
+      // Display changes should still work on a read-only/full disk. Keep the
+      // warning explicit and retry on the next control action, even at a limit.
+      // Never forward a filesystem error containing a personal profile path.
+      preferenceError = '缩放已生效，本次设置尚未保存。请检查磁盘空间或写入权限，再点缩放按钮重试。';
+    } finally {
+      try { fs.unlinkSync(temporary); } catch { /* Absent, renamed or inaccessible. */ }
+    }
+  }
   function execute(action = 'status') {
     if (action === 'status') return status();
     const index = ZOOM_STEPS.indexOf(zoom);
     const next = action === 'in' ? ZOOM_STEPS[Math.min(index + 1, ZOOM_STEPS.length - 1)]
       : action === 'out' ? ZOOM_STEPS[Math.max(index - 1, 0)] : action === 'reset' ? 1 : null;
     if (next === null) throw new Error('未知显示操作');
-    if (next !== zoom) {
-      zoom = next; contents.setZoomFactor(zoom);
-      fs.mkdirSync(path.dirname(file), { recursive: true });
-      fs.writeFileSync(file + '.tmp', JSON.stringify({ zoom }), { mode: 0o600 });
-      fs.renameSync(file + '.tmp', file);
-    }
+    const changed = next !== zoom;
+    if (changed) { contents.setZoomFactor(next); zoom = next; }
+    if (changed || preferenceError) persist();
     emit(); return status();
   }
   contents.on('did-finish-load', () => {

@@ -14,7 +14,7 @@ const tag = `v${version}`;
 
 test('ordinary main pushes validate and package but never try to republish an existing VERSION', () => {
   assert.match(workflow, /workflow_dispatch:\s+inputs:\s+publish_release:[\s\S]*?default:\s*false[\s\S]*?type:\s*boolean/);
-  assert.match(workflow, /if:\s*github\.ref == 'refs\/heads\/main' && github\.event_name == 'workflow_dispatch' && inputs\.publish_release == true/);
+  assert.match(workflow, /if:\s*\(github\.ref == 'refs\/heads\/main' \|\| startsWith\(github\.ref, 'refs\/heads\/codex\/release-'\)\) && github\.event_name == 'workflow_dispatch' && inputs\.publish_release == true/);
   assert.doesNotMatch(workflow, /if:.*github\.event_name == 'push'.*refs\/heads\/main/);
 });
 

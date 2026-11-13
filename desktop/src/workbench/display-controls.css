@@ -11,6 +11,9 @@ body { font-size: 16px; }
 .display-controls button { border: 0; border-radius: 6px; background: transparent; min-width: 34px; height: 36px; padding: 0 6px; font-size: 17px; line-height: 1; }
 .display-controls #view-reset { min-width: 54px; color: #e1d5e9; font-size: 13px; font-variant-numeric: tabular-nums; }
 .display-controls button:hover { background: #3b2e41; }
+.display-controls.has-warning { border-color: #b49165; }
+.display-feedback { position: fixed; right: 16px; bottom: 16px; z-index: 90; width: min(440px, calc(100vw - 32px)); margin: 0; padding: 12px 16px; border: 1px solid #b49165; border-radius: 10px; background: #211c1b; color: #f0d5b3; font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; box-shadow: 0 8px 30px #0006; -webkit-app-region: no-drag; }
+.display-feedback[hidden] { display: none; }
 .shell { grid-template-columns: 226px minmax(0, 1fr); }
 .sidebar { min-width: 0; min-height: calc(100vh - 76px); padding: 28px 14px; }
 .sidebar .eyebrow { font-size: 13px; }

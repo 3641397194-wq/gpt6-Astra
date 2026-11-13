@@ -10,19 +10,22 @@ class KeyVault {
     return path.join(this.directory, `${id}.secret`);
   }
   persistent() {
-    return !!this.storage?.isEncryptionAvailable() && this.storage?.getSelectedStorageBackend?.() !== 'basic_text';
+    try { return !!this.storage?.isEncryptionAvailable() && this.storage?.getSelectedStorageBackend?.() !== 'basic_text'; }
+    catch { return false; }
   }
   put(id, key, remember) {
     this.file(id);
     if (!key || key.length > 16000 || /[\r\n]/.test(key)) throw new Error('请填写有效的 API Key');
     if (remember && !this.persistent()) throw new Error('系统加密存储尚未就绪，请取消记住 Key 后连接');
-    this.memory.set(id, key);
     if (remember) {
       fs.mkdirSync(this.directory, { recursive: true, mode: 0o700 });
       const file = this.file(id);
-      fs.writeFileSync(file + '.tmp', this.storage.encryptString(key), { mode: 0o600 });
-      fs.renameSync(file + '.tmp', file);
+      try {
+        fs.writeFileSync(file + '.tmp', this.storage.encryptString(key), { mode: 0o600 });
+        fs.renameSync(file + '.tmp', file);
+      } finally { try { fs.unlinkSync(file + '.tmp'); } catch {} }
     } else if (fs.existsSync(this.file(id))) fs.unlinkSync(this.file(id));
+    this.memory.set(id, key);
   }
   get(id) {
     if (this.memory.has(id)) return this.memory.get(id);
@@ -32,7 +35,7 @@ class KeyVault {
     catch { return ''; }
   }
   has(id) { return !!this.get(id); }
-  remove(id) { this.memory.delete(id); const file = this.file(id); if (fs.existsSync(file)) fs.unlinkSync(file); }
+  remove(id) { const file = this.file(id); if (fs.existsSync(file)) fs.unlinkSync(file); this.memory.delete(id); }
   scrub(value) {
     let text = String(value || '');
     for (const key of this.memory.values()) if (key) {

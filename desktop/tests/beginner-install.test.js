@@ -44,7 +44,7 @@ test('install writes once, verifies, and refuses a click that was not confirmed'
   const again = installOne('codex', { confirm: true, detect });
   assert.equal(again.changed, 0);
   assert.equal(again.verified, true);
-  fs.rmSync(root, { recursive: true, force: true });
+  fs.rmSync(root, { recursive: true, force: true, maxRetries: 5, retryDelay: 80 });
 });
 
 test('cursor install lands in a directory named .cursor', () => {
@@ -79,7 +79,7 @@ test('cursor install lands in a directory named .cursor', () => {
     assert.equal(fs.existsSync(path.join(install, 'rules')), false);
     assert.equal(fs.existsSync(path.join(roaming, 'rules')), false);
   } finally {
-    fs.rmSync(base, { recursive: true, force: true });
+    fs.rmSync(base, { recursive: true, force: true, maxRetries: 5, retryDelay: 80 });
   }
 });
 
@@ -119,7 +119,7 @@ test('mimo install lands in .config/mimocode and skips npm', () => {
     assert.equal(hooked.code, 'manual');
     assert.equal(fs.existsSync(path.join(user, 'mcp.json')), false);
   } finally {
-    fs.rmSync(base, { recursive: true, force: true });
+    fs.rmSync(base, { recursive: true, force: true, maxRetries: 5, retryDelay: 80 });
   }
 });
 
@@ -169,7 +169,7 @@ test('kimi k3.1 install lands in .kimi-code skills and skips config', () => {
     assert.equal(fs.existsSync(path.join(user, 'mcp.json')), false);
     assert.equal(fs.existsSync(path.join(user, 'config.toml')), false);
   } finally {
-    fs.rmSync(base, { recursive: true, force: true });
+    fs.rmSync(base, { recursive: true, force: true, maxRetries: 5, retryDelay: 80 });
   }
 });
 
@@ -196,7 +196,7 @@ test('uninstall restores the backup and drops the toolbox hook', () => {
     assert.equal(again.restored, 0);
     assert.match(again.message, /本来就没有/);
   } finally {
-    fs.rmSync(root, { recursive: true, force: true });
+    fs.rmSync(root, { recursive: true, force: true, maxRetries: 5, retryDelay: 80 });
   }
 });
 
@@ -220,7 +220,7 @@ test('cursor uninstall preserves later user MCP edits and stops the transaction 
     assert.equal(left.mcpServers['ida-pro-mcp'].url, 'http://127.0.0.1:13337/mcp');
     assert.equal(left.mcpServers.keep.url, 'http://127.0.0.1:9');
   } finally {
-    fs.rmSync(base, { recursive: true, force: true });
+    fs.rmSync(base, { recursive: true, force: true, maxRetries: 5, retryDelay: 80 });
   }
 });
 
@@ -237,5 +237,5 @@ test('launcher lookup only returns matching shortcuts', () => {
   const hit = matchLauncher('codex', hits[0].path, { platform: 'win32', roots: [dir] });
   assert.equal(hit.name, 'Codex');
   assert.throws(() => matchLauncher('codex', path.join(dir, 'notes.txt'), { platform: 'win32', roots: [dir] }), /快捷方式/);
-  fs.rmSync(dir, { recursive: true, force: true });
+  fs.rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 80 });
 });
