@@ -292,7 +292,7 @@
   $('vg-hub-node').onclick = () => { if (!state.snapshot?.engine.running || state.connectionError) reconnect(); else tell('冷咖啡网关在本机运行，点击「完整引擎」使用高级功能；组件信息见「关于与开源许可」。'); };
   $('vg-retry').onclick = reconnect;
   $('vg-next-relay').onclick = () => stage(2);
-  document.querySelectorAll('[data-vg-close]').forEach(b => b.onclick = () => $(b.dataset.vgClose).close());
+  document.querySelectorAll('[data-vg-close]').forEach(b => b.onclick = () => b.dataset.vgClose === 'vg-setup-dialog' ? closeSetup() : $(b.dataset.vgClose).close());
   document.querySelectorAll('[data-vg-back]').forEach(b => b.onclick = () => { if (!state.formBusy) stage(Number(b.dataset.vgBack)); });
   document.querySelectorAll('[data-vg-stage]').forEach(b => b.onclick = () => { const value = Number(b.dataset.vgStage); if (!state.formBusy && (value < 3 || state.models.length)) stage(value); });
   $('vg-key-toggle').onclick = () => { const input = $('vg-key'); input.type = input.type === 'password' ? 'text' : 'password'; $('vg-key-toggle').textContent = input.type === 'password' ? '显示' : '隐藏'; };
@@ -355,9 +355,21 @@
     } catch (error) { if (currentSetup(revision)) { state.plan = null; $('vg-connect').textContent = '重新检查配置 →'; status(error.message); } }
     finally { lockSetup(false); }
   };
-  $('vg-setup-dialog').addEventListener('close', () => { state.setupRevision++; $('vg-key').value = ''; $('vg-key').type = 'password'; $('vg-key-toggle').textContent = '显示'; $('vg-connect').hidden = false; $('vg-connect').textContent = '检查配置变更 →'; $('vg-plan').hidden = true; state.plan = null; });
+  function resetClosedSetup() {
+    state.setupRevision++; $('vg-key').value = ''; $('vg-key').type = 'password'; $('vg-key-toggle').textContent = '显示';
+    $('vg-connect').hidden = false; $('vg-connect').textContent = '检查配置变更 →'; $('vg-plan').hidden = true; state.plan = null;
+  }
+  function closeSetup() {
+    // Clear sensitive input before close() queues its asynchronous event.
+    resetClosedSetup(); $('vg-setup-dialog').close();
+  }
+  $('vg-setup-dialog').addEventListener('cancel', event => { event.preventDefault(); closeSetup(); });
+  $('vg-setup-dialog').addEventListener('close', () => {
+    // A previous close event may arrive after the user has reopened the wizard.
+    if (!$('vg-setup-dialog').open) resetClosedSetup();
+  });
   $('vg-copy-word').onclick = () => navigator.clipboard.writeText('冷咖啡').then(() => status('已复制「冷咖啡」，到目标软件发送。')).catch(() => status('启动口令：冷咖啡'));
-  $('vg-finish').onclick = () => { $('vg-setup-dialog').close(); show(); };
+  $('vg-finish').onclick = () => { closeSetup(); show(); };
   $('vg-install').onclick = () => go('packs'); $('vg-site').onclick = () => external('https://coldcoffeeai.com/'); $('vg-buy').onclick = () => external('https://coldcoffeeai.com/'); $('vg-community').onclick = () => go('community'); $('vg-custom').onclick = () => go('community');
   $('vg-demo').onclick = () => send(true); $('vg-test-form').onsubmit = event => { event.preventDefault(); send(false, $('vg-test-input').value); };
   $('vg-flow-detail').onclick = () => { const route = currentRoute(); if (route) detailRoute(route); else tell('先体验可视化或发送一条真实请求，再查看详情。'); };

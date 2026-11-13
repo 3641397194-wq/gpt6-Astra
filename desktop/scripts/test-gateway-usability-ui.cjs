@@ -102,7 +102,11 @@ const pause = () => { let release; const promise = new Promise(resolve => { rele
     assert.equal(await page.locator('#vg-key').isDisabled(), true);
     await page.evaluate(() => document.querySelector('#vg-relay-form').dispatchEvent(new Event('submit', { cancelable: true })));
     assert.equal(f.configureCalls, 1);
-    await page.locator('[data-vg-close="vg-setup-dialog"]').click();
+    const immediateClose = await page.evaluate(() => {
+      document.querySelector('[data-vg-close="vg-setup-dialog"]').click();
+      return { key: document.querySelector('#vg-key').value, open: document.querySelector('#vg-setup-dialog').open };
+    });
+    assert.deepEqual(immediateClose, { key: '', open: false }, 'key clears synchronously before queued close events');
     assert.equal(await page.locator('#vg-key').inputValue(), '');
     assert.equal(await page.locator('#vg-key-toggle').textContent(), '显示');
     await page.locator('#vg-setup').click();
@@ -157,6 +161,19 @@ const pause = () => { let release; const promise = new Promise(resolve => { rele
     f.models = []; await page.evaluate(() => window.ColdCoffeeVisual.refresh());
     assert.equal(await page.locator('#vg-copy-connection').isDisabled(), true);
     report.checks.push('copy connection is enabled only with a live gateway and selected model');
+    await page.locator('#vg-setup').click();
+    await page.evaluate(() => {
+      document.querySelector('#vg-key').value = 'new-session-fixture';
+      document.querySelector('#vg-setup-dialog').dispatchEvent(new Event('close'));
+    });
+    assert.equal(await page.locator('#vg-key').inputValue(), 'new-session-fixture', 'late close cannot clear a reopened session');
+    const cancelled = await page.evaluate(() => {
+      const dialog = document.querySelector('#vg-setup-dialog');
+      dialog.dispatchEvent(new Event('cancel', { cancelable: true }));
+      return { key: document.querySelector('#vg-key').value, open: dialog.open };
+    });
+    assert.deepEqual(cancelled, { key: '', open: false });
+    report.checks.push('button and Escape cancellation clear immediately; a queued old close cannot alter a reopened wizard');
     f.models = models; await page.evaluate(() => window.ColdCoffeeVisual.refresh());
     await page.locator('#vg-model-search').fill('');
     await page.evaluate(() => { document.querySelector('main').scrollTop = 0; document.documentElement.scrollTop = 0; });
