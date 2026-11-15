@@ -6,6 +6,7 @@
 - Chat Completions / Responses 流式输出、停止和重试；
 - Keychain 保存用户自己填写的 API Key；
 - 会话记录、图片选择、字号与主题入口；
+- 手机工作台：REA 逆向、红队渗透、API 审计、游戏客户端研究、样本取证和证据报告；
 - 冷咖啡中转、四个 QQ 群、Telegram 群与频道、闭源工作流和定制服务入口。
 
 在 macOS + Xcode 中打开 `ColdCoffeeIOS.xcodeproj`，选择 iPhone Simulator 运行。签名、TestFlight 和 App Store 发布流程见仓库的 [iOS 发布说明](../docs/IOS-MARKETING.md)。

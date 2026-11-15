@@ -21,6 +21,9 @@ struct RootView: View {
             ChatView()
                 .tabItem { Label("对话", systemImage: "bubble.left.and.bubble.right") }
                 .tag(AppModel.Tab.chat)
+            WorkView()
+                .tabItem { Label("工作台", systemImage: "wrench.and.screwdriver") }
+                .tag(AppModel.Tab.work)
             CommunityView()
                 .tabItem { Label("社区", systemImage: "person.3") }
                 .tag(AppModel.Tab.community)
@@ -224,6 +227,94 @@ struct CommunityView: View {
                         Text("通过 QQ 群联系管理获取最新入口")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(20)
+            }
+            .background(ColdCoffeePalette.cream)
+        }
+    }
+}
+
+struct WorkView: View {
+    @EnvironmentObject private var model: AppModel
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    Header(title: "冷咖啡 · 工作台", subtitle: "手机也能提交可追溯的研究任务")
+                    Text("选择一个工作流")
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                    Text("连接你的中转后，手机可以提交目标、日志、样本说明和图片，流式查看结构化结果；桌面端继续负责本机工具和文件落地。")
+                        .foregroundStyle(.secondary)
+                    Picker("工作流", selection: $model.workMode) {
+                        ForEach(AppModel.WorkMode.allCases) { mode in
+                            Text(mode.title).tag(mode)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 11)
+                    .background(ColdCoffeePalette.blush)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    TextEditor(text: $model.workInput)
+                        .frame(minHeight: 150)
+                        .padding(8)
+                        .background(Color.white.opacity(0.8))
+                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(ColdCoffeePalette.line, lineWidth: 1))
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .overlay(alignment: .topLeading) {
+                            if model.workInput.isEmpty {
+                                Text("写入 TARGET、HOST、样本路径、接口、日志或希望得到的报告格式…")
+                                    .foregroundStyle(.secondary)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 16)
+                                    .allowsHitTesting(false)
+                            }
+                        }
+                    HStack(spacing: 10) {
+                        Button {
+                            if model.workBusy { model.stopWork() } else { model.runWork() }
+                        } label: {
+                            Label(model.workBusy ? "停止任务" : "提交任务", systemImage: model.workBusy ? "stop.fill" : "bolt.fill")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        if !model.workOutput.isEmpty {
+                            ShareLink(item: model.workOutput) {
+                                Image(systemName: "square.and.arrow.up")
+                                    .frame(width: 48, height: 48)
+                            }
+                            .foregroundStyle(ColdCoffeePalette.crimson)
+                        }
+                    }
+                    if !model.workOutput.isEmpty {
+                        Card(background: ColdCoffeePalette.ink) {
+                            HStack {
+                                Text("流式结果")
+                                    .font(.headline)
+                                    .foregroundStyle(.white)
+                                Spacer()
+                                Text(model.status)
+                                    .font(.caption)
+                                    .foregroundStyle(.white.opacity(0.65))
+                            }
+                            Text(model.workOutput)
+                                .font(.callout)
+                                .foregroundStyle(.white.opacity(0.95))
+                                .textSelection(.enabled)
+                        }
+                    } else {
+                        Card {
+                            Text("可用入口")
+                                .font(.headline)
+                            Text("REA 逆向、红队渗透、API 审计、游戏客户端研究、样本取证、证据报告")
+                                .font(.subheadline)
+                            Text("结果会留在本机界面，可复制或分享；Key 和会话资料不会写入公开仓库。")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
                 .padding(20)

@@ -6,10 +6,51 @@ import PhotosUI
 @MainActor
 final class AppModel: ObservableObject {
     enum Tab: Hashable {
-        case home, chat, community
+        case home, chat, work, community
+    }
+
+    enum WorkMode: String, CaseIterable, Identifiable {
+        case reverse
+        case redTeam
+        case api
+        case game
+        case sample
+        case report
+
+        var id: String { rawValue }
+        var title: String {
+            switch self {
+            case .reverse: return "REA 逆向分析"
+            case .redTeam: return "红队渗透"
+            case .api: return "API 审计"
+            case .game: return "游戏客户端研究"
+            case .sample: return "样本与取证"
+            case .report: return "证据报告"
+            }
+        }
+        var systemPrompt: String {
+            switch self {
+            case .reverse:
+                return "你是冷咖啡 REA 逆向分析工作流。把目标、格式、入口、证据、下一步写清楚；需要样本时先列出应提供的文件与哈希。"
+            case .redTeam:
+                return "你是冷咖啡网络安全红队工作流。按资产、身份、请求、状态、验证点和复现记录组织结果，输出可执行的检查与报告步骤。"
+            case .api:
+                return "你是冷咖啡 API 安全审计工作流。围绕接口面、认证、授权、输入、业务状态、日志和证据给出结构化分析。"
+            case .game:
+                return "你是冷咖啡游戏客户端研究工作流。围绕进程、模块、协议、渲染、内存、偏移和反作弊观测组织实验记录与代码接口。"
+            case .sample:
+                return "你是冷咖啡样本分析与数字取证工作流。区分观察事实、推断、IOC、时间线和复核动作，优先保护证据完整性。"
+            case .report:
+                return "你是冷咖啡证据报告工作流。把输入整理成摘要、范围、方法、发现、复现、影响、修复和附录，保留不确定项。"
+            }
+        }
     }
 
     @Published var tab: Tab = .home
+    @Published var workMode: WorkMode = .reverse
+    @Published var workInput = ""
+    @Published var workOutput = ""
+    @Published var workBusy = false
     @Published var provider: Provider
     @Published var apiKey = ""
     @Published var models: [String] = []
@@ -27,6 +68,7 @@ final class AppModel: ObservableObject {
     private let historyKey = "coldcoffee.ios.history.v1"
     private let settingsKey = "coldcoffee.ios.settings.v1"
     private var streamTask: Task<Void, Never>?
+    private var workTask: Task<Void, Never>?
 
     init() {
         provider = Provider(name: "冷咖啡付费中转", baseURL: PublicServices.api.absoluteString)
@@ -130,6 +172,53 @@ final class AppModel: ObservableObject {
         isBusy = false
         status = "已停止"
         saveHistory()
+    }
+
+    func runWork() {
+        let input = workInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !input.isEmpty else {
+            errorMessage = "先写入目标、文件、日志或任务要求"
+            return
+        }
+        guard !apiKey.isEmpty else {
+            errorMessage = ColdCoffeeError.missingKey.localizedDescription
+            tab = .home
+            return
+        }
+        workTask?.cancel()
+        workOutput = ""
+        workBusy = true
+        status = "\(workMode.title)执行中"
+        let prompt = """
+        冷咖啡工作流：\(workMode.title)
+        目标与输入：
+        \(input)
+
+        请先给出范围和前置输入，再按“步骤 → 证据 → 结果 → 下一步”输出。缺少具体值时使用 TARGET、HOST、TOKEN、OFFSET、PAYLOAD、SERIAL 等占位符；不要编造工具输出。
+        """
+        workTask = Task {
+            do {
+                let request = ChatMessage(role: "user", content: prompt)
+                for try await token in client.streamChat(provider: provider, key: apiKey, model: selectedModel, messages: [request], system: workMode.systemPrompt) {
+                    guard !Task.isCancelled else { break }
+                    workOutput += token
+                }
+                if workOutput.isEmpty { workOutput = "服务商已结束连接，没有返回文字。" }
+                workBusy = false
+                status = "\(workMode.title)已完成"
+            } catch {
+                workBusy = false
+                status = "\(workMode.title)失败"
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+
+    func stopWork() {
+        workTask?.cancel()
+        workTask = nil
+        workBusy = false
+        status = "工作流已停止"
     }
 
     func clearHistory() {

@@ -44,6 +44,10 @@ The iPhone client follows the same connection flow as Android: connect to the pa
 
 These 390×844 images are original isolated UI mockups with synthetic data. They are layout previews, not iPhone performance measurements, and contain no real account or API key.
 
+The iOS client also includes a **mobile workbench**, not only chat: REA reverse analysis, red-team testing, API assurance, game-client research, sample forensics and evidence reports. Submit a target, log, sample description or image, then stream a structured result and share it from the phone.
+
+![ColdCoffee iOS mobile workbench](docs/assets/coldcoffee-ios-work.png)
+
 The iOS source lives in [`mobile-ios/`](mobile-ios/) and is released under GPL-3.0-only. You can open `mobile-ios/ColdCoffeeIOS.xcodeproj` on macOS and run an unsigned simulator build. TestFlight and App Store distribution still require the publisher's Apple Developer Team, signing certificates, provisioning profiles and App Store Connect permissions. No real App Store link is claimed until a signed build has been uploaded and approved. See the [iOS release and marketing guide](docs/IOS-MARKETING.md).
 
 ## ColdCoffee services

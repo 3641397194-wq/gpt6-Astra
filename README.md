@@ -54,6 +54,7 @@
 <tr><td align="center"><strong>接入 · 先连中转</strong></td><td align="center"><strong>对话 · 流式输出</strong></td><td align="center"><strong>社区 · 服务咨询</strong></td></tr>
 </table>
 <p><sub>上图是 390×844 的原创隔离测试界面图，用合成数据展示 iOS 信息层级与交互，不代表 iPhone 实机性能测量，也不包含真实 Key、账号或本机资料。</sub></p>
+<p align="center"><a href="docs/assets/coldcoffee-ios-work.png"><img src="docs/assets/coldcoffee-ios-work.png" width="270" alt="冷咖啡 iOS 工作台，展示 REA 逆向、红队、API 审计、游戏客户端研究和证据报告入口" /></a><br /><strong>手机工作台 · 不只聊天</strong><br /><sub>选择 REA 逆向、红队渗透、API 审计、游戏客户端研究、样本取证或证据报告；提交目标、日志和样本说明，流式查看结构化结果。</sub></p>
 <table>
 <tr><th align="left">iOS 当前状态</th><th align="left">说明</th></tr>
 <tr><td><strong>源码</strong></td><td><a href="mobile-ios/">mobile-ios/</a> 已纳入仓库，包含 SwiftUI 客户端、Keychain 存储、HTTPS API、社群页、资源和 GPL-3.0-only 许可。</td></tr>
