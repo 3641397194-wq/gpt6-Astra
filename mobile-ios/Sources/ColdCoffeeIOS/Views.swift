@@ -191,7 +191,7 @@ struct CommunityView: View {
                         Text("QQ 四群")
                             .font(.headline)
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                            ForEach(PublicServices.groups, id: \.number) { group in
+                            ForEach(Array(PublicServices.groups.enumerated()), id: \.offset) { _, group in
                                 VStack(alignment: .leading, spacing: 3) {
                                     Text(group.name).font(.caption.weight(.semibold))
                                     Text(group.number).font(.subheadline.bold()).foregroundStyle(ColdCoffeePalette.crimson)
@@ -371,13 +371,15 @@ private struct MessageBubble: View {
 
 private struct Card<Content: View>: View {
     let background: Color
-    @ViewBuilder let content: () -> Content
+    let content: Content
     init(background: Color = Color.white.opacity(0.72), @ViewBuilder content: @escaping () -> Content) {
         self.background = background
-        self.content = content
+        self.content = content()
     }
     var body: some View {
-        VStack(alignment: .leading, spacing: 12, content: content)
+        VStack(alignment: .leading, spacing: 12) {
+            content
+        }
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(background)
