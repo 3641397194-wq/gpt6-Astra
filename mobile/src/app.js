@@ -9,9 +9,18 @@ import { hydrateIcons, icon } from './icons.js';
 
 const $ = selector => document.querySelector(selector);
 const escape = text => String(text ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
-const state = { providerId: '', model: '', fontSize: 17, theme: 'light', conversations: [], activeConversation: '', ...safeLoad() };
+const WORK_MODES = Object.freeze([
+  { id: 'reverse', title: 'REA 逆向分析', short: '程序 / 二进制', prompt: '你是冷咖啡 REA 逆向分析工作流。围绕目标、格式、入口、证据和下一步组织结果；需要样本时列出文件、哈希、版本和复核方式。', placeholder: '填写 TARGET、文件名与哈希、程序入口、异常现象或需要定位的功能…' },
+  { id: 'red-team', title: '红队渗透', short: '资产 / 身份 / 请求', prompt: '你是冷咖啡网络安全红队工作流。围绕范围、资产、身份、请求、状态、验证点和复现记录组织结果；标记证据与不确定项。', placeholder: '填写目标范围、HOST、接口、账号角色、请求样例、日志或验证目标…' },
+  { id: 'api', title: 'API 审计', short: '接口 / 授权 / 业务', prompt: '你是冷咖啡 API 安全审计工作流。围绕接口面、认证、授权、输入、业务状态、日志和证据给出结构化分析。', placeholder: '填写 API 地址、接口列表、请求响应、角色差异、Token 形态或审计范围…' },
+  { id: 'game', title: '游戏客户端研究', short: '进程 / 协议 / 渲染', prompt: '你是冷咖啡游戏客户端研究工作流。围绕进程、模块、协议、渲染、内存、偏移、自动化和反作弊观测组织实验记录与验证步骤。', placeholder: '填写游戏版本、进程/模块、协议、渲染现象、调试目标或实验记录…' },
+  { id: 'sample', title: '样本与取证', short: '样本 / IOC / 时间线', prompt: '你是冷咖啡样本分析与数字取证工作流。区分观察事实、推断、IOC、时间线和复核动作，优先保护证据完整性。', placeholder: '填写样本类型、文件哈希、时间线、日志、IOC、环境和需要回答的问题…' },
+  { id: 'report', title: '证据报告', short: '摘要 / 复现 / 修复', prompt: '你是冷咖啡证据报告工作流。把输入整理成摘要、范围、方法、发现、复现、影响、修复和附录，保留不确定项。', placeholder: '填写已有结果、证据、复现步骤、影响范围、修复要求或报告模板…' },
+]);
+const state = { providerId: '', model: '', fontSize: 17, theme: 'light', conversations: [], activeConversation: '', workHistory: [], ...safeLoad() };
 const modelCache = new Map(), connectionState = new Map();
 let providers = safeProviders(), currentPage = 'home', request = null, attachedImage = null;
+let workRequest = null, workFile = null;
 let saveTimer, toastTimer, renderFrame = 0, modelsLoading = false, modelGeneration = 0, modelRequest = null;
 const keyType = ['pass', 'word'].join('');
 $('#provider-key').type = keyType;
@@ -35,6 +44,16 @@ function safeLoad() {
           reasoning: String(message.reasoning || '').slice(0, 100000), status: message.status === 'generating' ? 'interrupted' : String(message.status || 'complete'),
           model: String(message.model || ''), error: String(message.error || '').slice(0, 360),
         })),
+      })) : [],
+      workHistory: Array.isArray(raw.workHistory) ? raw.workHistory.filter(item => item && typeof item.id === 'string').slice(-30).map(item => ({
+        id: item.id,
+        mode: String(item.mode || 'report').slice(0, 40),
+        title: String(item.title || '工作流任务').slice(0, 120),
+        target: String(item.target || '').slice(0, 24000),
+        host: String(item.host || '').slice(0, 2000),
+        output: String(item.output || '').slice(0, 200000),
+        created: Number(item.created) || Date.now(),
+        status: ['complete', 'stopped', 'error'].includes(item.status) ? item.status : 'complete',
       })) : [],
     };
   } catch { return {}; }
@@ -61,6 +80,7 @@ function showPage(page) {
     element.setAttribute('aria-current', element.dataset.page === page ? 'page' : 'false');
   });
   if (page === 'chat') { updateSelection(); renderMessages(); }
+  if (page === 'work') { renderWorkModes(); renderWorkHistory(); updateWorkProviderNote(); }
   if (page === 'providers') renderProviders();
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
@@ -92,6 +112,176 @@ function updateSelection() {
   $('#selected-provider').textContent = selectedProvider()?.name || '接入自己的 API 后开始';
   const latest = state.conversations.filter(item => item.messages.length).at(-1);
   $('#resume-description').textContent = latest?.title || '接好模型，把第一个问题交给冷咖啡。';
+  updateWorkProviderNote();
+}
+function selectedWorkMode() {
+  return WORK_MODES.find(item => item.id === $('#work-mode-grid')?.dataset.mode) || WORK_MODES[0];
+}
+function updateWorkProviderNote() {
+  const note = $('#work-provider-note');
+  if (!note) return;
+  note.textContent = selectedProvider() && state.model ? `${selectedProvider().name} · ${state.model}` : '先接入服务商并选模型';
+}
+function renderWorkModes() {
+  const grid = $('#work-mode-grid');
+  if (!grid) return;
+  if (!grid.dataset.mode) grid.dataset.mode = WORK_MODES[0].id;
+  grid.replaceChildren();
+  for (const mode of WORK_MODES) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `work-mode-card${grid.dataset.mode === mode.id ? ' selected' : ''}`;
+    button.innerHTML = `<span class="work-mode-index">${String(WORK_MODES.indexOf(mode) + 1).padStart(2, '0')}</span><strong>${escape(mode.title)}</strong><small>${escape(mode.short)}</small>`;
+    button.onclick = () => {
+      grid.dataset.mode = mode.id;
+      renderWorkModes();
+      $('#work-target').placeholder = mode.placeholder;
+      $('#work-target').focus();
+      updateWorkProviderNote();
+    };
+    grid.append(button);
+  }
+  const active = selectedWorkMode();
+  const target = $('#work-target');
+  if (target && !target.value) target.placeholder = active.placeholder;
+}
+function renderWorkHistory() {
+  const list = $('#work-history');
+  if (!list) return;
+  list.replaceChildren();
+  if (!state.workHistory.length) {
+    list.innerHTML = '<div class="empty-providers">提交一次工作流后，最近结果会保存在这台设备。<br>不会把 Key 写入记录。</div>';
+    return;
+  }
+  for (const item of [...state.workHistory].sort((a, b) => b.created - a.created).slice(0, 12)) {
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'work-history-row';
+    const mode = WORK_MODES.find(value => value.id === item.mode);
+    row.innerHTML = `<span class="work-history-mark">${escape(mode?.title?.slice(0, 1) || '工')}</span><span><strong>${escape(item.title)}</strong><small>${escape(mode?.title || '工作流')} · ${new Date(item.created).toLocaleString('zh-CN')}</small></span><b>↗</b>`;
+    row.onclick = () => {
+      $('#work-mode-grid').dataset.mode = item.mode;
+      $('#work-target').value = item.target;
+      $('#work-host').value = item.host;
+      $('#work-request').value = '';
+      $('#work-output').textContent = item.output;
+      $('#work-output-title').textContent = item.title;
+      $('#work-output-card').hidden = !item.output;
+      renderWorkModes();
+      showPage('work');
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    };
+    list.append(row);
+  }
+}
+function saveWorkResult({ mode, target, host, title, output, status }) {
+  const record = { id: crypto.randomUUID(), mode, target: target.slice(0, 24000), host: host.slice(0, 2000), title: title.slice(0, 120), output: output.slice(0, 200000), status, created: Date.now() };
+  state.workHistory = [record, ...state.workHistory.filter(item => item.id !== record.id)].slice(0, 30);
+  saveNow();
+  renderWorkHistory();
+}
+function workPrompt(mode, target, host, requestText, attachment) {
+  const attachmentText = attachment ? `\n附加文本文件（${attachment.name}）：\n${attachment.text}` : '';
+  return `冷咖啡移动工作流：${mode.title}
+
+目标与输入：
+${target || 'TARGET'}
+
+主机 / 接口 / 入口：
+${host || 'HOST'}
+
+用户要求：
+${requestText || '请先拆分范围，再给出步骤、证据、结果和下一步。'}${attachmentText}
+
+请先列出范围、假设和缺失输入，再按“步骤 → 证据 → 结果 → 下一步”输出。缺少具体值时使用 TARGET、HOST、TOKEN、OFFSET、PAYLOAD、SERIAL 等占位符；不要编造工具输出。`;
+}
+async function runWork() {
+  if (workRequest) return;
+  const mode = selectedWorkMode();
+  const target = $('#work-target').value.trim();
+  const host = $('#work-host').value.trim();
+  const requestText = $('#work-request').value.trim();
+  if (!target && !host && !requestText && !workFile) { toast('先填写目标、主机、样本说明、日志或任务要求'); return; }
+  if (!selectedProvider() || !state.model) { toast('先接入服务商并选择模型'); openModels(true); return; }
+  const outputCard = $('#work-output-card'), output = $('#work-output');
+  outputCard.hidden = false; output.textContent = '';
+  $('#work-output-title').textContent = `${mode.title} · 进行中`;
+  $('#work-submit').hidden = true; $('#work-stop').hidden = false; $('#work-share').hidden = true;
+  $('#work-status').textContent = `正在通过 ${selectedProvider().name} 流式执行…`;
+  const requestBodyValue = requestBody({ protocol: selectedProvider().protocol, model: state.model, messages: [{ role: 'user', content: workPrompt(mode, target, host, requestText, workFile) }], system: mode.prompt });
+  let job;
+  const record = { mode: mode.id, target, host, title: `${mode.title} · ${target.slice(0, 40) || host.slice(0, 40) || '任务'}` };
+  try {
+    job = bridge.nativeRequest({ providerId: selectedProvider().id, path: selectedProvider().protocol === 'responses' ? '/responses' : '/chat/completions', method: 'POST', body: requestBodyValue });
+    workRequest = { job, output };
+    const { status, headers } = await job.ready;
+    if (status < 200 || status >= 300) throw new Error(httpError(status, await job.text()));
+    const contentType = headers['content-type'] || headers['Content-Type'] || '';
+    if (contentType.includes('application/json')) {
+      const value = JSON.parse(await job.text());
+      output.textContent = extractResponse(value, selectedProvider().protocol);
+    } else {
+      await consumeChatStream(job.stream, {
+        protocol: selectedProvider().protocol,
+        onText(text) { output.textContent += text; },
+      });
+    }
+    if (!output.textContent.trim()) throw new Error('工作流没有返回文字，请检查模型和协议');
+    $('#work-output-title').textContent = `${mode.title} · 已完成`;
+    $('#work-status').textContent = '已完成 · 结果保存在本机，可复制或分享';
+    $('#work-share').hidden = false;
+    saveWorkResult({ ...record, output: output.textContent, status: 'complete' });
+  } catch (error) {
+    const stopped = error.name === 'AbortError';
+    const status = stopped ? 'stopped' : 'error';
+    if (stopped) {
+      $('#work-output-title').textContent = `${mode.title} · 已停止`;
+      $('#work-status').textContent = '已停止 · 已保留当前结果';
+    } else {
+      $('#work-output-title').textContent = `${mode.title} · 失败`;
+      $('#work-status').textContent = redactError(error.message);
+      if (!output.textContent) output.textContent = `请求失败：${redactError(error.message)}`;
+    }
+    if (output.textContent) saveWorkResult({ ...record, output: output.textContent, status });
+  } finally {
+    job?.cancel();
+    if (workRequest?.job === job) workRequest = null;
+    $('#work-submit').hidden = false; $('#work-stop').hidden = true;
+    if (output.textContent.trim()) $('#work-share').hidden = false;
+  }
+}
+function stopWork() {
+  if (workRequest) {
+    workRequest.job.cancel();
+    toast('已停止，当前结果已保留');
+  }
+}
+async function readWorkFile(file) {
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+    toast('日志或配置文件请控制在 2MB 以内');
+    return;
+  }
+  const text = await file.text();
+  if (text.length > 2 * 1024 * 1024) {
+    toast('文本内容过大，请先截取需要分析的部分');
+    return;
+  }
+  // Keep the request bounded on mobile. The preview is enough to identify the
+  // relevant evidence; the full file remains on the device for desktop review.
+  workFile = { name: file.name.slice(0, 160), text: text.slice(0, 20000) };
+  $('#work-file-name').textContent = `${workFile.name} · ${(file.size / 1024).toFixed(1)} KB`;
+  $('#work-file-preview').textContent = text.slice(0, 6000);
+  $('#work-file-preview').hidden = false;
+  $('#work-file-clear').hidden = false;
+}
+function clearWorkFile() {
+  workFile = null;
+  $('#work-file-input').value = '';
+  $('#work-file-name').textContent = '可选 · 读取本机文本文件';
+  $('#work-file-preview').textContent = '';
+  $('#work-file-preview').hidden = true;
+  $('#work-file-clear').hidden = true;
 }
 function openProvider(mode = 'coldcoffee', provider) {
   $('#provider-form').reset(); clearKey();
@@ -385,7 +575,7 @@ function showPrivacy() {
   openDialog('content-dialog');
 }
 
-hydrateIcons(); renderCommunity(); renderProviders(); updateSelection(); applyAppearance();
+hydrateIcons(); renderCommunity(); renderProviders(); renderWorkModes(); renderWorkHistory(); updateSelection(); updateWorkProviderNote(); applyAppearance();
 if (!bridge.isNative()) { $('#runtime-badge').textContent = '浏览器预览'; }
 $('#about-version').textContent = VERSION;
 document.querySelectorAll('[data-page]').forEach(button => { button.onclick = () => showPage(button.dataset.page); });
@@ -401,6 +591,42 @@ $('#settings-open').onclick = () => openDialog('settings-dialog');
 $('#home-connect').onclick = $('#provider-coldcoffee').onclick = () => openProvider();
 $('#home-other').onclick = $('#add-provider').onclick = () => openProvider('other');
 $('#resume-chat').onclick = () => showPage('chat');
+$('#work-submit').onclick = runWork;
+$('#work-stop').onclick = stopWork;
+$('#work-share').onclick = () => {
+  const output = $('#work-output').textContent.trim();
+  if (!output) return;
+  bridge.shareText(`${$('#work-output-title').textContent}\n\n${output}`);
+  toast('工作流结果已打开分享');
+};
+$('#work-copy').onclick = () => {
+  const output = $('#work-output').textContent.trim();
+  if (!output) return;
+  bridge.copyText(output);
+  toast('工作流结果已复制');
+};
+$('#work-clear').onclick = () => {
+  if (workRequest) { toast('请先停止任务'); return; }
+  $('#work-output-card').hidden = true;
+  $('#work-output').textContent = '';
+  $('#work-output-title').textContent = '等待提交';
+  $('#work-status').textContent = '结果只发送到当前服务商，并保留在本机工作记录。';
+};
+$('#work-file-open').onclick = () => $('#work-file-input').click();
+$('#work-file-input').onchange = async event => {
+  try { await readWorkFile(event.target.files[0]); }
+  catch { toast('读取文本文件失败，请换一个日志或配置文件'); }
+  event.target.value = '';
+};
+$('#work-file-clear').onclick = clearWorkFile;
+$('#work-history-clear').onclick = () => {
+  if (!state.workHistory.length) return;
+  if (!window.confirm('清空本机工作流记录？')) return;
+  state.workHistory = [];
+  saveNow();
+  renderWorkHistory();
+  toast('工作流记录已清空');
+};
 $('#toggle-key').onclick = () => { const input = $('#provider-key'); input.type = input.type === keyType ? 'text' : keyType; };
 $('#provider-form').onsubmit = async event => {
   event.preventDefault(); const button = $('#provider-save'); if (button.disabled) return; button.disabled = true;

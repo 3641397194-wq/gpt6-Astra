@@ -4,8 +4,12 @@
 <dict>
     <key>CFBundleDisplayName</key>
     <string>冷咖啡</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleName</key>
     <string>ColdCoffeeIOS</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
     <key>CFBundleIdentifier</key>
     <string>com.coldcoffee.mobile.ios</string>
     <key>CFBundleShortVersionString</key>

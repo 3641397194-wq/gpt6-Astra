@@ -35,7 +35,7 @@ Mobile reuses published Chatbox Community Edition compatibility modules with an 
 
 ## iOS / ColdCoffee on your iPhone
 
-The iPhone client follows the same connection flow as Android: connect to the paid ColdCoffee API relay or add another OpenAI-compatible provider, enter your own key, load models, and start a streaming conversation. The SwiftUI client includes Keychain storage, model loading, stop/retry controls, session history and a community page.
+The iPhone client follows the same connection flow as Android: connect to the paid ColdCoffee API relay or add another OpenAI-compatible provider, enter your own key, load models, and start a streaming conversation. The SwiftUI client includes Keychain storage, model loading, stop/retry controls, session history, a mobile research workbench, and a community page.
 
 <table>
 <tr><td width="33%"><img src="docs/assets/coldcoffee-ios-home.png" width="270" alt="ColdCoffee iOS home and provider connection" /></td><td width="33%"><img src="docs/assets/coldcoffee-ios-chat.png" width="270" alt="ColdCoffee iOS chat and model selection" /></td><td width="33%"><img src="docs/assets/coldcoffee-ios-community.png" width="270" alt="ColdCoffee iOS community and paid services" /></td></tr>
@@ -44,7 +44,7 @@ The iPhone client follows the same connection flow as Android: connect to the pa
 
 These 390×844 images are original isolated UI mockups with synthetic data. They are layout previews, not iPhone performance measurements, and contain no real account or API key.
 
-The iOS client also includes a **mobile workbench**, not only chat: REA reverse analysis, red-team testing, API assurance, game-client research, sample forensics and evidence reports. Submit a target, log, sample description or image, then stream a structured result and share it from the phone.
+The iOS client also includes a **mobile workbench**, not only chat: REA reverse analysis, red-team testing, API assurance, game-client research, sample forensics and evidence reports. Submit a target, host, interface, log, sample description or image, then stream a structured result, stop it, copy it, save it locally, or share it from the phone. Android exposes the same six workbench lanes and accepts text logs/configuration snippets.
 
 ![ColdCoffee iOS mobile workbench](docs/assets/coldcoffee-ios-work.png)
 
@@ -62,7 +62,7 @@ These independent paid offerings do not turn the GPL mobile application into pro
 
 ## What's new in 3.3.0-preview.1
 
-Android and iOS clients join the existing desktop workbench, with unified provider setup, corresponding mobile sources, and community/service access. iOS source and the signing/TestFlight/App Store preparation are included; actual store publication remains pending Apple credentials and review. Desktop routing retains stable nodes, the vintage Ragdoll courier, model search, connection retry, configuration recovery and zoom controls. See the [release notes](docs/release-notes-3.3.0-preview.1.md).
+Android and iOS clients join the existing desktop workbench, with unified provider setup, corresponding mobile sources, six mobile research lanes, and community/service access. iOS source and the signing/TestFlight/App Store preparation are included; actual store publication remains pending Apple credentials and review. Desktop routing retains stable nodes, the vintage Ragdoll courier, model search, connection retry, configuration recovery and zoom controls. See the [release notes](docs/release-notes-3.3.0-preview.1.md).
 
 ## Visual routing
 

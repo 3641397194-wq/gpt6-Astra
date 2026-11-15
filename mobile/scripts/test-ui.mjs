@@ -284,6 +284,28 @@ try {
       assert.match(await page.locator('.message-body').innerText(), /完整回答已经到达/);
     } finally { await context.close(); }
   });
+  await check('mobile workbench submits structured research tasks, streams results and saves a local record', async () => {
+    const { page, context } = await pageFor(seeded());
+    try {
+      await page.locator('[data-page="work"]').click();
+      await page.locator('#work-mode-grid button').nth(3).click();
+      assert.match(await page.locator('#work-mode-grid .selected').textContent(), /游戏客户端研究/);
+      await page.locator('#work-target').fill('TARGET game-client.exe v1.2');
+      await page.locator('#work-host').fill('HOST process / module');
+      await page.locator('#work-request').fill('整理模块、协议、渲染和反作弊观测记录');
+      await page.locator('#work-submit').click();
+      await page.waitForFunction(() => document.querySelector('#work-output-title')?.textContent.includes('已完成'));
+      assert.match(await page.locator('#work-output').textContent(), /冷咖啡/);
+      assert.equal(await page.locator('#work-history .work-history-row').count(), 1);
+      await page.locator('#work-copy').click();
+      assert.match(await page.evaluate(() => window.__fixture.copied.at(-1)), /冷咖啡/);
+      await page.locator('#work-share').click();
+      assert.match(await page.evaluate(() => window.__fixture.shared.at(-1)), /游戏客户端研究/);
+      const saved = await page.evaluate(() => JSON.stringify(window.__fixture.state()));
+      assert.doesNotMatch(saved, /fixture-key-not-a-real-credential|apiKey/);
+      assert.match(saved, /TARGET game-client\.exe/);
+    } finally { await context.close(); }
+  });
   await check('Markdown is sanitized and external links open only after explicit click', async () => {
     const { page, context } = await pageFor(seeded());
     try {
@@ -344,7 +366,7 @@ try {
       assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
       assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement).fontSize), '21px');
       await page.locator('#settings-dialog [data-close]').click();
-      for (const route of ['home', 'chat', 'providers', 'community']) {
+      for (const route of ['home', 'chat', 'work', 'providers', 'community']) {
         await page.locator(`[data-page="${route}"]`).click();
         await noOverflow(page);
       }
@@ -368,6 +390,15 @@ try {
         await page.locator('[data-page="community"]').click();
         await page.evaluate(() => { document.querySelector('#runtime-badge').textContent = '隔离测试界面'; });
         await page.screenshot({ path: path.join(root, 'docs/assets/coldcoffee-mobile-community.png') });
+        await page.locator('[data-page="work"]').click();
+        await page.locator('#work-mode-grid button').first().click();
+        await page.locator('#work-target').fill('TARGET sample.exe · SHA256 fixture');
+        await page.locator('#work-host').fill('HOST / module');
+        await page.locator('#work-request').fill('整理入口、证据和下一步');
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await page.waitForTimeout(80);
+        await page.evaluate(() => { document.querySelector('#runtime-badge').textContent = '隔离测试界面'; });
+        await page.screenshot({ path: path.join(root, 'docs/assets/coldcoffee-mobile-work.png') });
       } finally { await context.close(); }
     });
   }

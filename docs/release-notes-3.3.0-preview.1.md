@@ -1,6 +1,6 @@
-# 冷咖啡 3.3.0-preview.1 · 电脑与安卓手机
+# 冷咖啡 3.3.0-preview.1 · 电脑、Android 与 iPhone
 
-本版把冷咖啡从电脑工作台扩展到安卓手机：电脑端保留十五个模型席位、可视化路由、技能安装与恢复、DeepSeek Harness 插件；手机端用于接入模型 API 和日常对话。
+本版把冷咖啡从电脑工作台扩展到 Android 与 iPhone：电脑端保留十五个模型席位、可视化路由、技能安装与恢复、DeepSeek Harness 插件；手机端用于接入模型 API、日常对话和移动研究任务。
 
 [本版固定下载页](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.1) · [最新版下载页](https://github.com/3641397194-wq/gpt6-Astra/releases/latest)
 
@@ -10,10 +10,20 @@
 - 默认推荐冷咖啡付费 API 中转，也允许配置其他兼容中转。
 - 顾客填写自己的 Key，读取模型后直接聊天。
 - 流式回答、停止生成、会话记录与 Markdown 显示。
+- 移动研究工作台：REA 逆向分析、红队渗透、API 审计、游戏客户端研究、样本与取证、证据报告。
+- 结构化输入 `TARGET`、`HOST`、日志、样本说明和输出要求；结果支持流式查看、停止、复制、分享和本机记录。
+- Android 可附加文本日志或配置片段；本机二进制和设备工具继续交给桌面端。
 - Android 原生网络请求层与 KeyStore 加密存储。
 - 四个 QQ 群、Telegram 群和频道、付费中转、收费独立本机闭源工作流及定制入口。
 
-第一版手机端聚焦聊天和服务接入，不把电脑的本地安装功能宣传为安卓已经具备的功能。接口与模型是否可用，以所选服务商的实际支持为准。
+移动工作台负责任务提交、流式结果和整理，不把电脑端本机工具宣传为手机已经具备的功能。接口与模型是否可用，以所选服务商的实际支持为准。
+
+## 新增 iOS 源码预览
+
+- SwiftUI 原生客户端与 Android 使用相同的中转接入逻辑。
+- iOS Keychain 保存 Key，工作台支持六类任务、结构化字段、文件名称/大小/SHA-256、有限文本预览、停止、复制、保存和分享。
+- `mobile-ios/ColdCoffeeIOS.xcodeproj`、隐私清单、共享 Scheme、CI、源码归档和 App Store Connect 中文素材已纳入仓库。
+- 当前仍是源码与构建预览；TestFlight/App Store 上传需要 Apple Developer 签名材料和 App Store Connect 权限。
 
 ## 新主页与宣传
 

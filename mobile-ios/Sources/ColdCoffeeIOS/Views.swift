@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 import SwiftUI
 import PhotosUI
+import UniformTypeIdentifiers
 
 private enum ColdCoffeePalette {
     static let ink = Color(red: 0.10, green: 0.095, blue: 0.13)
@@ -238,6 +239,7 @@ struct CommunityView: View {
 
 struct WorkView: View {
     @EnvironmentObject private var model: AppModel
+    @State private var showingFileImporter = false
 
     var body: some View {
         NavigationStack {
@@ -246,20 +248,53 @@ struct WorkView: View {
                     Header(title: "冷咖啡 · 工作台", subtitle: "手机也能提交可追溯的研究任务")
                     Text("选择一个工作流")
                         .font(.system(size: 28, weight: .bold, design: .rounded))
-                    Text("连接你的中转后，手机可以提交目标、日志、样本说明和图片，流式查看结构化结果；桌面端继续负责本机工具和文件落地。")
+                    Text("连接你的中转后，手机可以提交目标、接口、日志、样本文件和报告要求，流式查看结构化结果；桌面端继续负责本机工具和文件落地。")
                         .foregroundStyle(.secondary)
-                    Picker("工作流", selection: $model.workMode) {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                         ForEach(AppModel.WorkMode.allCases) { mode in
-                            Text(mode.title).tag(mode)
+                            Button {
+                                model.workMode = mode
+                            } label: {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Image(systemName: mode.icon)
+                                        .font(.title3.weight(.semibold))
+                                    Text(mode.title)
+                                        .font(.subheadline.weight(.bold))
+                                        .lineLimit(1)
+                                    Text(mode.summary)
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(2)
+                                }
+                                .frame(maxWidth: .infinity, minHeight: 82, alignment: .leading)
+                                .padding(12)
+                                .background(model.workMode == mode ? ColdCoffeePalette.blush : Color.white.opacity(0.72))
+                                .overlay(RoundedRectangle(cornerRadius: 16).stroke(model.workMode == mode ? ColdCoffeePalette.crimson : ColdCoffeePalette.line, lineWidth: model.workMode == mode ? 2 : 1))
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
-                    .pickerStyle(.menu)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 11)
-                    .background(ColdCoffeePalette.blush)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    HStack {
+                        Label(model.workMode.title, systemImage: model.workMode.icon)
+                            .font(.headline)
+                        Spacer()
+                        Button("填入任务模板") { model.applyWorkStarter() }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(ColdCoffeePalette.crimson)
+                    }
+                    Card {
+                        TextField("TARGET / 文件名", text: $model.workTarget)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                        TextField("HOST / 接口地址（可选）", text: $model.workHost)
+                            .textInputAutocapitalization(.never)
+                            .keyboardType(.URL)
+                            .autocorrectionDisabled()
+                        TextField("希望得到的产出（可选）", text: $model.workObjective)
+                    }
                     TextEditor(text: $model.workInput)
-                        .frame(minHeight: 150)
+                        .frame(minHeight: 165)
                         .padding(8)
                         .background(Color.white.opacity(0.8))
                         .overlay(RoundedRectangle(cornerRadius: 16).stroke(ColdCoffeePalette.line, lineWidth: 1))
@@ -275,6 +310,30 @@ struct WorkView: View {
                         }
                     HStack(spacing: 10) {
                         Button {
+                            showingFileImporter = true
+                        } label: {
+                            Label(model.workFileName.isEmpty ? "添加样本 / 日志" : "更换附件", systemImage: "paperclip")
+                        }
+                        .buttonStyle(.bordered)
+                        if !model.workFileName.isEmpty {
+                            Text(model.workFileName)
+                                .font(.caption)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                            Button {
+                                model.removeWorkFile()
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                            }
+                            .foregroundStyle(ColdCoffeePalette.crimson)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    Text("文件会先在手机端生成名称、大小和 SHA-256（单个文件不超过 64 MB）；文本类文件会附带有限预览，二进制样本交给桌面端继续落地分析。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    HStack(spacing: 10) {
+                        Button {
                             if model.workBusy { model.stopWork() } else { model.runWork() }
                         } label: {
                             Label(model.workBusy ? "停止任务" : "提交任务", systemImage: model.workBusy ? "stop.fill" : "bolt.fill")
@@ -282,9 +341,16 @@ struct WorkView: View {
                         }
                         .buttonStyle(PrimaryButtonStyle())
                         if !model.workOutput.isEmpty {
+                            Button {
+                                model.copyWorkOutput()
+                            } label: {
+                                Image(systemName: "doc.on.doc")
+                                    .frame(width: 44, height: 44)
+                            }
+                            .buttonStyle(.bordered)
                             ShareLink(item: model.workOutput) {
                                 Image(systemName: "square.and.arrow.up")
-                                    .frame(width: 48, height: 48)
+                                    .frame(width: 44, height: 44)
                             }
                             .foregroundStyle(ColdCoffeePalette.crimson)
                         }
@@ -292,7 +358,7 @@ struct WorkView: View {
                     if !model.workOutput.isEmpty {
                         Card(background: ColdCoffeePalette.ink) {
                             HStack {
-                                Text("流式结果")
+                                Text("\(model.workMode.title) · 流式结果")
                                     .font(.headline)
                                     .foregroundStyle(.white)
                                 Spacer()
@@ -304,14 +370,21 @@ struct WorkView: View {
                                 .font(.callout)
                                 .foregroundStyle(.white.opacity(0.95))
                                 .textSelection(.enabled)
+                            HStack(spacing: 10) {
+                                Button("保存到本机") { model.saveWorkOutput() }
+                                Button("重新载入") { model.restoreSavedWork() }
+                                Button("清空") { model.clearWork() }
+                            }
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
                         }
                     } else {
                         Card {
-                            Text("可用入口")
+                            Text("工作台入口")
                                 .font(.headline)
-                            Text("REA 逆向、红队渗透、API 审计、游戏客户端研究、样本取证、证据报告")
+                            Text(model.workMode.summary)
                                 .font(.subheadline)
-                            Text("结果会留在本机界面，可复制或分享；Key 和会话资料不会写入公开仓库。")
+                            Text("输入结构化字段后提交，结果会流式回到本机，可复制、保存或分享；Key 和会话资料不会写入公开仓库。")
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
                         }
@@ -320,6 +393,18 @@ struct WorkView: View {
                 .padding(20)
             }
             .background(ColdCoffeePalette.cream)
+            .fileImporter(
+                isPresented: $showingFileImporter,
+                allowedContentTypes: [.data, .item, .text, .image, .archive],
+                allowsMultipleSelection: false
+            ) { result in
+                switch result {
+                case .success(let urls):
+                    if let url = urls.first { model.importWorkFile(url: url) }
+                case .failure(let error):
+                    model.errorMessage = "选择文件失败：\(error.localizedDescription)"
+                }
+            }
         }
     }
 }

@@ -2,6 +2,12 @@
 import Foundation
 import SwiftUI
 import PhotosUI
+#if canImport(UIKit)
+import UIKit
+#endif
+#if canImport(CryptoKit)
+import CryptoKit
+#endif
 
 @MainActor
 final class AppModel: ObservableObject {
@@ -20,12 +26,48 @@ final class AppModel: ObservableObject {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .reverse: return "REA 逆向分析"
+            case .reverse: return "REA 逆向与软件分析"
             case .redTeam: return "红队渗透"
             case .api: return "API 审计"
-            case .game: return "游戏客户端研究"
+            case .game: return "游戏客户端 / 外挂研究"
             case .sample: return "样本与取证"
             case .report: return "证据报告"
+            }
+        }
+        var icon: String {
+            switch self {
+            case .reverse: return "magnifyingglass"
+            case .redTeam: return "shield.lefthalf.filled"
+            case .api: return "point.3.connected.trianglepath.dotted"
+            case .game: return "gamecontroller"
+            case .sample: return "waveform.path.ecg"
+            case .report: return "doc.text.magnifyingglass"
+            }
+        }
+        var summary: String {
+            switch self {
+            case .reverse: return "拆解程序结构、入口、格式与运行证据"
+            case .redTeam: return "梳理资产、身份、请求、状态与复现记录"
+            case .api: return "分析接口面、认证、授权和业务状态"
+            case .game: return "记录模块、协议、渲染、内存与反作弊观测"
+            case .sample: return "整理样本、IOC、时间线与证据链"
+            case .report: return "把过程整理成可复制、可审阅的报告"
+            }
+        }
+        var starter: String {
+            switch self {
+            case .reverse:
+                return "目标：TARGET\n类型：PE / ELF / APK / Electron / 脚本\n希望得到：模块清单、入口、关键函数、验证步骤\n现有证据："
+            case .redTeam:
+                return "范围：TARGET\n资产或入口：HOST\n身份与状态：ROLE_A / ROLE_B\n希望验证：授权、输入、业务流程或复现路径\n现有证据："
+            case .api:
+                return "接口：HOST\n请求方法与路径：\n认证方式：TOKEN / Cookie / OAuth\n希望检查：认证、授权、输入、状态、日志\n现有请求或响应："
+            case .game:
+                return "目标：TARGET\n平台与版本：\n模块 / 进程 / 协议：\n研究方向：渲染、内存、偏移、网络或反作弊观测\n现有日志："
+            case .sample:
+                return "样本：TARGET\n来源与哈希：\n观察时间线：\n希望提取：行为、IOC、YARA 线索、关联证据\n现有日志："
+            case .report:
+                return "项目：TARGET\n范围：\n方法与证据：\n发现：\n报告读者与格式：Markdown / PDF / 工单\n需要保留的不确定项："
             }
         }
         var systemPrompt: String {
@@ -37,7 +79,7 @@ final class AppModel: ObservableObject {
             case .api:
                 return "你是冷咖啡 API 安全审计工作流。围绕接口面、认证、授权、输入、业务状态、日志和证据给出结构化分析。"
             case .game:
-                return "你是冷咖啡游戏客户端研究工作流。围绕进程、模块、协议、渲染、内存、偏移和反作弊观测组织实验记录与代码接口。"
+                return "你是冷咖啡游戏客户端与外挂研究工作流。围绕进程、模块、协议、渲染、内存、偏移、自动化和反作弊观测组织实验记录与代码接口；区分观察事实、推断和待验证项。"
             case .sample:
                 return "你是冷咖啡样本分析与数字取证工作流。区分观察事实、推断、IOC、时间线和复核动作，优先保护证据完整性。"
             case .report:
@@ -49,6 +91,11 @@ final class AppModel: ObservableObject {
     @Published var tab: Tab = .home
     @Published var workMode: WorkMode = .reverse
     @Published var workInput = ""
+    @Published var workTarget = ""
+    @Published var workHost = ""
+    @Published var workObjective = ""
+    @Published var workFileName = ""
+    @Published var workFileNote = ""
     @Published var workOutput = ""
     @Published var workBusy = false
     @Published var provider: Provider
@@ -67,6 +114,7 @@ final class AppModel: ObservableObject {
     private let client = OpenAIClient()
     private let historyKey = "coldcoffee.ios.history.v1"
     private let settingsKey = "coldcoffee.ios.settings.v1"
+    private let savedWorkKey = "coldcoffee.ios.work-result.v1"
     private var streamTask: Task<Void, Never>?
     private var workTask: Task<Void, Never>?
 
@@ -75,6 +123,7 @@ final class AppModel: ObservableObject {
         apiKey = keychain.get("primary") ?? ""
         loadSettings()
         loadHistory()
+        loadSavedWork()
     }
 
     func saveKey() {
@@ -176,8 +225,10 @@ final class AppModel: ObservableObject {
 
     func runWork() {
         let input = workInput.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !input.isEmpty else {
-            errorMessage = "先写入目标、文件、日志或任务要求"
+        let hasStructuredInput = [workTarget, workHost, workObjective, workFileNote]
+            .contains { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+        guard !input.isEmpty || hasStructuredInput else {
+            errorMessage = "先写入目标、接口、样本、日志或任务要求"
             return
         }
         guard !apiKey.isEmpty else {
@@ -191,8 +242,20 @@ final class AppModel: ObservableObject {
         status = "\(workMode.title)执行中"
         let prompt = """
         冷咖啡工作流：\(workMode.title)
-        目标与输入：
+        目标：
+        \(workTarget.isEmpty ? "TARGET" : workTarget)
+
+        主机或接口：
+        \(workHost.isEmpty ? "HOST（如不适用请忽略）" : workHost)
+
+        期望产出：
+        \(workObjective.isEmpty ? "按工作流给出结构化结果" : workObjective)
+
+        详细输入：
         \(input)
+
+        附件证据：
+        \(workFileNote.isEmpty ? "未附加文件" : workFileNote)
 
         请先给出范围和前置输入，再按“步骤 → 证据 → 结果 → 下一步”输出。缺少具体值时使用 TARGET、HOST、TOKEN、OFFSET、PAYLOAD、SERIAL 等占位符；不要编造工具输出。
         """
@@ -206,6 +269,7 @@ final class AppModel: ObservableObject {
                 if workOutput.isEmpty { workOutput = "服务商已结束连接，没有返回文字。" }
                 workBusy = false
                 status = "\(workMode.title)已完成"
+                saveWorkOutput()
             } catch {
                 workBusy = false
                 status = "\(workMode.title)失败"
@@ -219,6 +283,94 @@ final class AppModel: ObservableObject {
         workTask = nil
         workBusy = false
         status = "工作流已停止"
+    }
+
+    func applyWorkStarter() {
+        if workInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            workInput = workMode.starter
+        } else {
+            workInput += "\n\n" + workMode.starter
+        }
+    }
+
+    func clearWork() {
+        stopWork()
+        workInput = ""
+        workTarget = ""
+        workHost = ""
+        workObjective = ""
+        workFileName = ""
+        workFileNote = ""
+        workOutput = ""
+        status = "工作台已清空"
+    }
+
+    func importWorkFile(url: URL) {
+        let accessing = url.startAccessingSecurityScopedResource()
+        defer {
+            if accessing { url.stopAccessingSecurityScopedResource() }
+        }
+        do {
+            let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+            let byteCount = (attributes[.size] as? NSNumber)?.int64Value ?? 0
+            guard byteCount <= 64 * 1024 * 1024 else {
+                throw ColdCoffeeError.provider("文件超过 64 MB，请在桌面端继续处理")
+            }
+            let data = try Data(contentsOf: url, options: .mappedIfSafe)
+            let size = ByteCountFormatter.string(fromByteCount: Int64(data.count), countStyle: .file)
+            let hash: String
+            #if canImport(CryptoKit)
+            hash = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+            #else
+            hash = "HASH_UNAVAILABLE"
+            #endif
+
+            let ext = url.pathExtension.lowercased()
+            var preview = ""
+            let textExtensions = ["txt", "md", "json", "yaml", "yml", "log", "csv", "xml", "swift", "py", "js", "ts", "c", "cpp", "h", "java", "rs", "go"]
+            if textExtensions.contains(ext), data.count <= 1_000_000, let text = String(data: data, encoding: .utf8) {
+                preview = String(text.prefix(20_000))
+            }
+            workFileName = url.lastPathComponent
+            workFileNote = """
+            文件名：\(url.lastPathComponent)
+            大小：\(size)
+            SHA-256：\(hash)
+            \(preview.isEmpty ? "已读取文件元数据；二进制内容由桌面端继续分析。" : "文本预览（前 20,000 字符）：\n\(preview)")
+            """
+            status = "已加入证据：\(url.lastPathComponent)"
+        } catch {
+            errorMessage = "读取文件失败：\(error.localizedDescription)"
+        }
+    }
+
+    func removeWorkFile() {
+        workFileName = ""
+        workFileNote = ""
+    }
+
+    func saveWorkOutput() {
+        guard !workOutput.isEmpty else { return }
+        let record = SavedWork(mode: workMode.title, target: workTarget, output: workOutput, savedAt: Date())
+        if let data = try? JSONEncoder().encode(record) {
+            UserDefaults.standard.set(data, forKey: savedWorkKey)
+        }
+    }
+
+    func restoreSavedWork() {
+        guard let data = UserDefaults.standard.data(forKey: savedWorkKey),
+              let record = try? JSONDecoder().decode(SavedWork.self, from: data) else { return }
+        workOutput = record.output
+        workTarget = record.target
+        status = "已载入 \(record.mode) 的上次结果"
+    }
+
+    func copyWorkOutput() {
+        guard !workOutput.isEmpty else { return }
+        #if canImport(UIKit)
+        UIPasteboard.general.string = workOutput
+        status = "结果已复制"
+        #endif
     }
 
     func clearHistory() {
@@ -264,6 +416,12 @@ final class AppModel: ObservableObject {
               let saved = try? JSONDecoder().decode([ChatMessage].self, from: data) else { return }
         messages = saved
     }
+
+    private func loadSavedWork() {
+        guard let data = UserDefaults.standard.data(forKey: savedWorkKey),
+              let record = try? JSONDecoder().decode(SavedWork.self, from: data) else { return }
+        workOutput = record.output
+    }
 }
 
 private struct SettingsRecord: Codable {
@@ -271,4 +429,11 @@ private struct SettingsRecord: Codable {
     var selectedModel: String
     var fontScale: CGFloat
     var dark: Bool
+}
+
+private struct SavedWork: Codable {
+    var mode: String
+    var target: String
+    var output: String
+    var savedAt: Date
 }

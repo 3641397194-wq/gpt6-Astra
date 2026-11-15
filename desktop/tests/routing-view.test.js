@@ -103,7 +103,7 @@ test('cache rate uses the reply usage, marks unknown separately and ignores fail
 });
 
 test('catalog projection keeps routing groups/pools without exposing account/key labels', () => {
-  const catalog = projector().catalog({ models: [{ id: 'primary/model', name: 'model', provider: 'primary', providerName: 'Main' }], groups: [{ ...fixture().group, ready: true, ref: 'group/fixture', rules: [{ contains: 'private' }], accounts: ['raw-fingerprint'], memberInfo: [{ id: 'primary/model', ready: true, on: 2 }] }], pools: [{ provider: 'primary', name: 'Main', routing: 'order', who: ['private@example.com', 'sk-testfakekey12345'] }], accounts: { primary: ['never expose'] } });
+  const catalog = projector().catalog({ models: [{ id: 'primary/model', name: 'model', provider: 'primary', providerName: 'Main' }], groups: [{ ...fixture().group, ready: true, ref: 'group/fixture', rules: [{ contains: 'private' }], accounts: ['raw-fingerprint'], memberInfo: [{ id: 'primary/model', ready: true, on: 2 }] }], pools: [{ provider: 'primary', name: 'Main', routing: 'order', who: ['private@example.com', 'fixture-token-synthetic'] }], accounts: { primary: ['never expose'] } });
   assert.equal(catalog.groups[0].rules, 1); assert.equal(catalog.groups[0].memberInfo[0].on, 2);
   assert.equal(catalog.pools[0].on, 2); assert.equal(catalog.availableModels[1].id, 'group/fixture');
   assert.ok(!JSON.stringify(catalog).includes('private')); assert.ok(!JSON.stringify(catalog).includes('raw-fingerprint'));
