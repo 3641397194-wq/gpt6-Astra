@@ -6,17 +6,17 @@
 
 <img src="desktop/assets/brand-v6/icon.png" width="96" alt="ColdCoffee product icon" />
 
-# ColdCoffee · Desktop and Android
+# ColdCoffee · Desktop, Android and iPhone
 
 ### Workflows on your computer. Model conversations on your phone.
 
-**3.3.0-preview.1 · WINDOWS / macOS / LINUX / ANDROID**
+**3.3.0-preview.1 · WINDOWS / macOS / LINUX / ANDROID / iOS**
 
 <sub>One ColdCoffee brand, an original visual identity, and your own provider credentials.</sub>
 
 </div>
 
-<p align="center"><a href="#android--coldcoffee-on-your-phone"><strong>Android app ↓</strong></a> · <a href="#original-toolbox--downloads"><strong>Downloads ↓</strong></a> · <a href="https://coldcoffeeai.com/"><strong>ColdCoffee paid API relay ↗</strong></a> · <a href="#coldcoffee-services"><strong>Local workflows and customization ↓</strong></a></p>
+<p align="center"><a href="#android--coldcoffee-on-your-phone"><strong>Android app ↓</strong></a> · <a href="#ios--coldcoffee-on-your-iphone"><strong>iPhone / iOS ↓</strong></a> · <a href="#original-toolbox--downloads"><strong>Downloads ↓</strong></a> · <a href="https://coldcoffeeai.com/"><strong>ColdCoffee paid API relay ↗</strong></a> · <a href="#coldcoffee-services"><strong>Local workflows and customization ↓</strong></a></p>
 
 ## Android / ColdCoffee on your phone
 
@@ -33,11 +33,24 @@ The mobile app supports custom compatible API endpoints, model loading, streamin
 
 Mobile reuses published Chatbox Community Edition compatibility modules with an original ColdCoffee UI and a newly built Android shell. The derivative mobile application is published under GPL-3.0 with corresponding source. Read [mobile attribution and changes](mobile/THIRD_PARTY_NOTICES.md) and [the mobile license](mobile/LICENSE). ColdCoffee is independent and is not an official Chatbox application or an endorsement by its authors.
 
+## iOS / ColdCoffee on your iPhone
+
+The iPhone client follows the same connection flow as Android: connect to the paid ColdCoffee API relay or add another OpenAI-compatible provider, enter your own key, load models, and start a streaming conversation. The SwiftUI client includes Keychain storage, model loading, stop/retry controls, session history and a community page.
+
+<table>
+<tr><td width="33%"><img src="docs/assets/coldcoffee-ios-home.png" width="270" alt="ColdCoffee iOS home and provider connection" /></td><td width="33%"><img src="docs/assets/coldcoffee-ios-chat.png" width="270" alt="ColdCoffee iOS chat and model selection" /></td><td width="33%"><img src="docs/assets/coldcoffee-ios-community.png" width="270" alt="ColdCoffee iOS community and paid services" /></td></tr>
+<tr><td align="center">Connect</td><td align="center">Chat</td><td align="center">Community</td></tr>
+</table>
+
+These 390×844 images are original isolated UI mockups with synthetic data. They are layout previews, not iPhone performance measurements, and contain no real account or API key.
+
+The iOS source lives in [`mobile-ios/`](mobile-ios/) and is released under GPL-3.0-only. You can open `mobile-ios/ColdCoffeeIOS.xcodeproj` on macOS and run an unsigned simulator build. TestFlight and App Store distribution still require the publisher's Apple Developer Team, signing certificates, provisioning profiles and App Store Connect permissions. No real App Store link is claimed until a signed build has been uploaded and approved. See the [iOS release and marketing guide](docs/IOS-MARKETING.md).
+
 ## ColdCoffee services
 
 | Service | Delivery and pricing | Where to start |
 |---|---|---|
-| **ColdCoffee API relay** | Paid model API service, usable from desktop and Android with each customer's own key. Other compatible relays remain supported. | [Visit coldcoffeeai.com](https://coldcoffeeai.com/) |
+| **ColdCoffee API relay** | Paid model API service, usable from desktop, Android and iPhone with each customer's own key. Other compatible relays remain supported. | [Visit coldcoffeeai.com](https://coldcoffeeai.com/) |
 | **Closed-source local workflows** | A separately delivered, paid installation on the customer's computer. Customers may use their existing subscription or another relay. | Join a QQ group and privately contact an administrator. |
 | **Custom closed-source workflows** | Scope, quotation, integrations and maintenance are agreed individually. | Discuss requirements and pricing with an administrator. |
 
@@ -45,7 +58,7 @@ These independent paid offerings do not turn the GPL mobile application into pro
 
 ## What's new in 3.3.0-preview.1
 
-An Android client joins the existing desktop workbench, with unified downloads, corresponding mobile source, provider setup, and community/service access. Desktop routing retains stable nodes, the vintage Ragdoll courier, model search, connection retry, configuration recovery and zoom controls. See the [release notes](docs/release-notes-3.3.0-preview.1.md).
+Android and iOS clients join the existing desktop workbench, with unified provider setup, corresponding mobile sources, and community/service access. iOS source and the signing/TestFlight/App Store preparation are included; actual store publication remains pending Apple credentials and review. Desktop routing retains stable nodes, the vintage Ragdoll courier, model search, connection retry, configuration recovery and zoom controls. See the [release notes](docs/release-notes-3.3.0-preview.1.md).
 
 ## Visual routing
 
@@ -89,7 +102,7 @@ npm ci
 npm start
 ```
 
-Build desktop packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). For Android, follow the [mobile build guide](docs/ANDROID.md#从源码构建). Version 3.3.0-preview.1 is a preview build with unified release downloads and SHA-256 checksums.
+Build desktop packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). For Android, follow the [mobile build guide](docs/ANDROID.md#从源码构建). For iOS, follow the [iOS release guide](docs/IOS-MARKETING.md). Version 3.3.0-preview.1 is a preview build with unified release downloads and SHA-256 checksums; iOS is currently source/build preparation rather than a published App Store binary.
 
 All 15 model seats write an original CHA pack or skill into the selected local instruction directory. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
 
@@ -201,9 +214,9 @@ Bot acknowledgement, independent readback, and new-conversation behavior are sho
 
 ![Original Grok Bot memory UI, isolated test data](docs/assets/coldcoffee-grok-memory-v8.png)
 
-Release 3.3.0-preview.1: seven Workbench installers and one Android APK share the same release, accompanied by corresponding mobile source and checksums. This remains a preview build. Desktop packages cover Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The desktop workbench retains 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse; the Android app connects to model APIs directly.
+Release 3.3.0-preview.1: seven Workbench installers and one Android APK share the same release, accompanied by the Android source and checksums. The iOS SwiftUI source and signing/TestFlight/App Store preparation are included in the repository, but no App Store binary is claimed before Apple signing and review. This remains a preview build. Desktop packages cover Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The desktop workbench retains 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse; the Android app connects to model APIs directly.
 
-[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.1) · [Android installation and source](docs/ANDROID.md) · [Original toolbox and feature scope](docs/original-toolbox.md)
+[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.1) · [Android installation and source](docs/ANDROID.md) · [iOS source and release guide](docs/IOS-MARKETING.md) · [Original toolbox and feature scope](docs/original-toolbox.md)
 
 [Default latest download page](https://github.com/3641397194-wq/gpt6-Astra/releases/latest) · [All releases](https://github.com/3641397194-wq/gpt6-Astra/releases). Share the release page or a complete versioned installer URL; do not mix an old tag with a new file name.
 

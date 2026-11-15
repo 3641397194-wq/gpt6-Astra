@@ -4,6 +4,8 @@
 
 **安卓客户端适用独立的 GPL-3.0-only 许可。** `mobile/` 实际复用 Chatbox `v1.24.4` 的公开 SSE 兼容代码，并以原创冷咖啡界面和原生 Android 工程进行集成。移动程序对应源码、构建脚本、依赖锁及许可证与每个 APK 同版发布；其范围、固定来源和修改说明见 [移动端版权声明](mobile/THIRD_PARTY_NOTICES.md)、[GPL 全文](mobile/LICENSE) 与 [来源清单](mobile/vendor/chatbox/SOURCE.json)。这不是 Chatbox 官方客户端，也不表示其作者为冷咖啡服务背书。独立收费闭源工作流与 API 服务不改变移动客户端的 GPL 许可。
 
+**iOS 客户端适用独立的 GPL-3.0-only 许可。** `mobile-ios/` 是 SwiftUI 原生工程，使用 iOS Keychain 保存用户自己填写的 API Key，通过 HTTPS 访问用户选择的 OpenAI 兼容服务。iOS 源码、资源、构建说明和许可证随仓库发布；当前仓库不包含 Apple 签名证书、私钥、Provisioning Profile 或 App Store Connect 凭据。iOS 客户端不是 Chatbox 官方客户端，也不表示上游作者为冷咖啡服务背书。签名、TestFlight 和 App Store 审核状态见 [iOS 发布说明](docs/IOS-MARKETING.md)。
+
 完整版权、许可和 NOTICE 原文汇编在 [随包开源声明](desktop/resources/legal/OPEN_SOURCE_NOTICES.txt)。软件中的「关于与开源许可」提供相同内容。这些文件是归属和许可记录，不表示上游作者为冷咖啡或收费服务背书。
 
 | 组件 | 固定版本与来源 | 随包记录与修改说明 |
@@ -15,6 +17,7 @@
 | IDA 中文词典及插件 | `tools/ida-zh-cn`；词典参考 0x-focus/IDA-Pro-9.0-Chinese-Translation 与 tuxi/ida-i18n，MIT | 原始版权与 MIT 原文见 [NOTICE](tools/ida-zh-cn/NOTICE.md) 与 [LICENSE](tools/ida-zh-cn/LICENSE)。插件本体和整合文档独立实现；本项目不分发 IDA 主程序。 |
 | 桌面运行依赖 | `jsonc-parser@3.3.1`（MIT）、`smol-toml@1.9.0`（BSD-3-Clause）、`yaml@2.9.0`（ISC） | 精确锁定版本、版权与许可全文纳入随包开源声明；依赖图见 `desktop/package-lock.json`。 |
 | 桌面运行框架 | Electron 及其 Chromium/Node 组件 | 对应运行时的 `LICENSE.electron.txt` 与 `LICENSES.chromium.html` 随平台安装包分发，保留其原始第三方声明；不以本项目许可证替代。 |
+| iOS 客户端 | SwiftUI / Foundation / Security / URLSession，系统提供 | 代码位于 `mobile-ios/`，按 `mobile-ios/LICENSE` 的 GPL-3.0-only 发布；系统框架不作为第三方二进制随包分发。 |
 
 REA 保留了上游记录的许可信息缺口和补充说明；`burp-mcp-full/` 在固定来源中没有独立许可证文件，保持来源根许可证与原记录，不虚构额外授权。第三方工具名称用于说明兼容和集成，实际下载或执行的外部工具仍适用各自条款。
 

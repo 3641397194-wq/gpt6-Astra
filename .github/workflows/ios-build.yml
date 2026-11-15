@@ -1,0 +1,181 @@
+name: ios-build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      publish_testflight:
+        description: Export a signed IPA and upload it to TestFlight. Requires Apple secrets documented in docs/IOS.md.
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-test:
+    name: Build and test iOS
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Xcode and source layout
+        run: |
+          xcodebuild -version
+          test -d mobile-ios/ColdCoffeeIOS.xcodeproj
+          test -f VERSION
+
+      - name: Run iOS source privacy audit
+        run: python3 tools/ios_privacy_audit.py
+
+      - name: Build and test on iOS Simulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          device_id="$(xcrun simctl list devices available | awk -F '[()]' '/iPhone/{print $2; exit}')"
+          test -n "$device_id"
+          xcodebuild \
+            -project mobile-ios/ColdCoffeeIOS.xcodeproj \
+            -scheme ColdCoffeeIOS \
+            -destination "platform=iOS Simulator,id=${device_id}" \
+            -derivedDataPath "$RUNNER_TEMP/ColdCoffeeIOSDerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            test
+
+      - name: Build unsigned device app
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(tr -d '\r\n' < VERSION)"
+          xcodebuild \
+            -project mobile-ios/ColdCoffeeIOS.xcodeproj \
+            -scheme ColdCoffeeIOS \
+            -sdk iphoneos \
+            -configuration Release \
+            -derivedDataPath "$RUNNER_TEMP/ColdCoffeeIOSDeviceData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            build
+          app="$RUNNER_TEMP/ColdCoffeeIOSDeviceData/Build/Products/Release-iphoneos/ColdCoffeeIOS.app"
+          test -d "$app"
+          ditto -c -k --sequesterRsrc --keepParent "$app" "ColdCoffee-iOS-Unsigned-${version}.zip"
+
+      - name: Create corresponding iOS source archive
+        run: python3 tools/ios_source_archive.py
+
+      - name: Upload unsigned iOS build and source
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build
+          path: |
+            ColdCoffee-iOS-Unsigned-*.zip
+            mobile-ios/dist/ColdCoffee-iOS-Source-*.zip
+            mobile-ios/work/privacy-audit.json
+          if-no-files-found: error
+          retention-days: 14
+
+  testflight:
+    name: Export and upload TestFlight IPA
+    if: github.event_name == 'workflow_dispatch' && inputs.publish_testflight == true
+    needs: build-test
+    runs-on: macos-15
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require Apple signing secrets
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+          APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
+          APPLE_API_PRIVATE_KEY: ${{ secrets.APPLE_API_PRIVATE_KEY }}
+          IOS_CERTIFICATE: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_P12_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
+          IOS_PROFILE: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          IOS_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          set -euo pipefail
+          for value in APPLE_TEAM_ID APPLE_KEY_ID APPLE_ISSUER_ID APPLE_API_PRIVATE_KEY IOS_CERTIFICATE IOS_CERTIFICATE_PASSWORD IOS_PROFILE IOS_PROFILE_NAME; do
+            test -n "${!value}" || { echo "::error::Missing $value; configure the secrets listed in docs/IOS.md"; exit 1; }
+          done
+
+      - name: Install signing materials into runner keychain
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          IOS_CERTIFICATE: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_P12_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
+          IOS_PROFILE: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          IOS_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          set -euo pipefail
+          keychain="$RUNNER_TEMP/coldcoffee-ios-signing.keychain-db"
+          kc_secret="$(uuidgen)"
+          security create-keychain -p "$kc_secret" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$kc_secret" "$keychain"
+          echo "$IOS_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/dist.p12"
+          security import "$RUNNER_TEMP/dist.p12" -P "$IOS_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
+          security list-keychains -d user -s "$keychain"
+          echo "$IOS_PROFILE" | base64 --decode > "$RUNNER_TEMP/profile.mobileprovision"
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          cp "$RUNNER_TEMP/profile.mobileprovision" "$HOME/Library/MobileDevice/Provisioning Profiles/${IOS_PROFILE_NAME}.mobileprovision"
+
+      - name: Archive and export signed IPA
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          IOS_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          set -euo pipefail
+          version="$(tr -d '\r\n' < VERSION)"
+          xcodebuild archive \
+            -project mobile-ios/ColdCoffeeIOS.xcodeproj \
+            -scheme ColdCoffeeIOS \
+            -configuration Release \
+            -archivePath "$RUNNER_TEMP/ColdCoffeeIOS.xcarchive" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+            PROVISIONING_PROFILE_SPECIFIER="$IOS_PROFILE_NAME" \
+            CODE_SIGN_STYLE=Manual
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+          <key>method</key><string>app-store</string>
+          <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+          <key>provisioningProfiles</key><dict><key>com.coldcoffee.mobile.ios</key><string>${IOS_PROFILE_NAME}</string></dict>
+          </dict></plist>
+          PLIST
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/ColdCoffeeIOS.xcarchive" \
+            -exportPath "$RUNNER_TEMP/ColdCoffeeIOSExport" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist"
+          cp "$RUNNER_TEMP/ColdCoffeeIOSExport/"*.ipa "ColdCoffee-iOS-${version}.ipa"
+
+      - name: Upload IPA to TestFlight
+        env:
+          APPLE_KEY_ID: ${{ secrets.APPLE_KEY_ID }}
+          APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
+          APPLE_API_PRIVATE_KEY: ${{ secrets.APPLE_API_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' "$APPLE_API_PRIVATE_KEY" > "$RUNNER_TEMP/AuthKey_${APPLE_KEY_ID}.p8"
+          xcrun altool --upload-app \
+            --type ios \
+            --file ColdCoffee-iOS-*.ipa \
+            --apiKey "$APPLE_KEY_ID" \
+            --apiIssuer "$APPLE_ISSUER_ID"
+
+      - name: Remove Apple signing materials
+        if: always()
+        run: |
+          rm -f "$RUNNER_TEMP/dist.p12" "$RUNNER_TEMP/profile.mobileprovision" "$RUNNER_TEMP"/AuthKey_*.p8
+          security delete-keychain "$RUNNER_TEMP/coldcoffee-ios-signing.keychain-db" 2>/dev/null || true
