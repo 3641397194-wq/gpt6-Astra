@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-src 'none'; form-action 'none'">
+  <meta name="theme-color" content="#f8f6f2">
+  <title>冷咖啡 · 随行</title>
+  <link rel="icon" href="assets/icon.png">
+  <link rel="stylesheet" href="app.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <button class="brand" id="brand-home" aria-label="冷咖啡首页"><img src="assets/icon.png" alt=""><span><strong>冷咖啡<span class="brand-dot">.</span></strong><small>随行 · 移动端</small></span></button>
+      <div class="header-actions"><span id="runtime-badge" class="runtime-badge">安卓客户端</span><button class="icon-button" id="settings-open" aria-label="打开设置" data-icon="settings"></button></div>
+    </header>
+    <main id="main">
+      <section id="page-home" class="page active" aria-label="首页">
+        <div class="hero">
+          <img class="hero-art" src="assets/hero.webp" alt="冷咖啡原创银发女生插画">
+          <div class="hero-copy"><span class="eyebrow">随时随地 · 冷咖啡</span><h1>灵感上线，<br>随时来杯<span>冷咖啡。</span></h1><p>你的模型，装进口袋。<br>从一杯咖啡，聊到下一个好点子。</p><button class="button primary" id="home-connect">接入冷咖啡 <span aria-hidden="true">↗</span></button><button class="text-button" id="home-other">已有其他中转？也能接入 →</button></div>
+          <span class="hero-edition">原创形象 / 银发与红</span>
+        </div>
+        <div class="intro-strip"><span data-icon="shield"></span><span>Key 本机加密</span><i></i><span>自由切换服务商</span><i></i><span>手机 · 电脑</span></div>
+        <div class="section-heading"><div><span class="eyebrow">轻松接入 · 即刻开聊</span><h2>三步，就能开聊</h2></div><span class="step-note">无需安装电脑工作流</span></div>
+        <div class="steps"><div><b>01</b><strong>选择服务商</strong><span>推荐冷咖啡，也支持其他中转。</span></div><div><b>02</b><strong>填写自己的 Key</strong><span>检测连接，选择或填写模型。</span></div><div><b>03</b><strong>开始聊天</strong><span>流式回复、图片提问、本机会话。</span></div></div>
+        <button id="resume-chat" class="resume-card"><span class="resume-icon" data-icon="chat"></span><span><strong>继续你的对话</strong><small id="resume-description">接好模型，把第一个问题交给冷咖啡。</small></span><span aria-hidden="true">↗</span></button>
+        <div class="section-heading"><div><span class="eyebrow">你的专属冷咖啡</span><h2>从聊天，到你的专属工作流</h2></div></div>
+        <div class="service-grid">
+          <article class="service-card relay-service"><span class="pill">付费 API 服务</span><h3>冷咖啡中转</h3><p>模型接入、用量与充值，在冷咖啡站点查看。工作流效果以所选服务实际支持为准。</p><button class="text-button" data-external="website">访问冷咖啡站点 ↗</button></article>
+          <article class="service-card"><span class="pill neutral">独立付费交付</span><h3>闭源工作流 · 定制</h3><p>按方案安装到你的电脑。可配合现有订阅或其他中转；进群私聊管理，沟通需求和报价。</p><button class="text-button" data-community>联系管理聊方案 ↗</button></article>
+        </div>
+        <p class="quiet-note">客户端开放源码。模型 API 用量、独立闭源工作流与定制服务分别计费。</p>
+      </section>
+      <section id="page-chat" class="page chat-page" aria-label="聊天">
+        <div class="chat-toolbar"><button class="icon-button" id="history-open" aria-label="会话记录" data-icon="history"></button><button id="model-open" class="model-selector"><strong id="selected-model">选择模型</strong><span id="selected-provider">接入自己的 API 后开始</span></button><button class="icon-button" id="new-chat" aria-label="新建会话" data-icon="plus"></button></div>
+        <div id="messages" class="messages" aria-live="polite" aria-atomic="false"></div>
+        <div class="composer-wrap"><div id="attachment-preview" class="attachment-preview" hidden></div><form id="composer" class="composer"><textarea id="message-input" rows="1" placeholder="给冷咖啡一个好问题…" aria-label="输入消息"></textarea><div class="composer-actions"><div><button class="icon-button" id="attach-open" type="button" aria-label="添加图片" data-icon="image"></button><button class="icon-button" id="system-open" type="button" aria-label="会话设置" data-icon="sliders"></button><span id="generation-status" class="generation-status">内容仅发送至所选服务商</span></div><button id="send-message" class="send-button" type="submit" aria-label="发送消息" data-icon="arrowUp"></button><button id="stop-message" class="send-button stop" type="button" aria-label="停止生成" data-icon="stop" hidden></button></div></form><input id="attachment-input" type="file" accept="image/png,image/jpeg,image/webp" hidden><p class="composer-note">模型可能出错，请核对重要信息。图片支持取决于所选模型。</p></div>
+      </section>
+      <section id="page-providers" class="page" aria-label="服务商">
+        <div class="page-title"><span class="eyebrow">模型由你选择</span><h1>连接你的 AI</h1><p>冷咖啡优先推荐，其他兼容中转也欢迎。</p></div>
+        <article class="featured-provider"><div><span class="pill">冷咖啡推荐</span><h2>一个接入点，<br>打开更多可能。</h2><p>填写你自己的冷咖啡 Key。模型列表由接口实时返回，价格和可用模型以站点为准。</p></div><button class="button primary" id="provider-coldcoffee">接入冷咖啡 ↗</button><button class="text-button" data-external="website">查看站点 · 购买与充值 ↗</button></article>
+        <div class="section-heading"><h2>我的服务商</h2><button id="add-provider" class="text-button">＋ 添加其他</button></div>
+        <div id="provider-list" class="provider-list"></div>
+        <div class="privacy-card"><span data-icon="lock"></span><p>Key 在安卓本机加密保存，不会放进分享配置。聊天内容会发给你选择的服务商；请按对方的隐私政策使用。</p></div>
+      </section>
+      <section id="page-community" class="page" aria-label="冷咖啡社区">
+        <div class="page-title"><span class="eyebrow">一杯咖啡 · 一群同路人</span><h1>一起，玩出点不同。</h1><p>接入答疑、工作流交流、付费方案与定制沟通。</p></div>
+        <div class="community-banner"><img src="assets/icon.png" alt=""><div><strong>冷咖啡社区</strong><span>四个 QQ 群 · Telegram · 微信咨询</span></div><span class="pill">欢迎来聊</span></div>
+        <div class="section-heading"><h2>QQ 交流群</h2><span class="step-note">点击查看二维码</span></div>
+        <div id="qq-groups" class="qq-groups"></div>
+        <div class="community-links"><button data-external="telegram"><span class="link-icon" data-icon="chat"></span><span><strong>Telegram 聊天群</strong><small>提问、交流与使用讨论</small></span><b>↗</b></button><button data-external="channel"><span class="link-icon" data-icon="broadcast"></span><span><strong>Telegram 频道</strong><small>产品更新与冷咖啡消息</small></span><b>↗</b></button><button id="wechat-help"><span class="link-icon wechat-icon" data-icon="users"></span><span><strong>微信交流咨询</strong><small>加入 QQ 群，向管理索取最新邀请</small></span><b>↗</b></button></div>
+        <article class="custom-service"><span class="eyebrow">为你的工作而作</span><h2>工作流，为你的需求定制。</h2><p>独立闭源工作流支持收费本机安装与定制。把你的场景、目标和现有环境告诉群管理，先沟通方案和报价。</p><button class="button primary" id="custom-contact">进群联系管理 ↗</button><small>可使用现有订阅或其他中转。当前开源手机客户端不属于闭源交付。</small></article>
+        <button class="website-footer" data-external="website"><span>冷咖啡付费 API 中转</span><strong>coldcoffeeai.com ↗</strong></button>
+      </section>
+    </main>
+    <nav class="bottom-nav" aria-label="主导航"><button data-page="home" class="selected"><span data-icon="home"></span><span>首页</span></button><button data-page="chat"><span data-icon="chat"></span><span>聊天</span></button><button data-page="providers"><span data-icon="nodes"></span><span>接入</span></button><button data-page="community"><span data-icon="users"></span><span>社区</span></button></nav>
+  </div>
+  <dialog id="provider-dialog" class="sheet"><form id="provider-form"><div class="dialog-heading"><div><span class="eyebrow">连接服务商</span><h2 id="provider-dialog-title">接入冷咖啡</h2></div><button class="icon-button" type="button" data-close aria-label="关闭" data-icon="close"></button></div><input id="provider-id" type="hidden"><label>服务商名称<input id="provider-name" required maxlength="60" autocomplete="off"></label><label>API 地址<input id="provider-url" type="url" required placeholder="https://你的中转/v1" autocomplete="url" inputmode="url"></label><label>接口协议<select id="provider-protocol"><option value="chat">Chat Completions · 常用兼容协议</option><option value="responses">Responses · 需服务商支持</option></select></label><label>你的 API Key<div class="key-input"><input id="provider-key" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="填写自己的 Key"><button id="toggle-key" class="icon-button" type="button" aria-label="显示或隐藏 Key" data-icon="eye"></button></div></label><p id="provider-key-help" class="field-help">只保存在本机加密存储。我们不会替你创建或赠送 Key。</p><p class="field-help">接口使用 HTTPS；支持填写根地址、/v1 或完整的对应接口地址。</p><div id="provider-form-error" class="inline-error" role="alert" hidden></div><button class="button primary full" id="provider-save" type="submit">保存并读取模型 ↗</button><p class="quiet-note">读取模型列表不会发送聊天请求；正常聊天按服务商规则计费。</p></form></dialog>
+  <dialog id="models-dialog" class="sheet"><div class="dialog-heading"><div><span class="eyebrow">选择模型</span><h2>选择模型</h2></div><button class="icon-button" data-close aria-label="关闭" data-icon="close"></button></div><label>服务商<select id="model-provider"></select></label><div class="search-row"><input id="model-search" type="search" placeholder="搜索模型 ID" aria-label="搜索模型"><button id="refresh-models" class="icon-button" aria-label="刷新模型列表" data-icon="refresh"></button></div><p id="model-status" class="field-help" role="status"></p><div id="model-list" class="model-list"></div><form id="manual-model-form" class="manual-model"><label>手动填写模型 ID<input id="manual-model" placeholder="使用服务商实际支持的模型 ID" required></label><button class="button secondary full" type="submit">使用此模型</button></form></dialog>
+  <dialog id="history-dialog" class="sheet"><div class="dialog-heading"><h2>本机会话</h2><button class="icon-button" data-close aria-label="关闭" data-icon="close"></button></div><button id="history-new" class="button primary full">＋ 新建会话</button><div id="history-list" class="history-list"></div><p class="quiet-note">会话保存在这台设备。卸载或清除应用数据会删除本机记录。</p></dialog>
+  <dialog id="settings-dialog" class="sheet"><div class="dialog-heading"><h2>设置与关于</h2><button class="icon-button" data-close aria-label="关闭" data-icon="close"></button></div><label>文字大小<select id="font-size"><option value="16">标准 · 16</option><option value="17">舒适 · 17</option><option value="19">大字 · 19</option><option value="21">特大 · 21</option></select></label><label>外观<select id="theme"><option value="light">奶油白 · 冷咖啡红</option><option value="dark">夜间 · 深空红</option><option value="system">跟随系统</option></select></label><button id="export-config" class="setting-row"><span>分享服务商配置</span><small>不含 Key 和聊天记录 ↗</small></button><button id="privacy-open" class="setting-row"><span>隐私与数据</span><small>查看本机存储与请求去向 ↗</small></button><button id="licenses-open" class="setting-row"><span>开源许可与版权</span><small>GPLv3 · Chatbox 及其他依赖 ↗</small></button><button id="source-open" class="setting-row"><span>查看对应源码</span><small>冷咖啡 GitHub 仓库 ↗</small></button><p class="about-brand">冷咖啡 · 随行 <span id="about-version"></span><br><small>原创界面与安卓集成 · 兼容模块基于 Chatbox 开源代码二次开发。独立项目，非 Chatbox 官方出品。</small></p></dialog>
+  <dialog id="system-dialog" class="sheet"><div class="dialog-heading"><h2>当前会话设置</h2><button class="icon-button" data-close aria-label="关闭" data-icon="close"></button></div><label>系统提示词<textarea id="system-prompt" rows="7" maxlength="12000" placeholder="例如：请用简洁中文回答，先给结论。"></textarea></label><p class="field-help">只用于当前会话，发送消息时一并交给所选模型。</p><button id="system-save" class="button primary full">保存会话设置</button></dialog>
+  <dialog id="content-dialog" class="sheet"><div class="dialog-heading"><h2 id="content-title"></h2><button class="icon-button" data-close aria-label="关闭" data-icon="close"></button></div><div id="content-body"></div></dialog>
+  <dialog id="qr-dialog" class="qr-dialog"><div class="dialog-heading"><h2 id="qr-title"></h2><button class="icon-button" data-close aria-label="关闭" data-icon="close"></button></div><img id="qr-image" alt="交流群二维码"><p id="qr-number"></p><button id="qr-copy" class="button primary full">复制群号</button><p class="quiet-note">可截图保存二维码，或在 QQ 搜索群号申请加入。</p></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

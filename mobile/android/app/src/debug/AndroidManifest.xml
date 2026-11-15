@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Instrumentation fixtures only. The release manifest always rejects cleartext. -->
+    <application
+        android:networkSecurityConfig="@xml/network_security_config_debug"
+        tools:replace="android:networkSecurityConfig">
+        <provider
+            android:name=".ImageFixtureProvider"
+            android:authorities="${applicationId}.test-images"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+    </application>
+</manifest>

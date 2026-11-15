@@ -2,6 +2,8 @@
 
 冷咖啡原创的桌面界面、交互、客户端适配、事务式安装与恢复等代码按根目录 [MIT 许可证](LICENSE) 分发。独立组件、源代码快照、运行时、词典和第三方资料分别保留自己的许可证；根目录 MIT 许可证不覆盖这些作品。
 
+**安卓客户端适用独立的 GPL-3.0-only 许可。** `mobile/` 实际复用 Chatbox `v1.24.4` 的公开 SSE 兼容代码，并以原创冷咖啡界面和原生 Android 工程进行集成。移动程序对应源码、构建脚本、依赖锁及许可证与每个 APK 同版发布；其范围、固定来源和修改说明见 [移动端版权声明](mobile/THIRD_PARTY_NOTICES.md)、[GPL 全文](mobile/LICENSE) 与 [来源清单](mobile/vendor/chatbox/SOURCE.json)。这不是 Chatbox 官方客户端，也不表示其作者为冷咖啡服务背书。独立收费闭源工作流与 API 服务不改变移动客户端的 GPL 许可。
+
 完整版权、许可和 NOTICE 原文汇编在 [随包开源声明](desktop/resources/legal/OPEN_SOURCE_NOTICES.txt)。软件中的「关于与开源许可」提供相同内容。这些文件是归属和许可记录，不表示上游作者为冷咖啡或收费服务背书。
 
 | 组件 | 固定版本与来源 | 随包记录与修改说明 |

@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
-test('public release verification rejects HTML/error pages and samples native installers without credentials', () => {
+test('public release verification rejects HTML/error pages and verifies desktop, APK, source and Latest without credentials', () => {
   const result = spawnSync(process.platform === 'win32' ? 'python' : 'python3',
     ['-B', '-m', 'unittest', 'discover', '-s', 'tools/tests', '-p', 'test_verify_release_downloads.py'],
     { cwd: path.resolve(__dirname, '../..'), encoding: 'utf8', timeout: 30000 });

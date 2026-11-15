@@ -147,9 +147,194 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  android:
+    name: Package Android and corresponding source
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify fixed Gradle wrapper
+        run: |
+          printf '%s  %s\n' \
+            '498495120a03b9a6ab5d155f5de3c8f0d986a449153702fb80fc80e134484f17' \
+            'mobile/android/gradle/wrapper/gradle-wrapper.jar' | sha256sum --check --status
+          grep -Fqx 'distributionSha256Sum=d725d707bfabd4dfdc958c624003b3c80accc03f7037b5122c4b1d0ef15cecab' \
+            mobile/android/gradle/wrapper/gradle-wrapper.properties
+      - name: Prepare fixed Android SDK
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Install mobile dependencies
+        working-directory: mobile
+        run: npm ci
+      - name: Verify mobile compatibility and source privacy
+        working-directory: mobile
+        run: |
+          npm test
+          npm run audit:source
+      - name: Install mobile UI test browser
+        working-directory: mobile
+        run: npx playwright install --with-deps chromium
+      - name: Verify mobile UI using isolated synthetic providers
+        working-directory: mobile
+        run: npm run test:ui
+      - name: Prepare persistent release signing
+        if: github.event_name != 'pull_request'
+        env:
+          COLDCOFFEE_ANDROID_KEYSTORE_B64: ${{ secrets.COLDCOFFEE_ANDROID_KEYSTORE_B64 }}
+        run: |
+          python3 - <<'PY'
+          import base64
+          import os
+          from pathlib import Path
+          encoded = os.environ.get("COLDCOFFEE_ANDROID_KEYSTORE_B64", "")
+          if not encoded:
+              raise SystemExit("Release signing keystore is missing; no debug-signed package will be published.")
+          directory = Path(os.environ["RUNNER_TEMP"]) / "coldcoffee-android-signing"
+          directory.mkdir(mode=0o700, parents=True, exist_ok=True)
+          key_path = directory / "release.p12"
+          key_path.write_bytes(base64.b64decode(encoded, validate=True))
+          key_path.chmod(0o600)
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
+              stream.write(f"COLDCOFFEE_ANDROID_KEYSTORE={key_path}\n")
+          PY
+      - name: Build signed Android release and native unit tests
+        if: github.event_name != 'pull_request'
+        env:
+          COLDCOFFEE_ANDROID_STORE_PASSWORD: ${{ secrets.COLDCOFFEE_ANDROID_STORE_PASSWORD }}
+          COLDCOFFEE_ANDROID_KEY_ALIAS: ${{ secrets.COLDCOFFEE_ANDROID_KEY_ALIAS }}
+          COLDCOFFEE_ANDROID_KEY_PASSWORD: ${{ secrets.COLDCOFFEE_ANDROID_KEY_PASSWORD }}
+        run: bash mobile/android/gradlew -p mobile/android --no-daemon :app:assembleRelease :app:testDebugUnitTest
+      - name: Check unsigned release build for pull requests
+        if: github.event_name == 'pull_request'
+        run: bash mobile/android/gradlew -p mobile/android --no-daemon :app:assembleRelease :app:testDebugUnitTest
+      - name: Audit unsigned pull-request APK contents
+        if: github.event_name == 'pull_request'
+        working-directory: mobile
+        run: |
+          version="$(tr -d '\r\n' < "$GITHUB_WORKSPACE/VERSION")"
+          apk="$GITHUB_WORKSPACE/mobile/android/app/build/outputs/apk/release/ColdCoffee-Mobile-Android-${version}-unsigned.apk"
+          test -s "$apk"
+          npm run audit:apk -- "$apk"
+      - name: Verify signed APK identity and package release assets
+        if: github.event_name != 'pull_request'
+        run: |
+          version="$(tr -d '\r\n' < VERSION)"
+          apk="$GITHUB_WORKSPACE/mobile/android/app/build/outputs/apk/release/ColdCoffee-Mobile-Android-${version}.apk"
+          test -s "$apk"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$apk" > "$RUNNER_TEMP/coldcoffee-apk-signature.txt"
+          if grep -q 'CN=Android Debug' "$RUNNER_TEMP/coldcoffee-apk-signature.txt"; then
+            echo "::error::Debug signing is not accepted for public Android releases."
+            exit 1
+          fi
+          analyzer="$ANDROID_HOME/cmdline-tools/latest/bin/apkanalyzer"
+          test "$("$analyzer" manifest application-id "$apk")" = "com.coldcoffee.mobile"
+          test "$("$analyzer" manifest version-name "$apk")" = "$version"
+          test "$("$analyzer" manifest debuggable "$apk")" = "false"
+          npm --prefix mobile run audit:apk -- "$apk"
+          mkdir -p mobile/dist
+          cp "$apk" "mobile/dist/ColdCoffee-Mobile-Android-${version}.apk"
+      - name: Create corresponding mobile source archive
+        working-directory: mobile
+        run: npm run source:archive
+      - name: Upload signed Android APK and corresponding source
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: |
+            mobile/dist/ColdCoffee-Mobile-Android-*.apk
+            mobile/dist/ColdCoffee-Mobile-Source-*.zip
+          if-no-files-found: error
+          retention-days: 14
+      - name: Remove runner signing material
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          path = Path(os.environ["RUNNER_TEMP"]) / "coldcoffee-android-signing" / "release.p12"
+          if path.is_file():
+              path.unlink()
+          PY
+
+  android-emulator:
+    name: Verify Android native bridge on emulator
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify fixed Gradle wrapper
+        run: |
+          printf '%s  %s\n' \
+            '498495120a03b9a6ab5d155f5de3c8f0d986a449153702fb80fc80e134484f17' \
+            'mobile/android/gradle/wrapper/gradle-wrapper.jar' | sha256sum --check --status
+          grep -Fqx 'distributionSha256Sum=d725d707bfabd4dfdc958c624003b3c80accc03f7037b5122c4b1d0ef15cecab' \
+            mobile/android/gradle/wrapper/gradle-wrapper.properties
+      - name: Enable KVM for headless Android tests
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Prepare fixed Android SDK
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Build mobile interface for native tests
+        working-directory: mobile
+        run: |
+          npm ci
+          npm run build
+      - name: Build isolated debug app and instrumentation APK
+        run: bash mobile/android/gradlew -p mobile/android --no-daemon :app:assembleDebug :app:assembleDebugAndroidTest
+      - name: Verify Android KeyStore, streaming, legal text and selected images
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_7_pro
+          cores: 2
+          ram-size: 2048M
+          disable-animations: true
+          enable-hw-keyboard: false
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          script: bash mobile/android/gradlew -p mobile/android --no-daemon :app:connectedDebugAndroidTest
+      - name: Save isolated instrumentation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-instrumentation-report
+          path: |
+            mobile/android/app/build/reports/androidTests/connected/
+            mobile/android/app/build/outputs/androidTest-results/connected/
+          if-no-files-found: warn
+          retention-days: 14
+
   release:
     name: Publish complete cross-platform release
-    needs: package
+    needs: [package, android, android-emulator]
     if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/codex/release-')) && github.event_name == 'workflow_dispatch' && inputs.publish_release == true
     runs-on: ubuntu-latest
     permissions:
@@ -161,7 +346,7 @@ jobs:
           pattern: "*"
           path: release-assets
           merge-multiple: true
-      - name: Validate complete installer set
+      - name: Validate complete desktop/mobile assets and corresponding source
         run: |
           version="$(tr -d '\r\n' < VERSION)"
           mkdir -p out
@@ -172,14 +357,16 @@ jobs:
             "ColdCoffee-Workbench-macOS-x64-${version}.dmg" \
             "ColdCoffee-Workbench-macOS-x64-${version}.zip" \
             "ColdCoffee-Workbench-Linux-x86_64-${version}.AppImage" \
-            "ColdCoffee-Workbench-Linux-amd64-${version}.deb"; do
+            "ColdCoffee-Workbench-Linux-amd64-${version}.deb" \
+            "ColdCoffee-Mobile-Android-${version}.apk" \
+            "ColdCoffee-Mobile-Source-${version}.zip"; do
             test -s "release-assets/$name"
             cp "release-assets/$name" out/
           done
           cp desktop/src/lib/toolbox/SKILL.md out/coldcoffee-toolbox-SKILL.md
           cp docs/original-toolbox.md out/Original-Toolbox.md
           cp "docs/release-notes-${version}.md" out/RELEASE_NOTES.md
-          (cd out && sha256sum ColdCoffee-Workbench-* coldcoffee-toolbox-SKILL.md Original-Toolbox.md RELEASE_NOTES.md > SHA256SUMS.txt)
+          (cd out && sha256sum ColdCoffee-Workbench-* ColdCoffee-Mobile-* coldcoffee-toolbox-SKILL.md Original-Toolbox.md RELEASE_NOTES.md > SHA256SUMS.txt)
       - name: Publish release after all platforms pass
         env:
           GH_TOKEN: ${{ github.token }}
@@ -197,7 +384,7 @@ jobs:
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload "$tag" "${files[@]}" --repo "$GITHUB_REPOSITORY" --clobber
           else
-            gh release create "$tag" "${files[@]}" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "冷咖啡工作台 $version" --draft --prerelease --notes-file out/RELEASE_NOTES.md
+            gh release create "$tag" "${files[@]}" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "冷咖啡 · 电脑与安卓 $version" --draft --prerelease --notes-file out/RELEASE_NOTES.md
           fi
           # GitHub ignores prereleases for /releases/latest, even with --latest.
           # VERSION/release notes still identify preview builds explicitly.

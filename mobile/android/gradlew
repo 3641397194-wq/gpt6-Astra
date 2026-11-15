@@ -1,0 +1,13 @@
+#!/bin/sh
+# Copyright (C) 2026 ColdCoffee contributors.
+# SPDX-License-Identifier: GPL-3.0-only
+# Gradle's Apache-2.0 wrapper launcher is distributed in gradle/wrapper/.
+set -eu
+APP_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+if [ -n "${JAVA_HOME:-}" ]; then
+    JAVA_COMMAND="$JAVA_HOME/bin/java"
+else
+    JAVA_COMMAND=java
+fi
+exec "$JAVA_COMMAND" -classpath "$APP_DIR/gradle/wrapper/gradle-wrapper.jar" \
+    org.gradle.wrapper.GradleWrapperMain "$@"

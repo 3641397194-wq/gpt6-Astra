@@ -20,7 +20,12 @@ const installers = [
   ['linux', 'x86_64', 'AppImage', `ColdCoffee-Workbench-Linux-x86_64-${version}.AppImage`],
   ['linux', 'amd64', 'deb', `ColdCoffee-Workbench-Linux-amd64-${version}.deb`],
 ];
-const expected = installers.map(([, , , name]) => `${repository}/releases/download/v${version}/${name}`).sort();
+const mobileAssets = [
+  `ColdCoffee-Mobile-Android-${version}.apk`,
+  `ColdCoffee-Mobile-Source-${version}.zip`,
+];
+const expected = [...installers.map(([, , , name]) => name), ...mobileAssets]
+  .map((name) => `${repository}/releases/download/v${version}/${name}`).sort();
 const python = (process.platform === 'win32' ? ['python', 'py', 'python3'] : ['python3', 'python'])
   .find((command) => spawnSync(command, ['--version'], { windowsHide: true }).status === 0);
 
@@ -44,8 +49,18 @@ test('VERSION, package metadata and all seven configured installer names agree',
   }
 });
 
+test('the mobile package and Android version agree with the unified release', () => {
+  const pkg = JSON.parse(read('mobile/package.json'));
+  const lock = JSON.parse(read('mobile/package-lock.json'));
+  assert.equal(pkg.version, version);
+  assert.equal(lock.version, version);
+  assert.equal(lock.packages[''].version, version);
+  assert.ok(read('mobile/android/app/build.gradle').includes(`versionName '${version}'`));
+  assert.equal(mobileAssets.length, 2, 'APK and corresponding GPL source are published together');
+});
+
 for (const relative of ['README.md', 'docs/index.html', 'docs/readme-preview.html']) {
-  test(`${relative} links exactly the current seven installers`, () => {
+  test(`${relative} links exactly the seven desktop installers, Android APK and corresponding source`, () => {
     assert.deepEqual(downloadLinks(read(relative)), expected);
   });
 }
@@ -126,7 +141,7 @@ test('isolated preview generation preserves the complete canonical README and is
   assert.deepEqual(fs.readFileSync(readmePath), original, 'the generator edited README.md');
 });
 
-for (const kind of ['version mismatch', 'stale installer', 'duplicate installer']) {
+for (const kind of ['version mismatch', 'stale installer', 'duplicate installer', 'missing mobile APK', 'missing mobile source']) {
   test(`generation validates ${kind} before touching existing previews`, (t) => {
     const dir = fixture(t);
     const readmePath = path.join(dir, 'README.md');
@@ -136,6 +151,11 @@ for (const kind of ['version mismatch', 'stale installer', 'duplicate installer'
         .replace(expected[0], expected[0].replace(`/v${version}/`, '/v0.0.0/')));
     }
     if (kind === 'duplicate installer') fs.appendFileSync(readmePath, `<a href="${expected[0]}">Duplicate</a>`);
+    if (kind === 'missing mobile APK' || kind === 'missing mobile source') {
+      const name = mobileAssets[kind === 'missing mobile APK' ? 0 : 1];
+      const url = `${repository}/releases/download/v${version}/${name}`;
+      fs.writeFileSync(readmePath, fs.readFileSync(readmePath, 'utf8').replace(url, '#removed-by-fixture'));
+    }
     const original = fs.readFileSync(readmePath);
     for (const name of ['index.html', 'readme-preview.html']) fs.writeFileSync(path.join(dir, 'docs', name), 'UNCHANGED');
     const result = generate(dir);

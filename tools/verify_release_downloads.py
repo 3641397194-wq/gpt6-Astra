@@ -1,4 +1,4 @@
-"""Verify published installers using anonymous HTTP requests, not GitHub credentials."""
+"""Verify published desktop/mobile assets using anonymous HTTP, without credentials."""
 
 import argparse
 import concurrent.futures
@@ -20,11 +20,13 @@ def asset_names(version):
         f"ColdCoffee-Workbench-macOS-x64-{version}.zip",
         f"ColdCoffee-Workbench-Linux-x86_64-{version}.AppImage",
         f"ColdCoffee-Workbench-Linux-amd64-{version}.deb",
+        f"ColdCoffee-Mobile-Android-{version}.apk",
+        f"ColdCoffee-Mobile-Source-{version}.zip",
     ]
 
 
 def check_latest_release(repo, version, opener=urllib.request.urlopen):
-    """The seven tag URLs can pass while GitHub's default Latest still breaks."""
+    """Versioned URLs can pass while GitHub's default Latest still breaks."""
     expected = asset_names(version)
     url = f"https://api.github.com/repos/{repo}/releases/latest"
     request = urllib.request.Request(url, headers={
@@ -48,8 +50,13 @@ def check_latest_release(repo, version, opener=urllib.request.urlopen):
     names = {asset.get("name") for asset in data.get("assets", []) if isinstance(asset, dict)}
     missing = sorted(set(expected) - names)
     if missing:
-        raise ValueError("Latest release is missing installers: " + ", ".join(missing))
-    return {"url": url, "status": 200, "tag": data["tag_name"], "installers": len(expected)}
+        raise ValueError("Latest release is missing required assets: " + ", ".join(missing))
+    return {
+        "url": url, "status": 200, "tag": data["tag_name"],
+        "assets": len(expected),
+        "installers": sum(not name.startswith("ColdCoffee-Mobile-Source-") for name in expected),
+        "source_archives": sum(name.startswith("ColdCoffee-Mobile-Source-") for name in expected),
+    }
 
 
 def check_asset(url, opener=urllib.request.urlopen):
@@ -62,23 +69,23 @@ def check_asset(url, opener=urllib.request.urlopen):
     with opener(request, timeout=35) as response:
         sample = response.read(32)
         if response.status not in (200, 206) or not sample:
-            raise ValueError("Installer response is empty or unsuccessful")
+            raise ValueError("Release asset response is empty or unsuccessful")
         content_type = response.headers.get("Content-Type", "").lower()
         if "text/html" in content_type or sample.lstrip().lower().startswith((b"<!doctype", b"<html")):
-            raise ValueError("Download returned an HTML page instead of an installer")
+            raise ValueError("Download returned an HTML page instead of a release asset")
         expected = next((magic for suffix, magic in (
-            (".exe", b"MZ"), (".zip", b"PK\x03\x04"),
+            (".exe", b"MZ"), (".zip", b"PK\x03\x04"), (".apk", b"PK\x03\x04"),
             (".AppImage", b"\x7fELF"), (".deb", b"!<arch>\n"),
         ) if url.endswith(suffix)), None)
         if expected and not sample.startswith(expected):
-            raise ValueError("Downloaded bytes do not match the installer format")
+            raise ValueError("Downloaded bytes do not match the release asset format")
         content_range = response.headers.get("Content-Range", "")
         total = re.search(r"/(\d+)$", content_range)
         size = int(total.group(1)) if total else (
             int(response.headers["Content-Length"]) if response.status == 200 and response.headers.get("Content-Length") else None
         )
         if size is not None and size <= 32:
-            raise ValueError("Installer response is unexpectedly small")
+            raise ValueError("Release asset response is unexpectedly small")
         return {"url": url, "status": response.status, "bytes_sampled": len(sample), "total_bytes": size}
 
 
@@ -88,7 +95,7 @@ def main(argv=None):
     parser.add_argument("--version", default=(Path(__file__).resolve().parents[1] / "VERSION").read_text().strip())
     parser.add_argument("--attempts", type=int, choices=range(1, 11), default=3)
     parser.add_argument("--check-latest", action="store_true",
-                        help="Also check GitHub's default Latest and all seven latest/download aliases")
+                        help="Also check GitHub's default Latest and all nine latest/download aliases")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
     if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", args.repo):

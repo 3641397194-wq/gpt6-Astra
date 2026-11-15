@@ -4,3 +4,9 @@
 /desktop/resources/magpie/* -text
 /desktop/resources/legal/* -text
 /desktop/assets/route-ragdoll/* -text
+# Mobile upstream hashes and original license bytes must survive Git checkout.
+/mobile/vendor/chatbox/* -text
+/mobile/LICENSE -text
+/mobile/legal/* -text
+/mobile/android/gradle/wrapper/* -text
+/mobile/android/gradlew text eol=lf

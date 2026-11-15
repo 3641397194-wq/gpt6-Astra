@@ -29,11 +29,13 @@ class Response:
 
 
 class DownloadChecks(unittest.TestCase):
-    def test_seven_native_installer_names(self):
-        names = verify.asset_names("3.2.0-preview.3")
-        self.assertEqual(len(names), 7)
-        self.assertEqual(len(set(names)), 7)
-        self.assertTrue(all("3.2.0-preview.3" in name for name in names))
+    def test_seven_desktop_installers_android_and_corresponding_source_names(self):
+        names = verify.asset_names("3.3.0-preview.1")
+        self.assertEqual(len(names), 9)
+        self.assertEqual(len(set(names)), 9)
+        self.assertTrue(all("3.3.0-preview.1" in name for name in names))
+        self.assertIn("ColdCoffee-Mobile-Android-3.3.0-preview.1.apk", names)
+        self.assertIn("ColdCoffee-Mobile-Source-3.3.0-preview.1.zip", names)
         with self.assertRaises(ValueError):
             verify.asset_names("../not-a-version")
 
@@ -55,14 +57,23 @@ class DownloadChecks(unittest.TestCase):
             with self.subTest(status=status, body=body), self.assertRaises(ValueError):
                 verify.check_asset("https://github.com/TARGET/releases/download/v1.0.0/app.exe", lambda *a, **kw: response)
 
-    def test_native_magic_for_zip_appimage_and_deb(self):
-        for suffix, magic in [("zip", b"PK\x03\x04"), ("AppImage", b"\x7fELF"), ("deb", b"!<arch>\n")]:
+    def test_native_magic_for_apk_source_zip_appimage_and_deb(self):
+        for suffix, magic in [("apk", b"PK\x03\x04"), ("zip", b"PK\x03\x04"), ("AppImage", b"\x7fELF"), ("deb", b"!<arch>\n")]:
             with self.subTest(suffix=suffix):
                 verify.check_asset("https://github.com/TARGET/releases/download/v1.0.0/app." + suffix, lambda *a, **kw: Response(magic + b"\0" * 32))
 
+    def test_apk_and_source_zip_reject_wrong_binary_even_when_download_returns_200(self):
+        for name in ["ColdCoffee-Mobile-Android-1.0.0.apk", "ColdCoffee-Mobile-Source-1.0.0.zip"]:
+            for body in [b"MZ" + b"\0" * 30, b"not-an-archive" + b"\0" * 32]:
+                response = Response(body)
+                response.status = 200
+                with self.subTest(name=name, body=body), self.assertRaises(ValueError):
+                    verify.check_asset("https://github.com/TARGET/releases/download/v1.0.0/" + name,
+                                       lambda *a, **kw: response)
+
 
 class LatestChecks(unittest.TestCase):
-    version = "3.2.0-preview.9"
+    version = "3.3.0-preview.1"
 
     def release(self):
         return {"tag_name": "v" + self.version, "draft": False, "prerelease": False,
@@ -82,7 +93,9 @@ class LatestChecks(unittest.TestCase):
             return self.response(self.release())
         result = verify.check_latest_release("TARGET/fixture", self.version, opener)
         self.assertEqual(result["tag"], "v" + self.version)
-        self.assertEqual(result["installers"], 7)
+        self.assertEqual(result["installers"], 8)
+        self.assertEqual(result["assets"], 9)
+        self.assertEqual(result["source_archives"], 1)
 
     def test_old_latest_draft_prerelease_missing_asset_and_bad_json_fail(self):
         cases = [dict(self.release(), tag_name="v3.1.0-preview.1"), dict(self.release(), draft=True),
@@ -95,6 +108,14 @@ class LatestChecks(unittest.TestCase):
         with self.assertRaises(ValueError):
             verify.check_latest_release("TARGET/fixture", self.version, lambda *a, **kw: response)
 
+    def test_latest_rejects_missing_apk_or_missing_corresponding_source(self):
+        for missing in [f"ColdCoffee-Mobile-Android-{self.version}.apk",
+                        f"ColdCoffee-Mobile-Source-{self.version}.zip"]:
+            data = self.release()
+            data["assets"] = [asset for asset in data["assets"] if asset["name"] != missing]
+            with self.subTest(missing=missing), self.assertRaisesRegex(ValueError, "missing required assets"):
+                verify.check_latest_release("TARGET/fixture", self.version, lambda *a, **kw: self.response(data))
+
     def test_cli_checks_tag_and_latest_aliases_and_fails_if_either_breaks(self):
         for failure in [None, "metadata", "alias"]:
             with self.subTest(failure=failure), tempfile.TemporaryDirectory() as directory:
@@ -103,7 +124,7 @@ class LatestChecks(unittest.TestCase):
                     if failure == "alias" and "/latest/download/" in url:
                         raise ValueError("HTTP 404")
                     return {"url": url, "status": 206, "bytes_sampled": 32, "total_bytes": 1048576}
-                latest = {"tag": "v" + self.version, "installers": 7}
+                latest = {"tag": "v" + self.version, "installers": 8, "assets": 9, "source_archives": 1}
                 with patch.object(verify, "check_asset", side_effect=asset) as probe, \
                      patch.object(verify, "check_latest_release", return_value=latest,
                                   side_effect=ValueError("stale latest") if failure == "metadata" else None), \
@@ -111,9 +132,9 @@ class LatestChecks(unittest.TestCase):
                     status = verify.main(["--repo", "TARGET/fixture", "--version", self.version,
                                           "--check-latest", "--attempts", "1", "--output", str(output)])
                 report = json.loads(output.read_text())
-                self.assertEqual(len(report["checks"]), 14)
-                self.assertEqual(probe.call_count, 14)
-                self.assertEqual(sum("/latest/download/" in c["url"] for c in report["checks"]), 7)
+                self.assertEqual(len(report["checks"]), 18)
+                self.assertEqual(probe.call_count, 18)
+                self.assertEqual(sum("/latest/download/" in c["url"] for c in report["checks"]), 9)
                 self.assertEqual(status, 0 if failure is None else 1)
                 self.assertEqual(report["ok"], failure is None)
 

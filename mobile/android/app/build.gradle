@@ -1,0 +1,126 @@
+plugins {
+    id 'com.android.application'
+}
+
+def storePath = providers.environmentVariable('COLDCOFFEE_ANDROID_KEYSTORE').orNull
+def storePass = providers.environmentVariable('COLDCOFFEE_ANDROID_STORE_PASSWORD').orNull
+def keyName = providers.environmentVariable('COLDCOFFEE_ANDROID_KEY_ALIAS').orNull
+def keyPass = providers.environmentVariable('COLDCOFFEE_ANDROID_KEY_PASSWORD').orNull
+def signingValues = [storePath, storePass, keyName, keyPass]
+def hasAnySigningValue = signingValues.any { it != null && !it.isEmpty() }
+def hasReleaseSigning = signingValues.every { it != null && !it.isEmpty() }
+if (hasAnySigningValue && !hasReleaseSigning) {
+    throw new GradleException('Android release signing requires all four COLDCOFFEE_ANDROID_* environment variables.')
+}
+
+android {
+    namespace 'com.coldcoffee.mobile'
+    compileSdk 35
+    buildToolsVersion '35.0.0'
+
+    defaultConfig {
+        applicationId 'com.coldcoffee.mobile'
+        minSdk 26
+        targetSdk 35
+        versionCode 330001
+        versionName '3.3.0-preview.1'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        buildConfigField 'boolean', 'RELEASE_SIGNED', hasReleaseSigning.toString()
+    }
+    signingConfigs {
+        if (hasReleaseSigning) {
+            release {
+                storeFile file(storePath)
+                storePassword storePass
+                keyAlias keyName
+                keyPassword keyPass
+                enableV1Signing true
+                enableV2Signing true
+                enableV3Signing true
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-debug'
+        }
+        release {
+            minifyEnabled false
+            debuggable false
+            if (hasReleaseSigning) signingConfig signingConfigs.release
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        buildConfig true
+    }
+    sourceSets {
+        main {
+            assets.srcDirs = [layout.buildDirectory.dir('generated/mobileAssets')]
+            res.srcDirs += [layout.buildDirectory.dir('generated/mobileResources')]
+        }
+    }
+    lint {
+        abortOnError true
+        checkReleaseBuilds true
+    }
+}
+
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        def qualifier = variant.buildType.name == 'release' && !hasReleaseSigning ? '-unsigned' : ''
+        outputFileName = "ColdCoffee-Mobile-Android-${variant.versionName}${qualifier}.apk"
+    }
+}
+
+tasks.register('prepareMobileAssets', Sync) {
+    from('../../www')
+    into(layout.buildDirectory.dir('generated/mobileAssets'))
+    from('../../legal') {
+        into 'legal'
+    }
+    exclude '**/.DS_Store', '**/*.map', '**/*.log', '**/.env*', '**/*.key',
+            '**/*.pem', '**/*.p12', '**/*.jks', '**/*.keystore',
+            '**/auth.json', '**/credentials.json', '**/credential.dpapi'
+    doLast {
+        if (!destinationDir.toPath().resolve('index.html').toFile().isFile()) {
+            throw new GradleException('Build the mobile web interface first: missing mobile/www/index.html')
+        }
+    }
+}
+
+tasks.register('prepareBrandIcon') {
+    def sourceIcon = file('../../assets/icon.png')
+    def destination = layout.buildDirectory.dir('generated/mobileResources')
+    inputs.files(sourceIcon).optional()
+    outputs.dir(destination)
+    doLast {
+        def drawable = destination.get().file('drawable-nodpi/brand_icon.png').asFile
+        def alias = destination.get().file('values/brand_icon.xml').asFile
+        drawable.parentFile.mkdirs()
+        if (sourceIcon.isFile()) {
+            alias.delete()
+            drawable.bytes = sourceIcon.bytes
+        } else {
+            drawable.delete()
+            // Supply a tiny resource alias if generated brand art is not ready yet.
+            alias.parentFile.mkdirs()
+            alias.text = '<resources><item name="brand_icon" type="drawable">@drawable/ic_brand_placeholder</item></resources>'
+        }
+    }
+}
+
+tasks.named('preBuild') {
+    dependsOn 'prepareMobileAssets', 'prepareBrandIcon'
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test:core:1.6.1'
+}

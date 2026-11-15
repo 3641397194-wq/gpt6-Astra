@@ -1,26 +1,51 @@
 <div align="center">
 
-<img src="docs/assets/coldcoffee-cover-v9.webp" width="100%" alt="ColdCoffee original ink and crimson heroine" />
+<img src="docs/assets/coldcoffee-ecosystem-cover.webp" width="100%" alt="ColdCoffee original adult heroine in black, ivory and crimson, connecting desktop and mobile" />
 
 <br />
 
 <img src="desktop/assets/brand-v6/icon.png" width="96" alt="ColdCoffee product icon" />
 
-# ColdBrew Zero / CHA
+# ColdCoffee · Desktop and Android
 
-### gpt6 Astra-claude全模型支持-grok4.7-DeepSeek v4.1 Flash 10.17版本-glm5.3全模型支持-gemini全模型支持-MiniMax 3.1 Flash
+### Workflows on your computer. Model conversations on your phone.
 
-**BREAK//OPEN** &nbsp;|&nbsp; **ORIGINAL TOOLBOX 3.2.0-preview.10 · PREVIEW BUILD FOR THREE OPERATING SYSTEMS**
+**3.3.0-preview.1 · WINDOWS / macOS / LINUX / ANDROID**
 
-<sub>An original dark-manga visual system built from black ink, bone paper, a single crimson eye, and torn comic panels.</sub>
+<sub>One ColdCoffee brand, an original visual identity, and your own provider credentials.</sub>
 
 </div>
 
-<p align="center"><strong>3.2.0-preview.10 · A visual AI gateway for Windows, macOS, and Linux.</strong><br /><sub>Read models, preview client configuration, connect, and inspect actual requests, nested routes, failover attempts and context usage. Installer checksums accompany the release.</sub></p>
+<p align="center"><a href="#android--coldcoffee-on-your-phone"><strong>Android app ↓</strong></a> · <a href="#original-toolbox--downloads"><strong>Downloads ↓</strong></a> · <a href="https://coldcoffeeai.com/"><strong>ColdCoffee paid API relay ↗</strong></a> · <a href="#coldcoffee-services"><strong>Local workflows and customization ↓</strong></a></p>
 
-## What's new in preview.10
+## Android / ColdCoffee on your phone
 
-Model search, explicit connection retry and recovery, resilient gateway configuration loading, and reliable zoom feedback. The setup wizard discards stale results and clears its key field on close. Ragdoll routing keeps stable nodes while stream statistics update. See the [release notes](docs/release-notes-3.2.0-preview.10.md).
+Install the Android APK, choose **Connect to ColdCoffee** or add another compatible provider, enter your own API key, load the model list, and start chatting. The original Chinese interface combines readable text, bottom navigation, provider management, streaming conversations and community access.
+
+<table>
+<tr><td width="33%"><img src="docs/assets/coldcoffee-mobile-home.png" width="270" alt="ColdCoffee mobile home and connection guide" /></td><td width="33%"><img src="docs/assets/coldcoffee-mobile-chat.png" width="270" alt="ColdCoffee mobile conversation and model selection" /></td><td width="33%"><img src="docs/assets/coldcoffee-mobile-community.png" width="270" alt="ColdCoffee mobile community and paid service entries" /></td></tr>
+<tr><td align="center">Connect</td><td align="center">Chat</td><td align="center">Stay in touch</td></tr>
+</table>
+
+These are actual frontend screenshots rendered with isolated synthetic test data. They do not contain personal keys or constitute physical Android device performance measurements.
+
+The mobile app supports custom compatible API endpoints, model loading, streaming replies, cancellation, conversation history and Markdown rendering. Saved keys are protected through Android KeyStore. Model availability, pricing and usage limits come from the configured provider. See the [Android guide](docs/ANDROID.md) and [mobile data and privacy notes](docs/MOBILE-PRIVACY.md).
+
+Mobile reuses published Chatbox Community Edition compatibility modules with an original ColdCoffee UI and a newly built Android shell. The derivative mobile application is published under GPL-3.0 with corresponding source. Read [mobile attribution and changes](mobile/THIRD_PARTY_NOTICES.md) and [the mobile license](mobile/LICENSE). ColdCoffee is independent and is not an official Chatbox application or an endorsement by its authors.
+
+## ColdCoffee services
+
+| Service | Delivery and pricing | Where to start |
+|---|---|---|
+| **ColdCoffee API relay** | Paid model API service, usable from desktop and Android with each customer's own key. Other compatible relays remain supported. | [Visit coldcoffeeai.com](https://coldcoffeeai.com/) |
+| **Closed-source local workflows** | A separately delivered, paid installation on the customer's computer. Customers may use their existing subscription or another relay. | Join a QQ group and privately contact an administrator. |
+| **Custom closed-source workflows** | Scope, quotation, integrations and maintenance are agreed individually. | Discuss requirements and pricing with an administrator. |
+
+These independent paid offerings do not turn the GPL mobile application into proprietary software. For WeChat contact or a WeChat group invitation, ask an administrator through the QQ groups; no unverified WeChat QR is published.
+
+## What's new in 3.3.0-preview.1
+
+An Android client joins the existing desktop workbench, with unified downloads, corresponding mobile source, provider setup, and community/service access. Desktop routing retains stable nodes, the vintage Ragdoll courier, model search, connection retry, configuration recovery and zoom controls. See the [release notes](docs/release-notes-3.3.0-preview.1.md).
 
 ## Visual routing
 
@@ -64,7 +89,7 @@ npm ci
 npm start
 ```
 
-Build packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). GitHub Actions builds each platform on native runners, with packaged UI checks and SHA-256 checksums. Version 3.2.0-preview.10 remains a preview build; GitHub Latest points to its complete installer set.
+Build desktop packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). For Android, follow the [mobile build guide](docs/ANDROID.md#从源码构建). Version 3.3.0-preview.1 is a preview build with unified release downloads and SHA-256 checksums.
 
 All 15 model seats write an original CHA pack or skill into the selected local instruction directory. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
 
@@ -176,12 +201,12 @@ Bot acknowledgement, independent readback, and new-conversation behavior are sho
 
 ![Original Grok Bot memory UI, isolated test data](docs/assets/coldcoffee-grok-memory-v8.png)
 
-Release 3.2.0-preview.10: all seven Workbench installers are publicly available. This remains a preview build; it is also the default GitHub Latest download so shared latest/download links resolve to the current packages. Packages are Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The homepage and desktop UI list 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse.
+Release 3.3.0-preview.1: seven Workbench installers and one Android APK share the same release, accompanied by corresponding mobile source and checksums. This remains a preview build. Desktop packages cover Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The desktop workbench retains 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse; the Android app connects to model APIs directly.
 
-[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.2.0-preview.10) · [Original toolbox and feature scope](docs/original-toolbox.md)
+[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.1) · [Android installation and source](docs/ANDROID.md) · [Original toolbox and feature scope](docs/original-toolbox.md)
 
 [Default latest download page](https://github.com/3641397194-wq/gpt6-Astra/releases/latest) · [All releases](https://github.com/3641397194-wq/gpt6-Astra/releases). Share the release page or a complete versioned installer URL; do not mix an old tag with a new file name.
 
-All four platform checks passed. The release includes the seven installers and SHA256SUMS.
+The release includes eight installers, the corresponding mobile source archive, and SHA256SUMS. Validation scope and remaining device/service checks are recorded in the release notes.
 
 The 16 original tools run inside the application. AI automation provides a real tool/observation loop, with a 19-tool MCP server and an exportable skill. Larger exploitation, ticket/domain and remote-session modules remain future work.

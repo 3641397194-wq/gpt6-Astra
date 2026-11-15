@@ -1,0 +1,24 @@
+{
+  "repository": "https://github.com/chatboxai/chatbox",
+  "tag": "v1.24.4",
+  "revision": "75bb9355f826f9070ff5c53527674aab93eb8b9f",
+  "license": "GPL-3.0-only",
+  "modifications": "These three compatibility files are byte-for-byte unmodified. The ColdCoffee mobile integration is in src/core.js.",
+  "files": [
+    {
+      "upstream": "src/shared/models/utils/openai-chat-sse-termination.ts",
+      "local": "openai-chat-sse-termination.ts",
+      "sha256": "730643839f1046ac601e7eb4e5df73122ff4df433d328c317e256b3c7062ef09"
+    },
+    {
+      "upstream": "src/shared/models/utils/openai-cache-usage.ts",
+      "local": "openai-cache-usage.ts",
+      "sha256": "adf427b88e04f10b1e434933481e2810a914969489eaaeaf20528ae211b07d07"
+    },
+    {
+      "upstream": "src/shared/models/utils/openai-tool-call-deltas.ts",
+      "local": "openai-tool-call-deltas.ts",
+      "sha256": "d61ccd72eedfcf13c10ee03ff20e6341d1f07f85711473f5f554c6e2e23242f9"
+    }
+  ]
+}

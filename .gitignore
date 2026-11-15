@@ -46,3 +46,19 @@ desktop/work/
 desktop/resources/magpie/*/magpie
 desktop/resources/magpie/*/magpie.exe
 *.secret
+
+# Android/mobile build products and local signing material are never source.
+mobile/node_modules/
+mobile/www/
+mobile/work/
+mobile/dist/
+mobile/android/.gradle/
+mobile/android/.idea/
+mobile/android/local.properties
+mobile/android/**/build/
+*.jks
+*.keystore
+*.p12
+*.pfx
+keystore.properties
+signing.properties
