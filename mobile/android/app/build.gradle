@@ -80,9 +80,6 @@ android.applicationVariants.all { variant ->
 tasks.register('prepareMobileAssets', Sync) {
     from('../../www')
     into(layout.buildDirectory.dir('generated/mobileAssets'))
-    from('../../legal') {
-        into 'legal'
-    }
     exclude '**/.DS_Store', '**/*.map', '**/*.log', '**/.env*', '**/*.key',
             '**/*.pem', '**/*.p12', '**/*.jks', '**/*.keystore',
             '**/auth.json', '**/credentials.json', '**/credential.dpapi'
