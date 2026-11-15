@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 
@@ -206,24 +207,32 @@ public class NativeBridgeInstrumentedTest {
                     + "catch(error){window.__ccImageResult={state:'error',message:String(error)}}};"
                     + "document.body.append(input);'installed'");
             instrumentation.waitForIdleSync();
-            int[] position = new int[2];
             AtomicReference<Float> density = new AtomicReference<>(1f);
             scenario.onActivity(value -> {
-                webView.getLocationOnScreen(position);
                 density.set(value.getResources().getDisplayMetrics().density);
+                value.getWindow().getDecorView().requestFocus();
+                webView.requestFocusFromTouch();
             });
-            float x = position[0] + 32 * density.get();
-            float y = position[1] + 32 * density.get();
+            float x = 32 * density.get();
+            float y = 32 * density.get();
             long downTime = SystemClock.uptimeMillis();
-            MotionEvent down = MotionEvent.obtain(downTime, downTime, MotionEvent.ACTION_DOWN, x, y, 0);
-            MotionEvent up = MotionEvent.obtain(downTime, downTime + 80, MotionEvent.ACTION_UP, x, y, 0);
-            try {
-                instrumentation.sendPointerSync(down);
-                instrumentation.sendPointerSync(up);
-            } finally {
-                down.recycle();
-                up.recycle();
-            }
+            instrumentation.runOnMainSync(() -> {
+                MotionEvent down = MotionEvent.obtain(
+                        downTime, downTime, MotionEvent.ACTION_DOWN, x, y, 0);
+                MotionEvent up = MotionEvent.obtain(
+                        downTime, downTime + 80, MotionEvent.ACTION_UP, x, y, 0);
+                down.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+                up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+                try {
+                    // Dispatch through the owning WebView instead of injecting at the
+                    // display level, which is flaky when the emulator changes focus.
+                    webView.dispatchTouchEvent(down);
+                    webView.dispatchTouchEvent(up);
+                } finally {
+                    down.recycle();
+                    up.recycle();
+                }
+            });
             long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
             JSONObject result = new JSONObject();
             while (System.nanoTime() < deadline) {
