@@ -49,7 +49,11 @@ const pause = () => { let release; const promise = new Promise(resolve => { rele
     const page = await context.newPage(); page.on('pageerror', error => report.errors.push(error.message));
     await page.goto('http://coldcoffee-fixture.test/src/workbench/index.html');
     assert.equal(await page.locator('.topbar .version').textContent(), require('../package.json').version);
-    await page.waitForFunction(() => document.querySelector('#vg-connection')?.dataset.state === 'offline');
+    await page.waitForFunction(() => {
+      const connection = document.querySelector('#vg-connection');
+      const note = document.querySelector('#vg-connection-note')?.textContent || '';
+      return connection?.dataset.state === 'offline' && /启动暂时失败/.test(note);
+    });
     assert.equal(await page.locator('#vg-copy-connection').isDisabled(), true);
     assert.match(await page.locator('#vg-connection-note').textContent(), /启动暂时失败/);
     f.failStart = false;
