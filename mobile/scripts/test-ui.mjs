@@ -60,7 +60,7 @@ function installFixture(seed = {}) {
     },
     getState() { return JSON.stringify(savedState); },
     saveState(text) { savedState = JSON.parse(text); return JSON.stringify({ ok: true }); },
-    getVersion() { return JSON.stringify({ version: '3.3.0-preview.1', build: 'isolated-fixture' }); },
+    getVersion() { return JSON.stringify({ version: '3.3.0-preview.2', build: 'isolated-fixture' }); },
     copyText(text) { copied.push(text); },
     shareText(text) { shared.push(text); },
     openExternal(url) { external.push(url); },

@@ -30,12 +30,12 @@ class Response:
 
 class DownloadChecks(unittest.TestCase):
     def test_seven_desktop_installers_android_and_corresponding_source_names(self):
-        names = verify.asset_names("3.3.0-preview.1")
+        names = verify.asset_names("3.3.0-preview.2")
         self.assertEqual(len(names), 9)
         self.assertEqual(len(set(names)), 9)
-        self.assertTrue(all("3.3.0-preview.1" in name for name in names))
-        self.assertIn("ColdCoffee-Mobile-Android-3.3.0-preview.1.apk", names)
-        self.assertIn("ColdCoffee-Mobile-Source-3.3.0-preview.1.zip", names)
+        self.assertTrue(all("3.3.0-preview.2" in name for name in names))
+        self.assertIn("ColdCoffee-Mobile-Android-3.3.0-preview.2.apk", names)
+        self.assertIn("ColdCoffee-Mobile-Source-3.3.0-preview.2.zip", names)
         with self.assertRaises(ValueError):
             verify.asset_names("../not-a-version")
 
@@ -73,7 +73,7 @@ class DownloadChecks(unittest.TestCase):
 
 
 class LatestChecks(unittest.TestCase):
-    version = "3.3.0-preview.1"
+    version = "3.3.0-preview.2"
 
     def release(self):
         return {"tag_name": "v" + self.version, "draft": False, "prerelease": False,

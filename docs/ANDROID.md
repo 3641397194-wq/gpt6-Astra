@@ -2,11 +2,11 @@
 
 冷咖啡手机端用于在安卓手机上接入模型 API，并通过移动研究工作台提交可追溯任务：默认推荐冷咖啡中转，同时允许添加其他兼容服务商。电脑端继续负责本机工具、文件处理、客户端接入和长时间工作流管理，两端安装包在同一 GitHub 发布页提供。
 
-[本版下载页](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.1) · [最新版下载页](https://github.com/3641397194-wq/gpt6-Astra/releases/latest) · [手机端隐私说明](MOBILE-PRIVACY.md)
+[本版下载页](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.2) · [最新版下载页](https://github.com/3641397194-wq/gpt6-Astra/releases/latest) · [手机端隐私说明](MOBILE-PRIVACY.md)
 
 ## 安装
 
-1. 在发布页展开 **Assets**，下载 `ColdCoffee-Mobile-Android-3.3.0-preview.1.apk`。
+1. 在发布页展开 **Assets**，下载 `ColdCoffee-Mobile-Android-3.3.0-preview.2.apk`。
 2. 用安卓手机打开 APK。系统若询问是否允许该下载来源安装应用，按系统提示为这次安装授权。
 3. 打开“冷咖啡”。安装包不包含作者或其他顾客的 API Key，需要填写你自己的 Key。
 
@@ -67,7 +67,7 @@ QQ 一群 **1057540028**、二群 **1077074552**、三群 **618179023**、四群
 
 ## 从源码构建
 
-对应源码在同一发布页提供：`ColdCoffee-Mobile-Source-3.3.0-preview.1.zip`。也可从仓库的 `v3.3.0-preview.1` 标签获取 `mobile/` 目录。
+对应源码在同一发布页提供：`ColdCoffee-Mobile-Source-3.3.0-preview.2.zip`。也可从仓库的 `v3.3.0-preview.2` 标签获取 `mobile/` 目录。
 
 先安装 Node.js、JDK 17 和 Android SDK，并按原生工程要求准备 SDK 35。具体版本以 `mobile/package-lock.json`、`mobile/android/` 的 Gradle 配置和 wrapper 为准。
 
