@@ -162,7 +162,7 @@ final class AppModel: ObservableObject {
         Task {
             do {
                 let result = try await client.models(for: requestedProvider, key: requestedKey)
-                guard provider == requestedProvider else { return }
+                guard provider == requestedProvider, apiKey == requestedKey else { return }
                 models = result
                 if selectedModel.isEmpty, let first = result.first {
                     selectedModel = first
@@ -170,7 +170,7 @@ final class AppModel: ObservableObject {
                 }
                 status = result.isEmpty ? "接口已连接，服务商未返回模型列表" : "已读取 \(result.count) 个模型"
             } catch {
-                guard provider == requestedProvider else { return }
+                guard provider == requestedProvider, apiKey == requestedKey else { return }
                 models = []
                 status = "读取模型失败"
                 errorMessage = error.localizedDescription

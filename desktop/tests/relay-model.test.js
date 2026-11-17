@@ -43,8 +43,20 @@ test("GPT-6.2 展示名和回退顺序依据目录，已有选择及路由组保
   assert.equal(relayModels.prefer([]), undefined);
 });
 
+test("带服务商前缀的推荐型号只调整展示和排序，保留完整 ID", () => {
+  const astra = "Vendor/GPT-6.2-Astra";
+  const sol = "Vendor/GPT6.2-Sol";
+  const gatewayEntry = { id: `coldcoffee/${astra}`, name: astra };
+  assert.equal(relayModels.label(astra), "GPT-6.2 Astra");
+  assert.equal(relayModels.label(gatewayEntry), "GPT-6.2 Astra");
+  assert.equal(relayModels.label(sol), "GPT-6.2 Sol");
+  assert.equal(relayModels.prefer(["Vendor/Custom", sol, astra]), astra);
+  assert.equal(relayModels.prefer([gatewayEntry]), gatewayEntry);
+  assert.equal(gatewayEntry.id, `coldcoffee/${astra}`);
+});
+
 test("实际响应体保留 Astra、Sol 和旧模型目录里的原始拼写", async () => {
-  const ids = ["Vendor/Exact-Model", "gpt6.2-sol", "GPT-6.2-Astra", "GPT-6-Astra", "gpt-6.1-sol"];
+  const ids = ["Vendor/Exact-Model", "gpt6.2-sol", "GPT-6.2-Astra", "GPT-6-Astra", "gpt-6.1-sol", "Vendor/GPT-6.2-Astra"];
   const sent = [];
   const relay = new RelayAdapter({
     mode: "openai",

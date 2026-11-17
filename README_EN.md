@@ -120,10 +120,6 @@ The 15 model seats are `GPT-6.2 Astra / Sol · Codex`, `Claude Code全模型支�
 
 The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Windows, macOS, and Linux. It installs only under `$DSH_HOME` (default `~/.dsh`), with a short `AGENTS.md` entry and `skills/cha-deepseek/SKILL.md`; the shared `$DSH_AGENTS_HOME` / `~/.agents` root remains untouched. See the [Harness installation notes](docs/SEAT-PACKS.md#deepseek-官方-harness-安装说明).
 
-<div align="center">
-  <img src="docs/assets/readme-noir-seats.svg" width="100%" alt="Fifteen AI model seats" />
-</div>
-
 ## Desktop interface / Install, connect, and stay in touch
 
 Select the model seats you use, install their bundled skills, and check the result in one workbench. Files are backed up before writing and verified afterward; uninstall restores the saved backup.

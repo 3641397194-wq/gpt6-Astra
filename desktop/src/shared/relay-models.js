@@ -12,8 +12,8 @@
   const modelKey = value => typeof value === 'string' ? value.toLowerCase().replace(/[-. _]/g, '') : '';
   const nameFromId = id => typeof id === 'string' ? id.slice(id.indexOf('/') + 1) : '';
   const candidates = model => typeof model === 'string'
-    ? [model]
-    : model && !model.group ? [model.name, nameFromId(model.id)] : [];
+    ? [model, nameFromId(model)]
+    : model && !model.group ? [model.name, nameFromId(model.name), nameFromId(model.id)] : [];
 
   function familyFor(model) {
     const keys = candidates(model).map(modelKey);

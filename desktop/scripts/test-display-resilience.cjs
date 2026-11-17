@@ -34,14 +34,20 @@ const bounded = (work, ms, name) => {
     for (let i = 0; i < 200 && !page; i++) { page = app.windows().find(win => win.url().includes('/workbench/index.html')); if (!page) await new Promise(resolve => setTimeout(resolve, 100)); }
     assert.ok(page, 'workbench window');
     page.on('pageerror', error => report.browserErrors.push(error.message));
-    await app.evaluate(({ BrowserWindow }) => {
-      const win = BrowserWindow.getAllWindows().find(item => item.webContents.getURL().includes('/workbench/index.html'));
-      win.webContents.setBackgroundThrottling(false); win.setContentSize(1100, 800); win.showInactive();
-      const original = win.webContents.setZoomFactor.bind(win.webContents);
-      globalThis.__displayZoomEvents = [];
-      win.webContents.setZoomFactor = value => { const before = win.webContents.getZoomFactor(); original(value); globalThis.__displayZoomEvents.push({ before, requested: value, after: win.webContents.getZoomFactor() }); };
-    });
+    // A Playwright target URL can precede native navigation readiness on
+    // restart. Wait for the real UI, then bind its exact BrowserWindow.
+    await page.waitForLoadState('load');
     await page.waitForSelector('#view-larger');
+    const nativeWindow = await app.browserWindow(page);
+    try {
+      await nativeWindow.evaluate(win => {
+        if (!win || win.isDestroyed() || win.webContents.isDestroyed()) throw new Error('workbench native window is not ready');
+        win.webContents.setBackgroundThrottling(false); win.setContentSize(1100, 800); win.showInactive();
+        const original = win.webContents.setZoomFactor.bind(win.webContents);
+        globalThis.__displayZoomEvents = [];
+        win.webContents.setZoomFactor = value => { const before = win.webContents.getZoomFactor(); original(value); globalThis.__displayZoomEvents.push({ before, requested: value, after: win.webContents.getZoomFactor() }); };
+      });
+    } finally { await nativeWindow.dispose(); }
     return page;
   }
   async function atZoom(page, percent, saved) {

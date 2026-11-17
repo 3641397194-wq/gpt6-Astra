@@ -42,13 +42,24 @@ jobs:
           set -euo pipefail
           device_id="$(xcrun simctl list devices available | awk -F '[()]' '/iPhone/{print $2; exit}')"
           test -n "$device_id"
+          echo "IOS_SIMULATOR_ID=$device_id" >> "$GITHUB_ENV"
           xcodebuild \
             -project mobile-ios/ColdCoffeeIOS.xcodeproj \
             -scheme ColdCoffeeIOS \
+            -configuration Debug \
             -destination "platform=iOS Simulator,id=${device_id}" \
             -derivedDataPath "$RUNNER_TEMP/ColdCoffeeIOSDerivedData" \
             CODE_SIGNING_ALLOWED=NO \
             test
+
+      - name: Capture real iOS simulator screens
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/ios_capture_screenshots.sh \
+            "$IOS_SIMULATOR_ID" \
+            "$RUNNER_TEMP/ColdCoffeeIOSDerivedData/Build/Products/Debug-iphonesimulator/ColdCoffeeIOS.app" \
+            "$RUNNER_TEMP/ios-ui"
 
       - name: Build unsigned device app
         shell: bash
@@ -71,7 +82,7 @@ jobs:
       - name: Create corresponding iOS source archive
         run: python3 tools/ios_source_archive.py
 
-      - name: Upload unsigned iOS build and source
+      - name: Upload unsigned iOS build, source, and UI captures
         uses: actions/upload-artifact@v4
         with:
           name: ios-build
@@ -79,6 +90,7 @@ jobs:
             ColdCoffee-iOS-Unsigned-*.zip
             mobile-ios/dist/ColdCoffee-iOS-Source-*.zip
             mobile-ios/work/privacy-audit.json
+            ${{ runner.temp }}/ios-ui/coldcoffee-ios-*.png
           if-no-files-found: error
           retention-days: 14
 
