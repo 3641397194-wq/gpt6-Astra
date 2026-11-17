@@ -19,7 +19,7 @@
 
 ## 安装和接入
 
-从本仓库对应 Release 下载签名的 `ColdCoffee-Mobile-Android-3.3.0-preview.2.apk`；Android 8.0 及以上并保持 Android System WebView 为近期版本。在“接入”页选择冷咖啡或其他服务商，填写自己的 Key，读取模型列表后开始聊天或打开工作台提交任务。不能列出模型的服务商可手动填写实际模型 ID。
+从本仓库对应 Release 下载签名的 `ColdCoffee-Mobile-Android-3.3.0-preview.3.apk`；Android 8.0 及以上并保持 Android System WebView 为近期版本。在“接入”页选择冷咖啡或其他服务商，填写自己的 Key，读取模型列表后开始聊天或打开工作台提交任务。模型选择器优先显示 GPT-6.2 Astra / Sol；只有服务商模型目录返回的对应 ID 才能直接选择，未列出时仍可手动填写实际模型 ID，原有选择不会被自动覆盖。
 
 ## 从源码构建
 

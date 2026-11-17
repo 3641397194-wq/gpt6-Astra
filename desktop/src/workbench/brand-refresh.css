@@ -105,6 +105,15 @@ pre, code { font-family: Consolas, "Microsoft YaHei", monospace; }
 .relay-connection-state strong { font-size: 17px; }
 .relay-connection-state p, .relay-input-action button { font-size: 14px; }
 .relay-model-card, .relay-workflow-card { border-radius: 9px; background: #191219; border-color: #523040; }
+.relay-model-card[data-family] { background: #211f31; border-color: #49445e; }
+.relay-model-card[data-family="sol"] { background: #28211d; border-color: #53402f; }
+.relay-model-card[data-family] .model-mark { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 9px; color: #dedaff; background: #39335b; font: 700 20px/1 "Segoe UI", sans-serif; }
+.relay-model-card[data-family="sol"] .model-mark { color: #ffe7c0; background: #53402e; }
+.relay-model-card[data-family].selected { border-color: #ac9ed5; box-shadow: inset 0 0 0 1px #ac9ed54d; }
+.relay-model-card[data-family] code { display: block; min-height: 1.2em; margin-top: 7px; padding: 0; background: none; border: 0; color: #dfd4ed; overflow-wrap: anywhere; }
+.relay-model-card[data-family] button { min-height: 42px; font-size: 14px; }
+.relay-model-card[data-family] button:disabled { opacity: .7; }
+.relay-model-card[data-family] button[aria-pressed="true"] { background: #43375d; border-color: #a494cc; }
 .cc-heading p, .cc-note, .cc-options summary, .cc-runbar span, .cc-task-list button, .cc-tabs button, .cc-summary { font-size: 14px; }
 .cc-fields label, .cc-actions button, .cc-filebar button, .cc-filebar span { font-size: 15px; }
 .tool-notes, .tool-actions button, .mcp-url { font-size: 14px; }

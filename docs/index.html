@@ -1,24 +1,44 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="冷咖啡电脑工作台与 Android / iPhone 移动客户端。接入冷咖啡付费API中转或其他兼容服务商；手机可聊天并提交六类研究工作台任务。闭源本机工作流与收费定制进群咨询。"><meta name="theme-color" content="#19181c"><title>冷咖啡 · 电脑、安卓与 iPhone，一起上场</title><style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:#242329;background:#f3f0ed;font:16px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="冷咖啡 GPT-6.2 Astra 与 Sol 模型焦点：连接自己的中转，读取实际模型 ID，在电脑、Android 和 iPhone 上流式对话。">
+<meta name="theme-color" content="#19181c">
+<link rel="icon" type="image/png" href="assets/coldcoffee-noir-icon-62.png">
+<title>冷咖啡 · GPT-6.2 Astra / Sol 双模型焦点</title><style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:#242329;background:#eeeae7;font:16px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}
 a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-decoration:underline}a:focus-visible,summary:focus-visible{outline:3px solid #c0324a;outline-offset:5px;border-radius:3px}
-.appbar{background:#19181c;color:#f9f5ef;border-bottom:3px solid #bc3049;padding:23px max(24px,calc((100vw - 1420px)/2));display:flex;justify-content:space-between;align-items:center;gap:24px}.repo-name{font-size:18px;font-weight:600;letter-spacing:.03em}.repo-name strong{color:#fff}.preview-label{font-size:14px;color:#c6bdbe}
+.appbar{background:#19181c;color:#f9f5ef;border-bottom:3px solid #bc3049;padding:18px max(24px,calc((100vw - 1420px)/2));display:flex;justify-content:space-between;align-items:center;gap:24px}.repo-name{font-size:18px;font-weight:600;letter-spacing:.03em;display:flex;align-items:center;gap:12px}.repo-name img{width:38px;height:38px;object-fit:cover;border-radius:9px}.repo-name strong{color:#fff}.preview-label{font-size:14px;color:#c6bdbe}
 .repo-tabs{background:#fffdf9;padding:0 max(24px,calc((100vw - 1420px)/2));display:flex;gap:30px;border-bottom:1px solid #e5deda;overflow-x:auto;white-space:nowrap}.repo-tabs a{padding:14px 0;font-size:15px;color:#5c5456}.repo-tabs .selected{color:#ad203b;border-bottom:3px solid #ad203b;font-weight:700}
 .container{max-width:1480px;padding:32px;margin:auto}.notice{border:1px solid #dfd4cf;border-radius:16px;background:#fffaf5;padding:19px 24px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:center;gap:24px;font-size:15px}.notice strong{color:#8f2136}.notice a{background:#a8223b;color:#fff;border-radius:10px;padding:12px 18px;white-space:nowrap;font-weight:700}
 .repo-grid{display:grid;grid-template-columns:minmax(0,1090px) 260px;gap:30px;align-items:start}.readme{border:1px solid #e2d9d4;border-radius:18px;background:#fffdfb;overflow:hidden;min-width:0;box-shadow:0 12px 44px #33222707}.readme-tab{font-size:14px;padding:15px 30px;border-bottom:1px solid #e9e0dc;font-weight:600;color:#716568;background:#fcf9f6}
-.markdown-body{padding:36px;font-size:16px;overflow-wrap:anywhere}.markdown-body img{max-width:100%;height:auto;vertical-align:middle;border-radius:10px}.markdown-body h1{font-size:clamp(28px,3.3vw,42px);line-height:1.32;letter-spacing:-.035em;padding-bottom:14px;margin:28px 0 18px;color:#17151a}.markdown-body h2{font-size:28px;line-height:1.4;border-bottom:1px solid #e6dcd6;padding-bottom:15px;margin:52px 0 22px;scroll-margin-top:24px;letter-spacing:-.02em}.markdown-body h3{font-size:21px;line-height:1.5;margin-top:30px}.markdown-body p{margin:15px 0 21px}.markdown-body sub{color:#75686c;font-size:14px;line-height:1.7}.markdown-body table{display:block;max-width:100%;width:100%;overflow-x:auto;border-collapse:collapse;font-size:15px;margin:24px 0;border-radius:10px}.markdown-body td,.markdown-body th{border:1px solid #e5dcd7;padding:16px;vertical-align:top;min-width:138px}.markdown-body th{background:#f5efeb;color:#3d3337;font-weight:700}.markdown-body td{background:#fffdfb}.markdown-body blockquote{margin:28px 0;border-left:4px solid #b12740;border-radius:0 12px 12px 0;background:#faf0ee;padding:15px 22px;color:#593a43}.markdown-body blockquote p{margin:8px 0}.markdown-body pre{padding:20px;border:1px solid #e6dcd6;border-radius:12px;background:#f6f1ed;overflow:auto;line-height:1.65}.markdown-body code{font-family:Consolas,"SFMono-Regular",monospace;font-size:.91em}.markdown-body details{border:1px solid #e2d7d2;padding:17px 21px;border-radius:12px;margin-top:24px;background:#fcf9f7}.markdown-body summary{cursor:pointer;font-weight:600;font-size:15px;color:#76646a}.markdown-body hr{border:0;border-top:1px solid #e6dcd6;margin-top:38px}
+.markdown-body{padding:36px;font-size:16px;overflow-wrap:anywhere}.markdown-body img{max-width:100%;height:auto;vertical-align:middle;border-radius:10px}.markdown-body>div[align="center"]>img:first-child{display:block;width:100%;border-radius:16px;box-shadow:0 18px 45px #2110181f}.markdown-body h1{font-size:clamp(28px,3.3vw,42px);line-height:1.32;letter-spacing:-.035em;padding-bottom:14px;margin:28px 0 18px;color:#17151a}.markdown-body h2{font-size:28px;line-height:1.4;border-bottom:1px solid #e6dcd6;padding-bottom:15px;margin:52px 0 22px;scroll-margin-top:24px;letter-spacing:-.02em}.markdown-body h3{font-size:21px;line-height:1.5;margin-top:30px}.markdown-body p{margin:15px 0 21px}.markdown-body sub{color:#75686c;font-size:14px;line-height:1.7}.markdown-body table{display:block;max-width:100%;width:100%;overflow-x:auto;border-collapse:collapse;font-size:15px;margin:24px 0;border-radius:10px}.markdown-body td,.markdown-body th{border:1px solid #e5dcd7;padding:16px;vertical-align:top;min-width:138px}.markdown-body th{background:#f5efeb;color:#3d3337;font-weight:700}.markdown-body td{background:#fffdfb}.markdown-body .model-spotlight{border:1px solid #b78995;box-shadow:0 12px 28px #4b182217}.markdown-body .model-spotlight th{background:#282126;color:#fff;border-color:#594049;font-size:18px}.markdown-body .model-spotlight td{background:#fff7f5}.markdown-body .model-spotlight td[colspan]{background:#f9ecea}.markdown-body blockquote{margin:28px 0;border-left:4px solid #b12740;border-radius:0 12px 12px 0;background:#faf0ee;padding:15px 22px;color:#593a43}.markdown-body blockquote p{margin:8px 0}.markdown-body pre{padding:20px;border:1px solid #e6dcd6;border-radius:12px;background:#f6f1ed;overflow:auto;line-height:1.65}.markdown-body code{font-family:Consolas,"SFMono-Regular",monospace;font-size:.91em}.markdown-body details{border:1px solid #e2d7d2;padding:17px 21px;border-radius:12px;margin-top:24px;background:#fcf9f7}.markdown-body summary{cursor:pointer;font-weight:600;font-size:15px;color:#76646a}.markdown-body hr{border:0;border-top:1px solid #e6dcd6;margin-top:38px}
 .about{padding:24px 20px;border:1px solid #e2d9d4;border-radius:16px;background:#fffdf9}.about h3{font-size:17px;margin:0 0 14px;color:#252026}.about p{font-size:14px;color:#76686d;line-height:1.9}.about .tag{display:inline-block;font-size:12px;background:#f7e7e7;color:#9e2940;border-radius:7px;padding:4px 9px;margin:0 3px 9px 0}.about hr{border:0;border-top:1px solid #e5dbd5;margin:25px 0}.about a{display:block;margin-top:14px;font-size:14px}
 @media(max-width:1100px){.repo-grid{grid-template-columns:1fr}.about{display:none}.container{padding:22px}.markdown-body{padding:30px}.preview-label{display:none}}
-@media(max-width:600px){.appbar{padding:18px}.repo-name{font-size:16px}.container{padding:12px}.readme{border-radius:12px}.readme-tab{padding:13px 18px}.markdown-body{padding:18px;font-size:16px}.markdown-body h1{font-size:29px}.markdown-body h2{font-size:25px;margin-top:38px}.markdown-body th,.markdown-body td{padding:12px;min-width:145px;font-size:15px}.markdown-body sub{font-size:13px}.notice{display:block;padding:17px;font-size:15px;margin-bottom:16px}.notice a{display:inline-block;margin-top:14px}.repo-tabs{gap:23px;padding:0 18px}.repo-tabs a{font-size:14px}.markdown-body blockquote{padding:12px 17px}.markdown-body details{padding:14px}}
+@media(max-width:600px){.appbar{padding:18px}.repo-name{font-size:16px}.container{padding:12px}.readme{border-radius:12px}.readme-tab{padding:13px 18px}.markdown-body{padding:18px;font-size:16px}.markdown-body h1{font-size:25px}.markdown-body h2{font-size:25px;margin-top:38px}.markdown-body th,.markdown-body td{padding:12px;min-width:145px;font-size:15px}.markdown-body sub{font-size:13px}.notice{display:block;padding:17px;font-size:15px;margin-bottom:16px}.notice a{display:inline-block;margin-top:14px}.repo-tabs{gap:23px;padding:0 18px}.repo-tabs a{font-size:14px}.markdown-body blockquote{padding:12px 17px}.markdown-body details{padding:14px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-</style></head><body><header class="appbar"><div class="repo-name"><strong>冷咖啡</strong> / gpt6-Astra</div><span class="preview-label">电脑、安卓与 iPhone · 同一个冷咖啡</span></header><nav class="repo-tabs" aria-label="项目导航"><a class="selected" href="#安卓手机端">Android 手机端</a><a href="#ios手机端">iPhone / iOS</a><a href="#软件界面">电脑工作台</a><a href="#下载">下载安装</a><a href="#冷咖啡服务">中转与定制</a><a href="#冷咖啡社群">冷咖啡社区</a></nav><div class="container"><div class="notice"><span><strong>3.3.0-preview.2 · 电脑与移动端统一预览版。</strong> Windows、macOS、Linux 工作台，加上 Android 客户端和 iOS 源码；iOS 签名与 TestFlight / App Store 发布准备已写入仓库，尚待 Apple 凭据。模型 API 为付费服务，手机可聊天和提交研究任务；闭源本机工作流与收费定制请进群私聊管理。</span><a href="#下载">选择你的设备 ↓</a></div><div class="repo-grid"><article class="readme"><div class="readme-tab">冷咖啡 · 产品与使用说明</div><div class="markdown-body"><div align="center">
-  <img src="assets/coldcoffee-ecosystem-cover.webp" width="100%" alt="冷咖啡原创成年女性主视觉，黑白与绯红相衬，连接电脑与手机" />
-  <h1>冷咖啡 · 电脑、安卓与 iPhone，一起上场</h1>
-  <p><strong>桌面管理工作流，手机随时聊模型、提交研究任务。</strong></p>
-  <p>同一个冷咖啡品牌。电脑端保留十五个 AI 模型席位与可视化路由；安卓与 iPhone 都能接入 API、选择模型、直接对话，并使用移动工作台整理逆向、红队、API、游戏客户端、样本和报告任务。</p>
+</style></head><body>
+<header class="appbar"><div class="repo-name"><img src="assets/coldcoffee-noir-avatar-62.png" alt=""><strong>冷咖啡</strong> / GPT-6.2</div><span class="preview-label">Astra / Sol · 电脑、安卓与 iPhone</span></header>
+<nav class="repo-tabs" aria-label="项目导航"><a class="selected" href="#模型焦点">GPT-6.2 双模型</a><a href="#安卓手机端">Android 手机端</a><a href="#ios手机端">iPhone / iOS</a><a href="#软件界面">电脑工作台</a><a href="#下载">下载安装</a><a href="#冷咖啡服务">中转与定制</a><a href="#冷咖啡社群">冷咖啡社区</a></nav>
+<div class="container"><div class="notice"><span><strong>3.3.0-preview.3 · GPT-6.2 Astra / Sol。</strong> 连接后从 <code>/v1/models</code> 选准确 ID；账号权限以服务商为准。下载前请核对 GitHub Assets 与校验文件。</span><a href="#下载">选择你的设备 ↓</a></div>
+<div class="repo-grid"><article class="readme"><div class="readme-tab">冷咖啡 · Astra / Sol 产品预览与使用说明</div><div class="markdown-body"><div align="center">
+  <img src="assets/coldcoffee-noir-cover-62.png" width="100%" alt="冷咖啡 GPT-6.2 Astra 与 Sol 原创品牌封面" />
+  <p><img src="assets/coldcoffee-noir-icon-62.png" width="56" alt="冷咖啡品牌图标" /></p>
+  <h1>冷咖啡 · GPT-6.2 Astra / Sol</h1>
+  <p><strong>连接更简单，模型随手切，过程看得见。</strong></p>
+  <p>电脑上看清每次请求，手机上随时开始对话。Astra 与 Sol 加入推荐区，保留你已有的模型与中转配置；支持冷咖啡付费中转，也支持自选兼容服务商。</p>
   <p><a href="#安卓手机端"><strong>看看 Android ↓</strong></a> &nbsp;·&nbsp; <a href="#ios手机端"><strong>看看 iPhone ↓</strong></a> &nbsp;·&nbsp; <a href="#下载"><strong>下载安装 ↓</strong></a> &nbsp;·&nbsp; <a href="https://coldcoffeeai.com/"><strong>开通冷咖啡中转 ↗</strong></a> &nbsp;·&nbsp; <a href="#冷咖啡服务"><strong>闭源与定制服务 ↓</strong></a></p>
   <p><a href="#软件界面">电脑端界面</a> · <a href="#deepseek-harness">DeepSeek 插件</a> · <a href="#上手使用">上手使用</a> · <a href="#一键安装目标">十五个 AI 模型</a> · <a href="#冷咖啡社群">加入冷咖啡社群</a></p>
-  <p><sub>3.3.0-preview.2 · Windows / macOS / Linux / Android / iOS · <a href="https://coldcoffeeai.com/">coldcoffeeai.com</a></sub></p>
+  <p><sub>3.3.0-preview.3 预览版 · Windows / macOS / Linux / Android / iOS · <a href="https://coldcoffeeai.com/">coldcoffeeai.com</a></sub></p>
 </div>
+
+<table id="模型焦点" class="model-spotlight">
+<tr><th align="left" width="50%">✦ GPT-6.2 Astra</th><th align="left" width="50%">✦ GPT-6.2 Sol</th></tr>
+<tr><td>读取服务商目录后，一键选择可用的 Astra。</td><td>与 Astra 并列展示，需要时随手切换到 Sol。</td></tr>
+<tr><td colspan="2">填写自己的 Key → 读取模型 → 选择并发送。可用型号、额度与价格以你接入的中转为准；请求保留目录返回的准确 ID。<a href="RELAY-API.md">接入教程 ↗</a></td></tr>
+</table>
+<table>
+<tr><td width="50%" align="center"><a href="assets/coldcoffee-connection-62.png"><img src="assets/coldcoffee-connection-62.png" width="100%" alt="冷咖啡新版连接首页，展示中转接入流程" /></a><br /><strong>连接 · 先读取服务商</strong></td><td width="50%" align="center"><a href="assets/coldcoffee-models-62.png"><img src="assets/coldcoffee-models-62.png" width="100%" alt="冷咖啡新版模型目录，重点呈现 GPT-6.2 Astra 与 Sol" /></a><br /><strong>模型 · 精确 ID 再发送</strong></td></tr>
+</table>
+<p><sub>界面截图仅展示客户端信息层级；图中名称和列表内容不代表实时账号权益或付费模型生成已验证。</sub></p>
 
 <table>
 <tr><th align="left" width="50%">电脑 · 冷咖啡破甲工作台</th><th align="left" width="50%">手机 · Android / iOS</th></tr>
@@ -72,7 +92,7 @@ a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-deco
 <p align="center"><a href="assets/coldcoffee-ios-work.png"><img src="assets/coldcoffee-ios-work.png" width="270" alt="冷咖啡 iOS 工作台，展示 REA 逆向、红队、API 审计、游戏客户端研究和证据报告入口" /></a><br /><strong>手机工作台 · 不只聊天</strong><br /><sub>选择 REA 逆向、红队渗透、API 审计、游戏客户端研究、样本取证或证据报告；提交目标、日志和样本说明，流式查看结构化结果。</sub></p>
 <table>
 <tr><th align="left">iOS 当前状态</th><th align="left">说明</th></tr>
-<tr><td><strong>源码</strong></td><td><a href="mobile-ios/">mobile-ios/</a> 已纳入仓库，包含 SwiftUI 客户端、Keychain 存储、HTTPS API、社群页、资源和 GPL-3.0-only 许可。</td></tr>
+<tr><td><strong>源码</strong></td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/tree/main/mobile-ios">mobile-ios/</a> 已纳入仓库，包含 SwiftUI 客户端、Keychain 存储、HTTPS API、社群页、资源和 GPL-3.0-only 许可。</td></tr>
 <tr><td><strong>构建</strong></td><td>可在 macOS + Xcode 环境执行无签名模拟器构建与单元测试；仓库 CI 提供构建和隐私检查。</td></tr>
 <tr><td><strong>TestFlight / App Store</strong></td><td>发布流程已准备，但需要 Apple Developer Team、签名证书、Provisioning Profile 与 App Store Connect 权限。当前没有真实上架链接，配置完成后再提交审核。</td></tr>
 </table>
@@ -98,7 +118,7 @@ a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-deco
 </table>
 <p>复杂条件、权重和其他高级设置从软件内「完整引擎 / 高级功能」进入。<a href="https://coldcoffeeai.com/"><strong>开通冷咖啡付费中转 ↗</strong></a> · 需要收费本机闭源工作流与定制，进下方 QQ 群找管理。</p>
 
-<p><strong>电脑端保留的接入优化：</strong>模型多时可按名称或中转搜索；连接失败可直接重试，恢复后错误提示自动清除。向导关闭后清空密钥输入，迟到的旧结果不会覆盖新操作。配置损坏会先保留原文件备份，缩放保存失败也会明确提醒。<a href="release-notes-3.3.0-preview.2.md">查看电脑＋手机版本说明 ↗</a></p>
+<p><strong>电脑端保留的接入优化：</strong>模型多时可按名称或中转搜索；连接失败可直接重试，恢复后错误提示自动清除。向导关闭后清空密钥输入，迟到的旧结果不会覆盖新操作。配置损坏会先保留原文件备份，缩放保存失败也会明确提醒。<a href="release-notes-3.3.0-preview.3.md">查看本轮更新说明 ↗</a></p>
 
 <details><summary>展开查看：模型搜索与接入预览</summary>
 <p><img src="assets/coldcoffee-model-search-v10.png" width="100%" alt="冷咖啡接入向导的模型搜索，保留当前选择并预览待更新的配置" /></p>
@@ -146,18 +166,18 @@ a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-deco
 <p><a href="https://coldcoffeeai.com/"><strong>冷咖啡付费 API 中转 ↗</strong></a> · 闭源工作流提供收费的本机安装与定制，可使用现有订阅或其他中转；进 <a href="#冷咖啡社群">QQ 群</a>私聊管理沟通。</p>
 
 <h2 id="下载">下载</h2>
-<p><strong>统一下载入口：</strong><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/latest">最新版下载页 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.2">本版固定下载页 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases">全部历史版本 ↗</a>。分享请复制下载页或下表的完整链接，保留版本号和文件名；校验文件在同一发布页的 Assets 中。</p>
-<p><strong>3.3.0-preview.2 · 电脑与移动端统一说明：</strong>Windows、macOS、Linux 七个电脑安装包，加上一个安卓 APK；Android 对应源码与 SHA256SUMS 随同发布，iOS 源码和签名/上架流程已纳入仓库。电脑端保留十五个 AI 模型席位和原创工具箱；手机端使用自己的中转 Key 直接聊天，也能提交六类研究工作台任务。此版本为预览构建，iOS 尚待 Apple 签名和 App Store Connect 发布。</p>
+<p><strong>3.3.0-preview.3 下载入口：</strong><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/latest">最新版下载页 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.3">preview.3 固定下载页 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases">全部历史版本 ↗</a>。安装包与对应源码见下表；下载时请核对发布页 Assets 与 SHA256SUMS。</p>
+<p><strong>3.3.0-preview.3 · 电脑与移动端统一说明：</strong>Windows、macOS、Linux 七个电脑安装包，加上一个安卓 APK；Android 对应源码与 SHA256SUMS 随同发布，iOS 源码和签名/上架流程已纳入仓库。电脑端保留十五个 AI 模型席位和原创工具箱；手机端使用自己的中转 Key 直接聊天，也能提交六类研究工作台任务。此版本为预览构建，iOS 尚待 Apple 签名和 App Store Connect 发布。</p>
 <table>
 <tr><th align="left">系统</th><th align="left">版本</th><th align="left">席位</th><th align="left">安装包</th></tr>
-<tr><td><strong>Android 手机</strong></td><td><code>3.3.0-preview.2</code></td><td>安卓聊天客户端，自定义中转与模型</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.2/ColdCoffee-Mobile-Android-3.3.0-preview.2.apk">安卓安装包 .apk ↗</a></td></tr>
-<tr><td><strong>iPhone / iOS</strong></td><td><code>源码预览</code></td><td>SwiftUI 客户端，冷咖啡或其他兼容中转</td><td><a href="mobile-ios/">iOS 源码 ↗</a> · <a href="IOS-MARKETING.md">签名与上架流程 ↗</a></td></tr>
-<tr><td><strong>Windows</strong></td><td><code>3.3.0-preview.2</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.2/ColdCoffee-Workbench-Windows-3.3.0-preview.2-x64.exe">免安装 .exe ↗</a></td></tr>
-<tr><td><strong>macOS Apple 芯片</strong></td><td><code>3.3.0-preview.2</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Apple 芯片 arm64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.2/ColdCoffee-Workbench-macOS-arm64-3.3.0-preview.2.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.2/ColdCoffee-Workbench-macOS-arm64-3.3.0-preview.2.zip">.zip ↗</a></td></tr>
-<tr><td><strong>macOS Intel</strong></td><td><code>3.3.0-preview.2</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Intel x64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.2/ColdCoffee-Workbench-macOS-x64-3.3.0-preview.2.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.2/ColdCoffee-Workbench-macOS-x64-3.3.0-preview.2.zip">.zip ↗</a></td></tr>
-<tr><td><strong>Linux</strong></td><td><code>3.3.0-preview.2</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，x86_64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.2/ColdCoffee-Workbench-Linux-x86_64-3.3.0-preview.2.AppImage">.AppImage ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.2/ColdCoffee-Workbench-Linux-amd64-3.3.0-preview.2.deb">.deb ↗</a></td></tr>
+<tr><td><strong>Android 手机</strong></td><td><code>3.3.0-preview.3</code></td><td>安卓聊天客户端，自定义中转与模型</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Mobile-Android-3.3.0-preview.3.apk">安卓安装包 .apk ↗</a></td></tr>
+<tr><td><strong>iPhone / iOS</strong></td><td><code>源码预览</code></td><td>SwiftUI 客户端，冷咖啡或其他兼容中转</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/tree/main/mobile-ios">iOS 源码 ↗</a> · <a href="IOS-MARKETING.md">签名与上架流程 ↗</a></td></tr>
+<tr><td><strong>Windows</strong></td><td><code>3.3.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-Windows-3.3.0-preview.3-x64.exe">免安装 .exe ↗</a></td></tr>
+<tr><td><strong>macOS Apple 芯片</strong></td><td><code>3.3.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Apple 芯片 arm64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-macOS-arm64-3.3.0-preview.3.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-macOS-arm64-3.3.0-preview.3.zip">.zip ↗</a></td></tr>
+<tr><td><strong>macOS Intel</strong></td><td><code>3.3.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Intel x64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-macOS-x64-3.3.0-preview.3.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-macOS-x64-3.3.0-preview.3.zip">.zip ↗</a></td></tr>
+<tr><td><strong>Linux</strong></td><td><code>3.3.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，x86_64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-Linux-x86_64-3.3.0-preview.3.AppImage">.AppImage ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-Linux-amd64-3.3.0-preview.3.deb">.deb ↗</a></td></tr>
 </table>
-<p><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.2/ColdCoffee-Mobile-Source-3.3.0-preview.2.zip"><strong>安卓客户端对应源码 .zip ↗</strong></a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/mobile/LICENSE">GPL-3.0 许可证</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/mobile/THIRD_PARTY_NOTICES.md">上游来源与修改说明</a>。完整仓库源码也可从本版标签获取。</p>
+<p><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Mobile-Source-3.3.0-preview.3.zip"><strong>安卓客户端对应源码 .zip ↗</strong></a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/mobile/LICENSE">GPL-3.0 许可证</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/mobile/THIRD_PARTY_NOTICES.md">上游来源与修改说明</a>。完整仓库源码也可从本版标签获取。</p>
 <p>安卓下载 APK 后在手机上安装；手机若询问安装来源，按系统提示为本次下载来源授权。Windows 双击打开。macOS 第一次若被拦住，在程序图标上右键，选打开。Linux 的 AppImage 先加上可执行权限。deb 用系统的安装器。</p>
 <pre><code>cd desktop
 npm ci
@@ -169,7 +189,7 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 
 <h2 id="上手使用">上手使用</h2>
 <ol>
-<li><strong>选择设备：</strong>Android 安装 APK；iPhone 从源码在 Xcode 运行或等待 TestFlight；电脑下载 3.3.0-preview.2 对应系统的工作台。</li>
+<li><strong>选择设备：</strong>Android 安装当前发布的 APK；iPhone 从源码在 Xcode 运行或等待 TestFlight；电脑从下载表选择对应系统的已发布工作台。</li>
 <li><strong>手机接入：</strong>选择「接入冷咖啡」或添加其他中转，填写自己的 Key，读取模型后回到聊天页。完整步骤见 <a href="ANDROID.md">安卓教程</a>。</li>
 <li><strong>一键破甲：</strong>只勾你要写的软件，按一下。写入之前会先备份。只改勾上的软件。</li>
 <li><strong>发送口令：</strong>打开那个软件，对话框里单独发「冷咖啡」。不想要了，回到这里按一键卸载，文件回到写入之前。</li>
@@ -180,7 +200,7 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <p>一键破甲可以一次勾选十五个 AI 模型席位。只写勾上的，按下表顺序扫描、备份、安装和校验。</p>
 <table>
 <tr><th align="left">#</th><th align="left">软件</th><th align="left">Windows</th><th align="left">macOS / Linux</th><th align="left">主文件</th></tr>
-<tr><td>01</td><td>GPT-6 Astra全模型支持</td><td><code>%USERPROFILE%\.codex</code></td><td><code>~/.codex</code></td><td><code>prompts/cha-codex.md</code>，另写 <code>AGENTS.md</code> 和 <code>config.toml</code></td></tr>
+<tr><td>01</td><td>GPT-6.2 Astra / Sol · Codex</td><td><code>%USERPROFILE%\.codex</code></td><td><code>~/.codex</code></td><td><code>prompts/cha-codex.md</code>，另写 <code>AGENTS.md</code> 和 <code>config.toml</code></td></tr>
 <tr><td>02</td><td>Claude Code全模型支持</td><td><code>%USERPROFILE%\.claude</code></td><td><code>~/.claude</code></td><td><code>CLAUDE.md</code></td></tr>
 <tr><td>03</td><td>Grok 4.7</td><td><code>%USERPROFILE%\.grok</code></td><td><code>~/.grok</code></td><td><code>AGENTS.md</code></td></tr>
 <tr><td>04</td><td>DeepSeek v4.1 Flash 10.17版本</td><td><code>%USERPROFILE%\.dsh</code></td><td><code>~/.dsh</code></td><td><code>skills/cha-deepseek/SKILL.md</code></td></tr>
@@ -220,6 +240,7 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <ol>
 <li>打开「冷咖啡中转」，地址已经是 <code>https://coldcoffeeai.com/v1</code>。</li>
 <li>把买来的 Key 贴进下面的框。</li>
+<li>读取 <code>/v1/models</code>，从当前 Key 返回的列表中选准确模型 ID；GPT-6.2 Astra / Sol 是界面重点名称，实际权限由中转返回结果决定。</li>
 <li>复制 Codex 配置。配置文本里没有 Key。Windows 合并到 <code>%USERPROFILE%\.codex\config.toml</code>，macOS / Linux 合并到 <code>~/.codex/config.toml</code>。</li>
 </ol>
 
@@ -251,4 +272,4 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <hr />
 <p align="center"><sub><a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/LICENSE">桌面及原有自有代码许可证</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/mobile/LICENSE">安卓客户端 GPL-3.0</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/THIRD_PARTY_NOTICES.md">开源许可与第三方声明</a></sub></p>
 <p align="center"><strong>冷咖啡</strong> · 把想法做出来，把作品留下来。</p>
-</div></article><aside class="about"><h3>一杯冷咖啡，多种打开方式</h3><p>电脑管理工作流与可视化路由。Android 和 iPhone 接入中转、选择模型、开始对话，也能提交移动研究任务并整理结果。</p><span class="tag">电脑＋手机</span><span class="tag">冷咖啡中转</span><span class="tag">移动工作台</span><span class="tag">独立闭源定制</span><hr><h3>当前预览</h3><p>3.3.0-preview.2<br>Windows / macOS / Linux / Android / iOS<br>官网：coldcoffeeai.com<br>接口：coldcoffeeai.com/v1</p><a href="#安卓手机端">安卓界面与接入 ↓</a><a href="#软件界面">电脑端界面 ↓</a><a href="ANDROID.md">安卓安装教程 ↗</a><a href="IOS-MARKETING.md">iOS 构建与上架 ↗</a><a href="MOBILE-PRIVACY.md">手机端数据与隐私 ↗</a><a href="release-notes-3.3.0-preview.2.md">本版更新说明 ↗</a><a href="#上手使用">查看软件启动步骤 ↓</a><a href="#下载">统一下载入口 ↓</a><a href="#冷咖啡服务">付费中转与本机定制 ↓</a><a href="#冷咖啡社群">QQ / 微信咨询 / Telegram ↓</a><hr><p>顾客填写自己的 Key；公开发布内容不内置个人密钥。</p></aside></div></div></body></html>
+</div></article><aside class="about"><h3>一杯冷咖啡，两种新焦点</h3><p>GPT-6.2 Astra 与 Sol 在模型目录中优先展示。准确 ID 从服务商返回列表中选择；电脑、Android 和 iPhone 共享清晰的接入与对话体验。</p><span class="tag">GPT-6.2 Astra</span><span class="tag">GPT-6.2 Sol</span><span class="tag">电脑＋手机</span><span class="tag">冷咖啡中转</span><span class="tag">独立闭源定制</span><hr><h3>当前预览</h3><p>3.3.0-preview.3<br>预览版<br>Windows / macOS / Linux / Android / iOS<br>官网：coldcoffeeai.com<br>接口：coldcoffeeai.com/v1</p><a href="#安卓手机端">安卓界面与接入 ↓</a><a href="#软件界面">电脑端界面 ↓</a><a href="ANDROID.md">安卓安装教程 ↗</a><a href="IOS-MARKETING.md">iOS 构建与上架 ↗</a><a href="MOBILE-PRIVACY.md">手机端数据与隐私 ↗</a><a href="release-notes-3.3.0-preview.3.md">本版更新说明 ↗</a><a href="#上手使用">查看软件启动步骤 ↓</a><a href="#下载">统一下载入口 ↓</a><a href="#冷咖啡服务">付费中转与本机定制 ↓</a><a href="#冷咖啡社群">QQ / 微信咨询 / Telegram ↓</a><hr><p>顾客填写自己的 Key；公开发布内容不内置个人密钥。</p></aside></div></div></body></html>

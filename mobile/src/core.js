@@ -3,6 +3,23 @@
 import { wrapOpenAIChatCompletionSse } from '../vendor/chatbox/openai-chat-sse-termination.ts';
 
 const ALLOWED_PROTOCOLS = new Set(['chat', 'responses']);
+export const FEATURED_MODELS = Object.freeze(['GPT-6.2 Astra', 'GPT-6.2 Sol']);
+
+// Labels are hints only. A selectable option always carries the exact ID from
+// the configured provider's /models response (or an explicitly entered ID).
+export function modelFamily(id) {
+  const match = /^(?:[^/]+\/)?gpt[-_ ]?6[.\-_ ]?2[-_ ]+(astra|sol)(?:$|[.\-_ ])/i.exec(String(id));
+  if (!match) return '';
+  return match[1].toLowerCase() === 'astra' ? FEATURED_MODELS[0] : FEATURED_MODELS[1];
+}
+
+export function orderModels(ids) {
+  const rank = id => {
+    const family = modelFamily(id);
+    return family ? FEATURED_MODELS.indexOf(family) : FEATURED_MODELS.length;
+  };
+  return [...ids].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
+}
 export function normalizeProvider(input = {}) {
   const name = String(input.name || '').trim().slice(0, 60);
   if (!name) throw new Error('请填写服务商名称');
@@ -30,8 +47,8 @@ export function normalizeProvider(input = {}) {
 
 export function readModels(payload) {
   const list = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.models) ? payload.models : [];
-  return [...new Set(list.map(item => typeof item === 'string' ? item : item?.id || item?.name)
-    .filter(id => typeof id === 'string' && id.trim()).map(id => id.trim()))].sort((a, b) => a.localeCompare(b));
+  return orderModels([...new Set(list.map(item => typeof item === 'string' ? item : item?.id || item?.name)
+    .filter(id => typeof id === 'string' && id.trim()).map(id => id.trim()))]);
 }
 
 export function requestBody({ protocol, model, messages, system = '' }) {

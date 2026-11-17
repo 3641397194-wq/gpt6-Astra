@@ -2,7 +2,7 @@
 * { box-sizing: border-box; }
 body { margin: 0; height: 100vh; overflow: hidden; background: #0b0b0d; color: var(--ink); font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
 .splash-art { position: fixed; inset: 0; animation: reveal 1.4s ease-out both; }
-.splash-art img { width: 100%; height: 100%; object-fit: cover; object-position: 77% 33%; }
+.splash-art img { width: 100%; height: 100%; object-fit: contain; object-position: right center; }
 .splash-shade { position: fixed; inset: 0; background: linear-gradient(90deg, #0b0b0df5 0%, #0b0b0de0 32%, #0b0b0d33 70%, transparent); }
 main { position: relative; width: 52%; padding: 34px 0 34px 44px; animation: enter .8s .12s ease-out both; }
 .mark { display: flex; align-items: center; gap: 12px; font-size: 13px; color: #b9a7b1; letter-spacing: 1px; }

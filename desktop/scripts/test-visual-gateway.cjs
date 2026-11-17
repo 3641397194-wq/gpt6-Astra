@@ -17,13 +17,17 @@ const { baseUrl } = require('../src/lib/visual-gateway/bridge');
   const original = '# customer comment\nmodel = "customer-original"\n\n[mcp_servers.example]\ncommand = "customer-tool"\n';
   const config = path.join(home, '.codex/config.toml'); fs.writeFileSync(config, original);
   const report = { checks: [], externalRequests: 0, ok: false }; const events = []; let requests = 0;
+  const ids = ['gpt-fixture', 'GPT-6.2-Astra', 'gpt6.2-sol'];
+  const sentModels = [];
   const key = 'fixture-key-' + crypto.randomUUID();
   const upstream = http.createServer(async (req, res) => {
     assert.equal(req.headers.authorization, `Bearer ${key}`); requests++;
     res.setHeader('content-type', 'application/json');
-    if (req.url === '/v1/models') return res.end(JSON.stringify({ data: [{ id: 'gpt-fixture', context_length: 32768 }] }));
+    if (req.url === '/v1/models') return res.end(JSON.stringify({ data: ids.map(id => ({ id, context_length: 32768 })) }));
     let text = ''; for await (const chunk of req) text += chunk;
-    const body = JSON.parse(text); assert.equal(body.model, 'gpt-fixture');
+    const body = JSON.parse(text);
+    assert.ok(ids.includes(body.model));
+    sentModels.push(body.model);
     if (body.stream) {
       res.setHeader('content-type', 'text/event-stream');
       const contentParts = body.messages?.at(-1)?.content === 'echo-key-fixture'
@@ -52,12 +56,18 @@ const { baseUrl } = require('../src/lib/visual-gateway/bridge');
     const detail = await g.text({ id: demoRoute.id, kind, item: 0 }); assert.ok(detail.items.length);
     report.checks.push('actual streaming route + upstream prompt decomposition + context detail');
     const result = await g.configure({ id: 'coldcoffee', baseUrl: `http://127.0.0.1:${upstream.address().port}/v1`, key, wireApi: 'chat', remember: false });
-    assert.deepEqual(result.models, ['coldcoffee/gpt-fixture']);
+    assert.deepEqual(new Set(result.models), new Set(ids.map(id => `coldcoffee/${id}`)));
     assert.ok(!JSON.stringify(g.status()).includes(key));
     assert.ok(!fs.readFileSync(g.configFile, 'utf8').includes(key));
     assert.ok(!fs.readFileSync(path.join(g.directory, 'config/magpie/providers.json'), 'utf8').includes(key));
     const stream = await g.send({ model: 'coldcoffee/gpt-fixture', text: 'test' }); assert.equal(stream.text, 'fixture stream passed');
     assert.ok(events.some(e => e.type === 'chunk'));
+    for (const model of ids.slice(1)) {
+      const reply = await g.send({ model: `coldcoffee/${model}`, text: '测试流式返回' });
+      assert.equal(reply.text, 'fixture stream passed');
+      assert.equal(sentModels.at(-1), model);
+    }
+    report.checks.push('GPT-6.2 Astra and Sol streamed through the gateway with the exact directory IDs sent upstream');
     report.checks.push('API key stays outside native provider file, IPC status and metadata; real fixture streaming');
     const eventStart = events.length;
     const redacted = await g.send({ model: 'coldcoffee/gpt-fixture', text: 'echo-key-fixture' });

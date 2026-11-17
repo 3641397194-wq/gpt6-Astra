@@ -28,6 +28,26 @@ body[data-page="visual"] main { max-width: 1800px; }
 .vg-wide { width: 100%; }
 .vg .vg-text-button { border: 0; background: none; font-size: 14px; color: #bbb4b7; padding: 6px 2px; box-shadow: none; }
 .vg .vg-text-button:hover { color: #fff2ef; }
+.vg-recommendations { display: grid; grid-template-columns: minmax(135px, .8fr) repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 10px; margin: 0 0 18px; padding: 14px; border: 1px solid #41404b; border-radius: 13px; background: #181820; }
+.vg-recommendations > div { align-self: center; padding: 0 6px; }
+.vg-recommendations h2 { margin: 0; font-size: 17px; }
+.vg-recommendations p { margin: 3px 0 0; font-size: 13px; color: #b8b6c5; }
+.vg .vg-recommendation { display: grid; grid-template-columns: 38px minmax(0, 1fr); align-items: center; justify-items: start; column-gap: 10px; padding: 11px; color: #eff0fa; background: #242431; border: 1px solid #48475d; text-align: left; }
+.vg-recommendation > span { grid-row: span 2; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 9px; font: 700 20px/1 "Segoe UI", sans-serif; color: #dedaff; background: #39335b; }
+.vg-recommendation[data-family="sol"] > span { color: #ffe7c0; background: #53402e; }
+.vg-recommendation strong { font-size: 16px; line-height: 1.25; overflow-wrap: anywhere; }
+.vg-recommendation small { font-size: 13px; color: #c0bdd1; }
+.vg .vg-recommendation:hover { border-color: #a29abb; background: #302c43; }
+.vg .vg-recommendation[data-availability="selected"] { border-color: #a397cf; background: #302944; }
+.vg-recommendation[data-availability="available"] small, .vg-recommendation[data-availability="selected"] small { color: #d1c6fd; }
+@media (max-width: 710px) {
+  .vg-recommendations { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .vg-recommendations > div { grid-column: 1 / -1; display: flex; gap: 5px 10px; flex-wrap: wrap; align-items: baseline; }
+}
+@media (max-width: 440px) {
+  .vg .vg-recommendation { grid-template-columns: 27px minmax(0, 1fr); column-gap: 6px; padding: 8px; }
+  .vg-recommendation > span { width: 27px; height: 27px; font-size: 16px; }
+}
 .vg-banner { padding: 11px 16px; border: 1px solid #514349; border-radius: 10px; background: #20191d; color: #d4c7cc; font-size: 14px; line-height: 1.8; margin-bottom: 18px; overflow-wrap: anywhere; }
 .vg-connection { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 18px; margin-bottom: 18px; border: 1px solid #42383f; border-radius: 12px; background: #171417; }
 .vg-connection > div { display: grid; gap: 4px; min-width: 0; }

@@ -89,9 +89,37 @@ public enum EndpointNormalizer {
     public static func endpoint(for provider: Provider, path: String) throws -> URL {
         guard let base = URL(string: provider.baseURL) else { throw ColdCoffeeError.invalidEndpoint }
         let cleanPath = path.hasPrefix("/") ? path : "/" + path
-        guard let url = URL(string: cleanPath, relativeTo: base)?.absoluteURL else { throw ColdCoffeeError.invalidEndpoint }
+        guard let url = URL(string: base.absoluteString.replacingOccurrences(of: "/+\\z", with: "", options: .regularExpression) + cleanPath) else {
+            throw ColdCoffeeError.invalidEndpoint
+        }
         guard url.scheme?.lowercased() == "https" else { throw ColdCoffeeError.insecureEndpoint }
         return url
+    }
+}
+
+public enum ModelCatalog {
+    public static let featured = ["GPT-6.2 Astra", "GPT-6.2 Sol"]
+
+    public static func family(for id: String) -> String? {
+        for (index, name) in ["astra", "sol"].enumerated() {
+            let pattern = "^(?:[^/]+/)?gpt[-_ ]?6[.\\-_ ]?2[-_ ]+\(name)(?:$|[.\\-_ ])"
+            if id.range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil { return featured[index] }
+        }
+        return nil
+    }
+
+    public static func ids(from json: [String: Any]) -> [String] {
+        let raw = (json["data"] as? [Any]) ?? (json["models"] as? [Any]) ?? []
+        let ids = raw.compactMap { item -> String? in
+            if let id = item as? String { return id }
+            if let item = item as? [String: Any] { return (item["id"] as? String) ?? (item["name"] as? String) }
+            return nil
+        }.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+        return Array(Set(ids)).sorted { left, right in
+            let leftRank = family(for: left).flatMap { featured.firstIndex(of: $0) } ?? featured.count
+            let rightRank = family(for: right).flatMap { featured.firstIndex(of: $0) } ?? featured.count
+            return leftRank == rightRank ? left < right : leftRank < rightRank
+        }
     }
 }
 
@@ -166,8 +194,7 @@ public final class OpenAIClient: Sendable {
         guard let http = response as? HTTPURLResponse else { throw ColdCoffeeError.invalidResponse }
         guard (200..<300).contains(http.statusCode) else { throw ColdCoffeeError.provider("读取模型失败（\(http.statusCode)）") }
         guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { throw ColdCoffeeError.invalidResponse }
-        let values = (json["data"] as? [[String: Any]] ?? []).compactMap { $0["id"] as? String }
-        return Array(Set(values)).sorted()
+        return ModelCatalog.ids(from: json)
     }
 
     public func streamChat(provider: Provider, key: String, model: String, messages: [ChatMessage], system: String = "") -> AsyncThrowingStream<String, Error> {

@@ -1,4 +1,4 @@
-export const VERSION = '3.3.0-preview.2';
+export const VERSION = '3.3.0-preview.3';
 export const SOURCE_URL = 'https://github.com/3641397194-wq/gpt6-Astra/tree/main/mobile';
 export const SERVICES = Object.freeze({
   website: 'https://coldcoffeeai.com/',

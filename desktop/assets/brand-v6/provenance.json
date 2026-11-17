@@ -1,12 +1,12 @@
 {
-  "name": "ColdCoffee original visual identity, edition 6",
-  "created": "2026-11-07",
-  "model": "gpt-image-2.6",
-  "quality": "high",
-  "artwork": "Original adult anime heroine and matching portrait icon generated for ColdCoffee.",
+  "name": "ColdCoffee original visual identity, noir edition 6.2",
+  "created": "2026-11-18",
+  "model": "OpenAI built-in image generation",
+  "artwork": "Original adult manga heroine cover and matching adult female portrait, with a separate white coffee cup application icon on black without a red plume.",
   "sourceSha256": {
-    "hero-girl.png": "cd0744a3e5b07036fb5e5d307150b0393fa4224334dcc7a695b456c242c549d2",
-    "icon-girl.png": "63bc896f4094dc06d5df8bbf663f1b60cf1881a6e6e2ea145730ca870f41275c"
+    "coldcoffee-noir-cover-62.png": "33bf8ab3910b0e8a95e3e7a4022f80fe4e712f459f2f3894bf07a2c9f9714334",
+    "coldcoffee-noir-icon-62.png": "7f20b487347612e80dc401837e7cf1277363d1b57699df6732519a0630d14941",
+    "coldcoffee-noir-avatar-62.png": "236746efd025327d6995909b131f013d1adaeabfd1711a7e4bb3a3d92a87da21"
   },
-  "processing": "Format conversion, rounded icon alpha and platform size variants."
+  "processing": "Native 1672x941 cover converted to WebP; female portrait resized from 1254x1254 to 256x256 WebP; cup icon resized to 1024x1024 with rounded alpha corners and PNG/ICO platform variants. Original artwork compositions retained."
 }

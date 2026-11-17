@@ -1,5 +1,6 @@
 'use strict';
 (() => {
+  const relayModels = window.ColdCoffeeRelayModels;
   const icons = {
     visual: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
     packs: '<path d="M12 3 4 7v6c0 4 8 8 8 8s8-4 8-8V7z"/><path d="m9 12 2 2 4-4"/>',
@@ -25,10 +26,11 @@
   const oldRelayLabel = document.querySelector('.nav[data-page="relay"] span:not(.shell-nav-icon)'); if (oldRelayLabel) oldRelayLabel.textContent = '高级接入';
   const page = document.createElement('section'); page.id = 'page-visual'; page.className = 'page vg';
   page.innerHTML = `
-    <header class="vg-heading"><img class="vg-hero-art" src="../../assets/brand-v6/hero.webp" alt="冷咖啡原创白发女生与咖啡主视觉"><div class="vg-hero-copy"><div class="vg-hero-eyebrow"><span class="vg-kicker">冷咖啡 · 可视化工作台</span><span id="vg-engine" class="vg-pill">网关准备中</span></div><h1>连接你的 AI<span>，</span><br>掌控每一步<span>。</span></h1><p>中转、模型、工作流与每次请求，都在这里。</p><div class="vg-heading-actions"><button id="vg-setup" class="vg-primary">一键接入 AI <span>→</span></button><button id="vg-demo" class="vg-secondary">体验可视化 ↗</button><span class="vg-hero-note">备份后接入 · 随时可撤回</span></div></div><span class="vg-hero-sign">一杯冷咖啡，一起开工。</span></header>
+    <header class="vg-heading"><img class="vg-hero-art" src="../../assets/brand-v6/hero.webp" alt="冷咖啡原创黑白漫画女生主视觉"><div class="vg-hero-copy"><div class="vg-hero-eyebrow"><span class="vg-kicker">冷咖啡 · 可视化工作台</span><span id="vg-engine" class="vg-pill">网关准备中</span></div><h1>连接你的 AI<span>，</span><br>看清每次请求<span>。</span></h1><p>选择中转和模型，实时查看请求的去向与耗时。</p><div class="vg-heading-actions"><button id="vg-setup" class="vg-primary">开始接入 <span>→</span></button><button id="vg-demo" class="vg-secondary">体验可视化 ↗</button></div></div></header>
     <div id="vg-banner" class="vg-banner" role="status" hidden></div>
     <div id="vg-connection" class="vg-connection" data-state="starting"><div><strong id="vg-connection-title">正在连接本机网关</strong><span id="vg-connection-note" role="status">首次启动请稍候，接入配置会保留。</span></div><button id="vg-retry" type="button" class="vg-secondary" hidden>重新连接</button></div>
     <p id="vg-config-warning" class="vg-config-warning" role="status" hidden></p>
+    <section class="vg-recommendations" aria-labelledby="vg-recommendations-title"><div><h2 id="vg-recommendations-title">推荐模型</h2><p>以中转实际返回为准</p></div>${relayModels.families.map(family => `<button type="button" class="vg-recommendation" data-family="${family.key}" data-availability="pending"><span aria-hidden="true">${family.mark}</span><strong>${family.name}</strong><small>等待验证</small></button>`).join('')}</section>
     <div class="vg-stats"><div><span>最近请求</span><strong id="vg-count">0</strong><small>经过本机网关</small></div><div><span>成功响应</span><strong id="vg-success">—</strong><small id="vg-success-note">等待第一条请求</small></div><div><span>平均耗时</span><strong id="vg-latency">—</strong><small>已完成请求</small></div><div><span>当前模型</span><strong id="vg-model-stat" class="vg-stat-model">等待连接</strong><small id="vg-model-note">以中转实际列表为准</small></div></div>
     <div class="vg-grid">
       <section class="vg-card vg-flow-card"><div class="vg-card-head"><div><span class="vg-live-dot"></span><h2>实时路由</h2><span class="vg-subtle" id="vg-flow-label">等待第一条请求</span></div><button id="vg-groups-open" class="vg-secondary">管理路由组</button></div>
@@ -67,6 +69,7 @@
   `;
   document.querySelector('main').prepend(page);
   const $ = id => document.getElementById(id);
+  const recommendations = [...page.querySelectorAll('.vg-recommendation')];
   for (const [selectId, searchId, noteId] of [['vg-model-select', 'vg-model-search', 'vg-model-results'], ['vg-setup-model', 'vg-setup-model-search', 'vg-setup-model-results']]) {
     const search = Object.assign(document.createElement('input'), { id: searchId, type: 'search', placeholder: '搜索模型名称或中转…', autocomplete: 'off', className: 'vg-model-search' });
     search.setAttribute('aria-label', '搜索模型名称或中转'); search.setAttribute('aria-controls', selectId);
@@ -77,7 +80,7 @@
   const courier = window.ColdCoffeeCourier.create({ $, page });
   const parts = { system: ['系统提示', '#e4576b'], tools: ['工具说明', '#be596b'], skills: ['技能', '#cda78c'], memory: ['工作说明', '#b5b8bf'], files: ['文件内容', '#78998e'], results: ['工具结果', '#a17d78'], chat: ['会话内容', '#939ba8'] };
   const number = value => new Intl.NumberFormat('zh-CN').format(Math.max(0, Number(value) || 0));
-  const shortModel = value => (value || '').replace(/^[^/]+\//, '');
+  const shortModel = value => relayModels.label((value || '').replace(/^[^/]+\//, ''));
   const call = (action, payload) => window.coldbrew?.gateway ? window.coldbrew.gateway(action, payload) : Promise.reject(new Error('请在冷咖啡桌面软件中使用网关'));
   const tell = message => { $('vg-banner').hidden = !message; $('vg-banner').textContent = message || ''; };
   const status = message => { $('vg-setup-status').textContent = message || ''; };
@@ -144,9 +147,20 @@
     const models = state.snapshot?.availableModels || (state.snapshot?.providers || []).filter(p => p.hasKey).flatMap(p => p.models.map(m => ({ id: `${p.id}/${m}`, name: m, provider: p.name })));
     state.models = models;
     const previous = state.selected;
-    if (!models.some(m => m.id === state.selected)) state.selected = models.find(m => /gpt-6-astra|gpt-6\.1-sol|deepseek-flash/.test(m.id))?.id || models[0]?.id || '';
+    const connectedModel = state.clients.find(client => client.id === state.client)?.model;
+    const preferred = models.some(model => model.id === previous) ? previous : connectedModel;
+    state.selected = relayModels.prefer(models, preferred)?.id || '';
     if (previous !== state.selected) {
       state.plan = null; $('vg-plan').hidden = true; $('vg-connect').textContent = '检查配置变更 →';
+    }
+    for (const button of recommendations) {
+      const matches = models.filter(model => relayModels.familyFor(model)?.key === button.dataset.family);
+      const model = relayModels.prefer(matches, state.selected);
+      const selected = model?.id && model.id === state.selected;
+      button.dataset.model = model?.id || '';
+      button.dataset.availability = selected ? 'selected' : model ? 'available' : 'pending';
+      button.title = model?.id || '';
+      button.querySelector('small').textContent = selected ? '当前选择' : model ? '选择接入' : models.length ? '目录未列出' : '等待验证';
     }
     renderModelOptions();
     const selectedProvider = $('vg-provider-select').value;
@@ -161,11 +175,11 @@
   function renderModelOptions() {
     const query = state.modelQuery.trim().toLocaleLowerCase(), signature = JSON.stringify([state.models, query, state.selected]);
     if (signature === state.modelSignature) return; state.modelSignature = signature;
-    const matches = state.models.filter(m => `${m.id} ${m.name} ${m.provider}`.toLocaleLowerCase().includes(query));
+    const matches = state.models.filter(m => `${m.id} ${relayModels.label(m)} ${m.name} ${m.provider}`.toLocaleLowerCase().includes(query));
     const selected = state.models.find(m => m.id === state.selected), retained = selected && !matches.some(m => m.id === selected.id);
     const visible = retained ? [selected, ...matches] : matches;
     for (const [id, note] of [['vg-model-select', 'vg-model-results'], ['vg-setup-model', 'vg-setup-model-results']]) {
-      const options = visible.length ? visible.map(m => Object.assign(document.createElement('option'), { value: m.id, textContent: `${retained && m.id === state.selected ? '当前已选 · ' : ''}${m.name} · ${m.provider}` })) : [Object.assign(document.createElement('option'), { value: '', textContent: state.models.length ? '没有匹配模型' : '先连接中转' })];
+      const options = visible.length ? visible.map(m => Object.assign(document.createElement('option'), { value: m.id, textContent: `${retained && m.id === state.selected ? '当前已选 · ' : ''}${relayModels.label(m)} · ${m.provider}`, title: m.id })) : [Object.assign(document.createElement('option'), { value: '', textContent: state.models.length ? '没有匹配模型' : '先连接中转' })];
       $(id).replaceChildren(...options); $(id).value = state.selected;
       $(note).textContent = !state.models.length ? '验证中转后读取实际可用模型。' : `${query ? '匹配 ' + matches.length + ' / ' : '共 '}${state.models.length} 个模型${retained ? ' · 保留当前选择' : ''}`;
     }
@@ -192,7 +206,10 @@
     $('vg-count').textContent = number(routes.length); $('vg-success').textContent = completed.length ? `${Math.round(successful.length / completed.length * 100)}%` : '—';
     $('vg-success-note').textContent = completed.length ? `${successful.length} / ${completed.length} 条完成` : '等待第一条请求';
     $('vg-latency').textContent = completed.length ? `${(completed.reduce((n, r) => n + r.ms, 0) / completed.length / 1000).toFixed(2)} 秒` : '—';
-    const observedModel = route ? route.actualModel || shortModel(route.model) : shortModel(state.selected);
+    const selectedModel = state.models.find(model => model.id === state.selected);
+    const observedModel = route?.actualModel
+      ? relayModels.label(route.actualModel)
+      : route ? shortModel(route.model) : relayModels.label(selectedModel);
     $('vg-model-stat').textContent = route?.demo ? '本机演示' : observedModel || '等待连接'; $('vg-model-stat').title = route?.model || state.selected;
     $('vg-model-note').textContent = route?.demo ? '真实本机请求 · 零费用演示' : route ? '最近观测到的模型' : '以中转实际列表为准';
     const running = route ? !route.done : false;
@@ -289,6 +306,14 @@
     catch (error) { tell(error.message); } finally { state.sending = false; await refresh(); }
   }
   $('vg-setup').onclick = () => openSetup(); $('vg-quick-start').onclick = () => openSetup(); $('vg-client-node').onclick = () => openSetup(1); $('vg-relay-node').onclick = () => openSetup(2); $('vg-model-node').onclick = () => openSetup(state.models.length ? 3 : 2);
+  for (const recommendation of recommendations) recommendation.onclick = async () => {
+    const model = state.models.find(item => item.id === recommendation.dataset.model);
+    if (model) {
+      state.selected = model.id;
+      render();
+    }
+    await openSetup(model ? 3 : 2);
+  };
   $('vg-hub-node').onclick = () => { if (!state.snapshot?.engine.running || state.connectionError) reconnect(); else tell('冷咖啡网关在本机运行，点击「完整引擎」使用高级功能；组件信息见「关于与开源许可」。'); };
   $('vg-retry').onclick = reconnect;
   $('vg-next-relay').onclick = () => stage(2);

@@ -3,7 +3,7 @@
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { VERSION, SERVICES, SOURCE_URL } from './config.js';
-import { normalizeProvider, readModels, requestBody, extractResponse, consumeChatStream, exportPublicState, redactError } from './core.js';
+import { FEATURED_MODELS, modelFamily, normalizeProvider, readModels, requestBody, extractResponse, consumeChatStream, exportPublicState, redactError } from './core.js';
 import * as bridge from './bridge.js';
 import { hydrateIcons, icon } from './icons.js';
 
@@ -304,7 +304,7 @@ function renderProviders() {
     const card = document.createElement('article'); card.className = 'provider-card';
     const status = connectionState.get(provider.id);
     card.innerHTML = `<div class="provider-card-header"><div class="provider-avatar">${escape(provider.name.slice(0, 1))}</div><div><strong>${escape(provider.name)}</strong><p class="address">${escape(provider.baseUrl)}</p><span class="provider-state">${status === 'ready' ? '模型列表读取成功' : status === 'error' ? '连接待重试 · 可编辑配置' : provider.hasKey ? 'Key 已加密保存 · 尚待检测' : '请补充自己的 Key'} · ${provider.protocol === 'responses' ? 'Responses' : 'Chat Completions'}</span></div></div><div class="provider-actions"><button data-action="use">选模型开聊</button><button data-action="edit">编辑</button><button data-action="remove">删除</button></div>`;
-    card.querySelector('[data-action="use"]').onclick = () => { state.providerId = provider.id; state.model = ''; saveSoon(); openModels(true); };
+    card.querySelector('[data-action="use"]').onclick = () => { if (state.providerId !== provider.id) state.model = ''; state.providerId = provider.id; saveSoon(); openModels(true); };
     card.querySelector('[data-action="edit"]').onclick = () => openProvider('other', provider);
     card.querySelector('[data-action="remove"]').onclick = () => {
       if (request) { toast('请先停止当前生成，再删除服务商'); return; }
@@ -337,8 +337,12 @@ async function refreshModels(providerId = state.providerId) {
     $('#model-status').textContent = models.length ? `读取成功 · ${models.length} 个模型` : '接口未列出模型，可在下方填写服务商提供的模型 ID。';
     renderModelList();
   } catch (error) {
+    modelCache.delete(providerId);
     connectionState.set(providerId, 'error');
-    if (generation === modelGeneration && providerId === state.providerId) $('#model-status').textContent = `${redactError(error.message)}。也可核对后手动填写模型 ID。`;
+    if (generation === modelGeneration && providerId === state.providerId) {
+      $('#model-status').textContent = `${redactError(error.message)}。也可核对后手动填写模型 ID。`;
+      renderModelList();
+    }
   } finally {
     job?.cancel();
     if (modelRequest === job) modelRequest = null;
@@ -369,13 +373,35 @@ function openModels(fetch = false) {
 }
 function renderModelList() {
   const search = $('#model-search').value.trim().toLowerCase();
-  const models = (modelCache.get(state.providerId) || []).filter(id => id.toLowerCase().includes(search));
+  const catalog = modelCache.get(state.providerId) || [];
+  const matches = (id, label = '') => !search || id.toLowerCase().includes(search) || label.toLowerCase().includes(search);
   const list = $('#model-list'); list.replaceChildren();
-  for (const model of models.slice(0, 250)) {
-    const button = document.createElement('button'); button.className = `model-option${model === state.model ? ' selected' : ''}`;
-    button.textContent = model; button.onclick = () => chooseModel(model); list.append(button);
+  const addOption = (id, label = '') => {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = `model-option${id === state.model ? ' selected' : ''}`;
+    button.dataset.modelId = id;
+    if (label) {
+      const title = document.createElement('strong'); title.textContent = label;
+      const actualId = document.createElement('small'); actualId.textContent = `服务商 ID · ${id}`;
+      button.append(title, actualId);
+    } else button.textContent = id;
+    button.onclick = () => chooseModel(id); list.append(button);
+  };
+  for (const family of FEATURED_MODELS) {
+    const ids = catalog.filter(id => modelFamily(id) === family);
+    if (!matches(family, family) && !ids.some(id => matches(id, family))) continue;
+    if (ids.length) ids.filter(id => matches(id, family)).forEach(id => addOption(id, family));
+    else {
+      const unavailable = document.createElement('button');
+      unavailable.type = 'button'; unavailable.className = 'model-featured-unavailable'; unavailable.disabled = true;
+      unavailable.textContent = `${family} · ${modelCache.has(state.providerId) ? '服务商未列出' : '等待服务商目录'}`;
+      list.append(unavailable);
+    }
   }
-  if (models.length > 250) { const note = document.createElement('p'); note.className = 'field-help'; note.textContent = '请输入关键词缩小结果，当前显示前 250 项。'; list.append(note); }
+  if (state.model && !catalog.includes(state.model) && matches(state.model, '当前使用')) addOption(state.model, '当前使用 · 历史或自定义 ID');
+  const other = catalog.filter(id => !modelFamily(id) && matches(id));
+  other.slice(0, 250).forEach(id => addOption(id));
+  if (other.length > 250) { const note = document.createElement('p'); note.className = 'field-help'; note.textContent = '请输入关键词缩小结果，当前显示前 250 项。'; list.append(note); }
 }
 function chooseModel(model) {
   state.model = String(model).trim(); if (!state.model) return;
@@ -393,7 +419,7 @@ function markdown(text) {
 function renderMessages() {
   const list = $('#messages'), chat = conversation(); list.replaceChildren();
   if (!chat.messages.length) {
-    list.innerHTML = `<div class="chat-empty"><img src="assets/icon.png" alt=""><h2>来杯冷咖啡，<br>开始你的好点子。</h2><p>连接你选择的服务商，让模型陪你写作、解题、读图和整理思路。</p><div class="suggestions"><button>帮我把一个想法拆成可执行的步骤</button><button>把这段文字改得更清楚自然</button><button>给我一个今天可以完成的小项目</button></div></div>`;
+    list.innerHTML = `<div class="chat-empty"><img src="assets/avatar.png" alt=""><h2>来杯冷咖啡，<br>开始你的好点子。</h2><p>连接你选择的服务商，让模型陪你写作、解题、读图和整理思路。</p><div class="suggestions"><button>帮我把一个想法拆成可执行的步骤</button><button>把这段文字改得更清楚自然</button><button>给我一个今天可以完成的小项目</button></div></div>`;
     list.querySelectorAll('.suggestions button').forEach(button => { button.onclick = () => { $('#message-input').value = button.textContent; $('#message-input').focus(); }; }); return;
   }
   for (const message of chat.messages) list.append(createMessage(message));
@@ -405,7 +431,7 @@ function createMessage(message) {
     const text = document.createElement('div'); text.textContent = message.text; node.append(text);
     return node;
   }
-  node.innerHTML = '<div class="message-author"><img src="assets/icon.png" alt=""><span></span></div><details class="reasoning" hidden><summary>思考过程</summary><div></div></details><div class="message-body"></div><div class="message-error" hidden></div><div class="message-meta"></div><div class="message-controls"><button data-copy>复制回复</button><button data-retry>重新生成</button></div>';
+  node.innerHTML = '<div class="message-author"><img src="assets/avatar.png" alt=""><span></span></div><details class="reasoning" hidden><summary>思考过程</summary><div></div></details><div class="message-body"></div><div class="message-error" hidden></div><div class="message-meta"></div><div class="message-controls"><button data-copy>复制回复</button><button data-retry>重新生成</button></div>';
   node.querySelector('.message-author span').textContent = message.model || '冷咖啡';
   updateMessage(node, message);
   node.querySelector('[data-copy]').onclick = () => { bridge.copyText(message.text); toast('回复已复制'); };
@@ -633,7 +659,9 @@ $('#provider-form').onsubmit = async event => {
   try {
     const provider = normalizeProvider({ id: $('#provider-id').value, name: $('#provider-name').value, baseUrl: $('#provider-url').value, protocol: $('#provider-protocol').value, apiKey: $('#provider-key').value });
     if (!provider.apiKey && !providers.find(item => item.id === provider.id)?.hasKey) throw new Error('请填写你自己的 API Key');
-    bridge.saveProvider(provider); providers = safeProviders(); state.providerId = provider.id; state.model = ''; modelCache.delete(provider.id);
+    const previous = providers.find(item => item.id === provider.id);
+    const keepSelection = previous && previous.id === state.providerId && previous.baseUrl === provider.baseUrl && previous.protocol === provider.protocol;
+    bridge.saveProvider(provider); providers = safeProviders(); state.providerId = provider.id; if (!keepSelection) state.model = ''; modelCache.delete(provider.id);
     closeDialog($('#provider-dialog')); saveNow(); renderProviders(); updateSelection(); openModels(true);
   } catch (error) { $('#provider-form-error').hidden = false; $('#provider-form-error').textContent = redactError(error.message); }
   finally { button.disabled = false; }

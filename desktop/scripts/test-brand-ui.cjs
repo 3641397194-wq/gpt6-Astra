@@ -40,7 +40,7 @@ Object.assign(env, {
     assert.equal(await page.locator('#vg-setup').count(), 1);
     assert.equal(await page.locator('#vg-demo').count(), 1);
     const hero = await page.locator('.vg-hero-art').evaluate(img => ({ width: img.naturalWidth, height: img.naturalHeight, url: img.getAttribute('src') }));
-    assert.equal(hero.width, 3840); assert.equal(hero.height, 2160);
+    assert.equal(hero.width, 1672); assert.equal(hero.height, 941);
     assert.match(hero.url, /brand-v6/);
     await capture('01-home.png');
     await page.locator('#vg-demo').click();
@@ -53,7 +53,7 @@ Object.assign(env, {
       return { fullWidthRoute: context.top >= flow.bottom && Math.abs(context.left - flow.left) < 1 && Math.abs(context.width - flow.width) < 1, overflow: document.documentElement.scrollWidth > innerWidth };
     });
     assert.equal(columns.fullWidthRoute, true); assert.equal(columns.overflow, false);
-    report.checks.push('4K original heroine, unified portrait, full-width live routing and context, no horizontal overflow');
+    report.checks.push('approved native-size noir cover, white coffee-cup identity, full-width live routing and context, no horizontal overflow');
     await page.locator('#vg-setup').click(); await capture('03-setup.png');
     await page.locator('[data-vg-close="vg-setup-dialog"]').click();
     for (const name of ['packs', 'relay', 'toolbox', 'community']) {

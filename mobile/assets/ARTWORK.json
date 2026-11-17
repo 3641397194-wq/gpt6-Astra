@@ -1,37 +1,44 @@
 {
-  "created": "2026-11-15",
-  "provider": "SRAI",
-  "model": "gpt-image-2.6",
-  "quality": "high",
+  "created": "2026-11-18",
+  "provider": "OpenAI built-in image generation",
   "originalDimensions": {
-    "cover": "3840x2160",
-    "icon": "2880x2880"
+    "cover": "1672x941",
+    "icon": "1254x1254",
+    "avatar": "1254x1254"
   },
-  "description": "Original adult silver-haired heroine artwork created for ColdCoffee; no reference character images or third-party logos supplied. Generated artwork is not a claim of exclusive copyright.",
-  "processing": "Format conversion, metadata removal, and proportional resampling only.",
+  "description": "Original noir adult character and coffee artwork created for ColdCoffee; no reference character images or third-party logos supplied. Generated artwork is not a claim of exclusive copyright.",
+  "processing": "Cover converted to WebP; portrait resampled; coffee icon and adaptive foreground reframed from the approved noir icon source.",
   "files": [
     {
       "path": "mobile/assets/hero.webp",
-      "sha256": "c42b6fec7dbb249eb49dc119b2f7e4da7a1f4664714573805ce623c2ee0b7e32",
+      "sha256": "b793174d760a199fbbb1bd4a681524576646f6528fbff5485a08c99ab6413833",
       "dimensions": [
-        1920,
-        1080
+        1672,
+        941
       ]
     },
     {
       "path": "mobile/assets/icon.png",
-      "sha256": "9141d75e59a80efeca850d323826f9f845ed2f4dfb8e6fae21efef593da1396b",
+      "sha256": "343977a89502b3fc35a5d90e6e12b476544261c3fd1a598cdd97c414cef10948",
       "dimensions": [
         1024,
         1024
       ]
     },
     {
-      "path": "docs/assets/coldcoffee-ecosystem-cover.webp",
-      "sha256": "a7666bc874fc27389690e2f9876c0c3f00a51d44bf7147180d19f604312c344f",
+      "path": "mobile/assets/avatar.png",
+      "sha256": "26b33e755c9acaca406f1fdbc307e542ea766ec3812f6857662cf9fb01296eb4",
       "dimensions": [
-        2560,
-        1440
+        512,
+        512
+      ]
+    },
+    {
+      "path": "mobile/assets/launcher-foreground.png",
+      "sha256": "6153c087d5d7cdc66974fea7d749b8223d2bbe8b77e4cc05c54497e787e1c14b",
+      "dimensions": [
+        1024,
+        1024
       ]
     }
   ]

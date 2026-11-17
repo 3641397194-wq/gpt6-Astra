@@ -1,0 +1,135 @@
+/* Approved noir cover, contained within the ordinary connection banner. */
+.page-heading.relay-heading.noir62-banner {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: 288px;
+  margin: 0 0 22px;
+  padding: 30px 34px;
+  overflow: hidden;
+  border: 1px solid #3a3034;
+  border-radius: 14px;
+  background: #0b0b0d;
+}
+
+.noir62-cover {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: right center;
+}
+
+.vg .vg-hero-art {
+  object-fit: contain;
+  object-position: right center;
+}
+
+.noir62-banner::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(90deg, #0b0b0deb, #0b0b0d94 42%, #0b0b0d12 72%);
+}
+
+.noir62-copy {
+  position: relative;
+  width: 62%;
+  min-width: 0;
+}
+
+.noir62-banner .eyebrow {
+  color: #e59aa5;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.noir62-banner h1 {
+  margin: 12px 0;
+  color: #f5f1eb;
+  font-size: clamp(32px, 3.6vw, 48px);
+  font-weight: 750;
+  line-height: 1.24;
+  letter-spacing: 0;
+}
+
+.noir62-banner h1 span {
+  color: #f5f1eb;
+  background: none;
+}
+
+.noir62-banner p {
+  max-width: 32ch;
+  margin: 0;
+  color: #d1c8c7;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.harness-feature-art {
+  background: #0b0b0d;
+}
+
+.harness-feature-art img,
+.hero .hero-art {
+  object-fit: contain;
+  object-position: right center;
+}
+
+.harness-feature-art::after {
+  background: linear-gradient(90deg, #0b0b0d, transparent 22%), linear-gradient(0deg, #0b0b0d88, transparent 35%);
+}
+
+.harness-feature-orbit {
+  display: none;
+}
+
+.harness-feature-sign {
+  border-color: #5c4248;
+  background: #171115dd;
+  color: #e8dfe1;
+}
+
+@media (max-width: 900px) {
+  .page-heading.relay-heading.noir62-banner {
+    min-height: 264px;
+    padding: 26px;
+  }
+
+  .noir62-copy {
+    width: 72%;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-heading.relay-heading.noir62-banner {
+    min-height: 248px;
+    padding: 22px;
+  }
+
+  .noir62-copy {
+    width: 100%;
+  }
+
+  .noir62-cover {
+    opacity: .58;
+    object-position: right center;
+  }
+
+  .noir62-banner::after {
+    background: linear-gradient(90deg, #0b0b0de8, #0b0b0d66);
+  }
+
+  .noir62-banner h1 {
+    font-size: clamp(28px, 6vw, 36px);
+  }
+
+  .noir62-banner p {
+    font-size: 14px;
+  }
+}

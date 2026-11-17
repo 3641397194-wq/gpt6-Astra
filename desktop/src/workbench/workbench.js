@@ -1,7 +1,8 @@
 'use strict';
 const core = window.ColdCoffeeCore;
+const relayModelInfo = window.ColdCoffeeRelayModels;
 const $ = (id) => document.getElementById(id);
-const state = {seat:'codex',profile:'max',history:[],counter:0,result:null,busy:false,relayReady:false,relayProvider:'gpt-6-astra',relayBusy:false,relayTesting:false,relayModels:[],relayRevision:0,localSkillNonce:'',workflow:{plan:null,task:null,events:[],ida:null,poll:null,aiBusy:false}};
+const state = {seat:'codex',profile:'max',history:[],counter:0,result:null,busy:false,relayReady:false,relayProvider:'',relayPreviousModel:'',relayBusy:false,relayTesting:false,relayModels:[],relayRevision:0,localSkillNonce:'',workflow:{plan:null,task:null,events:[],ida:null,poll:null,aiBusy:false}};
 const hashSeat = location.hash.replace('#','');
 if (core.SEATS.some(s => s.id === hashSeat)) state.seat = hashSeat;
 let toastTimer;
@@ -146,7 +147,8 @@ function copyRelayValue(makeText) {
 }
 function relayConfigText() {
   const baseUrl=relayBaseUrl();
-  const modelId=relayInput('relay-provider','MODEL_ID');
+  const modelId=relayInput('relay-provider');
+  if (!state.relayReady || !state.relayModels.includes(modelId)) throw new Error('先测试接入，再从模型目录选择。');
   const effort=['gpt-6-astra','gpt-6.1-sol'].includes(modelId)?'model_reasoning_effort = "xhigh"\n':'';
   const configPath=window.coldbrew?.platform==='win32'?'%USERPROFILE%\\.codex\\config.toml':'~/.codex/config.toml';
   return `# 贴进 Codex 的 ${configPath}
@@ -174,8 +176,11 @@ function relayEnvText() {
   return `export COLDCOFFEE_API_KEY=${quoted}\n# 在同一个终端里打开 Codex。`;
 }
 function lockRelayInputs(locked) {
-  for(const id of ['relay-api-base','relay-api-key','relay-provider','relay-test','relay-refresh','relay-sync']) $(id).disabled=locked;
-  document.querySelectorAll('.relay-model-card button').forEach(b=>b.disabled=locked);
+  for(const id of ['relay-api-base','relay-api-key','relay-test','relay-refresh','relay-sync']) $(id).disabled=locked;
+  $('relay-provider').disabled=locked||!state.relayReady;
+  for (const card of document.querySelectorAll('.relay-model-card')) {
+    card.querySelector('button').disabled=locked||!state.relayReady||!card.dataset.model;
+  }
 }
 function setRelayConnection(kind,title,detail) {
   $('relay-connection-state').dataset.state=kind;
@@ -184,19 +189,27 @@ function setRelayConnection(kind,title,detail) {
   $('relay-state-label').textContent=kind==='ready'?'测过了':kind==='preview'?'先看样子':kind==='error'?'还没用上':'等你点测试';
   $('relay-state-label').dataset.state=kind;
   if(kind!=='ready') state.relayReady=false;
-  setRelaySubmitEnabled(state.relayReady);
+  updateRelaySelection();
 }
 function updateRelaySelection() {
-  const modelId=relayInput('relay-provider');
+  const modelId=state.relayReady ? relayInput('relay-provider') : '';
   state.relayProvider=modelId;
-  $('relay-selected-provider').textContent=modelId||'测完才有名单';
+  if (modelId) state.relayPreviousModel=modelId;
+  $('relay-selected-provider').textContent=relayModelInfo.label(modelId)||'待验证';
+  $('relay-selected-provider').title=modelId;
   document.querySelectorAll('.relay-model-card').forEach(card=>{
-    const selected=card.dataset.model===modelId;
+    const ids=state.relayReady ? state.relayModels.filter(id=>relayModelInfo.familyFor(id)?.key===card.dataset.family) : [];
+    const selected=ids.includes(modelId);
+    card.dataset.model=selected?modelId:ids[0]||'';
+    card.dataset.availability=selected?'selected':ids.length?'available':'pending';
     card.classList.toggle('selected',selected);
     const b=card.querySelector('button');
-    b.classList.toggle('is-selected',selected);
-    b.textContent=selected?'当前选择':'选择推荐模型';
+    b.disabled=state.relayBusy||state.relayTesting||!ids.length;
+    b.setAttribute('aria-pressed',String(selected));
+    b.textContent=selected?'当前模型':ids.length?'选择此模型':state.relayReady?'目录未列出':'等待验证';
+    card.querySelector('code').textContent=card.dataset.model;
   });
+  $('relay-provider').disabled=state.relayBusy||state.relayTesting||!state.relayReady;
   if(!state.relayBusy && $('relay-task-status')) $('relay-task-status').textContent=`中转模型：${modelId||'待选择'} · 主动点击发送后才产生 API 用量。`;
   setRelaySubmitEnabled(state.relayReady);
 }
@@ -204,18 +217,22 @@ function populateRelayModels(models) {
   const entries=Array.isArray(models)?models:(Array.isArray(models?.data)?models.data:[]);
   const ids=[...new Set(entries.map(item=>typeof item==='string'?item:item?.id).filter(id=>typeof id==='string'&&id.trim()))];
   if(!ids.length) throw new Error('官网没返回模型，再测一次');
-  const previous=relayInput('relay-provider');
   state.relayModels=ids;
-  $('relay-provider').replaceChildren(...ids.map(id=>{const o=document.createElement('option');o.value=id;o.textContent=id;return o;}));
-  $('relay-provider').value=ids.includes(previous)?previous:ids[0];
-  updateRelaySelection();
+  $('relay-provider').replaceChildren(...ids.map(id=>{
+    const o=document.createElement('option');
+    const label=relayModelInfo.label(id);
+    o.value=id;
+    o.textContent=label===id?id:`${label} · ${id}`;
+    return o;
+  }));
+  $('relay-provider').value=relayModelInfo.prefer(ids,state.relayPreviousModel);
 }
 async function refreshRelayUsage() {
   try {
     const usage=await relayCall('usage');
     if(!usage||usage.source==='preview') { $('relay-usage-state').textContent='还没查余额';return; }
     const value=usage.remaining;
-    $('relay-usage-state').textContent=typeof value==='number'&&Number.isFinite(value)?`${value} ${usage.unit||''}`:'官网没给出余额';
+    $('relay-usage-state').textContent=typeof value==='number'&&Number.isFinite(value)?`${value} ${usage.unit||''}`:'服务器未返回余额';
     if(usage.active===false){
       setRelayConnection('error','这个 Key 现在用不了','去 coldcoffeeai.com 看一下 Key。');
       $('relay-access-state').textContent='Key 未启用';
@@ -247,7 +264,7 @@ async function configureRelayFromForm() {
     if(!probe?.ok||probe.preview) throw new Error('还没拿到模型名单');
     populateRelayModels(probe.models);
     state.relayReady=true;
-    setRelayConnection('ready','能用了',`读到 ${state.relayModels.length} 个模型。复制到 Codex 就能聊。`);
+    setRelayConnection('ready','中转已连接',`已读取 ${state.relayModels.length} 个模型。选择后可复制接入配置。`);
     $('relay-access-state').textContent='Key 能用';
     await refreshRelayUsage();
     try { const catalog=await relayCall('catalog');renderRelayCatalog(catalog,catalog?.source); }
@@ -263,6 +280,7 @@ async function configureRelayFromForm() {
 function invalidateRelayConfig() {
   state.relayRevision++;
   state.relayModels=[];
+  $('relay-provider').replaceChildren(new Option('先验证中转', ''));
   $('relay-access-state').textContent='改过了，再测一次';
   $('relay-usage-state').textContent='还没重新查';
   setRelayConnection('idle','你改过了','再测一次，用现在贴的 Key 和地址。');
@@ -289,20 +307,16 @@ async function localSkillCall(action,payload={}) {
   const data=await response.json();if(!response.ok)throw new Error(data.error||'本地技能操作失败');return data.result;
 }
 function renderRelay() {
-  const models=[{id:'gpt-6-astra',name:'GPT-6 Astra',mark:'A / 06'},{id:'gpt-6.1-sol',name:'GPT-6.1 Sol',mark:'S / 61'}];
-  $('relay-models').replaceChildren(...models.map(model=>{
-    const card=document.createElement('article');card.className='relay-model-card';card.dataset.model=model.id;
+  $('relay-models').replaceChildren(...relayModelInfo.families.map(model=>{
+    const card=document.createElement('article');card.className='relay-model-card';card.dataset.family=model.key;
     const mark=document.createElement('div');mark.className='model-mark';mark.textContent=model.mark;
     const title=document.createElement('h3');title.textContent=model.name;
-    const desc=document.createElement('p');desc.textContent='推理开高档。完全访问在 Codex 里打开。有没有这个模型，以测出来的列表为准。';
-    const choose=button('选择推荐模型',()=>{
-      if(state.relayReady&&!state.relayModels.includes(model.id)){toast('官网名单里没有这个，用上面列表里的');return;}
-      if(!Array.from($('relay-provider').options).some(o=>o.value===model.id)){
-        const o=document.createElement('option');o.value=model.id;o.textContent=`${model.name} · 再测一次`;$('relay-provider').append(o);
-      }
-      $('relay-provider').value=model.id;updateRelaySelection();
+    const id=document.createElement('code');
+    const choose=button('等待验证',()=>{
+      if(!state.relayReady||!state.relayModels.includes(card.dataset.model)) return;
+      $('relay-provider').value=card.dataset.model;updateRelaySelection();
     });
-    card.append(mark,title,desc,choose);return card;
+    card.append(mark,title,id,choose);return card;
   }));
   renderRelayCatalog(null);
   $('relay-groups').replaceChildren(...core.COMMUNITY.map(group=>{

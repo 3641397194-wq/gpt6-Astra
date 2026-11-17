@@ -142,6 +142,18 @@ test('reads model IDs, filters empty values and deduplicates', () => {
   assert.deepEqual(core.readModels({ data: 'bad' }), []);
 });
 
+test('featured model labels rank only provider-returned IDs without rewriting request IDs', () => {
+  const ids = core.readModels({ data: [
+    { id: 'legacy-chat' }, { id: 'auto/gpt-6.2-sol' },
+    { id: 'relay/gpt-6.2-astra' }, { id: 'z-other' },
+  ] });
+  assert.deepEqual(ids, ['relay/gpt-6.2-astra', 'auto/gpt-6.2-sol', 'legacy-chat', 'z-other']);
+  assert.equal(core.modelFamily(ids[0]), 'GPT-6.2 Astra');
+  assert.equal(core.modelFamily(ids[1]), 'GPT-6.2 Sol');
+  assert.equal(core.modelFamily('gpt-6-Astra'), '');
+  assert.equal(core.requestBody({ model: ids[0], protocol: 'chat', messages: [] }).model, ids[0]);
+});
+
 test('chat and Responses requests preserve images with their own protocol types', () => {
   const messages = [{ role: 'user', content: [{ type: 'text', text: '看图' }, { type: 'image_url', image_url: { url: 'data:image/png;base64,fixture' } }] }];
   const chat = core.requestBody({ model: 'test-model', protocol: 'chat', messages, system: ' 简洁回答 ' });

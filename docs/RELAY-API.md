@@ -8,7 +8,7 @@
 
 1. 在 [冷咖啡中转站](https://coldcoffeeai.com/) 按需付费开通服务，并取得 API Key。
 2. 在桌面端“冷咖啡中转”页填写 Base URL `https://coldcoffeeai.com/v1` 与 API Key，点击“测试接入状态”。Key 在软件内填写即可。
-3. 从服务端返回的模型列表选择真实模型 ID，优先选择可用的 GPT-6 Astra 或 GPT-6.1 Sol。
+3. 查看当前 Key 的 `GET /v1/models` 结果，从返回项中选择准确的模型 `id`。界面重点呈现 **GPT-6.2 Astra** 与 **GPT-6.2 Sol**；这两个名称只是展示标签，不是可直接猜填的固定 API ID，也不证明当前账号已开通。
 4. 点击“复制 Codex 配置”，合并到自己的用户级配置文件。该按钮仅复制 TOML，不含 API Key。
 5. 使用独立复制按钮取得平台对应的 API Key 环境变量命令：Windows 在 PowerShell 执行，macOS/Linux 在当前 shell 执行 `export`，再从同一个终端启动 `codex`。图形客户端按其接入说明配置提供商与密钥。
 
@@ -16,7 +16,7 @@
 
 ## Codex 用户级配置
 
-文件位置：`%USERPROFILE%\.codex\config.toml`，其他系统为 `~/.codex/config.toml`。将下面的 `MODEL_ID_FROM_MODELS` 替换为测试连接返回的真实模型 ID；已有配置请合并对应字段，保留其他设置。
+文件位置：`%USERPROFILE%\.codex\config.toml`，其他系统为 `~/.codex/config.toml`。将下面的 `MODEL_ID_FROM_MODELS` 替换为当前 Key 的 `/v1/models` 返回项中的完整 `id`（包括服务商前缀，如返回项包含此前缀）；不要把 GPT-6.2 的展示名称当作 ID。已有配置请合并对应字段，保留其他设置。
 
 ```toml
 model_provider = "coldcoffee"
@@ -54,13 +54,13 @@ codex
 
 | 操作 | 请求 | 说明 |
 | --- | --- | --- |
-| 测试接入 | `GET /v1/models` | 验证 Key 并读取可用模型；不会生成任务内容。 |
+| 测试接入 | `GET /v1/models` | 验证 Key 并读取当前服务商返回的模型；请求使用的准确 ID 取自响应中的 `id`。不会生成任务内容。 |
 | 读取用量 | `GET /v1/usage` | 展示服务端返回的信息；异常或空值按实际状态显示。 |
 | 发送任务 | `POST /v1/responses` | 明确点击发送后才提交，可能按服务规则产生模型费用；当前工作台等待完整结果后展示。 |
 
 请求使用 `Authorization: Bearer <API_KEY>`。桌面端接入时将 Key 保存在当前会话内存，不自动写入磁盘；“复制 Codex 配置”文本不含密钥。独立“复制 Key 设置命令”属于用户主动导出，执行后的本机保存行为见上文。浏览器预览用于查看界面；真实接口操作在桌面端进行。
 
-公开入口与鉴权错误响应已经核对，带有效 Key 的账号成功响应仍待顾客在软件中验证。`/models` 成功仅证明列表请求成功；具体模型生成、用量权限与内置工作流应分别以相应响应和服务说明确认。
+公开入口与鉴权错误响应已经核对，带有效 Key 的账号成功响应仍待顾客在软件中验证。**GPT-6.2 Astra / Sol 的展示优先级不等于账号权益。**`/models` 成功仅证明列表请求成功；具体模型生成、用量权限与内置工作流应分别以相应响应和服务说明确认。
 
 ## 常见返回
 

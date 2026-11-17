@@ -4,10 +4,10 @@
   else root.ColdCoffeeCore = api;
 })(typeof globalThis === 'object' ? globalThis : this, function () {
   'use strict';
-  const VERSION = '3.3.0-preview.2';
+  const VERSION = '3.3.0-preview.3';
   const DEEPSEEK_LABEL = 'DeepSeek v4.1 Flash 10.17版本';
   const SEATS = [
-    {id:'codex',tag:'GPT-6 Astra全模型支持',mark:'01',hint:'目标清单 → 最小实现 → 验收证据'},
+    {id:'codex',tag:'GPT-6.2 Astra / Sol',mark:'01',hint:'目标清单 → 最小实现 → 验收证据'},
     {id:'claude',tag:'Claude Code全模型支持',mark:'02',hint:'约束整理 → 结构化实现 → 差异复核'},
     {id:'grok',tag:'Grok 4.7',mark:'03',hint:'关键问题 → 直接产物 → 不确定项'},
     {id:'deepseek',tag:DEEPSEEK_LABEL,mark:'04',hint:'问题拆分 → 可复现步骤 → 结果检查'},
@@ -22,7 +22,7 @@
   const LOCAL_AGENT_PROFILES = [
     {id:'grok-bot',name:'Grok Bot',seat:'grok',agent:'Grok 4.7 模型',root:'.grok/skills',skill:'coldcoffee-grok-bot',summary:'快速拆解目标，列出依据与待验证项。'},
     {id:'claude-duet',name:'Claude Duet',seat:'claude',agent:'Claude Code 模型',root:'.claude/skills',skill:'coldcoffee-claude-duet',summary:'分阶段整理需求、变更、测试与交付。'},
-    {id:'chatgpt-dot',name:'ChatGPT Dot',seat:'codex',agent:'GPT-6 Astra 模型',root:'.codex/skills',skill:'coldcoffee-chatgpt-dot',summary:'把目标转成可执行任务，并记录验证结果。'},
+    {id:'chatgpt-dot',name:'ChatGPT Dot',seat:'codex',agent:'GPT-6.2 Astra / Sol',root:'.codex/skills',skill:'coldcoffee-chatgpt-dot',summary:'把目标转成可执行任务，并记录验证结果。'},
     {id:'meta-muse',name:'Meta Muse',seat:'gemini',agent:'Gemini 模型',root:'手动选择 Skills 目录',skill:'coldcoffee-meta-muse',summary:'创意发散、内容结构化与多方案比较。',manualRoot:true}
   ];
   const PROFILES = [

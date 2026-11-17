@@ -1,12 +1,12 @@
 # 冷咖啡安卓版
 
-冷咖啡手机端用于在安卓手机上接入模型 API，并通过移动研究工作台提交可追溯任务：默认推荐冷咖啡中转，同时允许添加其他兼容服务商。电脑端继续负责本机工具、文件处理、客户端接入和长时间工作流管理，两端安装包在同一 GitHub 发布页提供。
+冷咖啡手机端用于在安卓手机上接入模型 API、流式聊天并整理会话；默认推荐冷咖啡中转，也允许添加其他兼容服务商。3.3.0-preview.3 将 **GPT-6.2 Astra** 与 **GPT-6.2 Sol** 作为模型选择焦点：先读取当前 Key 的 `/v1/models`，实际请求使用响应中的完整模型 `id`。展示名称不代表账号已开通。移动工作台继续保留，电脑端负责本机工具、文件处理与长时间任务管理。
 
-[本版下载页](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.2) · [最新版下载页](https://github.com/3641397194-wq/gpt6-Astra/releases/latest) · [手机端隐私说明](MOBILE-PRIVACY.md)
+[本版下载页](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.3) · [最新版下载页](https://github.com/3641397194-wq/gpt6-Astra/releases/latest) · [手机端隐私说明](MOBILE-PRIVACY.md)
 
 ## 安装
 
-1. 在发布页展开 **Assets**，下载 `ColdCoffee-Mobile-Android-3.3.0-preview.2.apk`。
+1. 确认发布页的 **Assets** 和校验文件已上线，再下载 `ColdCoffee-Mobile-Android-3.3.0-preview.3.apk`。
 2. 用安卓手机打开 APK。系统若询问是否允许该下载来源安装应用，按系统提示为这次安装授权。
 3. 打开“冷咖啡”。安装包不包含作者或其他顾客的 API Key，需要填写你自己的 Key。
 
@@ -17,7 +17,7 @@
 1. 打开应用中的冷咖啡接入入口，接口地址预设为 `https://coldcoffeeai.com/v1`。
 2. 在 [coldcoffeeai.com](https://coldcoffeeai.com/) 开通付费服务，取得自己的 API Key。
 3. 将 Key 填入接入表单，保存后读取模型列表。
-4. 选择账号实际可用的模型，回到聊天页发送消息。
+4. 选择 `/v1/models` 返回的准确模型 ID，回到聊天页发送消息。GPT-6.2 Astra / Sol 仅在当前服务商返回对应项时可选。
 
 接好模型后也可以打开底部的“工作台”，选择 REA 逆向分析、红队渗透、API 审计、游戏客户端研究、样本与取证或证据报告。填写 `TARGET`、`HOST`、接口、日志、样本说明和输出要求，任务会通过当前服务商流式返回；支持停止、复制、分享和本机记录。大体积二进制、设备连接和实际工具链仍交给电脑端处理。
 
@@ -67,7 +67,7 @@ QQ 一群 **1057540028**、二群 **1077074552**、三群 **618179023**、四群
 
 ## 从源码构建
 
-对应源码在同一发布页提供：`ColdCoffee-Mobile-Source-3.3.0-preview.2.zip`。也可从仓库的 `v3.3.0-preview.2` 标签获取 `mobile/` 目录。
+对应源码在同一发布页提供：`ColdCoffee-Mobile-Source-3.3.0-preview.3.zip`。也可从仓库的 `v3.3.0-preview.3` 标签获取 `mobile/` 目录；发布前请先核对资产与标签确已生成。
 
 先安装 Node.js、JDK 17 和 Android SDK，并按原生工程要求准备 SDK 35。具体版本以 `mobile/package-lock.json`、`mobile/android/` 的 Gradle 配置和 wrapper 为准。
 

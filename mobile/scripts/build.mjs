@@ -18,7 +18,7 @@ await build({
   outfile: path.join(root, 'work/core.mjs'), format: 'esm', platform: 'node', target: 'node22',
 });
 for (const name of ['index.html', 'app.css']) await fs.copyFile(path.join(root, 'src', name), path.join(root, 'www', name));
-for (const name of ['hero.webp', 'icon.png']) await fs.copyFile(path.join(root, 'assets', name), path.join(root, 'www/assets', name));
+for (const name of ['hero.webp', 'icon.png', 'avatar.png']) await fs.copyFile(path.join(root, 'assets', name), path.join(root, 'www/assets', name));
 for (let number = 1; number <= 4; number++) {
   const name = `qq-group-${number}.jpg`;
   await fs.copyFile(path.join(root, 'assets', name), path.join(root, 'www/assets', name));

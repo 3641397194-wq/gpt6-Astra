@@ -21,7 +21,7 @@ text_rules=[
 with zipfile.ZipFile(apk) as archive:
     if archive.testzip():raise SystemExit('APK ZIP CRC verification failed')
     names=set(archive.namelist())
-    for required in ['AndroidManifest.xml','classes.dex','assets/index.html','assets/app.js','assets/assets/icon.png','assets/assets/hero.webp','assets/legal/GPL-3.0.txt','assets/legal/THIRD_PARTY_NOTICES.md','assets/legal/Marked-LICENSE.txt','assets/legal/DOMPurify-LICENSE.txt']:
+    for required in ['AndroidManifest.xml','classes.dex','assets/index.html','assets/app.js','assets/assets/icon.png','assets/assets/avatar.png','assets/assets/hero.webp','assets/legal/GPL-3.0.txt','assets/legal/THIRD_PARTY_NOTICES.md','assets/legal/Marked-LICENSE.txt','assets/legal/DOMPurify-LICENSE.txt']:
         if required not in names:findings.append({'file':required,'rule':'required-file-missing'})
     for entry in archive.infolist():
         if entry.is_dir():continue

@@ -1,5 +1,7 @@
 'use strict';
 
+const relayModels = require('../shared/relay-models');
+
 /**
  * First-party relay contract used by the desktop client.
  *
@@ -516,23 +518,31 @@ class RelayAdapter {
 
   async _preflightOpenAI({ providerId, modelId, workflowId = 'coldcoffee-default', estimatedUnits = 1, requireFullAccess = true } = {}) {
     const errors = [], warnings = [];
-    // Explicit model IDs are case-sensitive server values. Only legacy preset
-    // selections receive alias normalization; never infer entitlement by substring.
-    const requestedModel = text(modelId) || text(providerId) || 'gpt-6-astra';
-    const normalizedModel = normalizeProviderId(requestedModel);
-    const selectedModel = PROVIDER_PRESETS[normalizedModel]?.model || requestedModel;
-    const known = Object.values(PROVIDER_PRESETS).find(item => item.model === selectedModel);
-    const provider = known ? clone(known) : {
-      id: selectedModel, model: selectedModel, label: selectedModel,
-      preset: 'server-default', reasoning: null, streaming: false
-    };
+    const explicitModel = text(modelId);
+    const requestedModel = explicitModel || text(providerId);
+    function describeModel(id) {
+      const known = Object.values(PROVIDER_PRESETS).find(item => item.model === id);
+      return known ? clone(known) : {
+        id, model: id, label: relayModels.label(id),
+        preset: 'server-default', reasoning: null, streaming: false
+      };
+    }
     if (!Number.isFinite(Number(estimatedUnits)) || Number(estimatedUnits) <= 0) errors.push({ code: 'INVALID_ESTIMATE', message: '预计消耗必须是正数' });
     const missing = missingConfig(this.config);
-    if (missing.length) return { ok: false, errors: [{ code: 'RELAY_CONFIG_MISSING', message: `请填写冷咖啡 API 地址和 API Key（缺少：${missing.join('、')}）` }], warnings, provider, workflowId, estimatedUnits };
+    if (missing.length) return { ok: false, errors: [{ code: 'RELAY_CONFIG_MISSING', message: `请填写冷咖啡 API 地址和 API Key（缺少：${missing.join('、')}）` }], warnings, provider: describeModel(requestedModel), workflowId, estimatedUnits };
     let models;
     try { models = await this.models(); }
-    catch (error) { return { ok: false, errors: [{ code: error.code || 'RELAY_REQUEST_FAILED', message: this._redact(error.message) }], warnings, provider, workflowId, estimatedUnits }; }
-    if (!this._modelIds(models).includes(selectedModel)) errors.push({ code: 'PROVIDER_NOT_ENTITLED', message: `API 模型列表未包含 ${selectedModel}，请从服务端列表选择模型` });
+    catch (error) { return { ok: false, errors: [{ code: error.code || 'RELAY_REQUEST_FAILED', message: this._redact(error.message) }], warnings, provider: describeModel(requestedModel), workflowId, estimatedUnits }; }
+    const available = this._modelIds(models);
+    // The directory's ID takes precedence. The legacy provider preset field alone
+    // accepts old aliases, and only if the resolved ID is listed by the server.
+    let selectedModel = requestedModel || relayModels.prefer(available);
+    if (!explicitModel && !available.includes(selectedModel)) {
+      const alias = normalizeProviderId(requestedModel);
+      if (available.includes(alias)) selectedModel = alias;
+    }
+    const provider = describeModel(selectedModel);
+    if (!available.includes(selectedModel)) errors.push({ code: 'PROVIDER_NOT_ENTITLED', message: `API 模型列表未包含 ${selectedModel}，请从服务端列表选择模型` });
     if (requireFullAccess) warnings.push({ code: 'FULL_ACCESS_UNVERIFIED', message: '模型列表未确认工作流和工具权限；Codex 完全访问在客户端设置，模型请求以服务端响应为准' });
     let usage = { remaining: null, used: null, unit: 'USD', active: null, source: 'openai' };
     try { usage = await this.usage(); }

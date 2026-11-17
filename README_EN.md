@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/coldcoffee-ecosystem-cover.webp" width="100%" alt="ColdCoffee original adult heroine in black, ivory and crimson, connecting desktop and mobile" />
+<img src="docs/assets/coldcoffee-noir-cover-62.png" width="100%" alt="ColdCoffee original adult heroine in black, ivory and crimson, connecting desktop and mobile" />
 
 <br />
 
@@ -8,9 +8,11 @@
 
 # ColdCoffee · Desktop, Android and iPhone
 
-### Workflows on your computer. Model conversations on your phone.
+### GPT-6.2 Astra and Sol. Your relay, your model directory.
 
-**3.3.0-preview.2 · WINDOWS / macOS / LINUX / ANDROID / iOS**
+The refreshed clients highlight GPT-6.2 Astra and Sol when those models are present in your provider directory. Requests keep the exact returned model IDs and preserve existing selections; account access and pricing are determined by the provider.
+
+**3.3.0-preview.3 · WINDOWS / macOS / LINUX / ANDROID / iOS**
 
 <sub>One ColdCoffee brand, an original visual identity, and your own provider credentials.</sub>
 
@@ -60,9 +62,9 @@ The iOS source lives in [`mobile-ios/`](mobile-ios/) and is released under GPL-3
 
 These independent paid offerings do not turn the GPL mobile application into proprietary software. For WeChat contact or a WeChat group invitation, ask an administrator through the QQ groups; no unverified WeChat QR is published.
 
-## What's new in 3.3.0-preview.2
+## What's new in 3.3.0-preview.3
 
-Android and iOS clients join the existing desktop workbench, with unified provider setup, corresponding mobile sources, six mobile research lanes, and community/service access. iOS source and the signing/TestFlight/App Store preparation are included; actual store publication remains pending Apple credentials and review. Desktop routing retains stable nodes, the vintage Ragdoll courier, model search, connection retry, configuration recovery and zoom controls. See the [release notes](docs/release-notes-3.3.0-preview.2.md).
+Android and iOS clients join the existing desktop workbench, with unified provider setup, corresponding mobile sources, six mobile research lanes, and community/service access. iOS source and the signing/TestFlight/App Store preparation are included; actual store publication remains pending Apple credentials and review. Desktop routing retains stable nodes, the vintage Ragdoll courier, model search, connection retry, configuration recovery and zoom controls. See the [release notes](docs/release-notes-3.3.0-preview.3.md).
 
 ## Visual routing
 
@@ -106,7 +108,7 @@ npm ci
 npm start
 ```
 
-Build desktop packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). For Android, follow the [mobile build guide](docs/ANDROID.md#从源码构建). For iOS, follow the [iOS release guide](docs/IOS-MARKETING.md). Version 3.3.0-preview.2 is a preview build with unified release downloads and SHA-256 checksums; iOS is currently source/build preparation rather than a published App Store binary.
+Build desktop packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). For Android, follow the [mobile build guide](docs/ANDROID.md#从源码构建). For iOS, follow the [iOS release guide](docs/IOS-MARKETING.md). Version 3.3.0-preview.3 is a preview build with unified release downloads and SHA-256 checksums; iOS is currently source/build preparation rather than a published App Store binary.
 
 All 15 model seats write an original CHA pack or skill into the selected local instruction directory. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
 
@@ -114,7 +116,7 @@ IDA user plugins resolve to `%APPDATA%\\Hex-Rays\\IDA Pro\\plugins` on Windows, 
 
 ## 02 / Fifteen AI Models
 
-The 15 model seats are `GPT-6 Astra全模型支持 / Codex`, `Claude Code全模型支持`, `Grok 4.7`, `DeepSeek v4.1 Flash 10.17版本`, `GLM 5.3全模型支持`, `Gemini全模型支持`, `豆包`, `WorkBuddy`, `Cursor`, `MiniMax 3.1 Flash`, `Kimi K3.1`, `Grok Bot`, `Claude Duet`, `ChatGPT Dot`, and `Meta Muse`.
+The 15 model seats are `GPT-6.2 Astra / Sol · Codex`, `Claude Code全模型支持`, `Grok 4.7`, `DeepSeek v4.1 Flash 10.17版本`, `GLM 5.3全模型支持`, `Gemini全模型支持`, `豆包`, `WorkBuddy`, `Cursor`, `MiniMax 3.1 Flash`, `Kimi K3.1`, `Grok Bot`, `Claude Duet`, `ChatGPT Dot`, and `Meta Muse`.
 
 The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Windows, macOS, and Linux. It installs only under `$DSH_HOME` (default `~/.dsh`), with a short `AGENTS.md` entry and `skills/cha-deepseek/SKILL.md`; the shared `$DSH_AGENTS_HOME` / `~/.agents` root remains untouched. See the [Harness installation notes](docs/SEAT-PACKS.md#deepseek-官方-harness-安装说明).
 
@@ -204,7 +206,7 @@ In the desktop workbench, select **安装到 DeepSeek**, fully quit and reopen o
 
 <div align="center">
 
-`CHA / COLD BREW ZERO / BREAK//OPEN / GPT-6 ASTRA / DeepSeek v4.1 Flash 10.17版本 / GLM 5.3全模型支持 / GEMINI / 2.3.6`
+`CHA / COLD BREW ZERO / BREAK//OPEN / GPT-6.2 ASTRA / SOL / DeepSeek v4.1 Flash 10.17版本 / GLM 5.3全模型支持 / GEMINI / 3.3.0-preview.3`
 
 </div>
 
@@ -218,9 +220,9 @@ Bot acknowledgement, independent readback, and new-conversation behavior are sho
 
 ![Original Grok Bot memory UI, isolated test data](docs/assets/coldcoffee-grok-memory-v8.png)
 
-Release 3.3.0-preview.2: seven Workbench installers and one Android APK share the same release, accompanied by the Android source and checksums. The iOS SwiftUI source and signing/TestFlight/App Store preparation are included in the repository, but no App Store binary is claimed before Apple signing and review. This remains a preview build. Desktop packages cover Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The desktop workbench retains 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse; the Android app connects to model APIs directly.
+Release 3.3.0-preview.3: seven Workbench installers and one Android APK share the same release, accompanied by the Android source and checksums. The iOS SwiftUI source and signing/TestFlight/App Store preparation are included in the repository, but no App Store binary is claimed before Apple signing and review. This remains a preview build. Desktop packages cover Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The desktop workbench retains 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse; the Android app connects to model APIs directly.
 
-[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.2) · [Android installation and source](docs/ANDROID.md) · [iOS source and release guide](docs/IOS-MARKETING.md) · [Original toolbox and feature scope](docs/original-toolbox.md)
+[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.3) · [Android installation and source](docs/ANDROID.md) · [iOS source and release guide](docs/IOS-MARKETING.md) · [Original toolbox and feature scope](docs/original-toolbox.md)
 
 [Default latest download page](https://github.com/3641397194-wq/gpt6-Astra/releases/latest) · [All releases](https://github.com/3641397194-wq/gpt6-Astra/releases). Share the release page or a complete versioned installer URL; do not mix an old tag with a new file name.
 

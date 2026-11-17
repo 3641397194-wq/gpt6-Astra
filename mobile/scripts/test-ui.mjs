@@ -60,7 +60,7 @@ function installFixture(seed = {}) {
     },
     getState() { return JSON.stringify(savedState); },
     saveState(text) { savedState = JSON.parse(text); return JSON.stringify({ ok: true }); },
-    getVersion() { return JSON.stringify({ version: '3.3.0-preview.2', build: 'isolated-fixture' }); },
+    getVersion() { return JSON.stringify({ version: '3.3.0-preview.3', build: 'isolated-fixture' }); },
     copyText(text) { copied.push(text); },
     shareText(text) { shared.push(text); },
     openExternal(url) { external.push(url); },
@@ -76,7 +76,7 @@ function installFixture(seed = {}) {
       if (req.path === '/models') {
         const unauthorized = provider?.name.includes('未授权');
         later(12, () => emit(req.id, { type: 'headers', status: unauthorized ? 401 : 200, headers: { 'content-type': 'application/json' } }));
-        later(20, () => emit(req.id, { type: 'chunk', text: JSON.stringify(unauthorized ? { error: { message: 'fixture invalid key' } } : { data: [{ id: 'chat-fixture' }, { id: 'vision-fixture' }, { id: 'slow-fixture' }] }) }));
+        later(20, () => emit(req.id, { type: 'chunk', text: JSON.stringify(unauthorized ? { error: { message: 'fixture invalid key' } } : { data: seed.catalog || [{ id: 'chat-fixture' }, { id: 'vision-fixture' }, { id: 'slow-fixture' }] }) }));
         later(25, () => { emit(req.id, { type: 'done' }); active.delete(req.id); });
         return req.id;
       }
@@ -174,6 +174,9 @@ try {
   await check('coldcoffee setup, real model-list flow, searching, selection and streaming completion', async () => {
     const { page, context } = await pageFor();
     try {
+      assert.equal(await page.locator('#brand-home img').getAttribute('src'), 'assets/avatar.png');
+      assert.equal(await page.locator('link[rel="icon"]').getAttribute('href'), 'assets/icon.png');
+      assert.match(await page.locator('.hero-art').getAttribute('alt'), /黑白电影/);
       await page.locator('#home-connect').click();
       assert.equal(await page.locator('#provider-url').inputValue(), 'https://coldcoffeeai.com/v1');
       await page.locator('#provider-key').fill('fixture-key-not-a-real-credential');
@@ -186,6 +189,7 @@ try {
       await send(page, '帮我规划一个可以完成的小项目');
       await page.waitForFunction(() => [...document.querySelectorAll('.message-meta')].some(node => node.textContent === '生成完成'));
       assert.match(await page.locator('.message.assistant .message-body').innerText(), /冷咖啡/);
+      assert.equal(await page.locator('.message-author img').getAttribute('src'), 'assets/avatar.png');
       assert.equal(await page.evaluate(() => window.__fixture.activeCount()), 0);
       assert.equal(await page.evaluate(() => window.__fixture.requests.filter(item => item.path === '/chat/completions').length), 1);
       const publicProviders = await page.evaluate(() => window.__fixture.providers());
@@ -195,6 +199,43 @@ try {
       assert.doesNotMatch(state, /fixture-key-not-a-real-credential|apiKey/);
       await page.locator('[data-copy]').click();
       assert.match(await page.evaluate(() => window.__fixture.copied.at(-1)), /冷咖啡/);
+    } finally { await context.close(); }
+  });
+  await check('featured GPT-6.2 choices use exact relay IDs and preserve legacy selection', async () => {
+    const seed = seeded();
+    seed.state.model = 'legacy-custom-id';
+    seed.catalog = [{ id: 'legacy-chat' }, { id: 'auto/gpt-6.2-sol' }, { id: 'relay/gpt-6.2-astra' }];
+    const { page, context } = await pageFor(seed);
+    try {
+      assert.equal(await page.locator('#selected-model').textContent(), 'legacy-custom-id');
+      await page.locator('[data-page="chat"]').click();
+      await page.locator('#model-open').click();
+      await page.waitForFunction(() => document.querySelector('#model-status')?.textContent.includes('读取成功'));
+      assert.deepEqual(await page.locator('.model-option').allTextContents(), [
+        'GPT-6.2 Astra服务商 ID · relay/gpt-6.2-astra',
+        'GPT-6.2 Sol服务商 ID · auto/gpt-6.2-sol',
+        '当前使用 · 历史或自定义 ID服务商 ID · legacy-custom-id',
+        'legacy-chat',
+      ]);
+      assert.equal(await page.evaluate(() => window.__fixture.state().model), 'legacy-custom-id');
+      await page.locator('[data-model-id="auto/gpt-6.2-sol"]').click();
+      await send(page, '测试真实模型 ID');
+      await page.waitForFunction(() => document.querySelector('.message-meta')?.textContent === '生成完成');
+      assert.equal(await page.evaluate(() => window.__fixture.requests.find(item => item.path === '/chat/completions')?.body.model), 'auto/gpt-6.2-sol');
+    } finally { await context.close(); }
+  });
+  await check('unlisted GPT-6.2 labels are disabled, with manual ID still available', async () => {
+    const { page, context } = await pageFor(seeded());
+    try {
+      await page.locator('[data-page="chat"]').click();
+      await page.locator('#model-open').click();
+      await page.waitForFunction(() => document.querySelector('#model-status')?.textContent.includes('读取成功'));
+      assert.equal(await page.locator('.model-featured-unavailable').count(), 2);
+      assert.equal(await page.locator('.model-featured-unavailable').first().isDisabled(), true);
+      assert.equal(await page.locator('#selected-model').textContent(), 'chat-fixture');
+      await page.locator('#manual-model').fill('custom-model-id');
+      await page.locator('#manual-model-form button').click();
+      assert.equal(await page.locator('#selected-model').textContent(), 'custom-model-id');
     } finally { await context.close(); }
   });
   await check('Key is cleared on close and Escape, and its input defaults to masked', async () => {
@@ -230,9 +271,10 @@ try {
       assert.equal(await page.locator('#provider-key').inputValue(), '');
       await page.locator('#provider-name').fill('其他测试中转 · 已编辑');
       await page.locator('#provider-save').click();
-      await page.waitForFunction(() => document.querySelectorAll('.model-option').length === 3);
+      await page.waitForFunction(() => document.querySelectorAll('.model-option').length >= 3);
       assert.equal(await page.evaluate(() => window.__fixture.providers()[0].hasKey), true);
       assert.equal(await page.evaluate(() => window.__fixture.providers()[0].baseUrl), 'https://relay.example/v1');
+      assert.equal(await page.evaluate(() => window.__fixture.state().model), 'manual-fixture');
       await page.locator('#models-dialog [data-close]').click();
       await page.locator('[data-page="providers"]').click();
       await page.locator('[data-action="remove"]').click();
@@ -378,18 +420,18 @@ try {
   });
   if (process.argv.includes('--capture') || process.env.COLDCOFFEE_MOBILE_CAPTURE === '1') {
     await check('capture isolated frontend screenshots with original published art', async () => {
-      for (const file of ['assets/icon.png', 'assets/hero.webp']) await stat(path.join(web, file));
+      for (const file of ['assets/icon.png', 'assets/avatar.png', 'assets/hero.webp']) await stat(path.join(web, file));
       const { page, context } = await pageFor(seeded());
       try {
         await page.evaluate(() => { document.querySelector('#runtime-badge').textContent = '隔离测试界面'; });
-        await page.screenshot({ path: path.join(root, 'docs/assets/coldcoffee-mobile-home.png') });
+        await page.screenshot({ path: path.join(output, 'coldcoffee-mobile-home.png') });
         await send(page, '帮我规划一个可以完成的小项目');
         await page.waitForFunction(() => document.querySelector('.message-meta')?.textContent === '生成完成');
         await page.evaluate(() => { document.querySelector('#runtime-badge').textContent = '隔离测试界面'; });
-        await page.screenshot({ path: path.join(root, 'docs/assets/coldcoffee-mobile-chat.png') });
+        await page.screenshot({ path: path.join(output, 'coldcoffee-mobile-chat.png') });
         await page.locator('[data-page="community"]').click();
         await page.evaluate(() => { document.querySelector('#runtime-badge').textContent = '隔离测试界面'; });
-        await page.screenshot({ path: path.join(root, 'docs/assets/coldcoffee-mobile-community.png') });
+        await page.screenshot({ path: path.join(output, 'coldcoffee-mobile-community.png') });
         await page.locator('[data-page="work"]').click();
         await page.locator('#work-mode-grid button').first().click();
         await page.locator('#work-target').fill('TARGET sample.exe · SHA256 fixture');
@@ -398,8 +440,18 @@ try {
         await page.evaluate(() => window.scrollTo(0, 0));
         await page.waitForTimeout(80);
         await page.evaluate(() => { document.querySelector('#runtime-badge').textContent = '隔离测试界面'; });
-        await page.screenshot({ path: path.join(root, 'docs/assets/coldcoffee-mobile-work.png') });
+        await page.screenshot({ path: path.join(output, 'coldcoffee-mobile-work.png') });
       } finally { await context.close(); }
+      const featured = seeded();
+      featured.state.model = 'legacy-chat';
+      featured.catalog = [{ id: 'relay/gpt-6.2-astra' }, { id: 'relay/gpt-6.2-sol' }, { id: 'legacy-chat' }];
+      const { page: modelPage, context: modelContext } = await pageFor(featured);
+      try {
+        await modelPage.locator('[data-page="chat"]').click();
+        await modelPage.locator('#model-open').click();
+        await modelPage.waitForFunction(() => document.querySelector('#model-status')?.textContent.includes('读取成功'));
+        await modelPage.screenshot({ path: path.join(output, 'coldcoffee-mobile-models.png') });
+      } finally { await modelContext.close(); }
     });
   }
 } catch (error) {

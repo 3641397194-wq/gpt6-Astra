@@ -101,7 +101,7 @@ final class AppModel: ObservableObject {
     @Published var provider: Provider
     @Published var apiKey = ""
     @Published var models: [String] = []
-    @Published var selectedModel = "gpt-6-Astra"
+    @Published var selectedModel = ""
     @Published var messages: [ChatMessage] = []
     @Published var isBusy = false
     @Published var status = "等待接入"
@@ -141,6 +141,8 @@ final class AppModel: ObservableObject {
         do {
             let url = try EndpointNormalizer.normalize(baseURL)
             provider = Provider(name: name.isEmpty ? "我的兼容中转" : name, baseURL: url.absoluteString, hasKey: !apiKey.isEmpty)
+            models = []
+            selectedModel = ""
             status = "已切换到 \(provider.name)"
             saveSettings()
         } catch {
@@ -155,17 +157,35 @@ final class AppModel: ObservableObject {
         }
         status = "正在读取模型"
         errorMessage = nil
+        let requestedProvider = provider
+        let requestedKey = apiKey
         Task {
             do {
-                let result = try await client.models(for: provider, key: apiKey)
+                let result = try await client.models(for: requestedProvider, key: requestedKey)
+                guard provider == requestedProvider else { return }
                 models = result
-                if let first = result.first, !result.contains(selectedModel) { selectedModel = first }
+                if selectedModel.isEmpty, let first = result.first {
+                    selectedModel = first
+                    saveSettings()
+                }
                 status = result.isEmpty ? "接口已连接，服务商未返回模型列表" : "已读取 \(result.count) 个模型"
             } catch {
+                guard provider == requestedProvider else { return }
+                models = []
                 status = "读取模型失败"
                 errorMessage = error.localizedDescription
             }
         }
+    }
+
+    func selectModel(_ id: String, manuallyEntered: Bool = false) {
+        let clean = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !clean.isEmpty, manuallyEntered || models.contains(clean) else {
+            errorMessage = "请从服务商目录选择模型，或手动填写实际模型 ID"
+            return
+        }
+        selectedModel = clean
+        saveSettings()
     }
 
     func send(_ text: String) {
@@ -174,6 +194,10 @@ final class AppModel: ObservableObject {
         guard !apiKey.isEmpty else {
             errorMessage = ColdCoffeeError.missingKey.localizedDescription
             tab = .home
+            return
+        }
+        guard !selectedModel.isEmpty else {
+            errorMessage = "请先读取模型目录或手动填写模型 ID"
             return
         }
         let attachment = pickedImage
@@ -199,7 +223,8 @@ final class AppModel: ObservableObject {
                     assistant.content += token
                     messages[assistantIndex] = assistant
                 }
-                if assistant.content.isEmpty { assistant.content = "服务商已结束连接，没有返回文字。" }
+                guard !Task.isCancelled else { return }
+                if assistant.content.isEmpty { throw ColdCoffeeError.provider("服务商已结束连接，没有返回文字；请检查模型和协议") }
                 messages[assistantIndex] = assistant
                 isBusy = false
                 status = "已完成"
@@ -236,6 +261,10 @@ final class AppModel: ObservableObject {
             tab = .home
             return
         }
+        guard !selectedModel.isEmpty else {
+            errorMessage = "请先读取模型目录或手动填写模型 ID"
+            return
+        }
         workTask?.cancel()
         workOutput = ""
         workBusy = true
@@ -266,7 +295,8 @@ final class AppModel: ObservableObject {
                     guard !Task.isCancelled else { break }
                     workOutput += token
                 }
-                if workOutput.isEmpty { workOutput = "服务商已结束连接，没有返回文字。" }
+                guard !Task.isCancelled else { return }
+                if workOutput.isEmpty { throw ColdCoffeeError.provider("服务商已结束连接，没有返回文字；请检查模型和协议") }
                 workBusy = false
                 status = "\(workMode.title)已完成"
                 saveWorkOutput()

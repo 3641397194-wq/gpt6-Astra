@@ -20,9 +20,9 @@ test('original heroine assets include production PNG, ICO and WebP variants', ()
     assert.equal(bytes.subarray(8, 12).toString(), 'WEBP');
   }
   const provenance = JSON.parse(fs.readFileSync(path.join(assets, 'provenance.json'), 'utf8'));
-  assert.equal(provenance.model, 'gpt-image-2.6');
+  assert.equal(provenance.model, 'OpenAI built-in image generation');
   assert.match(provenance.artwork, /heroine/);
-  assert.equal(Object.keys(provenance.sourceSha256).length, 2);
+  assert.equal(Object.keys(provenance.sourceSha256).length, 3);
   for (const sha of Object.values(provenance.sourceSha256)) assert.match(sha, /^[a-f0-9]{64}$/);
 });
 

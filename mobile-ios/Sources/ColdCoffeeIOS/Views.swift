@@ -91,25 +91,60 @@ struct ChatView: View {
     @EnvironmentObject private var model: AppModel
     @State private var draft = ""
     @State private var photosItem: PhotosPickerItem?
+    @State private var showingManualModel = false
+    @State private var manualModelId = ""
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
                 HStack(spacing: 12) {
+                    Image("BrandPortrait")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 30, height: 30)
+                        .clipShape(RoundedRectangle(cornerRadius: 9))
+                        .accessibilityHidden(true)
                     Text("冷咖啡 · 对话")
                         .font(.title2.bold())
                     Spacer()
                     Menu {
-                        Picker("模型", selection: $model.selectedModel) {
-                            ForEach(model.models.isEmpty ? [model.selectedModel] : model.models, id: \.self) { Text($0).tag($0) }
+                        ForEach(ModelCatalog.featured, id: \.self) { family in
+                            let ids = model.models.filter { ModelCatalog.family(for: $0) == family }
+                            if ids.isEmpty {
+                                Button("\(family) · \(model.models.isEmpty ? "等待服务商目录" : "服务商未列出")") {}
+                                    .disabled(true)
+                            } else {
+                                ForEach(ids, id: \.self) { id in
+                                    Button("\(family) · \(id)") { model.selectModel(id) }
+                                }
+                            }
+                        }
+                        Divider()
+                        if !model.selectedModel.isEmpty && !model.models.contains(model.selectedModel) {
+                            Button("当前使用 · \(model.selectedModel)") {}
+                                .disabled(true)
+                        }
+                        ForEach(model.models.filter { ModelCatalog.family(for: $0) == nil }, id: \.self) { id in
+                            Button(id) { model.selectModel(id) }
+                        }
+                        Button("手动填写模型 ID") {
+                            manualModelId = model.selectedModel
+                            showingManualModel = true
                         }
                         Button("重新读取模型") { model.loadModels() }
                         Button("清空会话", role: .destructive) { model.clearHistory() }
                     } label: {
-                        Label(model.selectedModel, systemImage: "slider.horizontal.3")
+                        Label(model.selectedModel.isEmpty ? "选择模型" : model.selectedModel, systemImage: "slider.horizontal.3")
                             .lineLimit(1)
                     }
                     .font(.subheadline.weight(.semibold))
+                    .alert("手动填写模型 ID", isPresented: $showingManualModel) {
+                        TextField("服务商实际支持的模型 ID", text: $manualModelId)
+                        Button("使用此模型") { model.selectModel(manualModelId, manuallyEntered: true) }
+                        Button("取消", role: .cancel) {}
+                    } message: {
+                        Text("请求将使用填写的原始 ID；目录中的 GPT-6.2 选项只使用服务商返回的 ID。")
+                    }
                 }
                 .padding(.horizontal, 20)
                 .padding(.vertical, 14)
@@ -451,12 +486,12 @@ private struct Header: View {
                 Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
             }
             Spacer()
-            Text("冷")
-                .font(.title2.bold())
-                .foregroundStyle(.white)
+            Image("BrandPortrait")
+                .resizable()
+                .scaledToFill()
                 .frame(width: 48, height: 48)
-                .background(ColdCoffeePalette.crimson)
                 .clipShape(Circle())
+                .accessibilityHidden(true)
         }
     }
 }
@@ -525,9 +560,19 @@ private struct MessageBubble: View {
         HStack {
             if message.role == "assistant" { Spacer(minLength: 45) }
             VStack(alignment: .leading, spacing: 7) {
-                Text(message.role == "assistant" ? "冷咖啡 · 助手" : "你")
-                    .font(.caption.bold())
-                    .foregroundStyle(message.role == "assistant" ? .white.opacity(0.75) : ColdCoffeePalette.crimson)
+                HStack(spacing: 6) {
+                    if message.role == "assistant" {
+                        Image("BrandPortrait")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 20, height: 20)
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                            .accessibilityHidden(true)
+                    }
+                    Text(message.role == "assistant" ? "冷咖啡 · 助手" : "你")
+                        .font(.caption.bold())
+                        .foregroundStyle(message.role == "assistant" ? .white.opacity(0.75) : ColdCoffeePalette.crimson)
+                }
                 Text(message.content.isEmpty ? "…" : message.content)
                     .font(.body)
                     .foregroundStyle(message.role == "assistant" ? .white : ColdCoffeePalette.ink)
