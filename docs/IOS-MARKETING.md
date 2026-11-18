@@ -37,7 +37,7 @@ xcodebuild \
 ## 隐私与安全检查
 
 - API Key 只由用户在设备上填写，保存位置为 iOS Keychain。
-- 公开仓库、CI 日志和合成截图不包含顾客 Key、签名私钥、设备标识、真实 IP、私人文件或本机绝对路径。
+- 公开源码和宣传截图经过凭据与个人资料检查；截图展示未填写 Key 的初始状态。CI 在 runner 临时目录中构建和截图，构建日志会包含模拟器标识与 runner 路径。
 - 冷咖啡 API 地址是 `https://coldcoffeeai.com/v1`；用户也可以添加自己的兼容服务商。
 - 发布前应在干净的 macOS 检查 `Info.plist`、构建设置、Release 日志、归档产物和上传包，确认没有测试凭据。
 - 社区页面展示的是公开群号和公开 Telegram 链接；微信入口通过 QQ 群联系管理获取，不在仓库放未经确认的二维码。
@@ -71,4 +71,6 @@ Telegram：
 
 ## 截图说明
 
-`docs/assets/coldcoffee-ios-home.png`、`coldcoffee-ios-chat.png` 和 `coldcoffee-ios-community.png` 是 390×844 的原创隔离测试界面图，使用合成数据，仅用于展示信息层级和宣传排版。它们不代表 iPhone 实机性能测量，也不包含真实账号、Key 或个人资料。
+`docs/assets/coldcoffee-ios-home.png`、`coldcoffee-ios-chat.png`、`coldcoffee-ios-work.png` 和 `coldcoffee-ios-community.png` 来自同一 iPhone Simulator 上运行的 3.3.0-preview.3 Debug 客户端，分别展示首页、对话、工作台和社区。截图由 `tools/ios_capture_screenshots.sh` 在模拟器测试通过后逐页冷启动采集，未填写 Key，也未添加真实账户或会话资料。
+
+这些图片展示真实客户端的初始界面；付费模型调用仍须用顾客自己的 Key 验证，截图不代表 iPhone 实机性能测量。

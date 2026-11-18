@@ -34,7 +34,9 @@ jobs:
           test -f VERSION
 
       - name: Run iOS source privacy audit
-        run: python3 tools/ios_privacy_audit.py
+        run: |
+          python3 tools/test_ios_packaging.py
+          python3 tools/ios_privacy_audit.py
 
       - name: Build and test on iOS Simulator
         shell: bash

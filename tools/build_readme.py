@@ -24,6 +24,11 @@ MOBILE_ASSETS = (
     "ColdCoffee-Mobile-Android-{version}.apk",
     "ColdCoffee-Mobile-Source-{version}.zip",
 )
+IOS_DEVELOPMENT_ASSETS = (
+    "ColdCoffee-iOS-Source-{version}.zip",
+    "ColdCoffee-iOS-Unsigned-{version}.zip",
+    "SHA256SUMS-iOS.txt",
+)
 CSS = '''
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:#242329;background:#eeeae7;font:16px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}
 a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-decoration:underline}a:focus-visible,summary:focus-visible{outline:3px solid #c0324a;outline-offset:5px;border-radius:3px}
@@ -67,7 +72,7 @@ def validate_downloads(root, body):
         expected.append(f"{REPOSITORY}/releases/download/v{version}/{name}")
     expected.extend(
         f"{REPOSITORY}/releases/download/v{version}/{name.format(version=version)}"
-        for name in MOBILE_ASSETS
+        for name in (*MOBILE_ASSETS, *IOS_DEVELOPMENT_ASSETS)
     )
 
     parser = AnchorLinks()
@@ -77,7 +82,7 @@ def validate_downloads(root, body):
         missing = sorted((Counter(expected) - Counter(actual)).elements())
         unexpected = sorted((Counter(actual) - Counter(expected)).elements())
         raise ValueError(
-            "README installer links do not match VERSION and artifactName"
+            "README release asset links do not match VERSION and artifactName"
             f"; missing={missing}; unexpected={unexpected}"
         )
     return version

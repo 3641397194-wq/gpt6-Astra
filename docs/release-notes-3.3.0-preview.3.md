@@ -2,19 +2,21 @@
 
 本轮将 GPT-6.2 Astra 与 GPT-6.2 Sol 放到冷咖啡桌面和手机端的模型选择焦点：名称更容易找到，接入和聊天路径更清晰。两者是**界面展示名称**；实际 API 请求只使用当前服务商 `GET /v1/models` 返回的完整模型 `id`，不会由客户端猜测或硬编码。列表显示、账号调用权限和余额是不同的状态，最终以对应生成请求及服务商记录为准。
 
-[本版发布页](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.3) · [最新版下载页](https://github.com/3641397194-wq/gpt6-Astra/releases/latest) · [接入说明](RELAY-API.md)
+[本版发布页](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.3) · [最新版下载页](https://github.com/3641397194-wq/gpt6-Astra/releases/latest) · [接入说明](https://github.com/3641397194-wq/gpt6-Astra/blob/v3.3.0-preview.3/docs/RELAY-API.md)
 
 ## 本轮重点
 
 - **桌面：**中转目录优先呈现 Astra / Sol；连接、模型选择和实际配置沿用原有读取、预览与确认流程，已有路由可视化、备份恢复和其他模型席位保留。
-- **Android：**在现有服务商接入、模型选择、流式聊天与会话管理上突出双模型名称；实际可选项受当前 Key 的模型列表约束。[安装说明](ANDROID.md)
-- **iPhone：**SwiftUI 客户端沿用同一模型口径与 Keychain 存储；当前提供源码与构建准备，TestFlight / App Store 链接须待签名、上传及审核完成后再公布。[iOS 说明](IOS.md)
+- **Android：**在现有服务商接入、模型选择、流式聊天与会话管理上突出双模型名称；实际可选项受当前 Key 的模型列表约束。[安装说明](https://github.com/3641397194-wq/gpt6-Astra/blob/v3.3.0-preview.3/docs/ANDROID.md)
+- **iPhone：**SwiftUI 客户端沿用同一模型口径与 Keychain 存储；当前提供源码与开发构建，TestFlight / App Store 链接须待签名、上传及审核完成后再公布。[iOS 说明](https://github.com/3641397194-wq/gpt6-Astra/blob/v3.3.0-preview.3/docs/IOS.md)
 - **品牌页：**原创黑白绯红封面与品牌图标，仓库首页及网页预览统一展示。原有 QQ、Telegram、付费中转与独立定制服务入口保留。
 - **接入稳定性：**iOS 切换 Key 后会忽略旧模型目录请求的迟到结果；桌面重启缩放检查会等待实际窗口就绪，再验证缩放保存与恢复。
 
 ## 下载与发布核对
 
-本页对应 `v3.3.0-preview.3` 预览版本。请从发布页 Assets 下载并核对 SHA256SUMS：Windows x64 EXE、macOS arm64/x64 DMG 与 ZIP、Linux x86_64 AppImage / amd64 DEB、Android APK 及对应移动源码 ZIP。iOS 构建产物见同版本 Actions；App Store 上架仍需 Apple 签名与审核。
+本页对应 `v3.3.0-preview.3` 预览版本。请从发布页 Assets 下载并核对 SHA256SUMS：Windows x64 EXE、macOS arm64/x64 DMG 与 ZIP、Linux x86_64 AppImage / amd64 DEB、Android APK 及对应移动源码 ZIP。
+
+iOS 已通过 macOS CI 的五项模拟器测试与无签名设备构建，并采集四页真实界面截图。本版另附 `ColdCoffee-iOS-Source-3.3.0-preview.3.zip`、`ColdCoffee-iOS-Unsigned-3.3.0-preview.3.zip` 和独立的 `SHA256SUMS-iOS.txt`。无签名 .app 是供开发者签名使用的构建附件，并非可直接安装的 IPA；TestFlight / App Store 上架仍需 Apple 签名与审核。
 
 ## 接入与隐私
 

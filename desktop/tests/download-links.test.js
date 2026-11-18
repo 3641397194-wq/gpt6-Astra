@@ -24,7 +24,12 @@ const mobileAssets = [
   `ColdCoffee-Mobile-Android-${version}.apk`,
   `ColdCoffee-Mobile-Source-${version}.zip`,
 ];
-const expected = [...installers.map(([, , , name]) => name), ...mobileAssets]
+const iosDevelopmentAssets = [
+  `ColdCoffee-iOS-Source-${version}.zip`,
+  `ColdCoffee-iOS-Unsigned-${version}.zip`,
+  'SHA256SUMS-iOS.txt',
+];
+const expected = [...installers.map(([, , , name]) => name), ...mobileAssets, ...iosDevelopmentAssets]
   .map((name) => `${repository}/releases/download/v${version}/${name}`).sort();
 const python = (process.platform === 'win32' ? ['python', 'py', 'python3'] : ['python3', 'python'])
   .find((command) => spawnSync(command, ['--version'], { windowsHide: true }).status === 0);
@@ -59,8 +64,14 @@ test('the mobile package and Android version agree with the unified release', ()
   assert.equal(mobileAssets.length, 2, 'APK and corresponding GPL source are published together');
 });
 
+test('iOS development links include source, unsigned app, and separate checksums', () => {
+  assert.equal(iosDevelopmentAssets.length, 3);
+  assert.ok(iosDevelopmentAssets[0].includes(version));
+  assert.ok(iosDevelopmentAssets[1].includes(version));
+});
+
 for (const relative of ['README.md', 'docs/index.html', 'docs/readme-preview.html']) {
-  test(`${relative} links exactly the seven desktop installers, Android APK and corresponding source`, () => {
+  test(`${relative} links exactly the seven desktop, two Android, and three iOS development assets`, () => {
     assert.deepEqual(downloadLinks(read(relative)), expected);
   });
 }
@@ -141,7 +152,14 @@ test('isolated preview generation preserves the complete canonical README and is
   assert.deepEqual(fs.readFileSync(readmePath), original, 'the generator edited README.md');
 });
 
-for (const kind of ['version mismatch', 'stale installer', 'duplicate installer', 'missing mobile APK', 'missing mobile source']) {
+const missingAsset = {
+  'missing mobile APK': mobileAssets[0],
+  'missing mobile source': mobileAssets[1],
+  'missing iOS source': iosDevelopmentAssets[0],
+  'missing iOS unsigned app': iosDevelopmentAssets[1],
+  'missing iOS checksums': iosDevelopmentAssets[2],
+};
+for (const kind of ['version mismatch', 'stale installer', 'duplicate installer', ...Object.keys(missingAsset)]) {
   test(`generation validates ${kind} before touching existing previews`, (t) => {
     const dir = fixture(t);
     const readmePath = path.join(dir, 'README.md');
@@ -151,8 +169,8 @@ for (const kind of ['version mismatch', 'stale installer', 'duplicate installer'
         .replace(expected[0], expected[0].replace(`/v${version}/`, '/v0.0.0/')));
     }
     if (kind === 'duplicate installer') fs.appendFileSync(readmePath, `<a href="${expected[0]}">Duplicate</a>`);
-    if (kind === 'missing mobile APK' || kind === 'missing mobile source') {
-      const name = mobileAssets[kind === 'missing mobile APK' ? 0 : 1];
+    if (missingAsset[kind]) {
+      const name = missingAsset[kind];
       const url = `${repository}/releases/download/v${version}/${name}`;
       fs.writeFileSync(readmePath, fs.readFileSync(readmePath, 'utf8').replace(url, '#removed-by-fixture'));
     }
@@ -160,7 +178,7 @@ for (const kind of ['version mismatch', 'stale installer', 'duplicate installer'
     for (const name of ['index.html', 'readme-preview.html']) fs.writeFileSync(path.join(dir, 'docs', name), 'UNCHANGED');
     const result = generate(dir);
     assert.notEqual(result.status, 0);
-    assert.match(result.stderr, kind === 'version mismatch' ? /version disagree/ : /installer links do not match/);
+    assert.match(result.stderr, kind === 'version mismatch' ? /version disagree/ : /release asset links do not match/);
     for (const name of ['index.html', 'readme-preview.html']) {
       assert.equal(fs.readFileSync(path.join(dir, 'docs', name), 'utf8'), 'UNCHANGED');
     }

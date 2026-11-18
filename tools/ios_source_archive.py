@@ -5,12 +5,12 @@ from __future__ import annotations
 import hashlib
 import json
 import pathlib
-import sys
+import subprocess
 import zipfile
 
 
-def main() -> int:
-    root = pathlib.Path(__file__).resolve().parents[1]
+def main(root: pathlib.Path | None = None) -> int:
+    root = (root or pathlib.Path(__file__).resolve().parents[1]).resolve()
     version = (root / "VERSION").read_text(encoding="utf-8").strip()
     source = root / "mobile-ios"
     if not source.is_dir():
@@ -23,11 +23,13 @@ def main() -> int:
         "build",
         "DerivedData",
         "dist",
+        "work",
         "xcuserdata",
         "Pods",
         "Carthage",
     }
     forbidden_suffixes = {
+        ".p8",
         ".p12",
         ".pfx",
         ".pem",
@@ -38,15 +40,25 @@ def main() -> int:
         ".log",
         ".dmp",
     }
+    # A release source ZIP must contain only repository-tracked inputs, not
+    # local notes, downloaded artifacts, audit reports, or other loose files.
+    result = subprocess.run(
+        ["git", "-C", str(root), "ls-files", "-z", "--", "mobile-ios"],
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode:
+        raise SystemExit(f"git ls-files failed: {result.stderr.decode('utf-8', 'replace').strip()}")
     files: list[tuple[pathlib.Path, pathlib.PurePosixPath]] = []
-    for path in sorted(source.rglob("*")):
-        if not path.is_file():
-            continue
+    for name in sorted(item for item in result.stdout.decode("utf-8").split("\0") if item):
+        path = root / name
         relative = path.relative_to(source)
         if any(part in excluded_dirs for part in relative.parts):
             continue
         if path.is_symlink():
             raise SystemExit(f"symlink refused: {relative}")
+        if not path.is_file():
+            raise SystemExit(f"tracked source file is missing: {relative}")
         if path.suffix.lower() in forbidden_suffixes:
             raise SystemExit(f"private/generated file refused: {relative}")
         if path.name.startswith(".env") or path.name in {

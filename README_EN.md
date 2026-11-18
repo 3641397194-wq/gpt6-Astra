@@ -40,17 +40,19 @@ Mobile reuses published Chatbox Community Edition compatibility modules with an 
 The iPhone client follows the same connection flow as Android: connect to the paid ColdCoffee API relay or add another OpenAI-compatible provider, enter your own key, load models, and start a streaming conversation. The SwiftUI client includes Keychain storage, model loading, stop/retry controls, session history, a mobile research workbench, and a community page.
 
 <table>
-<tr><td width="33%"><img src="docs/assets/coldcoffee-ios-home.png" width="270" alt="ColdCoffee iOS home and provider connection" /></td><td width="33%"><img src="docs/assets/coldcoffee-ios-chat.png" width="270" alt="ColdCoffee iOS chat and model selection" /></td><td width="33%"><img src="docs/assets/coldcoffee-ios-community.png" width="270" alt="ColdCoffee iOS community and paid services" /></td></tr>
+<tr><td width="33%"><img src="docs/assets/coldcoffee-ios-home.png" width="270" alt="ColdCoffee iOS home and provider connection" /></td><td width="33%"><img src="docs/assets/coldcoffee-ios-chat.png" width="270" alt="ColdCoffee iOS initial chat screen with empty-key model selection and input controls" /></td><td width="33%"><img src="docs/assets/coldcoffee-ios-community.png" width="270" alt="ColdCoffee iOS community and paid services" /></td></tr>
 <tr><td align="center">Connect</td><td align="center">Chat</td><td align="center">Community</td></tr>
 </table>
 
-These 390×844 images are original isolated UI mockups with synthetic data. They are layout previews, not iPhone performance measurements, and contain no real account or API key.
+These four screenshots were captured from the same iPhone Simulator running the 3.3.0-preview.3 Debug client in its empty-key initial state. They contain no real account or conversation data and do not verify paid-model access or physical-iPhone performance.
 
 The iOS client also includes a **mobile workbench**, not only chat: REA reverse analysis, red-team testing, API assurance, game-client research, sample forensics and evidence reports. Submit a target, host, interface, log, sample description or image, then stream a structured result, stop it, copy it, save it locally, or share it from the phone. Android exposes the same six workbench lanes and accepts text logs/configuration snippets.
 
 ![ColdCoffee iOS mobile workbench](docs/assets/coldcoffee-ios-work.png)
 
 The iOS source lives in [`mobile-ios/`](mobile-ios/) and is released under GPL-3.0-only. You can open `mobile-ios/ColdCoffeeIOS.xcodeproj` on macOS and run an unsigned simulator build. TestFlight and App Store distribution still require the publisher's Apple Developer Team, signing certificates, provisioning profiles and App Store Connect permissions. No real App Store link is claimed until a signed build has been uploaded and approved. See the [iOS release and marketing guide](docs/IOS-MARKETING.md).
+
+The preview passed all five simulator tests and the unsigned device build in macOS CI. Download the [corresponding iOS source](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-iOS-Source-3.3.0-preview.3.zip), [unsigned development app](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-iOS-Unsigned-3.3.0-preview.3.zip), and [iOS checksums](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/SHA256SUMS-iOS.txt). The app archive requires developer signing; it is not a directly installable IPA.
 
 ## ColdCoffee services
 

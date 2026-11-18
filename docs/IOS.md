@@ -32,6 +32,16 @@ xcodebuild -project mobile-ios/ColdCoffeeIOS.xcodeproj \
 
 独立源码包解压后的目录名为 `coldcoffee-ios`。源码包不包含 Apple 证书、Provisioning Profile、App Store Connect 私钥、顾客 Key、本机路径或构建缓存。
 
+## 本版开发附件
+
+`3.3.0-preview.3` 已通过 macOS CI 的五项模拟器测试、四页界面截图与无签名设备构建：
+
+- [对应源码 ZIP](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-iOS-Source-3.3.0-preview.3.zip)：含 Xcode 工程、源码、素材、许可与第三方声明；仅收录 Git 跟踪的文件，排除临时工作、签名和构建目录。
+- [无签名设备 .app ZIP](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-iOS-Unsigned-3.3.0-preview.3.zip)：macOS CI 的 Release 开发构建，供开发者签名使用，并非可直接安装的 IPA。
+- [iOS SHA-256 清单](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/SHA256SUMS-iOS.txt)：用于校验上述两个附件。
+
+未配置 Apple 签名资料时，可先在 Xcode 中运行 iPhone Simulator；TestFlight 与 App Store 尚未上架。
+
 ## TestFlight / App Store 发布
 
 提交 App Store 需要 Apple Developer Program 团队、Bundle ID、Distribution 证书、App Store Connect API Key 和相应权限。仓库工作流默认只执行无签名构建和模拟器测试；只有手动触发并且签名资料已经配置到 GitHub Actions Secrets 时才会导出 IPA 和上传 TestFlight。

@@ -18,11 +18,11 @@ RULES = [
     ("credential-url", re.compile(rb"https?://[^/\s:@]+:[^/\s@]+@")),
 ]
 EXCLUDED_SUFFIXES = {".png", ".jpg", ".jpeg", ".heic", ".gif", ".ico", ".car", ".app"}
-EXCLUDED_DIRS = {".build", "build", "DerivedData", "dist", "xcuserdata", ".git", "Pods", "Carthage"}
+EXCLUDED_DIRS = {".build", "build", "DerivedData", "dist", "work", "xcuserdata", ".git", "Pods", "Carthage"}
 
 
-def main() -> int:
-    root = pathlib.Path(__file__).resolve().parents[1]
+def main(root: pathlib.Path | None = None) -> int:
+    root = (root or pathlib.Path(__file__).resolve().parents[1]).resolve()
     source = root / "mobile-ios"
     findings: list[dict[str, str]] = []
     checked: list[dict[str, str]] = []
@@ -33,7 +33,7 @@ def main() -> int:
             if not path.is_file() or any(part in EXCLUDED_DIRS for part in path.relative_to(source).parts):
                 continue
             relative = path.relative_to(root).as_posix()
-            if path.suffix.lower() in {".p12", ".pfx", ".pem", ".key", ".mobileprovision", ".provisionprofile"}:
+            if path.suffix.lower() in {".p8", ".p12", ".pfx", ".pem", ".key", ".mobileprovision", ".provisionprofile"}:
                 findings.append({"file": relative, "rule": "private-file"})
                 continue
             data = path.read_bytes()

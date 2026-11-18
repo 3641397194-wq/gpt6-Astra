@@ -85,19 +85,19 @@ a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-deco
 <h2 id="ios手机端">iOS 手机端 · iPhone 上的冷咖啡</h2>
 <p><strong>iPhone 端与 Android 端保持同一套接入逻辑。</strong>SwiftUI 原生界面支持冷咖啡付费 API 中转，也支持用户自己添加的 OpenAI 兼容服务；填写自己的 Key 后读取模型、流式聊天、移动研究工作台、停止/重试、会话记录与社群入口都在手机上完成。</p>
 <table>
-<tr><td width="33%" align="center"><a href="/docs/assets/coldcoffee-ios-home.png"><img src="/docs/assets/coldcoffee-ios-home.png" width="270" alt="冷咖啡 iOS 首页，展示冷咖啡付费中转、其他兼容中转和连接引导" /></a></td><td width="33%" align="center"><a href="/docs/assets/coldcoffee-ios-chat.png"><img src="/docs/assets/coldcoffee-ios-chat.png" width="270" alt="冷咖啡 iOS 对话页，展示模型选择、流式消息和发送控制" /></a></td><td width="33%" align="center"><a href="/docs/assets/coldcoffee-ios-community.png"><img src="/docs/assets/coldcoffee-ios-community.png" width="270" alt="冷咖啡 iOS 社区页，展示四个 QQ 群、Telegram 和收费服务入口" /></a></td></tr>
-<tr><td align="center"><strong>接入 · 先连中转</strong></td><td align="center"><strong>对话 · 流式输出</strong></td><td align="center"><strong>社区 · 服务咨询</strong></td></tr>
+<tr><td width="33%" align="center"><a href="/docs/assets/coldcoffee-ios-home.png"><img src="/docs/assets/coldcoffee-ios-home.png" width="270" alt="冷咖啡 iOS 首页，展示冷咖啡付费中转、其他兼容中转和连接引导" /></a></td><td width="33%" align="center"><a href="/docs/assets/coldcoffee-ios-chat.png"><img src="/docs/assets/coldcoffee-ios-chat.png" width="270" alt="冷咖啡 iOS 初始对话页，展示未填写 Key 时的模型选择入口与输入区" /></a></td><td width="33%" align="center"><a href="/docs/assets/coldcoffee-ios-community.png"><img src="/docs/assets/coldcoffee-ios-community.png" width="270" alt="冷咖啡 iOS 社区页，展示四个 QQ 群、Telegram 和收费服务入口" /></a></td></tr>
+<tr><td align="center"><strong>接入 · 先连中转</strong></td><td align="center"><strong>对话 · 填 Key 开始</strong></td><td align="center"><strong>社区 · 服务咨询</strong></td></tr>
 </table>
-<p><sub>上图是 390×844 的原创隔离测试界面图，用合成数据展示 iOS 信息层级与交互，不代表 iPhone 实机性能测量，也不包含真实 Key、账号或本机资料。</sub></p>
+<p><sub>四张图来自同一 iPhone Simulator 上运行的 3.3.0-preview.3 Debug 客户端，展示未填写 Key 的初始界面，不包含真实账户或会话资料。截图未用于验证付费模型调用或 iPhone 实机性能。</sub></p>
 <p align="center"><a href="/docs/assets/coldcoffee-ios-work.png"><img src="/docs/assets/coldcoffee-ios-work.png" width="270" alt="冷咖啡 iOS 工作台，展示 REA 逆向、红队、API 审计、游戏客户端研究和证据报告入口" /></a><br /><strong>手机工作台 · 不只聊天</strong><br /><sub>选择 REA 逆向、红队渗透、API 审计、游戏客户端研究、样本取证或证据报告；提交目标、日志和样本说明，流式查看结构化结果。</sub></p>
 <table>
 <tr><th align="left">iOS 当前状态</th><th align="left">说明</th></tr>
 <tr><td><strong>源码</strong></td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/tree/main/mobile-ios">mobile-ios/</a> 已纳入仓库，包含 SwiftUI 客户端、Keychain 存储、HTTPS API、社群页、资源和 GPL-3.0-only 许可。</td></tr>
-<tr><td><strong>构建</strong></td><td>可在 macOS + Xcode 环境执行无签名模拟器构建与单元测试；仓库 CI 提供构建和隐私检查。</td></tr>
+<tr><td><strong>构建</strong></td><td>已通过 macOS CI 的五项模拟器测试与无签名设备构建；四页真实模拟器截图见上方。开发附件随本版发布。</td></tr>
 <tr><td><strong>TestFlight / App Store</strong></td><td>发布流程已准备，但需要 Apple Developer Team、签名证书、Provisioning Profile 与 App Store Connect 权限。当前没有真实上架链接，配置完成后再提交审核。</td></tr>
 </table>
 <p><strong>从源码开始：</strong>在 macOS 打开 <code>mobile-ios/ColdCoffeeIOS.xcodeproj</code>，选择 iPhone Simulator 运行；真机或分发构建需要你自己的 Apple 签名身份。完整的构建、隐私审计、版权和上架清单见 <a href="/docs/IOS-MARKETING.md">iOS 发布与宣传说明 ↗</a>。</p>
-<p><strong>隐私与版权：</strong>API Key 只写入 iOS Keychain；公开源码、截图和 CI 不包含顾客 Key、签名私钥、设备标识、IP 或本机路径。iOS 客户端按 GPL-3.0-only 发布，冷咖啡原创 UI、品牌素材与独立收费服务按文档分开说明。</p>
+<p><strong>隐私与版权：</strong>API Key 保存在 iOS Keychain，请求发送到顾客选择的服务商。公开源码和宣传截图经过凭据与个人资料检查；CI 构建和截图使用临时目录。iOS 客户端按 GPL-3.0-only 发布，冷咖啡原创 UI、品牌素材与独立收费服务按文档分开说明。</p>
 
 <h2 id="冷咖啡服务">冷咖啡服务 · 接入、闭源与定制</h2>
 <table>
@@ -171,13 +171,14 @@ a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-deco
 <table>
 <tr><th align="left">系统</th><th align="left">版本</th><th align="left">席位</th><th align="left">安装包</th></tr>
 <tr><td><strong>Android 手机</strong></td><td><code>3.3.0-preview.3</code></td><td>安卓聊天客户端，自定义中转与模型</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Mobile-Android-3.3.0-preview.3.apk">安卓安装包 .apk ↗</a></td></tr>
-<tr><td><strong>iPhone / iOS</strong></td><td><code>源码预览</code></td><td>SwiftUI 客户端，冷咖啡或其他兼容中转</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/tree/main/mobile-ios">iOS 源码 ↗</a> · <a href="/docs/IOS-MARKETING.md">签名与上架流程 ↗</a></td></tr>
+<tr><td><strong>iPhone / iOS</strong></td><td><code>3.3.0-preview.3 开发版</code></td><td>SwiftUI 客户端，需 Xcode 或 Apple 签名</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-iOS-Source-3.3.0-preview.3.zip">iOS 源码 .zip ↗</a> · <a href="/docs/IOS-MARKETING.md">构建与上架流程 ↗</a></td></tr>
 <tr><td><strong>Windows</strong></td><td><code>3.3.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-Windows-3.3.0-preview.3-x64.exe">免安装 .exe ↗</a></td></tr>
 <tr><td><strong>macOS Apple 芯片</strong></td><td><code>3.3.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Apple 芯片 arm64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-macOS-arm64-3.3.0-preview.3.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-macOS-arm64-3.3.0-preview.3.zip">.zip ↗</a></td></tr>
 <tr><td><strong>macOS Intel</strong></td><td><code>3.3.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Intel x64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-macOS-x64-3.3.0-preview.3.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-macOS-x64-3.3.0-preview.3.zip">.zip ↗</a></td></tr>
 <tr><td><strong>Linux</strong></td><td><code>3.3.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，x86_64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-Linux-x86_64-3.3.0-preview.3.AppImage">.AppImage ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-Linux-amd64-3.3.0-preview.3.deb">.deb ↗</a></td></tr>
 </table>
 <p><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Mobile-Source-3.3.0-preview.3.zip"><strong>安卓客户端对应源码 .zip ↗</strong></a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/mobile/LICENSE">GPL-3.0 许可证</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/mobile/THIRD_PARTY_NOTICES.md">上游来源与修改说明</a>。完整仓库源码也可从本版标签获取。</p>
+<p><strong>iOS 开发附件：</strong><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-iOS-Unsigned-3.3.0-preview.3.zip">无签名 .app 开发构建 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/SHA256SUMS-iOS.txt">iOS SHA-256 校验 ↗</a>。它是供开发者签名使用的构建附件，并非可直接安装的 IPA；App Store / TestFlight 发布仍待 Apple 签名与审核。</p>
 <p>安卓下载 APK 后在手机上安装；手机若询问安装来源，按系统提示为本次下载来源授权。Windows 双击打开。macOS 第一次若被拦住，在程序图标上右键，选打开。Linux 的 AppImage 先加上可执行权限。deb 用系统的安装器。</p>
 <pre><code>cd desktop
 npm ci

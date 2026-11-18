@@ -27,6 +27,7 @@ docs/assets/workbench-v3.png
 !.env.example
 *.pem
 *.key
+*.p8
 *.p12
 *.pfx
 auth.json
