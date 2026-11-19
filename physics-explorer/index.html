@@ -7,9 +7,27 @@
     <meta name="description" content="An interactive field guide to wormholes, the speed of light, and curved spacetime.">
     <title>Event Horizon — A field guide to the impossible</title>
     <link rel="preconnect" href="https://images.unsplash.com">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+      .asset-warning { display: none; }
+      html.assets-missing .asset-warning {
+        position: fixed;
+        z-index: 20;
+        top: 12px;
+        right: 12px;
+        left: 12px;
+        display: block;
+        margin: 0;
+        padding: 14px 18px;
+        border: 1px solid #87e9e9;
+        background: #0c1521;
+        color: #e8edf7;
+        font: 14px/1.5 "Segoe UI", sans-serif;
+      }
+    </style>
+    <link rel="stylesheet" href="./styles.css" onerror="document.documentElement.classList.add('assets-missing')">
   </head>
   <body>
+    <p class="asset-warning" role="alert">The app files did not all load. Keep index.html, styles.css, and app.js together in the physics-explorer folder, then open index.html with VS Code Live Server.</p>
     <div class="app-shell">
       <aside class="sidebar">
         <a class="brand" href="#home" aria-label="Event Horizon home">
@@ -150,6 +168,6 @@
         <footer class="footer"><span>EVENT HORIZON <i>·</i> AN EXPLORATION OF PHYSICS</span><span>ILLUSTRATIONS ARE CONCEPTUAL <i>·</i> PHYSICS IS REAL</span></footer>
       </main>
     </div>
-    <script src="app.js"></script>
+    <script src="./app.js" onerror="document.documentElement.classList.add('assets-missing')"></script>
   </body>
 </html>
