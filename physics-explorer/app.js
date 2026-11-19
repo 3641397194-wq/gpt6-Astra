@@ -3,8 +3,8 @@ const topics = {
     crumb: "WORMHOLES",
     eyebrow: "GENERAL RELATIVITY · THOUGHT EXPERIMENT 01",
     title: "A shortcut<br>through <em>the stars.</em>",
-    description: "What if two distant points in the universe were connected by a hidden bridge? Step inside the geometry of a wormhole.",
-    meta: "A wormhole would connect separate regions of spacetime.",
+    description: "Imagine a tunnel connecting two faraway places. A wormhole is a mathematical idea for a shortcut through space—not something we've found.",
+    meta: "Think of a tunnel linking two distant points on a cosmic map.",
     index: "01",
     scene: "WORMHOLE / SPACETIME BRIDGE",
     endpointA: "MOUTH A",
@@ -15,8 +15,8 @@ const topics = {
     distanceFoot: "ordinary route · hypothetical shortcut",
     heading: "Bend the map. Meet somewhere else.",
     cards: [
-      ["Fold, don't cross.", "In the embedding diagram, a wormhole is a tunnel between distant points. The route through it could be shorter than the route through ordinary space."],
-      ["A bridge needs support.", "Known equations suggest a traversable throat would need unusual negative energy to stay open. No material is known to do that at the needed scale."],
+      ["Imagine folding a map.", "If two faraway dots on a map could be connected by a tunnel, the tunnel might be a shorter route. This is only an analogy: real space is not a sheet you can fold."],
+      ["The tunnel may collapse.", "Many models say a usable wormhole would need large amounts of unusual negative energy to stay open. We do not know how to make that happen."],
     ],
     factValue: "299,792",
     factUnit: "km/s",
@@ -32,10 +32,10 @@ const topics = {
     scene: "LIGHT SPEED / SPACETIME GRID",
     endpointA: "EMISSION",
     endpointB: "1 LIGHT-SECOND",
-    distanceLabel: "DISTANCE LIGHT TRAVELS",
-    distance: "299,792",
-    distanceUnit: "KM/S",
-    distanceFoot: "in one second · in a vacuum",
+    distanceLabel: "LIGHT-TRAVEL TIME",
+    distance: "1.28",
+    distanceUnit: "SEC",
+    distanceFoot: "Earth to the Moon · average",
     heading: "One speed. Every observer.",
     cards: [
       ["The constant c.", "In a vacuum, light travels at exactly 299,792,458 meters per second. It is also the speed limit for information."],
@@ -48,8 +48,8 @@ const topics = {
   curvature: {
     crumb: "SPACETIME",
     eyebrow: "GENERAL RELATIVITY · GEOMETRY OF GRAVITY 03",
-    title: "Gravity is<br>the shape of <em>time.</em>",
-    description: "Matter and energy curve spacetime. Planets, light, and even time itself follow paths through that changing geometry.",
+    title: "Gravity bends<br>space and <em>time.</em>",
+    description: "Mass and energy change the shape of space and time. Planets and light follow those curves—this is Einstein's picture of gravity.",
     meta: "Earth orbits the Sun by following curved spacetime.",
     index: "03",
     scene: "SPACETIME / MASS & CURVATURE",
@@ -61,8 +61,8 @@ const topics = {
     distanceFoot: "illustrative field strength · not to scale",
     heading: "Matter tells space how to curve.",
     cards: [
-      ["A changing geometry.", "In general relativity, mass and energy curve spacetime. Objects in free fall follow the straightest paths available in that curved geometry."],
-      ["Time flows differently.", "Clocks tick more slowly deeper in a gravitational field. This effect is measured and must be included in GPS satellite timing."],
+      ["A stretched map.", "Picture a grid that dips near a heavy object. That picture helps show curved space, though actual spacetime has three dimensions of space plus time."],
+      ["Gravity changes clocks.", "A clock closer to a massive object ticks a little more slowly than one farther away. GPS satellites account for this real, measured effect."],
     ],
     factValue: "6.67×10⁻¹¹",
     factUnit: "N·m²/kg²",
@@ -71,25 +71,50 @@ const topics = {
 };
 
 const canvas = document.getElementById("universe");
-const context = canvas.getContext("2d");
+const hasThree = typeof window.THREE === "object";
+const context = hasThree ? null : canvas.getContext("2d");
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const state = {
   mode: "wormhole",
-  yaw: -0.22,
+  yaw: -0.68,
   pitch: 0.12,
   zoom: 1,
   dragging: false,
   paused: prefersReducedMotion.matches,
   pointer: { x: 0, y: 0 },
   lastPointer: { x: 0, y: 0 },
+  destination: "moon",
 };
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const lerp = (a, b, t) => a + (b - a) * t;
+let renderer3D;
+let camera3D;
+let scene3D;
+let wormholeGroup;
+let lightSpeedGroup;
+let curvatureGroup;
+let lightBeam;
+let lightPhoton;
+let lightCurve;
+let curvatureSatellite;
+let wormholePhoton;
+let wormholeCurve;
+let earthMesh;
+let moonMesh;
+let sunMesh;
+let lastFrameTime = 0;
 
 function resizeCanvas() {
   const rect = canvas.getBoundingClientRect();
   const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+  if (renderer3D) {
+    renderer3D.setPixelRatio(pixelRatio);
+    renderer3D.setSize(rect.width, rect.height, false);
+    camera3D.aspect = rect.width / Math.max(rect.height, 1);
+    camera3D.updateProjectionMatrix();
+    return;
+  }
   canvas.width = Math.round(rect.width * pixelRatio);
   canvas.height = Math.round(rect.height * pixelRatio);
   context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
@@ -319,6 +344,364 @@ function render(time) {
   requestAnimationFrame(render);
 }
 
+function addStarfield() {
+  const positions = new Float32Array(1800 * 3);
+  for (let i = 0; i < positions.length; i += 3) {
+    const theta = Math.random() * Math.PI * 2;
+    const z = Math.random() * 2 - 1;
+    const radius = 24 + Math.random() * 48;
+    const ring = Math.sqrt(1 - z * z);
+    positions[i] = radius * ring * Math.cos(theta);
+    positions[i + 1] = radius * z;
+    positions[i + 2] = radius * ring * Math.sin(theta);
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  const stars = new THREE.Points(geometry, new THREE.PointsMaterial({
+    color: 0xc5d7f0,
+    size: 0.075,
+    transparent: true,
+    opacity: 0.8,
+    sizeAttenuation: true,
+  }));
+  scene3D.add(stars);
+}
+
+function createWormhole() {
+  wormholeGroup = new THREE.Group();
+  scene3D.add(wormholeGroup);
+
+  const ringCount = 72;
+  const sideCount = 72;
+  const positions = [];
+  const colors = [];
+  const indices = [];
+  for (let ring = 0; ring <= ringCount; ring += 1) {
+    const t = ring / ringCount;
+    const z = (t - 0.5) * 6.4;
+    const flare = Math.pow(Math.abs(t * 2 - 1), 1.55);
+    const radius = 0.28 + flare * 1.36;
+    const color = new THREE.Color(0x66e9e9).lerp(new THREE.Color(0x8e83ff), t);
+    for (let side = 0; side <= sideCount; side += 1) {
+      const angle = side / sideCount * Math.PI * 2;
+      const ripple = Math.sin(angle * 3 + t * 9) * 0.025;
+      const r = radius + ripple;
+      positions.push(r * Math.cos(angle), r * Math.sin(angle), z);
+      const glow = 0.5 + (1 - flare) * 0.5;
+      colors.push(color.r * glow, color.g * glow, color.b * glow);
+      if (ring < ringCount && side < sideCount) {
+        const a = ring * (sideCount + 1) + side;
+        const b = a + sideCount + 1;
+        indices.push(a, b, a + 1, b, b + 1, a + 1);
+      }
+    }
+  }
+  const throatGeometry = new THREE.BufferGeometry();
+  throatGeometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  throatGeometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  throatGeometry.setIndex(indices);
+  throatGeometry.computeVertexNormals();
+  const throat = new THREE.Mesh(throatGeometry, new THREE.MeshStandardMaterial({
+    vertexColors: true,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.48,
+    metalness: 0.32,
+    roughness: 0.25,
+    emissive: 0x182b67,
+    emissiveIntensity: 0.8,
+  }));
+  wormholeGroup.add(throat);
+
+  [-3.15, 3.15].forEach((z, index) => {
+    const rim = new THREE.Mesh(
+      new THREE.TorusGeometry(1.63, 0.055, 14, 120),
+      new THREE.MeshStandardMaterial({
+        color: index ? 0x83a2ff : 0x82f4ed,
+        emissive: index ? 0x423caa : 0x157c83,
+        emissiveIntensity: 1.1,
+        metalness: 0.3,
+        roughness: 0.2,
+      }),
+    );
+    rim.position.z = z;
+    wormholeGroup.add(rim);
+
+    const innerRim = new THREE.Mesh(
+      new THREE.TorusGeometry(1.43, 0.018, 8, 120),
+      new THREE.MeshBasicMaterial({ color: index ? 0xa2b4ff : 0xc0ffff, transparent: true, opacity: 0.72 }),
+    );
+    innerRim.position.z = z;
+    wormholeGroup.add(innerRim);
+  });
+
+  for (let index = 0; index < 9; index += 1) {
+    const t = index / 8;
+    const z = lerp(-2.8, 2.8, t);
+    const radius = 0.28 + Math.pow(Math.abs(t * 2 - 1), 1.55) * 1.36;
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(radius, 0.009, 5, 96),
+      new THREE.MeshBasicMaterial({ color: index % 2 ? 0x8e83ff : 0x69e4e6, transparent: true, opacity: 0.36 }),
+    );
+    ring.position.z = z;
+    wormholeGroup.add(ring);
+  }
+
+  const horizon = new THREE.Mesh(
+    new THREE.SphereGeometry(0.32, 36, 24),
+    new THREE.MeshBasicMaterial({ color: 0x03050d }),
+  );
+  wormholeGroup.add(horizon);
+
+  const orbit = new THREE.Mesh(
+    new THREE.TorusGeometry(0.72, 0.045, 10, 100),
+    new THREE.MeshBasicMaterial({ color: 0xffc98d, transparent: true, opacity: 0.8 }),
+  );
+  orbit.rotation.x = 0.18;
+  orbit.rotation.y = -0.27;
+  wormholeGroup.add(orbit);
+
+  wormholeCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.2, 0.24, 3.22),
+    new THREE.Vector3(0.36, 0.14, 1.55),
+    new THREE.Vector3(-0.12, -0.06, 0),
+    new THREE.Vector3(-0.38, 0.18, -1.65),
+    new THREE.Vector3(0.16, -0.14, -3.22),
+  ]);
+  const lightPath = new THREE.Mesh(
+    new THREE.TubeGeometry(wormholeCurve, 96, 0.018, 7, false),
+    new THREE.MeshBasicMaterial({ color: 0xc3ffff, transparent: true, opacity: 0.76 }),
+  );
+  wormholeGroup.add(lightPath);
+  wormholePhoton = new THREE.Mesh(
+    new THREE.SphereGeometry(0.075, 16, 12),
+    new THREE.MeshBasicMaterial({ color: 0xffffff }),
+  );
+  wormholeGroup.add(wormholePhoton);
+}
+
+function makePlanet(radius, color, emissive = 0x000000) {
+  return new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 48, 32),
+    new THREE.MeshStandardMaterial({ color, emissive, roughness: 0.82, metalness: 0.03 }),
+  );
+}
+
+function createLightSpeedScene() {
+  lightSpeedGroup = new THREE.Group();
+  scene3D.add(lightSpeedGroup);
+
+  sunMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.66, 48, 32),
+    new THREE.MeshBasicMaterial({ color: 0xffc66c }),
+  );
+  sunMesh.position.set(-3.55, 0.55, 0);
+  lightSpeedGroup.add(sunMesh);
+  const sunGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(0.82, 32, 24),
+    new THREE.MeshBasicMaterial({ color: 0xff9f4b, transparent: true, opacity: 0.12, side: THREE.BackSide }),
+  );
+  sunMesh.add(sunGlow);
+
+  earthMesh = makePlanet(0.42, 0x287cad, 0x071624);
+  earthMesh.position.set(0, 0, 0);
+  lightSpeedGroup.add(earthMesh);
+  const atmosphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.46, 40, 28),
+    new THREE.MeshBasicMaterial({ color: 0x58b8ff, transparent: true, opacity: 0.16, side: THREE.BackSide }),
+  );
+  earthMesh.add(atmosphere);
+
+  moonMesh = makePlanet(0.16, 0xc8d1d9);
+  moonMesh.position.set(1.34, 0.15, 0);
+  lightSpeedGroup.add(moonMesh);
+
+  const mars = makePlanet(0.27, 0xb85f48, 0x35150f);
+  mars.position.set(2.42, -0.18, -0.15);
+  lightSpeedGroup.add(mars);
+
+  const proxima = new THREE.Mesh(
+    new THREE.SphereGeometry(0.34, 32, 24),
+    new THREE.MeshBasicMaterial({ color: 0xffaa78 }),
+  );
+  proxima.position.set(3.62, 0.06, 0);
+  lightSpeedGroup.add(proxima);
+  const proximaGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5, 24, 18),
+    new THREE.MeshBasicMaterial({ color: 0xff815f, transparent: true, opacity: 0.14, side: THREE.BackSide }),
+  );
+  proxima.add(proximaGlow);
+
+  const lineMaterial = new THREE.LineDashedMaterial({ color: 0xa7bed5, dashSize: 0.09, gapSize: 0.08, transparent: true, opacity: 0.42 });
+  const ruler = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-3.55, -1.25, 0), new THREE.Vector3(3.62, -1.25, 0)]),
+    lineMaterial,
+  );
+  ruler.computeLineDistances();
+  lightSpeedGroup.add(ruler);
+
+  updateLightBeam();
+
+  const textureLoader = new THREE.TextureLoader();
+  textureLoader.setCrossOrigin("anonymous");
+  textureLoader.load(
+    "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg",
+    (texture) => {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      earthMesh.material.map = texture;
+      earthMesh.material.color.set(0xffffff);
+      earthMesh.material.needsUpdate = true;
+    },
+  );
+  textureLoader.load(
+    "https://threejs.org/examples/textures/planets/moon_1024.jpg",
+    (texture) => {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      moonMesh.material.map = texture;
+      moonMesh.material.color.set(0xffffff);
+      moonMesh.material.needsUpdate = true;
+    },
+  );
+}
+
+function updateLightBeam() {
+  if (!lightSpeedGroup) return;
+  if (lightBeam) {
+    lightSpeedGroup.remove(lightBeam);
+    lightBeam.geometry.dispose();
+  }
+  if (lightPhoton) {
+    lightSpeedGroup.remove(lightPhoton);
+    lightPhoton.geometry.dispose();
+    lightPhoton.material.dispose();
+  }
+  const destinations = {
+    moon: new THREE.Vector3(1.34, 0.15, 0),
+    sun: new THREE.Vector3(-3.55, 0.55, 0),
+    mars: new THREE.Vector3(2.42, -0.18, -0.15),
+    proxima: new THREE.Vector3(3.62, 0.06, 0),
+  };
+  const end = destinations[state.destination] || destinations.moon;
+  lightCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 0, 0.04),
+    new THREE.Vector3(end.x * 0.34, 0.18, 0.12),
+    new THREE.Vector3(end.x * 0.7, end.y * 0.6 + 0.04, 0.05),
+    new THREE.Vector3(end.x, end.y, end.z),
+  ]);
+  lightBeam = new THREE.Mesh(
+    new THREE.TubeGeometry(lightCurve, 80, 0.015, 6, false),
+    new THREE.MeshBasicMaterial({ color: 0xffedb0, transparent: true, opacity: 0.62 }),
+  );
+  lightSpeedGroup.add(lightBeam);
+  lightPhoton = new THREE.Mesh(
+    new THREE.SphereGeometry(0.065, 16, 12),
+    new THREE.MeshBasicMaterial({ color: 0xfff2c4 }),
+  );
+  lightSpeedGroup.add(lightPhoton);
+}
+
+function createCurvatureScene() {
+  curvatureGroup = new THREE.Group();
+  scene3D.add(curvatureGroup);
+  const gridMaterial = new THREE.LineBasicMaterial({ color: 0x78cad8, transparent: true, opacity: 0.38 });
+  const extent = 5.2;
+  const steps = 48;
+  const heightAt = (x, z) => -1.35 * Math.exp(-(x * x + z * z) / 4.2);
+  for (let line = -5; line <= 5; line += 1) {
+    const horizontal = [];
+    const vertical = [];
+    for (let step = 0; step <= steps; step += 1) {
+      const value = -extent + (step / steps) * extent * 2;
+      horizontal.push(new THREE.Vector3(value, heightAt(value, line * 0.72), line * 0.72));
+      vertical.push(new THREE.Vector3(line * 0.72, heightAt(line * 0.72, value), value));
+    }
+    curvatureGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(horizontal), gridMaterial));
+    curvatureGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(vertical), gridMaterial));
+  }
+
+  const well = makePlanet(0.56, 0x171a28, 0x493023);
+  well.position.set(0, -0.9, 0);
+  curvatureGroup.add(well);
+  const wellGlow = new THREE.Mesh(
+    new THREE.TorusGeometry(0.76, 0.018, 8, 96),
+    new THREE.MeshBasicMaterial({ color: 0xffce8b, transparent: true, opacity: 0.72 }),
+  );
+  wellGlow.position.y = -0.53;
+  wellGlow.rotation.x = Math.PI / 2;
+  curvatureGroup.add(wellGlow);
+
+  const orbit = new THREE.EllipseCurve(0, 0, 2.15, 1.45, 0, Math.PI * 2, false, 0);
+  const orbitPoints = orbit.getPoints(128).map((point) => new THREE.Vector3(point.x, heightAt(point.x, point.y) + 0.1, point.y));
+  curvatureGroup.add(new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(orbitPoints),
+    new THREE.LineBasicMaterial({ color: 0xd4c0ff, transparent: true, opacity: 0.55 }),
+  ));
+  curvatureSatellite = makePlanet(0.13, 0x9feef1, 0x174d55);
+  curvatureGroup.add(curvatureSatellite);
+}
+
+function initializeThree() {
+  scene3D = new THREE.Scene();
+  renderer3D = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance" });
+  renderer3D.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer3D.setClearColor(0x000000, 0);
+  renderer3D.outputColorSpace = THREE.SRGBColorSpace;
+  camera3D = new THREE.PerspectiveCamera(42, 1, 0.1, 160);
+  camera3D.position.set(0, 1.4, 9.2);
+  scene3D.add(new THREE.AmbientLight(0x9db6e0, 1.5));
+  const keyLight = new THREE.PointLight(0x75dff3, 24, 35);
+  keyLight.position.set(-3, 4, 7);
+  scene3D.add(keyLight);
+  const rimLight = new THREE.PointLight(0x8f80ff, 18, 32);
+  rimLight.position.set(4, -2, -6);
+  scene3D.add(rimLight);
+  addStarfield();
+  createWormhole();
+  createLightSpeedScene();
+  createCurvatureScene();
+  updateThreeMode();
+}
+
+function updateThreeMode() {
+  if (!renderer3D) return;
+  wormholeGroup.visible = state.mode === "wormhole";
+  lightSpeedGroup.visible = state.mode === "lightspeed";
+  curvatureGroup.visible = state.mode === "curvature";
+}
+
+function renderThree(time) {
+  if (!renderer3D) return;
+  const elapsed = Math.min((time - lastFrameTime) / 1000, 0.05) || 0;
+  lastFrameTime = time;
+  if (!state.paused) {
+    wormholeGroup.rotation.z += elapsed * 0.055;
+    wormholeGroup.rotation.x = Math.sin(time * 0.0002) * 0.045;
+    if (earthMesh) earthMesh.rotation.y += elapsed * 0.18;
+    if (moonMesh) moonMesh.rotation.y += elapsed * 0.07;
+    if (sunMesh) sunMesh.rotation.y -= elapsed * 0.035;
+    if (curvatureSatellite) {
+      const orbitPhase = time * 0.00034;
+      const x = Math.cos(orbitPhase) * 2.15;
+      const z = Math.sin(orbitPhase) * 1.45;
+      curvatureSatellite.position.set(x, -1.35 * Math.exp(-(x * x + z * z) / 4.2) + 0.1, z);
+    }
+  }
+
+  const distance = 9.2 / state.zoom;
+  const pitch = clamp(state.pitch, -1.15, 1.15);
+  camera3D.position.set(
+    Math.sin(state.yaw) * Math.cos(pitch) * distance,
+    Math.sin(pitch) * distance,
+    Math.cos(state.yaw) * Math.cos(pitch) * distance,
+  );
+  camera3D.lookAt(0, 0, 0);
+  const progress = state.paused ? 0.5 : (time * 0.00011) % 1;
+  if (wormholePhoton && wormholeCurve) wormholePhoton.position.copy(wormholeCurve.getPointAt(progress));
+  if (lightPhoton && lightCurve) lightPhoton.position.copy(lightCurve.getPointAt(state.paused ? 0.5 : (time * 0.00018) % 1));
+  renderer3D.render(scene3D, camera3D);
+  requestAnimationFrame(renderThree);
+}
+
 function setMode(mode) {
   const content = topics[mode];
   if (!content) return;
@@ -359,6 +742,8 @@ function setMode(mode) {
     : mode === "lightspeed"
       ? "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1800&q=85"
       : "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1800&q=85";
+  updateThreeMode();
+  updateJourneyReadout();
 }
 
 document.querySelectorAll("[data-mode], [data-view]").forEach((button) => {
@@ -386,9 +771,25 @@ canvas.addEventListener("wheel", (event) => {
   state.zoom = clamp(state.zoom - event.deltaY * 0.001, 0.66, 1.55);
 }, { passive: false });
 document.getElementById("resetView").addEventListener("click", () => {
-  state.yaw = -0.22;
+  state.yaw = -0.68;
   state.pitch = 0.12;
   state.zoom = 1;
+});
+
+canvas.addEventListener("keydown", (event) => {
+  const turn = event.shiftKey ? 0.18 : 0.09;
+  if (event.key === "ArrowLeft") state.yaw -= turn;
+  else if (event.key === "ArrowRight") state.yaw += turn;
+  else if (event.key === "ArrowUp") state.pitch = clamp(state.pitch + turn, -1.15, 1.15);
+  else if (event.key === "ArrowDown") state.pitch = clamp(state.pitch - turn, -1.15, 1.15);
+  else if (event.key === "+" || event.key === "=") state.zoom = clamp(state.zoom + 0.08, 0.66, 1.55);
+  else if (event.key === "-") state.zoom = clamp(state.zoom - 0.08, 0.66, 1.55);
+  else if (event.key === "0") {
+    state.yaw = -0.68;
+    state.pitch = 0.12;
+    state.zoom = 1;
+  } else return;
+  event.preventDefault();
 });
 
 const motionButton = document.getElementById("motionToggle");
@@ -416,8 +817,110 @@ function updateDistance() {
 }
 timeSlider.addEventListener("input", updateDistance);
 
+const speedSlider = document.getElementById("speedSlider");
+function updateTimeDilation() {
+  const speedPercent = Number(speedSlider.value);
+  const fractionOfLightSpeed = speedPercent / 100;
+  const gamma = 1 / Math.sqrt(1 - fractionOfLightSpeed * fractionOfLightSpeed);
+  const output = speedPercent % 1 === 0 ? speedPercent.toFixed(0) : speedPercent.toFixed(1);
+  document.getElementById("speedOutput").textContent = `${output}% of light speed`;
+  document.getElementById("earthYears").textContent = `${gamma.toFixed(2)} years`;
+  document.getElementById("gammaValue").textContent = `Time difference: ×${gamma.toFixed(2)}`;
+}
+speedSlider.addEventListener("input", updateTimeDilation);
+
+const journeys = {
+  moon: {
+    name: "THE MOON",
+    time: "1.28",
+    unit: "SEC",
+    description: "Moonlight takes about 1.28 seconds to reach Earth. The Moon is about 384,400 km away on average.",
+    display: "1.28 seconds",
+  },
+  sun: {
+    name: "THE SUN",
+    time: "8:20",
+    unit: "MIN",
+    description: "Sunlight takes about 8 minutes and 20 seconds to reach Earth. When you look at the Sun, you see it as it was a little over 8 minutes ago.",
+    display: "8 min 20 sec",
+  },
+  mars: {
+    name: "MARS",
+    time: "3–22",
+    unit: "MIN",
+    description: "A radio message to Mars takes roughly 3 to 22 minutes one way, depending on where Earth and Mars are in their orbits.",
+    display: "3–22 minutes",
+  },
+  proxima: {
+    name: "PROXIMA CENTAURI",
+    time: "4.24",
+    unit: "YEARS",
+    description: "Proxima Centauri is our nearest neighboring star system, about 4.24 light-years away. Its light takes more than four years to get here.",
+    display: "4.24 years",
+  },
+};
+
+function updateJourneyReadout() {
+  const journey = journeys[state.destination];
+  if (!journey) return;
+  document.getElementById("journeyDescription").textContent = journey.description;
+  if (state.mode !== "lightspeed") return;
+  document.getElementById("endpointA").textContent = "EARTH";
+  document.getElementById("endpointB").textContent = journey.name;
+  document.getElementById("distanceLabel").textContent = "LIGHT-TRAVEL TIME";
+  document.getElementById("distanceValue").innerHTML = `${journey.time} <i>${journey.unit}</i>`;
+  document.getElementById("distanceFoot").textContent = `Earth to ${journey.name.toLowerCase()} · one way`;
+}
+
+document.querySelectorAll(".journey-stop").forEach((button) => {
+  button.addEventListener("click", () => {
+    state.destination = button.dataset.destination;
+    document.querySelectorAll(".journey-stop").forEach((stop) => {
+      const active = stop === button;
+      stop.classList.toggle("active", active);
+      stop.setAttribute("aria-pressed", String(active));
+    });
+    updateJourneyReadout();
+    updateLightBeam();
+  });
+});
+
+document.querySelectorAll(".quiz-option").forEach((button) => {
+  button.addEventListener("click", () => {
+    const feedback = document.getElementById("quizFeedback");
+    const correct = button.dataset.answer === "distance";
+    document.querySelectorAll(".quiz-option").forEach((option) => option.classList.remove("correct", "incorrect"));
+    button.classList.add(correct ? "correct" : "incorrect");
+    feedback.classList.toggle("is-correct", correct);
+    feedback.classList.toggle("is-incorrect", !correct);
+    feedback.textContent = correct
+      ? "Exactly. A light-year is the distance light travels in one year: about 9.46 trillion kilometers."
+      : "Not quite. A light-year measures distance. It is how far light travels in one year.";
+  });
+});
+
+document.querySelectorAll(".image-note").forEach((card) => {
+  const resetTilt = () => {
+    card.style.setProperty("--tilt-x", "0deg");
+    card.style.setProperty("--tilt-y", "0deg");
+  };
+  card.addEventListener("pointermove", (event) => {
+    const rect = card.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    card.style.setProperty("--tilt-x", `${(0.5 - y) * 9}deg`);
+    card.style.setProperty("--tilt-y", `${(x - 0.5) * 11}deg`);
+  });
+  card.addEventListener("pointerleave", resetTilt);
+  card.addEventListener("blur", resetTilt);
+});
+
 window.addEventListener("resize", resizeCanvas);
+document.getElementById("webglStatus").textContent = hasThree ? "LIVE 3D" : "2D FALLBACK";
+if (hasThree) initializeThree();
 resizeCanvas();
 updateDistance();
+updateTimeDilation();
 updateMotionButton();
-requestAnimationFrame(render);
+updateJourneyReadout();
+requestAnimationFrame(hasThree ? renderThree : render);
