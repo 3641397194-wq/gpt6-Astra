@@ -104,6 +104,7 @@ let earthMesh;
 let moonMesh;
 let sunMesh;
 let lastFrameTime = 0;
+const hoverTarget3D = typeof window.THREE === "object" ? new THREE.Vector3() : null;
 
 function resizeCanvas() {
   const rect = canvas.getBoundingClientRect();
@@ -689,6 +690,8 @@ function renderThree(time) {
 
   const distance = 9.2 / state.zoom;
   const pitch = clamp(state.pitch, -1.15, 1.15);
+  hoverTarget3D.set(state.pointer.x * 0.42, -state.pointer.y * 0.28, 0);
+  scene3D.position.lerp(hoverTarget3D, 0.09);
   camera3D.position.set(
     Math.sin(state.yaw) * Math.cos(pitch) * distance,
     Math.sin(pitch) * distance,
@@ -756,16 +759,23 @@ canvas.addEventListener("pointerdown", (event) => {
   canvas.setPointerCapture(event.pointerId);
 });
 canvas.addEventListener("pointermove", (event) => {
-  state.pointer = { x: event.clientX, y: event.clientY };
+  const rect = canvas.getBoundingClientRect();
+  state.pointer = {
+    x: (event.clientX - rect.left) / rect.width - 0.5,
+    y: (event.clientY - rect.top) / rect.height - 0.5,
+  };
   if (!state.dragging) return;
   const dx = event.clientX - state.lastPointer.x;
   const dy = event.clientY - state.lastPointer.y;
-  state.yaw += dx * 0.006;
-  state.pitch = clamp(state.pitch + dy * 0.004, -1.05, 1.05);
+  state.yaw -= dx * 0.006;
+  state.pitch = clamp(state.pitch - dy * 0.004, -1.05, 1.05);
   state.lastPointer = { x: event.clientX, y: event.clientY };
 });
 canvas.addEventListener("pointerup", () => { state.dragging = false; });
 canvas.addEventListener("pointercancel", () => { state.dragging = false; });
+canvas.addEventListener("pointerleave", () => {
+  if (!state.dragging) state.pointer = { x: 0, y: 0 };
+});
 canvas.addEventListener("wheel", (event) => {
   event.preventDefault();
   state.zoom = clamp(state.zoom - event.deltaY * 0.001, 0.66, 1.55);
@@ -817,46 +827,30 @@ function updateDistance() {
 }
 timeSlider.addEventListener("input", updateDistance);
 
-const speedSlider = document.getElementById("speedSlider");
-function updateTimeDilation() {
-  const speedPercent = Number(speedSlider.value);
-  const fractionOfLightSpeed = speedPercent / 100;
-  const gamma = 1 / Math.sqrt(1 - fractionOfLightSpeed * fractionOfLightSpeed);
-  const output = speedPercent % 1 === 0 ? speedPercent.toFixed(0) : speedPercent.toFixed(1);
-  document.getElementById("speedOutput").textContent = `${output}% of light speed`;
-  document.getElementById("earthYears").textContent = `${gamma.toFixed(2)} years`;
-  document.getElementById("gammaValue").textContent = `Time difference: ×${gamma.toFixed(2)}`;
-}
-speedSlider.addEventListener("input", updateTimeDilation);
-
 const journeys = {
   moon: {
     name: "THE MOON",
     time: "1.28",
     unit: "SEC",
     description: "Moonlight takes about 1.28 seconds to reach Earth. The Moon is about 384,400 km away on average.",
-    display: "1.28 seconds",
   },
   sun: {
     name: "THE SUN",
     time: "8:20",
     unit: "MIN",
     description: "Sunlight takes about 8 minutes and 20 seconds to reach Earth. When you look at the Sun, you see it as it was a little over 8 minutes ago.",
-    display: "8 min 20 sec",
   },
   mars: {
     name: "MARS",
     time: "3–22",
     unit: "MIN",
     description: "A radio message to Mars takes roughly 3 to 22 minutes one way, depending on where Earth and Mars are in their orbits.",
-    display: "3–22 minutes",
   },
   proxima: {
     name: "PROXIMA CENTAURI",
     time: "4.24",
     unit: "YEARS",
     description: "Proxima Centauri is our nearest neighboring star system, about 4.24 light-years away. Its light takes more than four years to get here.",
-    display: "4.24 years",
   },
 };
 
@@ -885,20 +879,6 @@ document.querySelectorAll(".journey-stop").forEach((button) => {
   });
 });
 
-document.querySelectorAll(".quiz-option").forEach((button) => {
-  button.addEventListener("click", () => {
-    const feedback = document.getElementById("quizFeedback");
-    const correct = button.dataset.answer === "distance";
-    document.querySelectorAll(".quiz-option").forEach((option) => option.classList.remove("correct", "incorrect"));
-    button.classList.add(correct ? "correct" : "incorrect");
-    feedback.classList.toggle("is-correct", correct);
-    feedback.classList.toggle("is-incorrect", !correct);
-    feedback.textContent = correct
-      ? "Exactly. A light-year is the distance light travels in one year: about 9.46 trillion kilometers."
-      : "Not quite. A light-year measures distance. It is how far light travels in one year.";
-  });
-});
-
 document.querySelectorAll(".image-note").forEach((card) => {
   const resetTilt = () => {
     card.style.setProperty("--tilt-x", "0deg");
@@ -920,7 +900,6 @@ document.getElementById("webglStatus").textContent = hasThree ? "LIVE 3D" : "2D 
 if (hasThree) initializeThree();
 resizeCanvas();
 updateDistance();
-updateTimeDilation();
 updateMotionButton();
 updateJourneyReadout();
 requestAnimationFrame(hasThree ? renderThree : render);

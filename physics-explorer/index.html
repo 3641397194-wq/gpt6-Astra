@@ -86,7 +86,7 @@
           </div>
           <canvas id="universe" tabindex="0" aria-label="Interactive three-dimensional physics scene. Drag to orbit, scroll to zoom, or focus this scene and use arrow keys to explore."></canvas>
           <div class="scene-bottom">
-            <div class="scene-instruction"><span class="drag-icon" aria-hidden="true">⌖</span><span>DRAG TO ORBIT <i>·</i> SCROLL TO ZOOM <i>·</i> ARROW KEYS</span></div>
+            <div class="scene-instruction"><span class="drag-icon" aria-hidden="true">⌖</span><span>MOVE CURSOR <i>·</i> DRAG TO ORBIT <i>·</i> SCROLL TO ZOOM</span></div>
             <div class="scene-coordinate"><span class="webgl-status" id="webglStatus">LIVE 3D</span> <span>·</span> NOT TO SCALE</div>
           </div>
           <div class="scene-tag tag-a"><span class="tag-dot"></span><span id="endpointA">MOUTH A</span></div>
@@ -169,28 +169,6 @@
           </div>
         </section>
 
-        <section class="time-dilation-lab" aria-labelledby="timeDilationHeading">
-          <div class="time-dilation-copy">
-            <div class="eyebrow"><span class="eyebrow-line"></span>THE RELATIVITY LAB</div>
-            <h2 id="timeDilationHeading">Fast travel changes<br><em>how time feels.</em></h2>
-            <p>Move the slider. The faster the ship goes, the more time passes for people back on Earth compared with one year aboard.</p>
-            <div class="speed-control">
-              <label for="speedSlider"><span>SHIP SPEED</span><output id="speedOutput" for="speedSlider">90% of light speed</output></label>
-              <input id="speedSlider" type="range" min="10" max="99.9" step="0.1" value="90">
-              <div class="slider-ends"><span>10% OF c</span><span>99.9% OF c</span></div>
-            </div>
-          </div>
-          <div class="clock-comparison" aria-live="polite">
-            <div class="clock-orbit" aria-hidden="true"><span class="clock-planet"></span><span class="clock-hand"></span></div>
-            <span class="clock-label">A SIMPLE COMPARISON</span>
-            <p><b>1 year</b> for the traveler</p>
-            <span class="clock-equals">becomes</span>
-            <p><b id="earthYears">2.29 years</b> on Earth</p>
-            <small id="gammaValue">Time difference: ×2.29</small>
-          </div>
-          <p class="time-dilation-note">Simplified special-relativity estimate for steady travel. A real out-and-back journey needs a turnaround; this illustration is not a travel forecast.</p>
-        </section>
-
         <section class="image-notes">
           <div class="notes-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span>FIELD NOTES</div><h2>Real places. <em>Big questions.</em></h2></div><p>Photographs from our universe; diagrams in our imagination.</p></div>
           <div class="notes-grid">
@@ -205,41 +183,6 @@
               <div class="image-note-overlay"><span>OBSERVATION 02 · OUR HOME</span><h3>Gravity gives<br>spacetime its shape.</h3><p>Move your pointer over the image to tilt it in 3D.</p></div>
             </article>
           </div>
-        </section>
-
-        <section class="curiosity-section">
-          <div class="curiosity-copy">
-            <div class="eyebrow"><span class="eyebrow-line"></span>BEFORE YOU GO</div>
-            <h2>One little cosmic<br><em>check-in.</em></h2>
-            <p>Quick question: what does “4.24 light-years away” mean?</p>
-          </div>
-          <div class="quiz-card">
-            <div class="quiz-prompt"><span>YOUR TURN</span><b>Choose one answer</b></div>
-            <div class="quiz-options" role="group" aria-label="What does a light-year measure?">
-              <button class="quiz-option" data-answer="time">How long light travels</button>
-              <button class="quiz-option" data-answer="distance">How far light travels in a year</button>
-              <button class="quiz-option" data-answer="speed">How fast a star moves</button>
-            </div>
-            <p class="quiz-feedback" id="quizFeedback" aria-live="polite">Hint: it tells us how far away Proxima Centauri is.</p>
-          </div>
-        </section>
-
-        <section class="faq-section">
-          <div class="section-heading">
-            <div><div class="eyebrow"><span class="eyebrow-line"></span>GOOD QUESTIONS</div><h2>Curiosity, meet clarity.</h2></div>
-          </div>
-          <details class="faq-item">
-            <summary>Have astronomers found a real wormhole?</summary>
-            <p>No. Wormholes appear as possible solutions in some mathematical models of general relativity, but none has been observed. The illustrations here are conceptual, not photographs of real wormholes.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Is a wormhole the same thing as a black hole?</summary>
-            <p>No. A black hole is an object whose gravity traps anything that crosses its event horizon. A traversable wormhole would be a hypothetical tunnel with two openings. We have strong evidence for black holes, but no evidence for wormholes.</p>
-          </details>
-          <details class="faq-item">
-            <summary>Could we use one to travel faster than light?</summary>
-            <p>There is no known way to build or stabilize a wormhole. Even in theory, the details raise difficult questions about energy, causality, and whether such a passage could stay open. It is not a travel plan—yet.</p>
-          </details>
         </section>
 
         <footer class="footer"><span>EVENT HORIZON <i>·</i> AN EXPLORATION OF PHYSICS</span><span>PHOTOS: UNSPLASH <i>·</i> EARTH / MOON MAPS: THREE.JS SAMPLE TEXTURES</span><span>ILLUSTRATIONS ARE CONCEPTUAL <i>·</i> PHYSICS IS REAL</span></footer>

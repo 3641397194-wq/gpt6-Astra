@@ -10,14 +10,13 @@ The page also opens by double-clicking `index.html`. The 3D engine, Earth and Mo
 
 ## Explore
 
-- Drag the 3D scene to orbit; scroll to zoom. Focus the scene and use arrow keys to orbit, `+` / `-` to zoom, and `0` to reset.
+- Move the cursor over the 3D scene to gently shift it in the same direction. Drag to orbit; scroll to zoom. Focus the scene and use arrow keys to orbit, `+` / `-` to zoom, and `0` to reset.
 - Switch between wormholes, light speed, and curved spacetime.
 - Choose a destination to compare one-way light-travel times.
-- Move the speed slider to see a simplified time-dilation comparison.
-- Tilt the space-photo cards by moving a pointer over them, try the light-year quiz, and open the questions below it.
+- Move a pointer over the space-photo cards to tilt them in 3D.
 
 ## What is real?
 
-Light speed, planetary distances, and gravitational time dilation are real, measured physics. The wormhole and spacetime visuals are explanatory models, not photographs or evidence of detected wormholes. A light-year is a unit of distance. The time-dilation control is an idealized special-relativity comparison, not a practical travel prediction.
+Light speed and planetary distances are measured facts. The wormhole and curved-spacetime visuals are simplified illustrations, not photographs or evidence of detected wormholes. A light-year is a unit of distance.
 
 Space photography is served by Unsplash. Earth and Moon map textures are served from the Three.js example texture library. The 3D renderer is Three.js 0.160.0, loaded from jsDelivr.
