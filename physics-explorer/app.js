@@ -29,10 +29,10 @@ const topics = {
     description: "Light races through a vacuum at a constant speed. For anything with mass, reaching that limit would take infinite energy.",
     meta: "Every observer measures light in a vacuum at the same speed.",
     index: "02",
-    scene: "LIGHT SPEED / SPACETIME GRID",
-    endpointA: "EMISSION",
-    endpointB: "1 LIGHT-SECOND",
-    distanceLabel: "LIGHT-TRAVEL TIME",
+    scene: "EARTH → STAR → EARTH / ROUND TRIP",
+    endpointA: "EARTH",
+    endpointB: "PROXIMA CENTAURI",
+    distanceLabel: "LIGHT TIME · ONE WAY",
     distance: "1.28",
     distanceUnit: "SEC",
     distanceFoot: "Earth to the Moon · average",
@@ -570,11 +570,14 @@ function updateLightBeam() {
   if (lightBeam) {
     lightSpeedGroup.remove(lightBeam);
     lightBeam.geometry.dispose();
+    lightBeam.material.dispose();
   }
   if (lightPhoton) {
     lightSpeedGroup.remove(lightPhoton);
-    lightPhoton.geometry.dispose();
-    lightPhoton.material.dispose();
+    lightPhoton.traverse((object) => {
+      if (object.geometry) object.geometry.dispose();
+      if (object.material) object.material.dispose();
+    });
   }
   const destinations = {
     moon: new THREE.Vector3(1.34, 0.15, 0),
@@ -583,21 +586,34 @@ function updateLightBeam() {
     proxima: new THREE.Vector3(3.62, 0.06, 0),
   };
   const end = destinations[state.destination] || destinations.moon;
-  lightCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0, 0, 0.04),
-    new THREE.Vector3(end.x * 0.34, 0.18, 0.12),
-    new THREE.Vector3(end.x * 0.7, end.y * 0.6 + 0.04, 0.05),
-    new THREE.Vector3(end.x, end.y, end.z),
-  ]);
+  const start = new THREE.Vector3(0, 0, 0.04);
+  const outboundControl = new THREE.Vector3(end.x * 0.38, 0.18, 0.12);
+  const returnControl = new THREE.Vector3(end.x * 0.38, -0.18, -0.12);
+  lightCurve = new THREE.CatmullRomCurve3([start, outboundControl, end, returnControl, start]);
   lightBeam = new THREE.Mesh(
     new THREE.TubeGeometry(lightCurve, 80, 0.015, 6, false),
     new THREE.MeshBasicMaterial({ color: 0xffedb0, transparent: true, opacity: 0.62 }),
   );
   lightSpeedGroup.add(lightBeam);
-  lightPhoton = new THREE.Mesh(
-    new THREE.SphereGeometry(0.065, 16, 12),
-    new THREE.MeshBasicMaterial({ color: 0xfff2c4 }),
+  lightPhoton = new THREE.Group();
+  const hull = new THREE.Mesh(
+    new THREE.ConeGeometry(0.055, 0.19, 8),
+    new THREE.MeshBasicMaterial({ color: 0xf3fbff }),
   );
+  hull.rotation.z = -Math.PI / 2;
+  lightPhoton.add(hull);
+  const cockpit = new THREE.Mesh(
+    new THREE.SphereGeometry(0.035, 12, 8),
+    new THREE.MeshBasicMaterial({ color: 0x91f4ff }),
+  );
+  cockpit.position.set(0.015, 0.035, 0);
+  lightPhoton.add(cockpit);
+  const engineGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(0.04, 12, 8),
+    new THREE.MeshBasicMaterial({ color: 0xffb875 }),
+  );
+  engineGlow.position.x = -0.09;
+  lightPhoton.add(engineGlow);
   lightSpeedGroup.add(lightPhoton);
 }
 
@@ -700,7 +716,14 @@ function renderThree(time) {
   camera3D.lookAt(0, 0, 0);
   const progress = state.paused ? 0.5 : (time * 0.00011) % 1;
   if (wormholePhoton && wormholeCurve) wormholePhoton.position.copy(wormholeCurve.getPointAt(progress));
-  if (lightPhoton && lightCurve) lightPhoton.position.copy(lightCurve.getPointAt(state.paused ? 0.5 : (time * 0.00018) % 1));
+  if (lightPhoton && lightCurve) {
+    const journeyProgress = state.paused ? 0.5 : (time % 10000) / 10000;
+    lightPhoton.position.copy(lightCurve.getPointAt(journeyProgress));
+    lightPhoton.quaternion.setFromUnitVectors(
+      new THREE.Vector3(1, 0, 0),
+      lightCurve.getTangentAt(journeyProgress).normalize(),
+    );
+  }
   renderer3D.render(scene3D, camera3D);
   requestAnimationFrame(renderThree);
 }
@@ -854,6 +877,28 @@ const journeys = {
   },
 };
 
+const tripSpeed = document.getElementById("tripSpeed");
+function updateRoundTrip() {
+  const speedPercent = Number(tripSpeed.value);
+  const speedFraction = speedPercent / 100;
+  const gamma = 1 / Math.sqrt(1 - speedFraction * speedFraction);
+  const earthYears = (2 * 4.24) / speedFraction;
+  const travelerYears = earthYears / gamma;
+  const difference = earthYears - travelerYears;
+  const speedLabel = speedPercent % 1 === 0 ? speedPercent.toFixed(0) : speedPercent.toFixed(1);
+  document.getElementById("tripSpeedOutput").textContent = `${speedLabel}% of light speed`;
+  document.getElementById("earthElapsed").innerHTML = `${earthYears.toFixed(2)} <small>years pass</small>`;
+  document.getElementById("travelerElapsed").innerHTML = `${travelerYears.toFixed(2)} <small>years pass</small>`;
+  document.getElementById("reunionMessage").textContent = `When you reunite, the traveler is about ${difference.toFixed(2)} years younger than the person who stayed on Earth.`;
+}
+tripSpeed.addEventListener("input", updateRoundTrip);
+
+document.getElementById("showTripButton").addEventListener("click", () => {
+  setMode("lightspeed");
+  document.querySelector('[data-destination="proxima"]').click();
+  document.querySelector(".universe-card").scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
 function updateJourneyReadout() {
   const journey = journeys[state.destination];
   if (!journey) return;
@@ -861,9 +906,9 @@ function updateJourneyReadout() {
   if (state.mode !== "lightspeed") return;
   document.getElementById("endpointA").textContent = "EARTH";
   document.getElementById("endpointB").textContent = journey.name;
-  document.getElementById("distanceLabel").textContent = "LIGHT-TRAVEL TIME";
+  document.getElementById("distanceLabel").textContent = "LIGHT TIME · ONE WAY";
   document.getElementById("distanceValue").innerHTML = `${journey.time} <i>${journey.unit}</i>`;
-  document.getElementById("distanceFoot").textContent = `Earth to ${journey.name.toLowerCase()} · one way`;
+  document.getElementById("distanceFoot").textContent = `Earth to ${journey.name.toLowerCase()} · ship returns`;
 }
 
 document.querySelectorAll(".journey-stop").forEach((button) => {
@@ -900,6 +945,7 @@ document.getElementById("webglStatus").textContent = hasThree ? "LIVE 3D" : "2D 
 if (hasThree) initializeThree();
 resizeCanvas();
 updateDistance();
+updateRoundTrip();
 updateMotionButton();
 updateJourneyReadout();
 requestAnimationFrame(hasThree ? renderThree : render);

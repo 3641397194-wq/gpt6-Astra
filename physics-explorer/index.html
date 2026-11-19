@@ -169,6 +169,36 @@
           </div>
         </section>
 
+        <section class="return-trip" aria-labelledby="returnTripHeading">
+          <div class="return-trip-heading">
+            <div class="eyebrow"><span class="eyebrow-line"></span>A ROUND TRIP NEAR LIGHT SPEED</div>
+            <h2 id="returnTripHeading">You come home.<br><em>Earth has waited longer.</em></h2>
+            <p>Imagine leaving Earth for Proxima Centauri, 4.24 light-years away, turning around, then coming back. Pick your speed and compare the two clocks when you reunite.</p>
+          </div>
+          <div class="trip-slider">
+            <label for="tripSpeed"><span>YOUR SHIP'S SPEED</span><output id="tripSpeedOutput" for="tripSpeed">90% of light speed</output></label>
+            <input id="tripSpeed" type="range" min="10" max="99.9" step="0.1" value="90">
+            <div class="slider-ends"><span>SLOWER</span><span>VERY CLOSE TO LIGHT SPEED</span></div>
+          </div>
+          <div class="clock-results" aria-live="polite">
+            <article class="clock-result earth-clock">
+              <span class="clock-result-icon" aria-hidden="true">⌂</span>
+              <span class="clock-result-label">PERSON WHO STAYED ON EARTH</span>
+              <b id="earthElapsed">9.42 <small>years pass</small></b>
+              <span class="clock-result-detail">Their clock counts the whole trip there and back.</span>
+            </article>
+            <article class="clock-result traveler-clock">
+              <span class="clock-result-icon" aria-hidden="true">✦</span>
+              <span class="clock-result-label">TRAVELER'S CLOCK</span>
+              <b id="travelerElapsed">4.11 <small>years pass</small></b>
+              <span class="clock-result-detail">You age less during the high-speed trip.</span>
+            </article>
+          </div>
+          <div class="reunion-note"><span class="reunion-mark">↗</span><p id="reunionMessage">When you reunite, the traveler is about 5.32 years younger than the person who stayed on Earth.</p></div>
+          <p class="trip-assumptions">This is a simplified example at 90% of light speed—not the speed of light. It assumes an instant turnaround and ignores acceleration and gravity. A real spaceship cannot travel at light speed.</p>
+          <button class="show-trip-button" id="showTripButton" type="button">SEE THE ROUND TRIP IN THE 3D SCENE <span aria-hidden="true">↑</span></button>
+        </section>
+
         <section class="image-notes">
           <div class="notes-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span>FIELD NOTES</div><h2>Real places. <em>Big questions.</em></h2></div><p>Photographs from our universe; diagrams in our imagination.</p></div>
           <div class="notes-grid">
