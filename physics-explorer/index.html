@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#070a12">
+    <meta name="description" content="An interactive field guide to wormholes, the speed of light, and curved spacetime.">
+    <title>Event Horizon — A field guide to the impossible</title>
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#home" aria-label="Event Horizon home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>EVENT<span class="brand-light">HORIZON</span></span>
+        </a>
+        <p class="side-caption">A FIELD GUIDE TO THE IMPOSSIBLE</p>
+
+        <div class="side-label">EXPLORE</div>
+        <nav class="topic-nav" aria-label="Physics topics">
+          <button class="topic-link active" data-mode="wormhole" aria-current="page">
+            <span class="topic-icon">◎</span><span><b>Wormholes</b><small>Shortcuts through spacetime</small></span><span class="nav-arrow">↗</span>
+          </button>
+          <button class="topic-link" data-mode="lightspeed">
+            <span class="topic-icon">ϟ</span><span><b>Speed of light</b><small>The universe's speed limit</small></span><span class="nav-arrow">↗</span>
+          </button>
+          <button class="topic-link" data-mode="curvature">
+            <span class="topic-icon">◌</span><span><b>Spacetime</b><small>Gravity changes the map</small></span><span class="nav-arrow">↗</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-note">
+          <span class="note-orbit" aria-hidden="true"></span>
+          <span class="side-label">A NOTE ON THE UNKNOWN</span>
+          <p>Wormholes are mathematical possibilities—not observed objects. Explore the idea, not a proven portal.</p>
+        </div>
+        <div class="sidebar-bottom">
+          <span class="live-dot"></span>
+          <span>SIMULATION ONLINE</span>
+          <span class="sidebar-version">FIELD NOTES · 01</span>
+        </div>
+      </aside>
+
+      <main id="home">
+        <header class="topbar">
+          <div class="breadcrumb"><span>THE COSMOS</span><span class="crumb-slash">/</span><span id="crumbTopic">WORMHOLES</span></div>
+          <div class="topbar-right"><span class="edition">INTERACTIVE EDITION</span><span class="topbar-divider"></span><span class="coordinates">47° 36′  N&nbsp; / &nbsp;122° 20′ W</span></div>
+        </header>
+
+        <section class="intro">
+          <div class="intro-copy">
+            <div class="eyebrow"><span class="eyebrow-line"></span><span id="eyebrowText">GENERAL RELATIVITY · THOUGHT EXPERIMENT 01</span></div>
+            <h1 id="pageTitle">A shortcut<br>through <em>the stars.</em></h1>
+            <p id="pageDescription">What if two distant points in the universe were connected by a hidden bridge? Step inside the geometry of a wormhole.</p>
+            <div class="intro-meta"><span class="meta-icon">✳</span><span id="metaText">A wormhole would connect separate regions of spacetime.</span><span class="meta-divider"></span><span>6 MIN READ</span></div>
+          </div>
+          <div class="intro-index" aria-hidden="true"><span>FIELD</span><b id="indexNumber">01</b><span>/ 03</span></div>
+        </section>
+
+        <section class="universe-card" aria-label="Interactive 3D physics visualization">
+          <img class="space-photo" id="spacePhoto" src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&amp;fit=crop&amp;w=1800&amp;q=85" alt="A deep-space nebula glowing with stars" fetchpriority="high">
+          <div class="photo-shade"></div>
+          <div class="scene-top">
+            <div class="scene-label"><span class="scene-live"></span><span id="sceneName">WORMHOLE / SPACETIME BRIDGE</span></div>
+            <button class="icon-button" id="resetView" type="button" aria-label="Reset 3D view" title="Reset view">⟳</button>
+          </div>
+          <canvas id="universe" aria-label="Interactive three-dimensional illustration of a wormhole connecting two regions of space. Drag to rotate the view."></canvas>
+          <div class="scene-bottom">
+            <div class="scene-instruction"><span class="drag-icon" aria-hidden="true">⌖</span><span>DRAG TO ORBIT <i>·</i> SCROLL TO ZOOM</span></div>
+            <div class="scene-coordinate">SIMULATED VIEW <span>·</span> NOT TO SCALE</div>
+          </div>
+          <div class="scene-tag tag-a"><span class="tag-dot"></span><span id="endpointA">MOUTH A</span></div>
+          <div class="scene-tag tag-b"><span class="tag-dot"></span><span id="endpointB">MOUTH B</span></div>
+          <div class="distance-readout"><small id="distanceLabel">DISTANCE THROUGH SPACE</small><b id="distanceValue">26.7 <i>LY</i></b><span id="distanceFoot">ordinary route · hypothetical shortcut</span></div>
+        </section>
+
+        <section class="control-row" aria-label="Visualization controls">
+          <div class="mode-switch" role="group" aria-label="Visualization mode">
+            <span class="control-label">VIEW</span>
+            <button class="mode-button active" data-view="wormhole" aria-pressed="true">Wormhole</button>
+            <button class="mode-button" data-view="lightspeed" aria-pressed="false">Light speed</button>
+            <button class="mode-button" data-view="curvature" aria-pressed="false">Curvature</button>
+          </div>
+          <button class="motion-button" id="motionToggle" type="button" aria-pressed="false"><span class="motion-icon">Ⅱ</span><span>PAUSE MOTION</span></button>
+        </section>
+
+        <section class="concept-section">
+          <div class="section-heading">
+            <div><div class="eyebrow"><span class="eyebrow-line"></span>THE IDEA, IN BRIEF</div><h2 id="conceptHeading">Bend the map. Meet somewhere else.</h2></div>
+            <span class="section-mark" aria-hidden="true">01—03</span>
+          </div>
+          <div class="concept-grid">
+            <article class="concept-card">
+              <span class="card-index">01 / THE GEOMETRY</span>
+              <h3 id="cardOneTitle">Fold, don't cross.</h3>
+              <p id="cardOneText">In the embedding diagram, a wormhole is a tunnel between distant points. The route through it could be shorter than the route through ordinary space.</p>
+              <span class="card-rule"></span>
+            </article>
+            <article class="concept-card">
+              <span class="card-index">02 / THE CATCH</span>
+              <h3 id="cardTwoTitle">A bridge needs support.</h3>
+              <p id="cardTwoText">Known equations suggest a traversable throat would need unusual negative energy to stay open. No material is known to do that at the needed scale.</p>
+              <span class="card-rule"></span>
+            </article>
+            <article class="concept-card fact-card">
+              <span class="card-index">03 / A REAL CONSTANT</span>
+              <div class="fact-value"><span id="factValue">299,792</span><small id="factUnit">km/s</small></div>
+              <p id="factText">The speed of light in vacuum. A local speed limit for information and matter.</p>
+              <span class="fact-source">c = 299,792,458 m/s <span>·</span> EXACT</span>
+            </article>
+          </div>
+        </section>
+
+        <section class="light-lab" id="lightLab">
+          <div class="lab-visual">
+            <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&amp;fit=crop&amp;w=1000&amp;q=85" alt="Earth seen from orbit, with the blue curve of its atmosphere" loading="lazy">
+            <div class="lab-image-wash"></div>
+            <div class="image-caption"><span>EARTH ORBIT</span><span>01 AU FROM THE SUN</span></div>
+            <div class="light-streak" aria-hidden="true"></div>
+          </div>
+          <div class="lab-content">
+            <div class="eyebrow"><span class="eyebrow-line"></span>THE LIGHT-CLOCK LAB</div>
+            <h2>How far does light get<br>in <em id="timeLabel">one second?</em></h2>
+            <p>Choose a travel time. The beam moves at <strong>c</strong>—about 300,000 kilometers every second.</p>
+            <div class="slider-wrap">
+              <label for="timeSlider"><span>TRAVEL TIME</span><output id="timeOutput" for="timeSlider">1 second</output></label>
+              <input id="timeSlider" type="range" min="1" max="60" step="1" value="1">
+              <div class="slider-ends"><span>1 SECOND</span><span>1 MINUTE</span></div>
+            </div>
+            <div class="distance-result"><span>LIGHT TRAVELS</span><b id="lightDistance">299,792 <small>km</small></b><span id="distanceComparison">≈ 7.5 laps around Earth</span></div>
+          </div>
+        </section>
+
+        <section class="image-notes">
+          <div class="notes-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span>FIELD NOTES</div><h2>Real places. <em>Big questions.</em></h2></div><p>Photographs from our universe; diagrams in our imagination.</p></div>
+          <div class="notes-grid">
+            <article class="image-note">
+              <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&amp;fit=crop&amp;w=1100&amp;q=85" alt="A dense field of stars across the Milky Way" loading="lazy">
+              <div class="image-note-overlay"><span>OBSERVATION 01 · DEEP SPACE</span><h3>The universe is vast.<br>Its speed limit is not.</h3></div>
+            </article>
+            <article class="image-note">
+              <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&amp;fit=crop&amp;w=1100&amp;q=85" alt="Blue Earth viewed from space at night" loading="lazy">
+              <div class="image-note-overlay"><span>OBSERVATION 02 · OUR HOME</span><h3>Gravity gives<br>spacetime its shape.</h3></div>
+            </article>
+          </div>
+        </section>
+
+        <footer class="footer"><span>EVENT HORIZON <i>·</i> AN EXPLORATION OF PHYSICS</span><span>ILLUSTRATIONS ARE CONCEPTUAL <i>·</i> PHYSICS IS REAL</span></footer>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
