@@ -108,6 +108,9 @@ h1, h2, h3, p { margin-top: 0; }
 .scene-live { width: 5px; height: 5px; }
 .icon-button { display: grid; width: 28px; height: 28px; place-items: center; border: 1px solid rgb(213 224 244 / 19%); background: rgb(8 13 24 / 50%); color: #d4dfef; font-size: 18px; pointer-events: auto; cursor: pointer; }
 .icon-button:hover { border-color: var(--cyan); color: var(--cyan); }
+.scene-tools { display: flex; align-items: center; gap: 5px; pointer-events: auto; }
+.scene-tools .zoom-button { font: 16px var(--sans); }
+.scene-tools .zoom-level { min-width: 37px; color: #c0cede; font: 8px var(--mono); text-align: center; text-shadow: 0 1px 8px #060913; }
 .scene-instruction { color: #bfcbdb; font-size: 8px; }
 .drag-icon { color: var(--cyan); font-size: 15px; }
 .scene-instruction i, .scene-coordinate span { color: var(--cyan); font-style: normal; }
@@ -268,8 +271,11 @@ h1, h2, h3, p { margin-top: 0; }
   .intro-copy > p { max-width: 450px; font-size: 12px; }
   .intro-index { display: none; }
   .universe-card { height: min(91vw, 400px); min-height: 300px; }
-  .scene-top, .scene-bottom { right: 11px; left: 11px; }
+  .scene-top, .scene-bottom { right: 9px; left: 9px; }
   .scene-label { font-size: 7px; }
+  .scene-tools { gap: 3px; }
+  .scene-tools .icon-button { width: 25px; height: 25px; }
+  .scene-tools .zoom-level { min-width: 31px; font-size: 7px; }
   .scene-coordinate { font-size: 6px; }
   .tag-a { left: 7%; }
   .tag-b { right: 7%; }

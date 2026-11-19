@@ -82,11 +82,16 @@
           <div class="photo-shade"></div>
           <div class="scene-top">
             <div class="scene-label"><span class="scene-live"></span><span id="sceneName">WORMHOLE / SPACETIME BRIDGE</span></div>
-            <button class="icon-button" id="resetView" type="button" aria-label="Reset 3D view" title="Reset view">⟳</button>
+            <div class="scene-tools" role="group" aria-label="Simulation zoom controls">
+              <button class="icon-button zoom-button" id="zoomOut" type="button" aria-label="Zoom out" title="Zoom out">−</button>
+              <span class="zoom-level" id="zoomLevel" aria-live="polite">100%</span>
+              <button class="icon-button zoom-button" id="zoomIn" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+              <button class="icon-button" id="resetView" type="button" aria-label="Reset view" title="Reset view">⟳</button>
+            </div>
           </div>
           <canvas id="universe" tabindex="0" aria-label="Interactive three-dimensional physics scene. Drag to orbit, scroll to zoom, or focus this scene and use arrow keys to explore."></canvas>
           <div class="scene-bottom">
-            <div class="scene-instruction"><span class="drag-icon" aria-hidden="true">⌖</span><span>MOVE CURSOR <i>·</i> DRAG TO ORBIT <i>·</i> SCROLL TO ZOOM</span></div>
+            <div class="scene-instruction"><span class="drag-icon" aria-hidden="true">⌖</span><span>MOVE CURSOR <i>·</i> DRAG TO ORBIT <i>·</i> SCROLL TO ZOOM AT CURSOR <i>·</i> SHIFT-DRAG TO PAN</span></div>
             <div class="scene-coordinate"><span class="webgl-status" id="webglStatus">LIVE 3D</span> <span>·</span> NOT TO SCALE</div>
           </div>
           <div class="scene-tag tag-a"><span class="tag-dot"></span><span id="endpointA">MOUTH A</span></div>
@@ -158,10 +163,10 @@
           </div>
           <p class="journey-intro">Light is incredibly fast. Space is even bigger. Choose a destination to compare how long a beam of light takes to get there.</p>
           <div class="journey-options" role="group" aria-label="Choose a destination">
-            <button class="journey-stop active" data-destination="moon" aria-pressed="true"><span class="stop-index">01</span><span class="stop-name">The Moon</span><span class="stop-time">1.28 seconds</span></button>
+            <button class="journey-stop" data-destination="moon" aria-pressed="false"><span class="stop-index">01</span><span class="stop-name">The Moon</span><span class="stop-time">1.28 seconds</span></button>
             <button class="journey-stop" data-destination="sun" aria-pressed="false"><span class="stop-index">02</span><span class="stop-name">The Sun</span><span class="stop-time">8 min 20 sec</span></button>
             <button class="journey-stop" data-destination="mars" aria-pressed="false"><span class="stop-index">03</span><span class="stop-name">Mars</span><span class="stop-time">3–22 minutes</span></button>
-            <button class="journey-stop" data-destination="proxima" aria-pressed="false"><span class="stop-index">04</span><span class="stop-name">Proxima Centauri</span><span class="stop-time">4.24 years</span></button>
+            <button class="journey-stop active" data-destination="proxima" aria-pressed="true"><span class="stop-index">04</span><span class="stop-name">Proxima Centauri</span><span class="stop-time">4.24 years</span></button>
           </div>
           <div class="journey-readout" aria-live="polite">
             <span class="journey-signal" aria-hidden="true"></span>

@@ -79,11 +79,14 @@ const state = {
   yaw: -0.68,
   pitch: 0.12,
   zoom: 1,
+  panX: 0,
+  panY: 0,
+  panZ: 0,
   dragging: false,
   paused: prefersReducedMotion.matches,
   pointer: { x: 0, y: 0 },
   lastPointer: { x: 0, y: 0 },
-  destination: "moon",
+  destination: "proxima",
 };
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -102,9 +105,10 @@ let wormholePhoton;
 let wormholeCurve;
 let earthMesh;
 let moonMesh;
-let sunMesh;
+let destinationMeshes = {};
 let lastFrameTime = 0;
 const hoverTarget3D = typeof window.THREE === "object" ? new THREE.Vector3() : null;
+let zoomRaycaster;
 
 function resizeCanvas() {
   const rect = canvas.getBoundingClientRect();
@@ -492,20 +496,8 @@ function createLightSpeedScene() {
   lightSpeedGroup = new THREE.Group();
   scene3D.add(lightSpeedGroup);
 
-  sunMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.66, 48, 32),
-    new THREE.MeshBasicMaterial({ color: 0xffc66c }),
-  );
-  sunMesh.position.set(-3.55, 0.55, 0);
-  lightSpeedGroup.add(sunMesh);
-  const sunGlow = new THREE.Mesh(
-    new THREE.SphereGeometry(0.82, 32, 24),
-    new THREE.MeshBasicMaterial({ color: 0xff9f4b, transparent: true, opacity: 0.12, side: THREE.BackSide }),
-  );
-  sunMesh.add(sunGlow);
-
   earthMesh = makePlanet(0.42, 0x287cad, 0x071624);
-  earthMesh.position.set(0, 0, 0);
+  earthMesh.position.set(-1.65, 0, 0);
   lightSpeedGroup.add(earthMesh);
   const atmosphere = new THREE.Mesh(
     new THREE.SphereGeometry(0.46, 40, 28),
@@ -513,29 +505,31 @@ function createLightSpeedScene() {
   );
   earthMesh.add(atmosphere);
 
-  moonMesh = makePlanet(0.16, 0xc8d1d9);
-  moonMesh.position.set(1.34, 0.15, 0);
-  lightSpeedGroup.add(moonMesh);
-
-  const mars = makePlanet(0.27, 0xb85f48, 0x35150f);
-  mars.position.set(2.42, -0.18, -0.15);
-  lightSpeedGroup.add(mars);
-
-  const proxima = new THREE.Mesh(
-    new THREE.SphereGeometry(0.34, 32, 24),
-    new THREE.MeshBasicMaterial({ color: 0xffaa78 }),
-  );
-  proxima.position.set(3.62, 0.06, 0);
-  lightSpeedGroup.add(proxima);
+  destinationMeshes = {};
+  const destinationSpecs = {
+    moon: { radius: 0.19, color: 0xc8d1d9, emissive: 0x000000 },
+    sun: { radius: 0.19, color: 0xc2cad5, emissive: 0x11151c },
+    mars: { radius: 0.24, color: 0xb85f48, emissive: 0x35150f },
+    proxima: { radius: 0.34, color: 0xffaa78, emissive: 0x5c2011 },
+  };
+  Object.entries(destinationSpecs).forEach(([name, spec]) => {
+    const body = makePlanet(spec.radius, spec.color, spec.emissive);
+    body.position.set(1.65, 0, 0);
+    body.visible = name === state.destination;
+    lightSpeedGroup.add(body);
+    destinationMeshes[name] = body;
+    if (name === "moon") moonMesh = body;
+  });
+  lightSpeedGroup.scale.setScalar(1.25);
   const proximaGlow = new THREE.Mesh(
-    new THREE.SphereGeometry(0.5, 24, 18),
-    new THREE.MeshBasicMaterial({ color: 0xff815f, transparent: true, opacity: 0.14, side: THREE.BackSide }),
+    new THREE.SphereGeometry(0.44, 24, 18),
+    new THREE.MeshBasicMaterial({ color: 0xff815f, transparent: true, opacity: 0.13, side: THREE.BackSide }),
   );
-  proxima.add(proximaGlow);
+  destinationMeshes.proxima.add(proximaGlow);
 
   const lineMaterial = new THREE.LineDashedMaterial({ color: 0xa7bed5, dashSize: 0.09, gapSize: 0.08, transparent: true, opacity: 0.42 });
   const ruler = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-3.55, -1.25, 0), new THREE.Vector3(3.62, -1.25, 0)]),
+    new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-1.65, -1.05, 0), new THREE.Vector3(1.65, -1.05, 0)]),
     lineMaterial,
   );
   ruler.computeLineDistances();
@@ -554,19 +548,13 @@ function createLightSpeedScene() {
       earthMesh.material.needsUpdate = true;
     },
   );
-  textureLoader.load(
-    "https://threejs.org/examples/textures/planets/moon_1024.jpg",
-    (texture) => {
-      texture.colorSpace = THREE.SRGBColorSpace;
-      moonMesh.material.map = texture;
-      moonMesh.material.color.set(0xffffff);
-      moonMesh.material.needsUpdate = true;
-    },
-  );
 }
 
 function updateLightBeam() {
   if (!lightSpeedGroup) return;
+  Object.entries(destinationMeshes).forEach(([name, body]) => {
+    body.visible = name === state.destination;
+  });
   if (lightBeam) {
     lightSpeedGroup.remove(lightBeam);
     lightBeam.geometry.dispose();
@@ -580,16 +568,22 @@ function updateLightBeam() {
     });
   }
   const destinations = {
-    moon: new THREE.Vector3(1.34, 0.15, 0),
-    sun: new THREE.Vector3(-3.55, 0.55, 0),
-    mars: new THREE.Vector3(2.42, -0.18, -0.15),
-    proxima: new THREE.Vector3(3.62, 0.06, 0),
+    moon: new THREE.Vector3(1.45, 0, 0),
+    sun: new THREE.Vector3(1.45, 0, 0),
+    mars: new THREE.Vector3(1.40, 0, 0),
+    proxima: new THREE.Vector3(1.29, 0, 0),
   };
   const end = destinations[state.destination] || destinations.moon;
-  const start = new THREE.Vector3(0, 0, 0.04);
-  const outboundControl = new THREE.Vector3(end.x * 0.38, 0.18, 0.12);
-  const returnControl = new THREE.Vector3(end.x * 0.38, -0.18, -0.12);
-  lightCurve = new THREE.CatmullRomCurve3([start, outboundControl, end, returnControl, start]);
+  const start = new THREE.Vector3(-1.17, 0, 0.04);
+  const outboundControl = new THREE.Vector3(-0.15, 0.24, 0.18);
+  const returnControl = new THREE.Vector3(-0.15, -0.24, -0.18);
+  lightCurve = new THREE.CatmullRomCurve3([
+    start,
+    outboundControl,
+    new THREE.Vector3(end.x, end.y + 0.05, end.z),
+    returnControl,
+    start,
+  ]);
   lightBeam = new THREE.Mesh(
     new THREE.TubeGeometry(lightCurve, 80, 0.015, 6, false),
     new THREE.MeshBasicMaterial({ color: 0xffedb0, transparent: true, opacity: 0.62 }),
@@ -659,6 +653,7 @@ function createCurvatureScene() {
 
 function initializeThree() {
   scene3D = new THREE.Scene();
+  zoomRaycaster = new THREE.Raycaster();
   renderer3D = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance" });
   renderer3D.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer3D.setClearColor(0x000000, 0);
@@ -694,8 +689,9 @@ function renderThree(time) {
     wormholeGroup.rotation.z += elapsed * 0.055;
     wormholeGroup.rotation.x = Math.sin(time * 0.0002) * 0.045;
     if (earthMesh) earthMesh.rotation.y += elapsed * 0.18;
-    if (moonMesh) moonMesh.rotation.y += elapsed * 0.07;
-    if (sunMesh) sunMesh.rotation.y -= elapsed * 0.035;
+    Object.values(destinationMeshes).forEach((body) => {
+      if (body.visible) body.rotation.y += elapsed * 0.07;
+    });
     if (curvatureSatellite) {
       const orbitPhase = time * 0.00034;
       const x = Math.cos(orbitPhase) * 2.15;
@@ -704,16 +700,9 @@ function renderThree(time) {
     }
   }
 
-  const distance = 9.2 / state.zoom;
-  const pitch = clamp(state.pitch, -1.15, 1.15);
   hoverTarget3D.set(state.pointer.x * 0.42, -state.pointer.y * 0.28, 0);
   scene3D.position.lerp(hoverTarget3D, 0.09);
-  camera3D.position.set(
-    Math.sin(state.yaw) * Math.cos(pitch) * distance,
-    Math.sin(pitch) * distance,
-    Math.cos(state.yaw) * Math.cos(pitch) * distance,
-  );
-  camera3D.lookAt(0, 0, 0);
+  updateCameraTransform();
   const progress = state.paused ? 0.5 : (time * 0.00011) % 1;
   if (wormholePhoton && wormholeCurve) wormholePhoton.position.copy(wormholeCurve.getPointAt(progress));
   if (lightPhoton && lightCurve) {
@@ -726,6 +715,54 @@ function renderThree(time) {
   }
   renderer3D.render(scene3D, camera3D);
   requestAnimationFrame(renderThree);
+}
+
+function updateCameraTransform() {
+  const distance = 9.2 / state.zoom;
+  const pitch = clamp(state.pitch, -1.15, 1.15);
+  const target = new THREE.Vector3(state.panX, state.panY, state.panZ);
+  camera3D.position.set(
+    target.x + Math.sin(state.yaw) * Math.cos(pitch) * distance,
+    target.y + Math.sin(pitch) * distance,
+    target.z + Math.cos(state.yaw) * Math.cos(pitch) * distance,
+  );
+  camera3D.lookAt(target);
+  camera3D.updateMatrixWorld();
+}
+
+function updateZoomDisplay() {
+  document.getElementById("zoomLevel").textContent = `${Math.round(state.zoom * 100)}%`;
+}
+
+function zoomAtPointer(factor, clientX, clientY) {
+  const nextZoom = clamp(state.zoom * factor, 0.65, 5.5);
+  if (nextZoom === state.zoom) return;
+  if (!renderer3D) {
+    state.zoom = nextZoom;
+    updateZoomDisplay();
+    return;
+  }
+  const rect = canvas.getBoundingClientRect();
+  const pointer = new THREE.Vector2(
+    ((clientX - rect.left) / rect.width) * 2 - 1,
+    -((clientY - rect.top) / rect.height) * 2 + 1,
+  );
+  const target = new THREE.Vector3(state.panX, state.panY, state.panZ);
+  const normal = camera3D.getWorldDirection(new THREE.Vector3());
+  const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(normal, target);
+  zoomRaycaster.setFromCamera(pointer, camera3D);
+  const before = zoomRaycaster.ray.intersectPlane(plane, new THREE.Vector3());
+  state.zoom = nextZoom;
+  updateCameraTransform();
+  zoomRaycaster.setFromCamera(pointer, camera3D);
+  const after = zoomRaycaster.ray.intersectPlane(plane, new THREE.Vector3());
+  if (before && after) {
+    state.panX += before.x - after.x;
+    state.panY += before.y - after.y;
+    state.panZ += before.z - after.z;
+    updateCameraTransform();
+  }
+  updateZoomDisplay();
 }
 
 function setMode(mode) {
@@ -777,7 +814,8 @@ document.querySelectorAll("[data-mode], [data-view]").forEach((button) => {
 });
 
 canvas.addEventListener("pointerdown", (event) => {
-  state.dragging = true;
+  state.panning = event.shiftKey || event.button === 1;
+  state.dragging = !state.panning;
   state.lastPointer = { x: event.clientX, y: event.clientY };
   canvas.setPointerCapture(event.pointerId);
 });
@@ -787,26 +825,45 @@ canvas.addEventListener("pointermove", (event) => {
     x: (event.clientX - rect.left) / rect.width - 0.5,
     y: (event.clientY - rect.top) / rect.height - 0.5,
   };
-  if (!state.dragging) return;
+  if (!state.dragging && !state.panning) return;
   const dx = event.clientX - state.lastPointer.x;
   const dy = event.clientY - state.lastPointer.y;
+  if (state.panning && renderer3D) {
+    const distance = 9.2 / state.zoom;
+    const unitsPerPixel = (2 * distance * Math.tan(THREE.MathUtils.degToRad(camera3D.fov / 2))) / canvas.clientHeight;
+    const right = new THREE.Vector3().setFromMatrixColumn(camera3D.matrixWorld, 0);
+    const up = new THREE.Vector3().setFromMatrixColumn(camera3D.matrixWorld, 1);
+    state.panX += -right.x * dx * unitsPerPixel + up.x * dy * unitsPerPixel;
+    state.panY += -right.y * dx * unitsPerPixel + up.y * dy * unitsPerPixel;
+    state.panZ += -right.z * dx * unitsPerPixel + up.z * dy * unitsPerPixel;
+    updateCameraTransform();
+    state.lastPointer = { x: event.clientX, y: event.clientY };
+    return;
+  }
   state.yaw -= dx * 0.006;
   state.pitch = clamp(state.pitch - dy * 0.004, -1.05, 1.05);
   state.lastPointer = { x: event.clientX, y: event.clientY };
 });
-canvas.addEventListener("pointerup", () => { state.dragging = false; });
-canvas.addEventListener("pointercancel", () => { state.dragging = false; });
+canvas.addEventListener("pointerup", () => { state.dragging = false; state.panning = false; });
+canvas.addEventListener("pointercancel", () => { state.dragging = false; state.panning = false; });
 canvas.addEventListener("pointerleave", () => {
   if (!state.dragging) state.pointer = { x: 0, y: 0 };
 });
 canvas.addEventListener("wheel", (event) => {
   event.preventDefault();
-  state.zoom = clamp(state.zoom - event.deltaY * 0.001, 0.66, 1.55);
+  zoomAtPointer(Math.exp(-event.deltaY * 0.001), event.clientX, event.clientY);
 }, { passive: false });
+document.getElementById("zoomIn").addEventListener("click", () => zoomAtPointer(1.25, canvas.getBoundingClientRect().left + canvas.clientWidth / 2, canvas.getBoundingClientRect().top + canvas.clientHeight / 2));
+document.getElementById("zoomOut").addEventListener("click", () => zoomAtPointer(0.8, canvas.getBoundingClientRect().left + canvas.clientWidth / 2, canvas.getBoundingClientRect().top + canvas.clientHeight / 2));
 document.getElementById("resetView").addEventListener("click", () => {
   state.yaw = -0.68;
   state.pitch = 0.12;
   state.zoom = 1;
+  state.panX = 0;
+  state.panY = 0;
+  state.panZ = 0;
+  updateZoomDisplay();
+  if (renderer3D) updateCameraTransform();
 });
 
 canvas.addEventListener("keydown", (event) => {
@@ -815,12 +872,17 @@ canvas.addEventListener("keydown", (event) => {
   else if (event.key === "ArrowRight") state.yaw += turn;
   else if (event.key === "ArrowUp") state.pitch = clamp(state.pitch + turn, -1.15, 1.15);
   else if (event.key === "ArrowDown") state.pitch = clamp(state.pitch - turn, -1.15, 1.15);
-  else if (event.key === "+" || event.key === "=") state.zoom = clamp(state.zoom + 0.08, 0.66, 1.55);
-  else if (event.key === "-") state.zoom = clamp(state.zoom - 0.08, 0.66, 1.55);
+  else if (event.key === "+" || event.key === "=") zoomAtPointer(1.15, canvas.getBoundingClientRect().left + canvas.clientWidth / 2, canvas.getBoundingClientRect().top + canvas.clientHeight / 2);
+  else if (event.key === "-") zoomAtPointer(0.87, canvas.getBoundingClientRect().left + canvas.clientWidth / 2, canvas.getBoundingClientRect().top + canvas.clientHeight / 2);
   else if (event.key === "0") {
     state.yaw = -0.68;
     state.pitch = 0.12;
     state.zoom = 1;
+    state.panX = 0;
+    state.panY = 0;
+    state.panZ = 0;
+    updateZoomDisplay();
+    if (renderer3D) updateCameraTransform();
   } else return;
   event.preventDefault();
 });
@@ -947,5 +1009,6 @@ resizeCanvas();
 updateDistance();
 updateRoundTrip();
 updateMotionButton();
+updateZoomDisplay();
 updateJourneyReadout();
 requestAnimationFrame(hasThree ? renderThree : render);

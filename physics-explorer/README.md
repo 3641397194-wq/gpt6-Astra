@@ -10,7 +10,7 @@ The page also opens by double-clicking `index.html`. The 3D engine, Earth and Mo
 
 ## Explore
 
-- Move the cursor over the 3D scene to gently shift it in the same direction. Drag to orbit; scroll to zoom. Focus the scene and use arrow keys to orbit, `+` / `-` to zoom, and `0` to reset.
+- Move the cursor over the 3D scene to gently shift it in the same direction. Scroll over any point to zoom toward it; use the `+` / `−` buttons for centered zoom. Drag to orbit, or Shift-drag to pan. Focus the scene and use arrow keys to orbit, `+` / `-` to zoom, and `0` to reset.
 - Switch between wormholes, light speed, and curved spacetime.
 - Choose a destination to compare one-way light-travel times.
 - Compare Earth and traveler clock times for a simplified round trip to Proxima Centauri at near-light speed.
@@ -20,4 +20,4 @@ The page also opens by double-clicking `index.html`. The 3D engine, Earth and Mo
 
 Light speed and planetary distances are measured facts. The round-trip clock comparison uses special-relativity time dilation for constant cruise speed, an instantaneous turnaround, and no gravity or acceleration; it is an idealized example, not a practical travel prediction. The wormhole and curved-spacetime visuals are simplified illustrations, not photographs or evidence of detected wormholes. A light-year is a unit of distance.
 
-Space photography is served by Unsplash. Earth and Moon map textures are served from the Three.js example texture library. The 3D renderer is Three.js 0.160.0, loaded from jsDelivr.
+Space photography is served by Unsplash. Earth's map texture is served from the Three.js example texture library. The 3D renderer is Three.js 0.160.0, loaded from jsDelivr.
