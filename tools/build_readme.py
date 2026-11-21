@@ -30,221 +30,17 @@ IOS_DEVELOPMENT_ASSETS = (
     "SHA256SUMS-iOS.txt",
 )
 CSS = '''
-:root {
-  color-scheme: dark;
-  --background: #120f12;
-  --panel: #1d171b;
-  --ink: #f7efec;
-  --muted: #c2b5b8;
-  --line: #41333a;
-  --accent: #f4a2aa;
-  --action: #a52d43;
-  --page-width: 82rem;
-  --gutter: clamp(1rem, 4vw, 4rem);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei UI", "PingFang SC", sans-serif;
-  font-size: 100%;
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--background); color: var(--ink); line-height: 1.65; }
-a { color: var(--accent); text-underline-offset: .28em; }
-a:hover { color: #ffe4e5; }
-a:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
-  outline: 3px solid #ffaeb5;
-  outline-offset: 4px;
-  border-radius: .25rem;
-}
-img { max-width: 100%; height: auto; vertical-align: middle; }
-h1, h2, h3 { margin: 0; line-height: 1.25; color: var(--ink); }
-p { margin: 0 0 1rem; }
-p:last-child { margin-bottom: 0; }
-code { font: .925em Consolas, ui-monospace, monospace; }
-[id] { scroll-margin-top: 1.5rem; }
-.skip-link {
-  position: absolute;
-  z-index: 3;
-  top: .5rem;
-  left: 1rem;
-  padding: .5rem .75rem;
-  background: var(--ink);
-  color: var(--background);
-  transform: translateY(-160%);
-}
-.skip-link:focus { transform: none; color: var(--background); }
-.appbar {
-  max-width: calc(var(--page-width) + 2 * var(--gutter));
-  margin: auto;
-  padding: 1.15rem var(--gutter);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem 2rem;
-}
-.repo-name {
-  display: inline-flex;
-  align-items: center;
-  gap: .75rem;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--ink);
-  white-space: nowrap;
-  text-decoration: none;
-}
-.repo-name img { width: 2.4rem; height: 2.4rem; border-radius: 50%; border: 1px solid var(--line); }
-.repo-tabs { display: flex; flex-wrap: wrap; gap: .35rem 1.4rem; }
-.repo-tabs a { padding: .25rem 0; font-size: .9375rem; text-decoration: none; color: var(--muted); }
-.repo-tabs a:is(:hover, :focus-visible) { color: var(--ink); text-decoration: underline; }
-.repo-tabs .open-workbench { color: var(--accent); font-weight: 650; }
-.container {
-  max-width: calc(var(--page-width) + 2 * var(--gutter));
-  margin: auto;
-  padding: 0 var(--gutter) 2rem;
-}
-.landing-hero {
-  position: relative;
-  isolation: isolate;
-  min-height: 32rem;
-  aspect-ratio: 1672 / 941;
-  display: grid;
-  align-items: center;
-  padding: clamp(2.5rem, 6vw, 5.35rem);
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: .85rem;
-  background: #132331;
-  text-align: left;
-}
-.hero-cover {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: right center;
-  z-index: -2;
-}
-.landing-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(90deg, #0e1c2cf5, #0e1c2ceb 27%, #0e1c2cc9 41%, #0e1c2c55 52%, transparent 64%);
-}
-.hero-copy { max-width: min(35rem, 54%); }
-.hero-copy h1 {
-  font-family: "Songti SC", "Noto Serif CJK SC", SimSun, serif;
-  font-size: clamp(3.1rem, 6.35vw, 6.25rem);
-  font-weight: 700;
-  letter-spacing: -.065em;
-  line-height: 1.12;
-  margin: 0 0 1.15rem;
-}
-.hero-lead { font-size: clamp(1.25rem, 2.2vw, 1.85rem); font-weight: 650; line-height: 1.45; }
-.hero-description { max-width: 29rem; color: #e0d2d4; font-size: clamp(1rem, 1.2vw, 1.125rem); }
-.hero-actions { display: flex; gap: .7rem; flex-wrap: wrap; margin: 1.65rem 0 .95rem; }
-.button {
-  display: inline-flex;
-  min-height: 2.8rem;
-  align-items: center;
-  justify-content: center;
-  padding: .55rem 1.1rem;
-  border: 1px solid transparent;
-  border-radius: .3rem;
-  font-weight: 700;
-  text-decoration: none;
-  color: #fff6f6;
-}
-.button.primary { background: var(--action); border-color: #ba4253; }
-.button.primary:hover { background: #bb3b50; color: white; }
-.button.secondary { background: #160f14a8; border-color: #8c666f; }
-.button.secondary:hover { background: #39252c; color: white; }
-.hero-release, .caption, .release-note { color: var(--muted); font-size: .875rem; }
-.hero-release { margin-bottom: 0; }
-.content-section { padding: clamp(2.75rem, 6.25vw, 5.75rem) 0; }
-.content-section + .content-section { border-top: 1px solid var(--line); }
-.section-heading { max-width: 47rem; margin-bottom: 1.8rem; }
-.section-heading h2, .legal-section h2 { font-size: clamp(2rem, 4vw, 3.2rem); letter-spacing: -.045em; }
-.section-heading p { margin: .8rem 0 0; color: var(--muted); }
-.feature-grid { display: grid; grid-template-columns: minmax(16rem, .78fr) minmax(0, 1.62fr); gap: 1.3rem clamp(1.75rem, 4.8vw, 5rem); align-items: center; }
-.feature-copy { min-width: 0; }
-.setup-steps { display: grid; gap: 1.15rem; margin: 0 0 1.45rem; padding-left: 1.55rem; }
-.setup-steps li { padding-left: .35rem; color: var(--muted); }
-.setup-steps li strong { color: var(--ink); }
-.setup-steps li::marker { color: var(--accent); font-weight: 700; }
-.release-note { padding: .75rem 0 .75rem 1rem; border-left: 2px solid #89626b; }
-.screen-frame { min-width: 0; }
-.screen-frame > a { display: block; border: 1px solid var(--line); border-radius: .65rem; overflow: hidden; background: #1a1419; }
-.screen-frame img { display: block; width: 100%; }
-.screen-frame .caption { margin-top: .52rem; }
-.wide-screen { max-width: 59rem; }
-.inline-links { color: var(--muted); }
-.screen-frame + .inline-links { margin-top: 1.25rem; }
-.platform-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.4rem, 4vw, 3rem); }
-.platform-panel { min-width: 0; }
-.platform-panel h3, .service-panel h3 { font-size: clamp(1.25rem, 2.3vw, 1.55rem); margin-bottom: .5rem; }
-.platform-panel p { color: var(--muted); }
-.phone-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; padding: .75rem 0 1rem; max-width: 26rem; }
-.phone-gallery img { display: block; width: 100%; aspect-ratio: 390 / 844; border: 1px solid var(--line); border-radius: .65rem; }
-.platform-grid + .caption { margin-top: 1.4rem; }
-.table-scroll { width: 100%; overflow: auto; margin-bottom: 1rem; border: 1px solid var(--line); border-radius: .55rem; }
-.table-scroll table { width: 100%; border-collapse: collapse; text-align: left; }
-.table-scroll th, .table-scroll td { padding: .7rem 1rem; vertical-align: top; }
-.table-scroll th { background: #271e24; }
-.table-scroll tr + tr { border-top: 1px solid var(--line); }
-.table-scroll code { white-space: nowrap; }
-.downloads td:first-child { min-width: 8.5rem; }
-.downloads a { display: inline-block; padding: .18rem 0; }
-.service-grid { display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: clamp(1.25rem, 4vw, 3rem); }
-.service-panel { border-top: 2px solid var(--line); padding-top: 1rem; }
-.service-panel:first-child { border-top-color: #b44a60; }
-.service-panel p { color: var(--muted); }
-.community-intro { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 1rem 3rem; margin-bottom: 1.4rem; }
-.community-intro .section-heading { margin: 0; }
-.community-intro .inline-links { margin-top: .85rem; }
-.community-art { display: block; width: 100%; aspect-ratio: 3 / 2; border-radius: .65rem; border: 1px solid var(--line); }
-.group-list {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: .75rem;
-  padding: 0;
-  margin: 0 0 1rem;
-}
-.group-list li { padding: .6rem .85rem; border: 1px solid var(--line); border-radius: .38rem; color: var(--muted); }
-.group-list code { display: block; margin-top: .1rem; font-size: 1.05rem; color: var(--ink); }
-.qr-gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem; text-align: center; }
-.qr-gallery img { aspect-ratio: 1284 / 2280; border-radius: .45rem; background: white; }
-.qr-gallery p { color: var(--muted); margin-top: .4rem; }
-details { background: var(--panel); border: 1px solid var(--line); border-radius: .55rem; padding: .85rem 1rem; }
-summary { cursor: pointer; font-weight: 700; }
-details[open] > summary { margin-bottom: .7rem; }
-pre { background: var(--background); border: 1px solid var(--line); border-radius: .35rem; padding: .8rem 1rem; overflow: auto; }
-.legal-section { padding-bottom: 2rem; }
-.legal-section h2 { margin-bottom: .8rem; font-size: clamp(1.6rem, 3vw, 2.2rem); }
-.legal-section p { color: var(--muted); }
-.about { border-top: 1px solid var(--line); padding: 1.25rem 0 .5rem; color: var(--muted); font-size: .875rem; }
-.about h3 { font-size: 1rem; margin-bottom: .3rem; }
-.about p { margin: 0; }
-@media (max-width: 54rem) {
-  .appbar { align-items: flex-start; flex-direction: column; gap: .6rem; }
-  .repo-tabs { gap: .25rem 1rem; }
-  .feature-grid { grid-template-columns: 1fr; }
-  .feature-copy { max-width: 40rem; }
-  .landing-hero { display: block; min-height: 0; aspect-ratio: auto; padding: 0; }
-  .hero-cover { position: static; width: 100%; height: auto; aspect-ratio: 7 / 5; object-position: right center; }
-  .landing-hero::after { display: none; }
-  .hero-copy { max-width: none; padding: 1.35rem 1.15rem 1.5rem; }
-}
-@media (max-width: 44rem) {
-  .hero-copy h1 { font-family: inherit; font-size: clamp(2.1rem, 9vw, 3.8rem); margin-bottom: .55rem; letter-spacing: -.045em; }
-  .hero-lead { margin-bottom: .65rem; }
-  .hero-actions { margin-top: 1.2rem; }
-  .platform-grid, .service-grid, .community-intro { grid-template-columns: minmax(0, 1fr); }
-  .group-list, .qr-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .table-scroll th, .table-scroll td { padding: .65rem .55rem; }
-  .community-art { max-width: 31rem; }
-}
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:#242329;background:#eeeae7;font:16px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}
+a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-decoration:underline}a:focus-visible,summary:focus-visible{outline:3px solid #c0324a;outline-offset:5px;border-radius:3px}
+.appbar{background:#19181c;color:#f9f5ef;border-bottom:3px solid #bc3049;padding:18px max(24px,calc((100vw - 1420px)/2));display:flex;justify-content:space-between;align-items:center;gap:24px}.repo-name{font-size:18px;font-weight:600;letter-spacing:.03em;display:flex;align-items:center;gap:12px}.repo-name img{width:38px;height:38px;object-fit:cover;border-radius:9px}.repo-name strong{color:#fff}.preview-label{font-size:14px;color:#c6bdbe}
+.repo-tabs{background:#fffdf9;padding:0 max(24px,calc((100vw - 1420px)/2));display:flex;gap:30px;border-bottom:1px solid #e5deda;overflow-x:auto;white-space:nowrap}.repo-tabs a{padding:14px 0;font-size:15px;color:#5c5456}.repo-tabs .selected{color:#ad203b;border-bottom:3px solid #ad203b;font-weight:700}
+.container{max-width:1480px;padding:32px;margin:auto}.notice{border:1px solid #dfd4cf;border-radius:16px;background:#fffaf5;padding:19px 24px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:center;gap:24px;font-size:15px}.notice strong{color:#8f2136}.notice a{background:#a8223b;color:#fff;border-radius:10px;padding:12px 18px;white-space:nowrap;font-weight:700}
+.repo-grid{display:grid;grid-template-columns:minmax(0,1090px) 260px;gap:30px;align-items:start}.readme{border:1px solid #e2d9d4;border-radius:18px;background:#fffdfb;overflow:hidden;min-width:0;box-shadow:0 12px 44px #33222707}.readme-tab{font-size:14px;padding:15px 30px;border-bottom:1px solid #e9e0dc;font-weight:600;color:#716568;background:#fcf9f6}
+.markdown-body{padding:36px;font-size:16px;overflow-wrap:anywhere}.markdown-body img{max-width:100%;height:auto;vertical-align:middle;border-radius:10px}.markdown-body>div[align="center"]>img:first-child{display:block;width:100%;border-radius:16px;box-shadow:0 18px 45px #2110181f}.markdown-body h1{font-size:clamp(28px,3.3vw,42px);line-height:1.32;letter-spacing:-.035em;padding-bottom:14px;margin:28px 0 18px;color:#17151a}.markdown-body h2{font-size:28px;line-height:1.4;border-bottom:1px solid #e6dcd6;padding-bottom:15px;margin:52px 0 22px;scroll-margin-top:24px;letter-spacing:-.02em}.markdown-body h3{font-size:21px;line-height:1.5;margin-top:30px}.markdown-body p{margin:15px 0 21px}.markdown-body sub{color:#75686c;font-size:14px;line-height:1.7}.markdown-body table{display:block;max-width:100%;width:100%;overflow-x:auto;border-collapse:collapse;font-size:15px;margin:24px 0;border-radius:10px}.markdown-body td,.markdown-body th{border:1px solid #e5dcd7;padding:16px;vertical-align:top;min-width:138px}.markdown-body th{background:#f5efeb;color:#3d3337;font-weight:700}.markdown-body td{background:#fffdfb}.markdown-body .model-spotlight{border:1px solid #b78995;box-shadow:0 12px 28px #4b182217}.markdown-body .model-spotlight th{background:#282126;color:#fff;border-color:#594049;font-size:18px}.markdown-body .model-spotlight td{background:#fff7f5}.markdown-body .model-spotlight td[colspan]{background:#f9ecea}.markdown-body blockquote{margin:28px 0;border-left:4px solid #b12740;border-radius:0 12px 12px 0;background:#faf0ee;padding:15px 22px;color:#593a43}.markdown-body blockquote p{margin:8px 0}.markdown-body pre{padding:20px;border:1px solid #e6dcd6;border-radius:12px;background:#f6f1ed;overflow:auto;line-height:1.65}.markdown-body code{font-family:Consolas,"SFMono-Regular",monospace;font-size:.91em}.markdown-body details{border:1px solid #e2d7d2;padding:17px 21px;border-radius:12px;margin-top:24px;background:#fcf9f7}.markdown-body summary{cursor:pointer;font-weight:600;font-size:15px;color:#76646a}.markdown-body hr{border:0;border-top:1px solid #e6dcd6;margin-top:38px}
+.about{padding:24px 20px;border:1px solid #e2d9d4;border-radius:16px;background:#fffdf9}.about h3{font-size:17px;margin:0 0 14px;color:#252026}.about p{font-size:14px;color:#76686d;line-height:1.9}.about .tag{display:inline-block;font-size:12px;background:#f7e7e7;color:#9e2940;border-radius:7px;padding:4px 9px;margin:0 3px 9px 0}.about hr{border:0;border-top:1px solid #e5dbd5;margin:25px 0}.about a{display:block;margin-top:14px;font-size:14px}
+@media(max-width:1100px){.repo-grid{grid-template-columns:1fr}.about{display:none}.container{padding:22px}.markdown-body{padding:30px}.preview-label{display:none}}
+@media(max-width:600px){.appbar{padding:18px}.repo-name{font-size:16px}.container{padding:12px}.readme{border-radius:12px}.readme-tab{padding:13px 18px}.markdown-body{padding:18px;font-size:16px}.markdown-body h1{font-size:25px}.markdown-body h2{font-size:25px;margin-top:38px}.markdown-body th,.markdown-body td{padding:12px;min-width:145px;font-size:15px}.markdown-body sub{font-size:13px}.notice{display:block;padding:17px;font-size:15px;margin-bottom:16px}.notice a{display:inline-block;margin-top:14px}.repo-tabs{gap:23px;padding:0 18px}.repo-tabs a{font-size:14px}.markdown-body blockquote{padding:12px 17px}.markdown-body details{padding:14px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 '''
 
 
@@ -303,37 +99,21 @@ def rebase_docs_paths(body, prefix):
 def render_page(body, version, local_preview):
     prefix = "/docs/" if local_preview else ""
     body = rebase_docs_paths(body, prefix)
-    avatar = f"{prefix}assets/coldcoffee-avatar.webp"
-    workbench_link = (
-        '<a class="open-workbench" href="/workbench/">打开软件交互预览</a>'
-        if local_preview else '<a href="#上手使用">从源码启动</a>'
-    )
-    return f'''<!doctype html>
-<html lang="zh-CN">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="冷咖啡工作台支持 OpenCode 与兼容中转接入、路由可视化、Android 与 iPhone 流式对话。">
-<meta name="theme-color" content="#120f12">
-<link rel="icon" type="image/webp" href="{avatar}">
-<title>冷咖啡工作台 · OpenCode 与中转接入</title>
-<style>{CSS}</style>
-</head>
-<body>
-<a class="skip-link" href="#内容">跳到正文</a>
-<header class="appbar">
-  <a class="repo-name" href="#内容"><img src="{avatar}" width="38" height="38" alt="">冷咖啡工作台</a>
-  <nav class="repo-tabs" aria-label="项目导航">
-    <a href="#opencode">OpenCode</a><a href="#手机端">手机端</a><a href="#下载">下载</a><a href="#冷咖啡服务">服务</a><a href="#冷咖啡社群">社群</a>{workbench_link}
-  </nav>
-</header>
-<main class="container" id="内容">
-<article><div class="markdown-body">{body}</div></article><aside class="about"><h3>当前预览</h3><p>{escape(version)}<br>Windows / macOS / Linux / Android / iOS</p></aside>
-</main>
-</body>
-</html>
-'''
-
+    workbench_href = "/workbench/" if local_preview else "#上手使用"
+    aside_text = "操作新版软件 ↗" if local_preview else "查看软件启动步骤 ↓"
+    asset_prefix = f"{prefix}assets/"
+    title = "冷咖啡 · GPT-6.2 Astra / Sol 双模型焦点"
+    label = "本地仓库主页预览" if local_preview else "Astra / Sol · 电脑、安卓与 iPhone"
+    return f'''<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="冷咖啡 GPT-6.2 Astra 与 Sol 模型焦点：连接自己的中转，读取实际模型 ID，在电脑、Android 和 iPhone 上流式对话。">
+<meta name="theme-color" content="#19181c">
+<link rel="icon" type="image/png" href="{asset_prefix}coldcoffee-noir-icon-62.png">
+<title>{title}</title><style>{CSS}</style></head><body>
+<header class="appbar"><div class="repo-name"><img src="{asset_prefix}coldcoffee-noir-avatar-62.png" alt=""><strong>冷咖啡</strong> / GPT-6.2</div><span class="preview-label">{label}</span></header>
+<nav class="repo-tabs" aria-label="项目导航"><a class="selected" href="#模型焦点">GPT-6.2 双模型</a><a href="#安卓手机端">Android 手机端</a><a href="#ios手机端">iPhone / iOS</a><a href="#软件界面">电脑工作台</a><a href="#下载">下载安装</a><a href="#冷咖啡服务">中转与定制</a><a href="#冷咖啡社群">冷咖啡社区</a></nav>
+<div class="container"><div class="notice"><span><strong>{escape(version)} · GPT-6.2 Astra / Sol。</strong> 连接后从 <code>/v1/models</code> 选准确 ID；账号权限以服务商为准。下载前请核对 GitHub Assets 与校验文件。</span><a href="#下载">选择你的设备 ↓</a></div>
+<div class="repo-grid"><article class="readme"><div class="readme-tab">冷咖啡 · Astra / Sol 产品预览与使用说明</div><div class="markdown-body">{body}</div></article><aside class="about"><h3>一杯冷咖啡，两种新焦点</h3><p>GPT-6.2 Astra 与 Sol 在模型目录中优先展示。准确 ID 从服务商返回列表中选择；电脑、Android 和 iPhone 共享清晰的接入与对话体验。</p><span class="tag">GPT-6.2 Astra</span><span class="tag">GPT-6.2 Sol</span><span class="tag">电脑＋手机</span><span class="tag">冷咖啡中转</span><span class="tag">独立闭源定制</span><hr><h3>当前预览</h3><p>{escape(version)}<br>预览版<br>Windows / macOS / Linux / Android / iOS<br>官网：coldcoffeeai.com<br>接口：coldcoffeeai.com/v1</p><a href="#安卓手机端">安卓界面与接入 ↓</a><a href="#软件界面">电脑端界面 ↓</a><a href="{prefix}ANDROID.md">安卓安装教程 ↗</a><a href="{prefix}IOS-MARKETING.md">iOS 构建与上架 ↗</a><a href="{prefix}MOBILE-PRIVACY.md">手机端数据与隐私 ↗</a><a href="{prefix}release-notes-{escape(version)}.md">本版更新说明 ↗</a><a href="{workbench_href}">{aside_text}</a><a href="#下载">统一下载入口 ↓</a><a href="#冷咖啡服务">付费中转与本机定制 ↓</a><a href="#冷咖啡社群">QQ / 微信咨询 / Telegram ↓</a><hr><p>顾客填写自己的 Key；公开发布内容不内置个人密钥。</p></aside></div></div></body></html>'''
 
 def generate(root, check=False):
     root = root.resolve()
