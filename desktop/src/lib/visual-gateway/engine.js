@@ -38,7 +38,7 @@ class MagpieEngine {
     // Isolate every client path: Magpie's background catalog maintenance must
     // never rewrite real client configs. Explicit customer writes use clients.js.
     const env = { ...process.env, HOME: home, USERPROFILE: home, APPDATA: path.join(home, 'AppData', 'Roaming'), LOCALAPPDATA: path.join(home, 'AppData', 'Local'), XDG_CONFIG_HOME: config, XDG_CACHE_HOME: path.join(this.directory, 'cache'), XDG_DATA_HOME: path.join(home, '.local', 'share'), XDG_STATE_HOME: path.join(home, '.local', 'state'), MAGPIE_NO_ACCOUNTS: '1', DO_NOT_TRACK: '1', MAGPIE_WEB_KEY: this.webKey, MAGPIE_THEME: 'dark' };
-    for (const key of Object.keys(env)) if (/^(CODEX_HOME|CLAUDE_CONFIG_DIR|DSH_HOME|GEMINI_CLI_HOME|KIMI_SHARE_DIR|QWEN_HOME|REASONIX_HOME|ANTE_HOME|MAGPIE_)/.test(key) && !['MAGPIE_NO_ACCOUNTS', 'MAGPIE_WEB_KEY', 'MAGPIE_THEME'].includes(key)) delete env[key];
+    for (const key of Object.keys(env)) if (/^(CODEX_HOME|CLAUDE_CONFIG_DIR|DSH_HOME|GEMINI_CLI_HOME|KIMI_SHARE_DIR|QWEN_HOME|REASONIX_HOME|ANTE_HOME|OPENCODE_CONFIG|MAGPIE_)/.test(key) && !['MAGPIE_NO_ACCOUNTS', 'MAGPIE_WEB_KEY', 'MAGPIE_THEME'].includes(key)) delete env[key];
     Object.assign(env, { CODEX_HOME: path.join(home, '.codex'), CLAUDE_CONFIG_DIR: path.join(home, '.claude'), DSH_HOME: path.join(home, '.dsh'), MAGPIE_PARTNERS: 'off' });
     const settings = path.join(config, 'magpie', 'settings.json');
     const saved = readConfig(settings, {});

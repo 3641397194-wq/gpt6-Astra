@@ -99,6 +99,10 @@ pre, code { font-family: Consolas, "Microsoft YaHei", monospace; }
 .gm-top, .gm-toolbar, .gm-footer, .gm-evidence { background: #1a131b; }
 .gm-item { background: #1c131b; }
 .relay-api-banner, .relay-closed, .relay-teaser, .activation-notice { border-radius: 12px; background: #21151e; border-color: #64374b; }
+.relay-opencode { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; margin-block: 16px; padding: 16px 20px; border: 1px solid #64374b; border-radius: 12px; background: #1b141a; }
+.relay-opencode h2 { margin: 0; font-size: 18px; }
+.relay-opencode p { margin: 4px 0 0; color: #cbbbc3; font-size: 14px; }
+.relay-opencode button { min-height: 42px; color: #f3c3ce; border-color: #8f5268; }
 .relay-api-label, .relay-state-label, .relay-config-actions button, .relay-state-list dt, .relay-state-list dd, .relay-field label, .relay-api-steps span, .relay-api-banner-copy p, .relay-badges span, .relay-workflow-card button, .relay-catalog-state { font-size: 13px !important; }
 .relay-api-config input, .relay-api-config select, .relay-api-config button, .relay-connection > button { font-size: 15px; }
 .relay-api-banner-copy strong { font-size: 22px; }

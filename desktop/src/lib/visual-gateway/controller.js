@@ -261,7 +261,13 @@ class VisualGateway {
         try { return await this.saveGroup(input); } finally { this.groupBusy = false; }
       }
       if (action === 'clients') return this.clients.list();
-      if (action === 'plan') { await this.start(); await this.readCatalog(true); if (!this.models().some(m => m.id === input.model)) throw new Error('请选择中转提供的有效模型或路由组'); return await this.clients.plan(input.client, input.model); }
+      if (action === 'plan') {
+        await this.start();
+        await this.readCatalog(true);
+        const model = this.models().find(m => m.id === input.model);
+        if (!model) throw new Error('请选择中转提供的有效模型或路由组');
+        return await this.clients.plan(input.client, model.id, model.context);
+      }
       if (action === 'connect') return this.clients.deploy(String(input.id || ''));
       if (action === 'restore') return this.clients.restore(input.client);
       if (action === 'send' || action === 'demo') return await this.send({ ...input, demo: action === 'demo' });

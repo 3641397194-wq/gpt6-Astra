@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 const crypto = require('node:crypto');
+const { openCodeTarget, openCodeConfig } = require('./opencode-config');
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');
 const read = file => fs.existsSync(file) ? fs.readFileSync(file) : null;
 const digest = data => data === null ? null : hash(data);
@@ -17,7 +18,8 @@ function filesUnder(root, id) {
   return names;
 }
 function ensureFile(file) {
-  if (fs.existsSync(file)) { const st = fs.lstatSync(file); if (!st.isFile() || st.isSymbolicLink() || st.size > 4 * 1024 * 1024) throw new Error('配置文件类型或大小有误，请检查目标软件配置'); }
+  const st = fs.lstatSync(file, { throwIfNoEntry: false });
+  if (st && (!st.isFile() || st.isSymbolicLink() || st.size > 4 * 1024 * 1024)) throw new Error('配置文件类型或大小有误，请检查目标软件配置');
 }
 class ClientConnector {
   constructor({ directory, engine, home = os.homedir(), env = process.env }) {
@@ -27,12 +29,13 @@ class ClientConnector {
       { id: 'codex', engineId: 'codex', name: 'Codex', root: env.CODEX_HOME || path.join(home, '.codex'), scratch: path.join(scratch, '.codex'), restart: '在 Codex 中新建会话；桌面端请重新打开。' },
       { id: 'claude', engineId: 'claude', name: 'Claude Code', root: env.CLAUDE_CONFIG_DIR || path.join(home, '.claude'), scratch: path.join(scratch, '.claude'), restart: '重新打开 Claude Code，再新建会话。' },
       { id: 'deepseek', engineId: 'dsh', name: 'DeepSeek Harness', root: env.DSH_HOME || path.join(home, '.dsh'), scratch: path.join(scratch, '.dsh'), restart: '重新打开 Harness，在新会话中选择冷咖啡网关模型。' },
+      { id: 'opencode', name: 'OpenCode', ...openCodeTarget(home, env), supportsSkills: false, restart: '保持冷咖啡工作台运行，重新打开 OpenCode。在 /models 中选择「冷咖啡本机网关」下的模型。' },
     ];
   }
   client(id) { const client = this.clients.find(c => c.id === id); if (!client) throw new Error('请先选择支持自动接入的软件'); return client; }
-  list() { return this.clients.map(({ id, name, root, restart }) => {
+  list() { return this.clients.map(({ id, name, root, restart, supportsSkills = true }) => {
     const latest = this.latest(id);
-    return { id, name, detected: fs.existsSync(root), restart, connected: latest?.status === 'applied', model: latest?.status === 'applied' ? latest.model : '', needsReconnect: latest?.status === 'applied' && latest.port !== this.engine.port };
+    return { id, name, detected: fs.existsSync(root), restart, supportsSkills, connected: latest?.status === 'applied', model: latest?.status === 'applied' ? latest.model : '', needsReconnect: latest?.status === 'applied' && latest.port !== this.engine.port };
   }); }
   latest(id) {
     if (!fs.existsSync(this.directory)) return null;
@@ -40,9 +43,21 @@ class ClientConnector {
       try { return JSON.parse(fs.readFileSync(path.join(this.directory, n, 'manifest.json'), 'utf8')); } catch { return null; }
     }).filter(m => m?.client === id).sort((a, b) => b.time.localeCompare(a.time))[0] || null;
   }
-  async plan(id, model) {
+  async plan(id, model, context) {
     const client = this.client(id);
     if (!/^[a-z][a-z0-9-]*\/.+/.test(model) || model.startsWith('local-demo/')) throw new Error('请选择已验证中转的真实模型');
+    if (id === 'opencode') {
+      const relative = client.filename();
+      const files = client.candidates.map(relative => {
+        const file = path.join(client.root, relative);
+        ensureFile(file);
+        return { relative, file, before: read(file) };
+      });
+      const { file, before } = files.find(candidate => candidate.relative === relative);
+      const after = openCodeConfig(relative, files, model, `${this.engine.url}/v1`, context);
+      const writes = digest(before) === digest(after) ? [] : [{ relative, file, before, after }];
+      return this.recordPlan(client, model, writes, { relative, port: this.engine.port, files });
+    }
     // Reuse the complete upstream native configuration adapter in its isolated
     // home. Only a reviewed, hash-checked transaction reaches the real client.
     const seeded = new Set([...filesUnder(client.scratch, id), ...filesUnder(client.root, id)]);
@@ -64,15 +79,20 @@ class ClientConnector {
       const before = read(file), after = read(source);
       if (after !== null && digest(before) !== digest(after)) writes.push({ relative, file, before, after });
     }
-    if (!writes.length) return { unchanged: true, client: id, name: client.name, files: [], message: '当前配置已经接入这个模型' };
-    const plan = { id: crypto.randomUUID(), client: id, model, time: Date.now(), writes, restart: client.restart };
-    this.plans.clear(); this.plans.set(plan.id, plan);
-    return { id: plan.id, client: id, name: client.name, model, files: writes.map(w => ({ name: w.relative, action: w.before === null ? '新建' : '备份并更新' })), restart: client.restart };
+    return this.recordPlan(client, model, writes);
+  }
+  recordPlan(client, model, writes, target) {
+    this.plans.clear();
+    if (!writes.length) return { unchanged: true, client: client.id, name: client.name, files: [], message: '当前配置已经接入这个模型' };
+    const plan = { id: crypto.randomUUID(), client: client.id, model, time: Date.now(), writes, restart: client.restart, target };
+    this.plans.set(plan.id, plan);
+    return { id: plan.id, client: client.id, name: client.name, model, files: writes.map(w => ({ name: w.relative, action: w.before === null ? '新建' : '备份并更新' })), restart: client.restart };
   }
   deploy(planId) {
     const plan = this.plans.get(planId);
     if (!plan || Date.now() - plan.time > 5 * 60 * 1000) throw new Error('接入预览已过期，请重新检查');
-    for (const w of plan.writes) { ensureFile(w.file); if (digest(read(w.file)) !== digest(w.before)) throw new Error('目标软件刚刚更新了配置，请重新预览后连接'); }
+    if (plan.target && (plan.target.relative !== this.client(plan.client).filename() || plan.target.port !== this.engine.port)) throw new Error('OpenCode 配置位置或本机端口刚刚发生变化，请重新预览后连接');
+    for (const w of plan.target?.files || plan.writes) { ensureFile(w.file); if (digest(read(w.file)) !== digest(w.before)) throw new Error('目标软件刚刚更新了配置，请重新预览后连接'); }
     const folder = path.join(this.directory, plan.id); fs.mkdirSync(folder, { recursive: true, mode: 0o700 });
     const manifest = { id: plan.id, client: plan.client, model: plan.model, port: this.engine.port, time: new Date().toISOString(), status: 'preparing', writes: [] };
     for (const [index, w] of plan.writes.entries()) {

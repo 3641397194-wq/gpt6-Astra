@@ -179,6 +179,9 @@ body[data-page="visual"] main { max-width: 1800px; }
 .vg-dialog-head { display: flex; justify-content: space-between; gap: 18px; align-items: center; }
 .vg-dialog-head h2 { font-size: 28px; margin: 6px 0 0; letter-spacing: 0; }
 .vg-dialog-head > button { border: 0; background: transparent; font-size: 30px; color: #cab0c2; padding: 0 8px; }
+.vg-setup-brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.vg-setup-brand img { flex-shrink: 0; border: 1px solid #644253; border-radius: 12px; object-fit: cover; }
+.vg-setup-brand h2 { margin: 0; }
 .vg-dialog-progress { display: flex; align-items: center; gap: 12px; margin: 28px 0; }
 .vg-dialog-progress > span { height: 1px; flex: 1; background: #57404e; }
 .vg-dialog-progress button { display: flex; align-items: center; gap: 9px; font-size: 15px; border: 0; padding: 0; background: none; color: #bba4b5; }
@@ -187,14 +190,18 @@ body[data-page="visual"] main { max-width: 1800px; }
 .vg-dialog-progress button.on b { background: #ce34551f; border-color: #c7627b; color: #ffccd9; }
 .vg-stage > h3 { font-size: 21px; margin-bottom: 8px; }
 .vg-stage > p { font-size: 15px; color: #bca9b6; }
-.vg-client-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
-.vg .vg-client-choice { border: 1px solid #55424e; background: #231c22; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; border-radius: 11px; padding: 22px 16px; text-align: left; min-width: 0; }
-.vg-client-choice b { font-size: 30px; line-height: 1; color: #dcc1cf; }
+.vg-client-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+.vg .vg-client-choice { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-content: center; align-items: center; gap: 4px 12px; min-width: 0; min-height: 86px; padding: 14px 16px; border: 1px solid #55424e; border-radius: 11px; background: #231c22; text-align: left; }
+.vg-client-choice b { display: grid; grid-row: span 2; place-items: center; width: 42px; height: 42px; border-radius: 9px; background: #30252d; font-size: 25px; line-height: 1; color: #dcc1cf; }
+.vg-client-choice[data-client="opencode"] b { font: 700 18px/1 Consolas, monospace; }
 .vg-client-choice strong { font-size: 17px; font-weight: 600; overflow-wrap: anywhere; }
 .vg-client-choice span { font-size: 13px; color: #b4a0ae; }
+.vg .vg-client-choice:hover { border-color: #9f697b; }
 .vg .vg-client-choice[aria-pressed="true"] { border-color: #dd758e; background: #c4365314; box-shadow: inset 0 0 0 1px #c4365320; }
+.vg-client-choice[aria-pressed="true"] b { background: #4e2b37; color: #f8c5d4; }
 .vg-dialog-actions { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 28px; flex-wrap: wrap; }
 .vg-dialog-actions > span { font-size: 13px; color: #b49dad; max-width: 250px; }
+.vg-dialog-actions > .vg-small-note { flex: 1 1 210px; margin: 0; }
 .vg-dialog-actions > button:not(.vg-primary) { font-size: 15px; color: #ccb2c2; background: transparent; }
 .vg-dialog label { font-size: 16px; color: #cbb7c4; margin: 20px 0 9px; }
 .vg-dialog input, .vg-dialog select { background: #100d11; border-color: #58424f; font-size: 16px; min-width: 0; }
@@ -308,8 +315,7 @@ body[data-page="visual"] main { max-width: 1800px; }
   .vg-dialog-progress button { gap: 5px; font-size: 14px; }
   .vg-dialog-progress button b { width: 26px; height: 26px; }
   .vg-client-choices { grid-template-columns: 1fr; }
-  .vg .vg-client-choice { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 6px 12px; padding: 16px; }
-  .vg-client-choice b { grid-row: span 2; align-self: center; }
+  .vg .vg-client-choice { padding-block: 10px; min-height: 70px; }
   .vg-field-row { align-items: stretch; flex-direction: column; gap: 0; }
   .vg-field-row > .vg-text-button { align-self: flex-start; margin-bottom: 4px; }
 }

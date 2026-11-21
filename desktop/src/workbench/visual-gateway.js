@@ -26,7 +26,7 @@
   const oldRelayLabel = document.querySelector('.nav[data-page="relay"] span:not(.shell-nav-icon)'); if (oldRelayLabel) oldRelayLabel.textContent = '高级接入';
   const page = document.createElement('section'); page.id = 'page-visual'; page.className = 'page vg';
   page.innerHTML = `
-    <header class="vg-heading"><img class="vg-hero-art" src="../../assets/brand-v6/hero.webp" alt="冷咖啡原创黑白漫画女生主视觉"><div class="vg-hero-copy"><div class="vg-hero-eyebrow"><span class="vg-kicker">冷咖啡 · 可视化工作台</span><span id="vg-engine" class="vg-pill">网关准备中</span></div><h1>连接你的 AI<span>，</span><br>看清每次请求<span>。</span></h1><p>选择中转和模型，实时查看请求的去向与耗时。</p><div class="vg-heading-actions"><button id="vg-setup" class="vg-primary">开始接入 <span>→</span></button><button id="vg-demo" class="vg-secondary">体验可视化 ↗</button></div></div></header>
+    <header class="vg-heading"><img class="vg-hero-art" src="../../assets/brand-v6/hero.webp" alt="冷咖啡加州海岸漫画封面"><div class="vg-hero-copy"><div class="vg-hero-eyebrow"><span class="vg-kicker">冷咖啡 · 可视化工作台</span><span id="vg-engine" class="vg-pill">网关准备中</span></div><h1>连接你的 AI<span>，</span><br>看清每次请求<span>。</span></h1><p>选择中转和模型，实时查看请求的去向与耗时。</p><div class="vg-heading-actions"><button id="vg-setup" class="vg-primary">开始接入 <span>→</span></button><button id="vg-demo" class="vg-secondary">体验可视化 ↗</button></div></div></header>
     <div id="vg-banner" class="vg-banner" role="status" hidden></div>
     <div id="vg-connection" class="vg-connection" data-state="starting"><div><strong id="vg-connection-title">正在连接本机网关</strong><span id="vg-connection-note" role="status">首次启动请稍候，接入配置会保留。</span></div><button id="vg-retry" type="button" class="vg-secondary" hidden>重新连接</button></div>
     <p id="vg-config-warning" class="vg-config-warning" role="status" hidden></p>
@@ -52,17 +52,41 @@
         <div id="vg-legend" class="vg-legend"></div><p class="vg-context-foot" id="vg-context-foot">只观测经过本机网关的请求；分类面积依据请求内容测量。</p><div class="vg-context-list-head"><strong>内容明细</strong><select id="vg-context-filter" aria-label="筛选上下文分类"><option value="all">全部分类</option></select></div><div id="vg-context-items" class="vg-context-items"></div>
       </section>
     </div><div class="vg-service-grid">
-      <section class="vg-card vg-quick"><div class="vg-card-head"><h2>现在就开始</h2><span class="vg-mini-number">01—03</span></div><ol class="vg-onboarding"><li id="vg-step-client"><b>1</b><div><strong>选择你的软件</strong><span>Codex · Claude · DeepSeek</span></div></li><li id="vg-step-relay"><b>2</b><div><strong>连接冷咖啡中转</strong><span>填自己的 Key，自动读模型</span></div></li><li id="vg-step-connect"><b>3</b><div><strong>备份并接入</strong><span>打开目标软件，输入「冷咖啡」</span></div></li></ol><button id="vg-quick-start" class="vg-primary vg-wide">开始接入 <span>→</span></button><div class="vg-model-picker"><label for="vg-model-select">下一次接入选用的模型</label><select id="vg-model-select"><option value="">先连接中转</option></select></div><button id="vg-install" class="vg-secondary vg-wide">安装 / 更新工作流</button><p class="vg-small-note">原来的十五个模型席位与技能包，仍在「一键破甲」里。</p></section>
+      <section class="vg-card vg-quick"><div class="vg-card-head"><h2>现在就开始</h2></div><ol class="vg-onboarding"><li id="vg-step-client"><b>1</b><div><strong>选择你的软件</strong><span>Codex · Claude Code · DeepSeek Harness · OpenCode</span></div></li><li id="vg-step-relay"><b>2</b><div><strong>连接冷咖啡中转</strong><span>填自己的 Key，自动读模型</span></div></li><li id="vg-step-connect"><b>3</b><div><strong>备份并接入</strong><span>重新打开目标软件，开始对话</span></div></li></ol><button id="vg-quick-start" class="vg-primary vg-wide">开始接入 <span>→</span></button><div class="vg-model-picker"><label for="vg-model-select">下一次接入选用的模型</label><select id="vg-model-select"><option value="">先连接中转</option></select></div><button id="vg-install" class="vg-secondary vg-wide">安装 / 更新工作流</button><p class="vg-small-note">「一键破甲」提供十五个 AI 模型席位。</p></section>
       <section class="vg-card vg-service"><span class="vg-kicker">冷咖啡付费中转</span><h3>少折腾，直接开工。</h3><p>内置工作流体验，接入 API 即可使用。按站内方案计费。</p><button id="vg-site" class="vg-site-button">coldcoffeeai.com <span>↗</span></button><div class="vg-service-links"><button id="vg-community">四个 QQ 群 / Telegram</button><button id="vg-custom">闭源工作流定制 ↗</button></div></section>
     </div>
     <section class="vg-card vg-history"><div class="vg-card-head"><div><h2>最近请求</h2><span id="vg-history-note" class="vg-subtle">点击一条，查看链路与上下文</span></div><div class="vg-history-actions"><select id="vg-filter" aria-label="筛选请求"><option value="all">全部请求</option><option value="real">真实中转</option><option value="demo">本机演示</option><option value="error">异常请求</option></select><button id="vg-refresh" class="vg-text-button">刷新</button></div></div><div id="vg-requests" class="vg-requests"><p class="vg-no-requests">还没有请求。接入软件后开始聊天，或先体验一次可视化。</p></div></section>
     <details class="vg-test-box"><summary>发一条测试消息 <span>真实模型请求会产生中转用量</span></summary><form id="vg-test-form"><label for="vg-test-input">测试内容</label><div><input id="vg-test-input" maxlength="16000" value="只回答：冷咖啡连接成功。"><button class="vg-primary" type="submit" id="vg-send">发送测试</button><button type="button" id="vg-cancel">停止</button></div></form><pre id="vg-response" aria-live="polite">在这里查看流式返回。</pre></details>
     <details class="vg-test-box"><summary>本机连接信息与恢复 <span>其他客户端也可以接入这个网关</span></summary><p id="vg-endpoint" class="vg-small-note">网关准备中</p><div class="vg-utility-actions"><button id="vg-copy-connection" type="button">复制连接信息</button><button id="vg-restore" type="button" disabled>恢复接入前配置</button></div><p id="vg-restore-note" class="vg-small-note">备份保存在本机，恢复前核对文件是否又被修改。</p></details>
     <div class="vg-bottom-note"><span>冷咖啡原创界面 · 本机网关实时观测</span><div><button id="vg-console" class="vg-console-button">完整引擎 / 高级功能 ↗</button><button id="vg-about">关于与开源许可</button></div></div>
-    <dialog id="vg-setup-dialog" class="vg-dialog"><div class="vg-dialog-head"><div><span class="vg-kicker">冷咖啡 · 快速接入</span><h2>三步，接好你的 AI。</h2></div><button data-vg-close="vg-setup-dialog" aria-label="关闭接入窗口">×</button></div><div class="vg-dialog-progress"><button data-vg-stage="1" class="on"><b>1</b>选软件</button><span></span><button data-vg-stage="2"><b>2</b>连中转</button><span></span><button data-vg-stage="3"><b>3</b>接好就用</button></div>
-      <section class="vg-stage" data-vg-section="1"><h3>你准备用哪个软件？</h3><p>按软件自己的配置格式接入，原配置先备份。</p><div id="vg-clients" class="vg-client-choices"></div><div class="vg-dialog-actions"><span>其他客户端也可使用本机 API 地址。</span><button id="vg-next-relay" class="vg-primary">下一步：连接中转 →</button></div></section>
+    <dialog id="vg-setup-dialog" class="vg-dialog" aria-labelledby="vg-setup-title">
+      <div class="vg-dialog-head">
+        <div class="vg-setup-brand"><img src="../../assets/brand-v6/avatar.webp" width="52" height="52" alt=""><h2 id="vg-setup-title">接入 AI 客户端</h2></div>
+        <button data-vg-close="vg-setup-dialog" aria-label="关闭接入窗口">×</button>
+      </div>
+      <div class="vg-dialog-progress" aria-label="接入步骤"><button data-vg-stage="1" class="on" aria-current="step"><b>1</b>选软件</button><span></span><button data-vg-stage="2"><b>2</b>连中转</button><span></span><button data-vg-stage="3"><b>3</b>选模型</button></div>
+      <section class="vg-stage" data-vg-section="1">
+        <h3 id="vg-client-heading">选择你使用的软件</h3><p>先预览变更，确认后备份并更新本机配置。</p>
+        <div id="vg-clients" class="vg-client-choices" role="group" aria-labelledby="vg-client-heading"></div>
+        <div class="vg-dialog-actions"><p id="vg-client-help" class="vg-small-note" role="status">其他客户端也可使用本机 API 地址。</p><button id="vg-next-relay" class="vg-primary">下一步：连接中转 →</button></div>
+      </section>
       <section class="vg-stage" data-vg-section="2" hidden><form id="vg-relay-form"><div class="vg-field-row"><label>选择中转<select id="vg-provider-select"><option value="coldcoffee">冷咖啡中转</option><option value="new">＋ 添加其他中转</option></select></label><button id="vg-buy" type="button" class="vg-text-button">购买 / 充值 ↗</button></div><div id="vg-other-provider" hidden><label>中转名称<input id="vg-provider-name" maxlength="40" placeholder="给这个中转取个名字"></label><label>API 地址<input id="vg-base" value="https://coldcoffeeai.com/v1" type="url" autocomplete="off"></label></div><label for="vg-key">填入你自己的 API Key</label><div class="vg-secret-field"><input id="vg-key" type="password" autocomplete="off" spellcheck="false" placeholder="填一次，接入你的软件"><button id="vg-key-toggle" type="button">显示</button></div><label class="vg-checkbox"><input id="vg-remember" type="checkbox">在这台电脑上加密记住 Key</label><p id="vg-key-note" class="vg-small-note">Key 由本机处理，连接信息中仅使用本机网关凭据。</p><details class="vg-protocol"><summary>接口协议与高级设置</summary><label>中转协议<select id="vg-protocol"><option value="auto">自动适配（Chat / Responses）</option><option value="responses">仅 OpenAI Responses</option><option value="chat">仅 OpenAI Chat</option></select></label></details><div class="vg-dialog-actions"><button type="button" data-vg-back="1">上一步</button><button id="vg-verify" class="vg-primary" type="submit">验证 Key，读取模型 →</button></div></form></section>
-      <section class="vg-stage" data-vg-section="3" hidden><div class="vg-connect-summary"><span>✦</span><div><h3 id="vg-ready-title">准备接入</h3><p id="vg-ready-text">先验证中转，再选模型。</p></div></div><label for="vg-setup-model">选择模型<select id="vg-setup-model"></select></label><label class="vg-checkbox"><input type="checkbox" id="vg-with-skills">接入后，一并安装冷咖啡工作流与技能包</label><p class="vg-small-note">这会使用原有一键安装器，备份并写入所选软件的技能文件。</p><div id="vg-plan" class="vg-plan" hidden></div><div class="vg-dialog-actions"><button type="button" data-vg-back="2">上一步</button><button id="vg-connect" class="vg-primary">检查配置变更 →</button></div><div id="vg-connected" class="vg-connected" hidden><strong>✓ 接入配置已写入</strong><p id="vg-restart-note"></p><div><span>在目标软件的对话框发送</span><button id="vg-copy-word">冷咖啡 ⧉</button></div><p>开始聊天后，回到连接图查看真实请求。</p><button id="vg-finish" class="vg-primary">回到可视化工作台 →</button></div></section><p id="vg-setup-status" class="vg-dialog-status" role="status" aria-live="polite"></p>
+      <section class="vg-stage" data-vg-section="3" hidden>
+        <div class="vg-connect-summary"><span>✦</span><div><h3 id="vg-ready-title">准备接入</h3><p id="vg-ready-text">先验证中转，再选模型。</p></div></div>
+        <label for="vg-setup-model">选择模型<select id="vg-setup-model"></select></label>
+        <div id="vg-skills-choice">
+          <label class="vg-checkbox"><input type="checkbox" id="vg-with-skills">接入后，一并安装冷咖啡工作流与技能包</label>
+          <p class="vg-small-note">这会使用原有一键安装器，备份并写入所选软件的技能文件。</p>
+        </div>
+        <p id="vg-opencode-note" class="vg-small-note" hidden>写入本机网关地址与 OpenCode 默认模型。请保持冷咖啡工作台运行。</p>
+        <div id="vg-plan" class="vg-plan" hidden></div>
+        <div class="vg-dialog-actions"><button type="button" data-vg-back="2">上一步</button><button id="vg-connect" class="vg-primary">检查配置变更 →</button></div>
+        <div id="vg-connected" class="vg-connected" hidden>
+          <strong>✓ 接入配置已写入</strong><p id="vg-restart-note"></p>
+          <div id="vg-activation-word"><span>在目标软件的对话框发送</span><button id="vg-copy-word">冷咖啡 ⧉</button></div>
+          <p>开始聊天后，回到连接图查看真实请求。</p><button id="vg-finish" class="vg-primary">回到可视化工作台 →</button>
+        </div>
+      </section><p id="vg-setup-status" class="vg-dialog-status" role="status" aria-live="polite"></p>
     </dialog>
     <dialog id="vg-detail-dialog" class="vg-dialog vg-detail-dialog"><div class="vg-dialog-head"><h2 id="vg-detail-title">请求详情</h2><button data-vg-close="vg-detail-dialog" aria-label="关闭详情">×</button></div><div id="vg-detail-meta"></div><div id="vg-detail-content"></div></dialog>
     <dialog id="vg-groups-dialog" class="vg-dialog vg-groups-dialog"><div class="vg-dialog-head"><div><span class="vg-kicker">多模型 · 多中转 · 自动切换</span><h2>路由组</h2></div><button data-vg-close="vg-groups-dialog" aria-label="关闭路由组">×</button></div><p class="vg-small-note">把多个模型或其他路由组组合成一个入口，再把这个入口接到你的 AI 软件。图中的历史请求保持原样，新策略只影响后续请求。</p><div id="vg-group-cards"></div><button id="vg-group-new" class="vg-secondary vg-wide">＋ 新建路由组</button><form id="vg-group-form" hidden><h3 id="vg-group-form-title">新建路由组</h3><div class="vg-field-row"><label>组名称<input id="vg-group-name" maxlength="80" required placeholder="例如：冷咖啡编程主备"></label><label>英文标识<input id="vg-group-id" maxlength="64" pattern="[a-z0-9][a-z0-9.\u002d]*" required placeholder="例如：coding-failover"></label></div><div class="vg-field-row"><label>路由策略<select id="vg-group-routing"></select></label><label>会话保持<select id="vg-group-affinity"></select></label></div><p class="vg-small-note" id="vg-group-edit-note">成员顺序决定「按顺序」策略的优先级。</p><div id="vg-group-members" class="vg-group-members"></div><div class="vg-field-row"><select id="vg-group-add" aria-label="选择路由组成员"></select><button id="vg-group-add-button" type="button">添加成员</button></div><div class="vg-dialog-actions"><button type="button" id="vg-group-abandon">取消编辑</button><button id="vg-group-save" type="submit" class="vg-primary">保存到网关</button></div></form><p id="vg-group-status" role="status" class="vg-dialog-status"></p></dialog>
@@ -89,7 +113,12 @@
     state.formBusy = busy;
     $('vg-setup-dialog').setAttribute('aria-busy', String(busy));
     $('vg-setup-dialog').querySelectorAll('input, select, button:not([data-vg-close])').forEach(control => { control.disabled = busy; });
-    if (!busy) { $('vg-remember').disabled = !state.snapshot?.encryption; $('vg-connect').disabled = !state.selected; }
+    if (!busy) {
+      $('vg-remember').disabled = !state.snapshot?.encryption;
+      $('vg-connect').disabled = !state.selected;
+      $('vg-next-relay').disabled = !state.clients.length;
+      $('vg-with-skills').disabled = !clientSupportsSkills();
+    }
   }
   function connectionStatus() {
     const running = !!state.snapshot?.engine?.running, error = state.connectionError || state.snapshot?.engine?.error;
@@ -118,7 +147,12 @@
   function stage(value) {
     state.stage = value; status('');
     document.querySelectorAll('[data-vg-section]').forEach(s => { s.hidden = Number(s.dataset.vgSection) !== value; });
-    document.querySelectorAll('[data-vg-stage]').forEach(b => { b.classList.toggle('on', Number(b.dataset.vgStage) === value); });
+    document.querySelectorAll('[data-vg-stage]').forEach(b => {
+      const active = Number(b.dataset.vgStage) === value;
+      b.classList.toggle('on', active);
+      if (active) b.setAttribute('aria-current', 'step');
+      else b.removeAttribute('aria-current');
+    });
     if (value === 3) {
       state.plan = null; $('vg-plan').hidden = true; $('vg-connect').hidden = false; $('vg-connect').textContent = '检查配置变更 →';
       const client = state.clients.find(c => c.id === state.client);
@@ -127,21 +161,52 @@
       $('vg-connected').hidden = true;
     }
   }
-  async function openSetup(value = 1) {
+  function clientSupportsSkills() {
+    return state.client !== 'opencode' && state.clients.find(client => client.id === state.client)?.supportsSkills !== false;
+  }
+  function syncClientSelection() {
+    const acceptsSkills = clientSupportsSkills();
+    $('vg-clients').querySelectorAll('button').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.client === state.client));
+    });
+    $('vg-client-help').textContent = state.client === 'opencode'
+      ? '使用 OpenCode 时请保持工作台运行，API Key 由工作台管理。'
+      : '其他客户端也可使用本机 API 地址。';
+    $('vg-skills-choice').hidden = !acceptsSkills;
+    $('vg-opencode-note').hidden = state.client !== 'opencode';
+    $('vg-activation-word').hidden = !acceptsSkills;
+    $('vg-with-skills').disabled = !acceptsSkills || state.formBusy;
+    if (!acceptsSkills) $('vg-with-skills').checked = false;
+  }
+  function selectClient(id) {
+    state.client = id;
+    state.plan = null;
+    state.restoreConfirm = false;
+    $('vg-restore').textContent = '恢复接入前配置';
+    syncClientSelection();
+    render();
+  }
+  async function openSetup(value = 1, clientId) {
     const revision = ++state.setupRevision;
+    if (clientId && !state.formBusy) selectClient(clientId);
     if (!$('vg-setup-dialog').open) $('vg-setup-dialog').showModal(); stage(value);
+    lockSetup(state.formBusy);
     if (state.formBusy) status('上一项操作仍在完成，请稍候。');
     try { const clients = await call('clients'); if (currentSetup(revision)) { state.clients = clients; renderClients(); lockSetup(state.formBusy); } } catch (error) { if (currentSetup(revision)) status(error.message); }
   }
   function renderClients() {
+    const marks = { codex: '⌘', claude: '✳', deepseek: '≈', opencode: '>_' };
     $('vg-clients').replaceChildren(...state.clients.map(client => {
-      const button = document.createElement('button'); button.type = 'button'; button.className = 'vg-client-choice'; button.dataset.client = client.id; button.setAttribute('aria-pressed', String(client.id === state.client));
-      const mark = document.createElement('b'); mark.textContent = client.id === 'codex' ? '⌘' : client.id === 'claude' ? '✳' : '≈';
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'vg-client-choice'; button.dataset.client = client.id;
+      const mark = document.createElement('b'); mark.textContent = marks[client.id] || '⌘'; mark.setAttribute('aria-hidden', 'true');
       const name = document.createElement('strong'); name.textContent = client.name;
-      const note = document.createElement('span'); note.textContent = client.connected ? '已写入接入配置' : client.detected ? '发现配置目录' : '连接时创建配置';
+      const note = document.createElement('span'); note.textContent = client.needsReconnect ? '端口已更新，需重新接入' : client.connected ? '已写入接入配置' : client.detected ? '发现配置目录' : '连接时创建配置';
       button.disabled = state.formBusy;
-      button.append(mark, name, note); button.addEventListener('click', () => { if (state.formBusy) return; state.client = client.id; state.plan = null; state.restoreConfirm = false; $('vg-restore').textContent = '恢复接入前配置'; renderClients(); render(); }); return button;
+      button.append(mark, name, note);
+      button.addEventListener('click', () => { if (!state.formBusy) selectClient(client.id); });
+      return button;
     }));
+    syncClientSelection();
   }
   function syncModels() {
     const models = state.snapshot?.availableModels || (state.snapshot?.providers || []).filter(p => p.hasKey).flatMap(p => p.models.map(m => ({ id: `${p.id}/${m}`, name: m, provider: p.name })));
@@ -195,7 +260,7 @@
     const client = state.clients.find(c => c.id === state.client);
     connectionStatus();
     $('vg-port').textContent = engine.running ? `本机 :${engine.port}` : '点击重新启动';
-    const agentNames = { codex: 'Codex', claude: 'Claude Code', 'claude-code': 'Claude Code', dsh: 'DeepSeek Harness', 'ColdCoffee-Workbench': '冷咖啡工作台' };
+    const agentNames = { codex: 'Codex', claude: 'Claude Code', 'claude-code': 'Claude Code', dsh: 'DeepSeek Harness', opencode: 'OpenCode', 'ColdCoffee-Workbench': '冷咖啡工作台' };
     $('vg-client-name').textContent = route?.demo ? '冷咖啡演示' : route ? agentNames[route.agent] || route.agent || 'AI 客户端' : client?.name || '你的 AI 软件';
     $('vg-client-status').textContent = route?.demo ? '来自软件内体验请求' : route ? '网关实际观测到的来源' : client?.connected ? '接入配置已写入' : '点击选择软件';
     if (client?.needsReconnect) $('vg-client-status').textContent = '端口已调整，请重新接入';
@@ -306,6 +371,7 @@
     catch (error) { tell(error.message); } finally { state.sending = false; await refresh(); }
   }
   $('vg-setup').onclick = () => openSetup(); $('vg-quick-start').onclick = () => openSetup(); $('vg-client-node').onclick = () => openSetup(1); $('vg-relay-node').onclick = () => openSetup(2); $('vg-model-node').onclick = () => openSetup(state.models.length ? 3 : 2);
+  $('relay-open-opencode')?.addEventListener('click', () => { show(); openSetup(1, 'opencode'); });
   for (const recommendation of recommendations) recommendation.onclick = async () => {
     const model = state.models.find(item => item.id === recommendation.dataset.model);
     if (model) {
@@ -349,7 +415,8 @@
   $('vg-connect').onclick = async () => {
     if (state.formBusy) return;
     if (!state.selected) { status('先验证中转并选择模型。'); return; }
-    const revision = state.setupRevision, client = state.client, model = state.selected, installSkills = $('vg-with-skills').checked;
+    const revision = state.setupRevision, client = state.client, model = state.selected;
+    const installSkills = clientSupportsSkills() && $('vg-with-skills').checked;
     lockSetup(true);
     try {
       if (!state.plan) {
