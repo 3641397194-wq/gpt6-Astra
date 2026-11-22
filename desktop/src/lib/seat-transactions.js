@@ -188,10 +188,12 @@ function nextBuffer(item, previous, spec) {
 }
 
 class SeatTransactions {
-  constructor({ plan = runtime.plan, now = Date.now, write = atomic } = {}) {
+  constructor({ plan = runtime.plan, now = Date.now, write = atomic, seat = null, preservePending = false } = {}) {
     this.root = null;
     this.pending = new Map();
     this.buildPlan = plan;
+    this.seat = seat;
+    this.preservePending = preservePending;
     this.now = now;
     this.write = write;
   }
@@ -217,7 +219,7 @@ class SeatTransactions {
 
   prepare(seat, { collectErrors = false } = {}) {
     const root = this.requireRoot();
-    if (!runtime.PACK_IDS.includes(seat)) throw new Error('未知模型席位');
+    if (this.seat ? seat !== this.seat : !runtime.PACK_IDS.includes(seat)) throw new Error('未知模型席位');
     const original = this.buildPlan(seat, root, { layout: this.layout });
     const spec = { ...original, writes: [...original.writes] };
     if (this.layout === 'deepseek-harness' && seat !== 'deepseek') throw new Error('席位与目录布局不匹配');
@@ -365,7 +367,11 @@ class SeatTransactions {
     const plan = this.getPlan(id);
     this.validateCurrent(plan.files, 'beforeHash');
     const changes = plan.files.filter((file) => file.changed);
-    if (!changes.length) { this.pending.clear(); return { ok: true, changed: 0, upstream: plan.upstream, message: '配置和完整技能均已一致，没有重复写入' }; }
+    if (!changes.length) {
+      if (this.preservePending) return { ok: true, id: plan.id, changed: 0, upstream: plan.upstream, message: '配置和完整技能均已一致，没有重复写入' };
+      this.pending.clear();
+      return { ok: true, changed: 0, upstream: plan.upstream, message: '配置和完整技能均已一致，没有重复写入' };
+    }
     const retained = changes.map((file) => ({
       path: file.path, kind: file.kind, kinds: file.kinds, sources: file.sources, changed: true, beforeHash: file.beforeHash, afterHash: file.afterHash,
       beforeMode: file.beforeMode, afterMode: file.afterMode,
@@ -409,7 +415,7 @@ class SeatTransactions {
       this.pending.clear();
       throw new Error(`写入失败：${error.message}；${conflicts.length ? '部分文件需人工检查' : '本次已写文件已回滚'}`);
     }
-    this.pending.clear();
+    if (!this.preservePending) this.pending.clear();
     return { ok: true, id: snapshot.id, changed: changes.length, root: this.root, upstream: plan.upstream, backup: this.journal(snapshot.id), message: '原词包与完整技能已写入，去重备份已保存；客户端加载与模型效果需另行验证' };
   }
 
@@ -440,7 +446,7 @@ class SeatTransactions {
 
   verify(seat) {
     const plan = this.prepare(seat, { collectErrors: true });
-    this.pending.clear();
+    if (!this.preservePending) this.pending.clear();
     const checks = plan.files.map((file) => {
       const error = file.readError || (!file.exists ? { code: 'ENOENT', message: '目标文件缺失' }
         : file.changed ? { code: 'CHECK_MISMATCH', message: '文件内容或权限与安装计划不匹配' } : null);

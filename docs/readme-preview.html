@@ -18,7 +18,7 @@ a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-deco
 </style></head><body>
 <header class="appbar"><div class="repo-name"><img src="/docs/assets/coldcoffee-noir-avatar-62.png" alt=""><strong>冷咖啡</strong> / GPT-6.2</div><span class="preview-label">本地仓库主页预览</span></header>
 <nav class="repo-tabs" aria-label="项目导航"><a class="selected" href="#模型焦点">GPT-6.2 双模型</a><a href="#安卓手机端">Android 手机端</a><a href="#ios手机端">iPhone / iOS</a><a href="#软件界面">电脑工作台</a><a href="#下载">下载安装</a><a href="#冷咖啡服务">中转与定制</a><a href="#冷咖啡社群">冷咖啡社区</a></nav>
-<div class="container"><div class="notice"><span><strong>3.3.0-preview.3 · GPT-6.2 Astra / Sol。</strong> 连接后从 <code>/v1/models</code> 选准确 ID；账号权限以服务商为准。下载前请核对 GitHub Assets 与校验文件。</span><a href="#下载">选择你的设备 ↓</a></div>
+<div class="container"><div class="notice"><span><strong>3.3.0-preview.4 · GPT-6.2 Astra / Sol。</strong> 连接后从 <code>/v1/models</code> 选准确 ID；账号权限以服务商为准。下载前请核对 GitHub Assets 与校验文件。</span><a href="#下载">选择你的设备 ↓</a></div>
 <div class="repo-grid"><article class="readme"><div class="readme-tab">冷咖啡 · Astra / Sol 产品预览与使用说明</div><div class="markdown-body"><div align="center">
   <img src="/docs/assets/coldcoffee-noir-cover-62.png" width="100%" alt="冷咖啡 GPT-6.2 Astra 与 Sol 原创品牌封面" />
   <p><img src="/docs/assets/coldcoffee-noir-icon-62.png" width="56" alt="冷咖啡品牌图标" /></p>
@@ -26,8 +26,8 @@ a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-deco
   <p><strong>连接更简单，模型随手切，过程看得见。</strong></p>
   <p>电脑上看清每次请求，手机上随时开始对话。Astra 与 Sol 加入推荐区，保留你已有的模型与中转配置；支持冷咖啡付费中转，也支持自选兼容服务商。</p>
   <p><a href="#安卓手机端"><strong>看看 Android ↓</strong></a> &nbsp;·&nbsp; <a href="#ios手机端"><strong>看看 iPhone ↓</strong></a> &nbsp;·&nbsp; <a href="#下载"><strong>下载安装 ↓</strong></a> &nbsp;·&nbsp; <a href="https://coldcoffeeai.com/"><strong>开通冷咖啡中转 ↗</strong></a> &nbsp;·&nbsp; <a href="#冷咖啡服务"><strong>闭源与定制服务 ↓</strong></a></p>
-  <p><a href="#软件界面">电脑端界面</a> · <a href="#opencode">OpenCode 接入</a> · <a href="#deepseek-harness">DeepSeek 插件</a> · <a href="#上手使用">上手使用</a> · <a href="#一键安装目标">十五个 AI 模型</a> · <a href="#冷咖啡社群">加入冷咖啡社群</a></p>
-  <p><sub>3.3.0-preview.3 预览版 · Windows / macOS / Linux / Android / iOS · <a href="https://coldcoffeeai.com/">coldcoffeeai.com</a></sub></p>
+  <p><a href="#软件界面">电脑端界面</a> · <a href="#opencode">OpenCode 接入</a> · <a href="#deepseek-harness">DeepSeek 插件</a> · <a href="#上手使用">上手使用</a> · <a href="#一键安装目标">16 个安装入口</a> · <a href="#冷咖啡社群">加入冷咖啡社群</a></p>
+  <p><sub>桌面与 Android 3.3.0-preview.4 · iOS 开发版 3.3.0-preview.3 · <a href="https://coldcoffeeai.com/">coldcoffeeai.com</a></sub></p>
 </div>
 
 <table id="模型焦点" class="model-spotlight">
@@ -42,7 +42,7 @@ a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-deco
 
 <table>
 <tr><th align="left" width="50%">电脑 · 冷咖啡破甲工作台</th><th align="left" width="50%">手机 · Android / iOS</th></tr>
-<tr><td>十五个模型席位、技能安装与备份恢复、真实路由可视化、DeepSeek Harness 插件。</td><td>Android APK、iOS SwiftUI 客户端、自定义中转、读取模型、流式对话、六类移动研究工作台、会话记录与冷咖啡社区。</td></tr>
+<tr><td>桌面 3.3.0-preview.4 含 16 个安装入口（原 15 个 ＋ OpenCode 客户端）、本机配置备份与恢复、路由可视化及 DeepSeek Harness 插件。</td><td>Android APK、iOS SwiftUI 客户端、自定义中转、读取模型、流式对话、六类移动研究工作台、会话记录与冷咖啡社区。</td></tr>
 <tr><td><a href="#可视化路由">查看电脑端路由与工作台 ↓</a></td><td><a href="#安卓手机端">查看移动端界面与接入方法 ↓</a></td></tr>
 </table>
 
@@ -93,7 +93,7 @@ a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-deco
 <table>
 <tr><th align="left">iOS 当前状态</th><th align="left">说明</th></tr>
 <tr><td><strong>源码</strong></td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/tree/main/mobile-ios">mobile-ios/</a> 已纳入仓库，包含 SwiftUI 客户端、Keychain 存储、HTTPS API、社群页、资源和 GPL-3.0-only 许可。</td></tr>
-<tr><td><strong>构建</strong></td><td>已通过 macOS CI 的五项模拟器测试与无签名设备构建；四页真实模拟器截图见上方。开发附件随本版发布。</td></tr>
+<tr><td><strong>构建</strong></td><td>已通过 macOS CI 的五项模拟器测试与无签名设备构建；四页真实模拟器截图见上方。开发附件沿用 3.3.0-preview.3。</td></tr>
 <tr><td><strong>TestFlight / App Store</strong></td><td>发布流程已准备，但需要 Apple Developer Team、签名证书、Provisioning Profile 与 App Store Connect 权限。当前没有真实上架链接，配置完成后再提交审核。</td></tr>
 </table>
 <p><strong>从源码开始：</strong>在 macOS 打开 <code>mobile-ios/ColdCoffeeIOS.xcodeproj</code>，选择 iPhone Simulator 运行；真机或分发构建需要你自己的 Apple 签名身份。完整的构建、隐私审计、版权和上架清单见 <a href="/docs/IOS-MARKETING.md">iOS 发布与宣传说明 ↗</a>。</p>
@@ -114,14 +114,11 @@ a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-deco
 <table>
 <tr><th align="left">实时路由</th><th align="left">上下文与接入</th></tr>
 <tr><td>主备与嵌套路由、命中与排除原因、每次尝试的状态和耗时</td><td>上下文分类、工具名称与次数、缓存率、剩余窗口和主动展开原文</td></tr>
-<tr><td>基础路由组编辑、成员排序、会话保持、历史请求与跟随最新</td><td>Codex、Claude Code、DeepSeek Harness、OpenCode 的配置预览、确认接入与原样恢复</td></tr>
+<tr><td>基础路由组编辑、成员排序、会话保持、历史请求与跟随最新</td><td>Codex、Claude Code、DeepSeek Harness 的配置预览、确认接入与恢复；桌面 3.3.0-preview.4 新增 <a href="#opencode">OpenCode 接入</a></td></tr>
 </table>
-<h2 id="opencode">中转接入 · 新增 OpenCode 选择</h2>
-<p>在「冷咖啡中转」的接入向导里选择 OpenCode。它只是一个新增客户端选项，不替换原有十五个 AI 模型席位或一键破甲工作流。选择模型后先预览配置，确认时备份写入，需要时可恢复。</p>
-<p align="center"><a href="/docs/assets/coldcoffee-opencode-workbench.png"><img src="/docs/assets/coldcoffee-opencode-workbench.png" width="100%" alt="冷咖啡中转向导，客户端选择区新增 OpenCode" /></a><br /><sub>OpenCode 为本次源码新增入口；公开 3.3.0-preview.3 安装包尚未包含。</sub></p>
 <p>复杂条件、权重和其他高级设置从软件内「完整引擎 / 高级功能」进入。<a href="https://coldcoffeeai.com/"><strong>开通冷咖啡付费中转 ↗</strong></a> · 需要收费本机闭源工作流与定制，进下方 QQ 群找管理。</p>
 
-<p><strong>电脑端保留的接入优化：</strong>模型多时可按名称或中转搜索；连接失败可直接重试，恢复后错误提示自动清除。向导关闭后清空密钥输入，迟到的旧结果不会覆盖新操作。配置损坏会先保留原文件备份，缩放保存失败也会明确提醒。<a href="/docs/release-notes-3.3.0-preview.3.md">查看本轮更新说明 ↗</a></p>
+<p><strong>电脑端保留的接入优化：</strong>模型多时可按名称或中转搜索；连接失败可直接重试，恢复后错误提示自动清除。向导关闭后清空密钥输入，迟到的旧结果不会覆盖新操作。配置损坏会先保留原文件备份，缩放保存失败也会明确提醒。<a href="/docs/release-notes-3.3.0-preview.4.md">查看本轮更新说明 ↗</a></p>
 
 <details><summary>展开查看：模型搜索与接入预览</summary>
 <p><img src="/docs/assets/coldcoffee-model-search-v10.png" width="100%" alt="冷咖啡接入向导的模型搜索，保留当前选择并预览待更新的配置" /></p>
@@ -129,14 +126,15 @@ a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-deco
 </details>
 
 <h2 id="软件界面">软件界面 · 安装、接入、社群</h2>
-<p><strong>勾选安装，写前备份，写后核验。</strong>十五个 AI 模型席位集中在一页，完整技能随包安装；随时检查安装状态，需要撤回时按备份恢复。</p>
-<p align="center"><a href="/docs/assets/coldcoffee-workbench-install-v8.png"><img src="/docs/assets/coldcoffee-workbench-install-v8.png" width="100%" alt="冷咖啡工作台一键安装页示意，展示模型席位、技能扩展与安装检查入口" /></a><br /><sub>一键破甲 · 只处理勾选的软件，备份、安装、核验和卸载集中操作</sub></p>
+<p><strong>16 个安装入口，同一张卡片网格。</strong>桌面 3.3.0-preview.4 保留原 15 个入口，OpenCode 是新增的第 16 个客户端入口，不是新 AI 模型。<a href="#一键安装目标">查看完整兼容表 ↓</a></p>
+<p align="center"><a href="/docs/assets/coldcoffee-workbench-install-current.png"><img src="/docs/assets/coldcoffee-workbench-install-current.png" width="100%" alt="冷咖啡当前源码预览的一键安装页，原 15 个入口和 OpenCode 卡片同页展示" /></a><br /><sub>一键安装页 · 原卡片网格内新增 OpenCode，未单独分组</sub></p>
+<p id="opencode"><strong>OpenCode 中转接入（桌面 3.3.0-preview.4）。</strong>在安装页原卡片网格的末尾可找到 OpenCode。中转配置另行设置：在「可视化工作台」点击「开始接入」，选择 OpenCode、中转和可用模型，预览待更新的本机配置后确认。若已有配置，写入前先备份，可从工作台恢复。使用 OpenCode 时保持工作台的本机网关运行，API Key 由工作台管理。<strong><a href="#已发布安装包">3.3.0-preview.4 桌面安装包</a>包含 OpenCode；此前的 3.3.0-preview.3 不含 OpenCode。</strong></p>
 <table>
-<tr><td width="50%"><a href="/docs/assets/coldcoffee-workbench-relay-v8.png"><img src="/docs/assets/coldcoffee-workbench-relay-v8.png" width="100%" alt="冷咖啡中转页，展示 API 地址、Key 输入、模型选择和 Codex 配置入口" /></a></td><td width="50%"><a href="/docs/assets/coldcoffee-workbench-community-v8.png"><img src="/docs/assets/coldcoffee-workbench-community-v8.png" width="100%" alt="冷咖啡社群页，展示四个 QQ 群、Telegram 群与频道" /></a></td></tr>
-<tr><td align="center"><strong>冷咖啡中转</strong><br /><sub>填写 Key、选择模型、复制 Codex 配置，查看实际接入状态</sub></td><td align="center"><strong>冷咖啡社群</strong><br /><sub>四个 QQ 群与 Telegram 入口，用法、售后和收费本机定制集中咨询</sub></td></tr>
+<tr><td width="50%"><a href="/docs/assets/coldcoffee-workbench-relay-current.png"><img src="/docs/assets/coldcoffee-workbench-relay-current.png" width="100%" alt="冷咖啡接入 AI 客户端向导的第一步，已选中 OpenCode" /></a></td><td width="50%"><a href="/docs/assets/coldcoffee-workbench-community-current.png"><img src="/docs/assets/coldcoffee-workbench-community-current.png" width="100%" alt="冷咖啡当前社群页，展示四个 QQ 群、Telegram 群与频道" /></a></td></tr>
+<tr><td align="center"><strong>冷咖啡中转</strong><br /><sub>客户端接入向导 · 第一步选中 OpenCode</sub></td><td align="center"><strong>冷咖啡社群</strong><br /><sub>四个 QQ 群与 Telegram 入口，用法、售后和收费本机定制集中咨询</sub></td></tr>
 </table>
 <p><strong>输入「冷咖啡」开始：</strong>安装完成后重启目标软件，在对话框里单独输入并发送「冷咖啡」。DeepSeek Harness 也可在右下角助手的启动框输入同一口令。</p>
-<p><sub>安装、接入与社群图展示既有功能，采用独立测试资料目录，未填写个人 Key。新版可视化路由界面见上图；社群卡片与二维码使用实际资源，点击可查看原图。</sub></p>
+<p><sub>安装、接入与社群图来自当前桌面源码预览，使用隔离测试资料，未填写个人 Key；不代表已验证真实服务调用。社群卡片与二维码使用实际资源，点击可查看原图。</sub></p>
 
 <h2 id="grok-bot-memory">Grok Bot · 冷咖啡记忆管理</h2>
 <p><strong>原有 Grok Bot 模型卡片，现在直接管理 Bot 记忆。</strong>打开「一键破甲」，在 Grok Bot 卡片上点「管理 Bot 云端记忆」。连接已登录的桌面客户端，选择 Bot，读取和搜索已保存的原文；需要写入或忘掉时，先预览并确认。</p>
@@ -169,18 +167,18 @@ a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-deco
 <p><a href="https://coldcoffeeai.com/"><strong>冷咖啡付费 API 中转 ↗</strong></a> · 闭源工作流提供收费的本机安装与定制，可使用现有订阅或其他中转；进 <a href="#冷咖啡社群">QQ 群</a>私聊管理沟通。</p>
 
 <h2 id="下载">下载</h2>
-<p><strong>3.3.0-preview.3 下载入口：</strong><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/latest">最新版下载页 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.3">preview.3 固定下载页 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases">全部历史版本 ↗</a>。安装包与对应源码见下表；下载时请核对发布页 Assets 与 SHA256SUMS。</p>
-<p><strong>3.3.0-preview.3 · 电脑与移动端统一说明：</strong>Windows、macOS、Linux 七个电脑安装包，加上一个安卓 APK；Android 对应源码与 SHA256SUMS 随同发布，iOS 源码和签名/上架流程已纳入仓库。电脑端保留十五个 AI 模型席位和原创工具箱；手机端使用自己的中转 Key 直接聊天，也能提交六类研究工作台任务。此版本为预览构建，iOS 尚待 Apple 签名和 App Store Connect 发布。</p>
-<table>
-<tr><th align="left">系统</th><th align="left">版本</th><th align="left">席位</th><th align="left">安装包</th></tr>
-<tr><td><strong>Android 手机</strong></td><td><code>3.3.0-preview.3</code></td><td>安卓聊天客户端，自定义中转与模型</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Mobile-Android-3.3.0-preview.3.apk">安卓安装包 .apk ↗</a></td></tr>
+<p><strong>桌面与 Android 3.3.0-preview.4：</strong><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.4">本版下载页 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases">全部历史版本 ↗</a>。下载以 GitHub Release 的 Assets 上架为准，请核对相应版本的 SHA256SUMS。</p>
+<p>本轮桌面发布覆盖 Windows、macOS 和 Linux 的七个安装包，统一含 16 个安装入口（含 OpenCode 客户端）；同一版本包含 Android APK 和对应源码。iOS 开发附件沿用 3.3.0-preview.3，仍需 Apple 签名与 App Store 审核。</p>
+<table id="已发布安装包">
+<tr><th align="left">系统</th><th align="left">版本</th><th align="left">版本功能</th><th align="left">安装包</th></tr>
+<tr><td><strong>Android 手机</strong></td><td><code>3.3.0-preview.4</code></td><td>安卓聊天客户端，自定义中转与模型</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Mobile-Android-3.3.0-preview.4.apk">安卓安装包 .apk ↗</a></td></tr>
 <tr><td><strong>iPhone / iOS</strong></td><td><code>3.3.0-preview.3 开发版</code></td><td>SwiftUI 客户端，需 Xcode 或 Apple 签名</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-iOS-Source-3.3.0-preview.3.zip">iOS 源码 .zip ↗</a> · <a href="/docs/IOS-MARKETING.md">构建与上架流程 ↗</a></td></tr>
-<tr><td><strong>Windows</strong></td><td><code>3.3.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-Windows-3.3.0-preview.3-x64.exe">免安装 .exe ↗</a></td></tr>
-<tr><td><strong>macOS Apple 芯片</strong></td><td><code>3.3.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Apple 芯片 arm64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-macOS-arm64-3.3.0-preview.3.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-macOS-arm64-3.3.0-preview.3.zip">.zip ↗</a></td></tr>
-<tr><td><strong>macOS Intel</strong></td><td><code>3.3.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，Intel x64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-macOS-x64-3.3.0-preview.3.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-macOS-x64-3.3.0-preview.3.zip">.zip ↗</a></td></tr>
-<tr><td><strong>Linux</strong></td><td><code>3.3.0-preview.3</code></td><td>十五个，含 Kimi K3.1 与 Agent 工作流，x86_64</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-Linux-x86_64-3.3.0-preview.3.AppImage">.AppImage ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Workbench-Linux-amd64-3.3.0-preview.3.deb">.deb ↗</a></td></tr>
+<tr><td><strong>Windows</strong></td><td><code>3.3.0-preview.4</code></td><td>16 个安装入口，含 OpenCode（x64）</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-Windows-3.3.0-preview.4-x64.exe">免安装 .exe ↗</a></td></tr>
+<tr><td><strong>macOS Apple 芯片</strong></td><td><code>3.3.0-preview.4</code></td><td>16 个安装入口，含 OpenCode（arm64）</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-macOS-arm64-3.3.0-preview.4.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-macOS-arm64-3.3.0-preview.4.zip">.zip ↗</a></td></tr>
+<tr><td><strong>macOS Intel</strong></td><td><code>3.3.0-preview.4</code></td><td>16 个安装入口，含 OpenCode（x64）</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-macOS-x64-3.3.0-preview.4.dmg">.dmg ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-macOS-x64-3.3.0-preview.4.zip">.zip ↗</a></td></tr>
+<tr><td><strong>Linux</strong></td><td><code>3.3.0-preview.4</code></td><td>16 个安装入口，含 OpenCode（x86_64）</td><td><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-Linux-x86_64-3.3.0-preview.4.AppImage">.AppImage ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-Linux-amd64-3.3.0-preview.4.deb">.deb ↗</a></td></tr>
 </table>
-<p><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-Mobile-Source-3.3.0-preview.3.zip"><strong>安卓客户端对应源码 .zip ↗</strong></a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/mobile/LICENSE">GPL-3.0 许可证</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/mobile/THIRD_PARTY_NOTICES.md">上游来源与修改说明</a>。完整仓库源码也可从本版标签获取。</p>
+<p><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Mobile-Source-3.3.0-preview.4.zip"><strong>安卓客户端对应源码 .zip ↗</strong></a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/mobile/LICENSE">GPL-3.0 许可证</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/mobile/THIRD_PARTY_NOTICES.md">上游来源与修改说明</a>。完整仓库源码也可从本版标签获取。</p>
 <p><strong>iOS 开发附件：</strong><a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-iOS-Unsigned-3.3.0-preview.3.zip">无签名 .app 开发构建 ↗</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/SHA256SUMS-iOS.txt">iOS SHA-256 校验 ↗</a>。它是供开发者签名使用的构建附件，并非可直接安装的 IPA；App Store / TestFlight 发布仍待 Apple 签名与审核。</p>
 <p>安卓下载 APK 后在手机上安装；手机若询问安装来源，按系统提示为本次下载来源授权。Windows 双击打开。macOS 第一次若被拦住，在程序图标上右键，选打开。Linux 的 AppImage 先加上可执行权限。deb 用系统的安装器。</p>
 <pre><code>cd desktop
@@ -193,16 +191,16 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 
 <h2 id="上手使用">上手使用</h2>
 <ol>
-<li><strong>选择设备：</strong>Android 安装当前发布的 APK；iPhone 从源码在 Xcode 运行或等待 TestFlight；电脑从下载表选择对应系统的已发布工作台。</li>
+<li><strong>选择设备：</strong>Android 安装当前发布的 APK；iPhone 从源码在 Xcode 运行或等待 TestFlight；电脑从下载表选择对应系统的工作台，下载前确认发布页附件已上线。</li>
 <li><strong>手机接入：</strong>选择「接入冷咖啡」或添加其他中转，填写自己的 Key，读取模型后回到聊天页。完整步骤见 <a href="/docs/ANDROID.md">安卓教程</a>。</li>
 <li><strong>一键破甲：</strong>只勾你要写的软件，按一下。写入之前会先备份。只改勾上的软件。</li>
 <li><strong>发送口令：</strong>打开那个软件，对话框里单独发「冷咖啡」。不想要了，回到这里按一键卸载，文件回到写入之前。</li>
 </ol>
 <p><strong>完整技能扩展：</strong>一键破甲同时附带 94 项完整技能、脚本和参考库。安装后重启目标软件，再单独发送「冷咖啡」。<a href="/docs/UPSTREAM-SKILLS.md">查看技能、依赖准备、校验与撤回说明</a>。</p>
 
-<h2 id="一键安装目标">十五个 AI 模型</h2>
-<p>一键破甲可以一次勾选十五个 AI 模型席位。只写勾上的，按下表顺序扫描、备份、安装和校验。</p>
-<table>
+<h2 id="一键安装目标">16 个一键安装入口</h2>
+<p>桌面 3.3.0-preview.4 保留安装页原有 15 个入口，新增第 16 个 OpenCode 客户端入口。入口数量不等于 AI 模型数量；此前的 3.3.0-preview.3 仅包含第 01–15 项。</p>
+<table id="安装入口列表">
 <tr><th align="left">#</th><th align="left">软件</th><th align="left">Windows</th><th align="left">macOS / Linux</th><th align="left">主文件</th></tr>
 <tr><td>01</td><td>GPT-6.2 Astra / Sol · Codex</td><td><code>%USERPROFILE%\.codex</code></td><td><code>~/.codex</code></td><td><code>prompts/cha-codex.md</code>，另写 <code>AGENTS.md</code> 和 <code>config.toml</code></td></tr>
 <tr><td>02</td><td>Claude Code全模型支持</td><td><code>%USERPROFILE%\.claude</code></td><td><code>~/.claude</code></td><td><code>CLAUDE.md</code></td></tr>
@@ -219,8 +217,9 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <tr><td>13</td><td>Claude Duet</td><td><code>%USERPROFILE%\.claude\skills</code></td><td><code>~/.claude/skills</code></td><td><code>coldcoffee-claude-duet/SKILL.md</code></td></tr>
 <tr><td>14</td><td>ChatGPT Dot</td><td><code>%USERPROFILE%\.codex\skills</code></td><td><code>~/.codex/skills</code></td><td><code>coldcoffee-chatgpt-dot/SKILL.md</code></td></tr>
 <tr><td>15</td><td>Meta Muse</td><td>选择实际 Skills 目录</td><td>选择实际 Skills 目录</td><td><code>coldcoffee-meta-muse/SKILL.md</code></td></tr>
+<tr><td>16</td><td><a href="#opencode">OpenCode</a>（客户端）</td><td>原网格中的客户端卡片</td><td>原网格中的客户端卡片</td><td>中转配置另行设置：<code>opencode.json</code> 或 <code>opencode.jsonc</code>（默认文件名）</td></tr>
 </table>
-<p>上表列出十五个 AI 模型席位的词包与技能主文件。完整技能扩展还会在所选数据根写入 <code>.coldcoffee-upstream/</code>、<code>.coldcoffee-history/</code> 和独立技能入口。已确认格式的客户端会合并 REA / IDA 连接配置（包括 <code translate="no">Cursor</code> 的 <code>mcp.json</code>）；其余客户端保留手动接入说明。所有写入仅限勾选的模型，写前备份、写后校验。</p>
+<p>上表第 01–15 项沿用原安装目标及主文件。完整技能扩展还会在所选数据根写入 <code>.coldcoffee-upstream/</code>、<code>.coldcoffee-history/</code> 和独立技能入口。已确认格式的客户端会合并 REA / IDA 连接配置（包括 <code translate="no">Cursor</code> 的 <code>mcp.json</code>）；其余客户端保留手动接入说明。写入仅限所选目标，写前备份、写后校验。第 16 项列出 OpenCode 的中转配置文件，以接入向导的预览结果为准。</p>
 <table>
 <tr><th align="left">软件</th><th align="left">不写</th></tr>
 <tr><td><code translate="no">Cursor</code></td><td>安装目录、<code>%APPDATA%\Cursor</code>、<code>skills-cursor</code>。环境变量 <code>CURSOR_HOME</code> 只有目录名仍是 <code>.cursor</code> 才用。规则头里有 <code>alwaysApply: true</code>。</td></tr>
@@ -231,7 +230,7 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <h2 id="四页">四页</h2>
 <table>
 <tr><th align="left">页</th><th align="left">做什么</th></tr>
-<tr><td><strong>01 一键破甲</strong></td><td>十五个 AI 模型席位打勾，按一下。写入前先备份。卸载把勾上的文件退回备份。</td></tr>
+<tr><td><strong>01 一键破甲</strong></td><td>原 15 个安装入口保持不变；3.3.0-preview.4 在同一网格新增 OpenCode 客户端卡片。</td></tr>
 <tr><td><strong>02 冷咖啡中转</strong></td><td>地址 <code>https://coldcoffeeai.com/v1</code>。Key 自己贴，只留在这台电脑。</td></tr>
 <tr><td><strong>03 冷咖啡社群</strong></td><td>需要闭源破甲，或者定制破甲，进群找管理。用法和售后也在这里。</td></tr>
 <tr><td><strong>04 工具箱</strong></td><td>16 项原创网络、网站、文件和文本工具；AI 自动调用、MCP / skill，以及 IDA 联动。</td></tr>
@@ -276,4 +275,4 @@ npm run pack:linux  # Linux AppImage + DEB</code></pre>
 <hr />
 <p align="center"><sub><a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/LICENSE">桌面及原有自有代码许可证</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/mobile/LICENSE">安卓客户端 GPL-3.0</a> · <a href="https://github.com/3641397194-wq/gpt6-Astra/blob/main/THIRD_PARTY_NOTICES.md">开源许可与第三方声明</a></sub></p>
 <p align="center"><strong>冷咖啡</strong> · 把想法做出来，把作品留下来。</p>
-</div></article><aside class="about"><h3>一杯冷咖啡，两种新焦点</h3><p>GPT-6.2 Astra 与 Sol 在模型目录中优先展示。准确 ID 从服务商返回列表中选择；电脑、Android 和 iPhone 共享清晰的接入与对话体验。</p><span class="tag">GPT-6.2 Astra</span><span class="tag">GPT-6.2 Sol</span><span class="tag">电脑＋手机</span><span class="tag">冷咖啡中转</span><span class="tag">独立闭源定制</span><hr><h3>当前预览</h3><p>3.3.0-preview.3<br>预览版<br>Windows / macOS / Linux / Android / iOS<br>官网：coldcoffeeai.com<br>接口：coldcoffeeai.com/v1</p><a href="#安卓手机端">安卓界面与接入 ↓</a><a href="#软件界面">电脑端界面 ↓</a><a href="/docs/ANDROID.md">安卓安装教程 ↗</a><a href="/docs/IOS-MARKETING.md">iOS 构建与上架 ↗</a><a href="/docs/MOBILE-PRIVACY.md">手机端数据与隐私 ↗</a><a href="/docs/release-notes-3.3.0-preview.3.md">本版更新说明 ↗</a><a href="/workbench/">操作新版软件 ↗</a><a href="#下载">统一下载入口 ↓</a><a href="#冷咖啡服务">付费中转与本机定制 ↓</a><a href="#冷咖啡社群">QQ / 微信咨询 / Telegram ↓</a><hr><p>顾客填写自己的 Key；公开发布内容不内置个人密钥。</p></aside></div></div></body></html>
+</div></article><aside class="about"><h3>一杯冷咖啡，两种新焦点</h3><p>GPT-6.2 Astra 与 Sol 在模型目录中优先展示。准确 ID 从服务商返回列表中选择；电脑、Android 和 iPhone 共享清晰的接入与对话体验。</p><span class="tag">GPT-6.2 Astra</span><span class="tag">GPT-6.2 Sol</span><span class="tag">电脑＋手机</span><span class="tag">冷咖啡中转</span><span class="tag">独立闭源定制</span><hr><h3>当前预览</h3><p>桌面与 Android：3.3.0-preview.4<br>Windows / macOS / Linux / Android<br>iOS 开发附件：3.3.0-preview.3<br>官网：coldcoffeeai.com<br>接口：coldcoffeeai.com/v1</p><a href="#安卓手机端">安卓界面与接入 ↓</a><a href="#软件界面">电脑端界面 ↓</a><a href="#opencode">OpenCode 接入 ↓</a><a href="/docs/ANDROID.md">安卓安装教程 ↗</a><a href="/docs/IOS-MARKETING.md">iOS 构建与上架 ↗</a><a href="/docs/MOBILE-PRIVACY.md">手机端数据与隐私 ↗</a><a href="/docs/release-notes-3.3.0-preview.4.md">本版更新说明 ↗</a><a href="/workbench/">操作新版软件 ↗</a><a href="#下载">统一下载入口 ↓</a><a href="#冷咖啡服务">付费中转与本机定制 ↓</a><a href="#冷咖啡社群">QQ / 微信咨询 / Telegram ↓</a><hr><p>顾客填写自己的 Key；公开发布内容不内置个人密钥。</p></aside></div></div></body></html>

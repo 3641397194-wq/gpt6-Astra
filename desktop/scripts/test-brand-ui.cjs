@@ -26,7 +26,11 @@ Object.assign(env, {
     page.on('pageerror', error => report.errors.push(error.message));
     await page.waitForSelector('#page-visual.active');
     await page.waitForFunction(() => document.getElementById('vg-engine').dataset.ready === 'true', { timeout: 40000 });
-    await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().find(w => w.webContents.getURL().includes('/workbench/index.html')).setContentSize(1480, 1000));
+    await app.evaluate(({ BrowserWindow }) => {
+      const win = BrowserWindow.getAllWindows().find(w => w.webContents.getURL().includes('/workbench/index.html'));
+      win.setContentSize(1480, 1000);
+      win.showInactive();
+    });
     await page.locator('.vg-hero-art').evaluate(img => img.decode());
     async function capture(file) {
       await page.evaluate(() => window.scrollTo(0, 0));
@@ -61,8 +65,17 @@ Object.assign(env, {
       await page.locator(`#page-${name}.active`).waitFor();
       await page.waitForFunction(() => document.documentElement.scrollWidth <= innerWidth + 1);
       if (name === 'packs') {
-        await page.waitForFunction(() => document.querySelectorAll('.newbie-card').length === 15);
+        await page.waitForFunction(() => document.querySelectorAll('.newbie-card').length === 16);
         assert.match(await page.locator('#newbie').evaluate(el => getComputedStyle(el).backgroundImage), /brand-v6/);
+        await page.evaluate(() => {
+          document.documentElement.style.setProperty('scroll-behavior', 'auto', 'important');
+          const card = document.querySelector('[data-skill-id="opencode"]');
+          window.scrollTo({ top: window.scrollY + card.getBoundingClientRect().top - 330, behavior: 'instant' });
+        });
+        const opencodeCard = await page.locator('[data-skill-id="opencode"]').boundingBox();
+        assert.ok(opencodeCard.y >= 0 && opencodeCard.y + opencodeCard.height <= 1000, 'OpenCode card must be visible in its capture');
+        await page.waitForTimeout(300);
+        await capture('04-opencode-card.png');
       }
       if (name === 'community') {
         assert.equal(await page.locator('#community .community-card').count(), 4);
@@ -72,7 +85,7 @@ Object.assign(env, {
       }
       await capture(`04-${name}.png`);
     }
-    report.checks.push('all fifteen model seats, original installer, relay and toolbox preserved; four QQ cards and both Telegram entrances present');
+    report.checks.push('original fifteen model seats plus OpenCode in the installer grid; relay and toolbox preserved; four QQ cards and both Telegram entrances present');
     await page.locator('.nav[data-page="visual"]').click();
     const splashFile = path.join(root, 'src/splash/index.html');
     const splashPromise = app.waitForEvent('window');

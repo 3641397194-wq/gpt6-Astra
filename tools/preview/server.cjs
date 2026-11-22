@@ -20,6 +20,12 @@ function previewRoot(seat){
  return path.join(base,seat==='cursor'?'.cursor':seat==='mimo'?'.config/mimocode':seat==='kimi'?'.kimi-code':seat);
 }
 function layout(seat){return seat==='deepseek'?'deepseek-harness':seat==='glm53'?'zcode':'default';}
+function previewLocalSkillRoot(value){
+ const base=path.join(root,'.coldbrew','interactive-preview'),candidate=path.resolve(String(value||''));
+ const relative=path.relative(base,candidate);
+ if(!value||relative.startsWith('..')||path.isAbsolute(relative))throw new Error('预览只允许使用项目内隔离目录');
+ return candidate;
+}
 function inspectUpstream(seat){
  const selected=previewRoot(seat),check=new SeatTransactions();
  check.select(selected,{layout:layout(seat)});
@@ -44,7 +50,8 @@ http.createServer(async(req,res)=>{
    else if(action==='upstream-status')result=inspectUpstream(payload.seat);
    else if(action==='local-skill-list')result=localAgentSkills.list({home:path.join(root,'.coldbrew','interactive-preview','fixture-home'),env:{}}).map(item=>({...item,suggestedSkillsRoot:item.manualRoot?'':item.suggestedSkillsRoot}));
    else if(action==='local-skill-select-default'){const profile=localAgentSkills.list({home:path.join(root,'.coldbrew','interactive-preview','fixture-home'),env:{}}).find(item=>item.id===payload.id);if(!profile||!profile.suggestedSkillsRoot)throw new Error('请手动选择 Agent Skills 目录');result=localAgentSkills.select(payload.id,profile.suggestedSkillsRoot);}
-   else if(action==='local-skill-choose'){const selected=path.join(root,'.coldbrew','interactive-preview','local-agent-skills',String(payload.id),'skills');result=localAgentSkills.select(payload.id,selected);}
+   else if(action==='local-skill-select-current'){result=localAgentSkills.select(payload.id,previewLocalSkillRoot(payload.root),{explicit:true});}
+   else if(action==='local-skill-choose'){const selected=path.join(root,'.coldbrew','interactive-preview','local-agent-skills',String(payload.id),'skills');result=localAgentSkills.select(payload.id,selected,{explicit:true});}
    else if(action==='local-skill-preview')result=localAgentSkills.preview(payload.id);
    else if(action==='local-skill-install'){if(payload.confirm!==true)throw new Error('请先确认写入');result=localAgentSkills.deploy(payload.id,payload.planId);}
    else if(action==='local-skill-verify')result=localAgentSkills.verify(payload.id);

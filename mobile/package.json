@@ -1,6 +1,6 @@
 {
   "name": "coldcoffee-mobile",
-  "version": "3.3.0-preview.3",
+  "version": "3.3.0-preview.4",
   "private": true,
   "type": "module",
   "description": "冷咖啡安卓客户端：原创界面、Chatbox 开源兼容模块与原生加密接入。",

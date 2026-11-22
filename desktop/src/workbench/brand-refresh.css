@@ -68,6 +68,7 @@ pre, code { font-family: Consolas, "Microsoft YaHei", monospace; }
 .newbie-shop strong { font-size: 21px; }
 .newbie-groups button, .newbie-shop-actions button, .newbie-status { font-size: 13px; }
 .newbie-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; perspective: none; }
+@media (min-width: 1600px) { .newbie-cards { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .newbie-card { min-height: 182px; border: 1px solid #4e3541; background: #181218ef; border-radius: 11px; box-shadow: none; transform: none !important; }
 .newbie-card:hover { background: #22171ff2; border-color: #a34f6c; }
 .newbie-card[aria-pressed="true"] { background: #2b1723f0; border-color: #db6d8d; box-shadow: inset 0 0 0 1px #a3436026; }

@@ -12,7 +12,7 @@ const OUTPUT = path.resolve(__dirname, '../work/deepseek-ui');
 const LABEL = 'DeepSeek v4.1 Flash 10.17版本';
 const EXPECTED_CARD_NAMES = [
   'Codex', 'Claude', 'Grok', LABEL, 'GLM', 'Gemini', '豆包', 'WorkBuddy', 'Cursor',
-  'MiniMax 3.1 Flash', 'Kimi K3.1', 'Grok Bot', 'Claude Duet', 'ChatGPT Dot', 'Meta Muse',
+  'MiniMax 3.1 Flash', 'Kimi K3.1', 'Grok Bot', 'Claude Duet', 'ChatGPT Dot', 'Meta Muse', 'OpenCode',
 ];
 const SIZES = [{ width: 1360, height: 1080 }, { width: 1080, height: 900 }];
 const MIME = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp' };
@@ -81,7 +81,7 @@ async function mockDesktop(context, platform) {
   assert.deepEqual([...scan, ...skills].map(row => row.name), EXPECTED_CARD_NAMES);
   await context.addInitScript(({ rows, skills, platform, catalog }) => {
     window.__deepseekUiCalls = [];
-    const record = (method, action) => window.__deepseekUiCalls.push({ method, action });
+    const record = (method, action, payload) => window.__deepseekUiCalls.push({ method, action, ...(payload ? { payload } : {}) });
     const noop = async () => null;
     window.coldbrew = {
       platform,
@@ -91,9 +91,12 @@ async function mockDesktop(context, platform) {
         if (action === 'catalog') return catalog;
         throw new Error('Unexpected fixture beginner action: ' + action);
       },
-      localSkills: async (action) => {
-        record('localSkills', action);
+      localSkills: async (action, payload = {}) => {
+        record('localSkills', action, payload);
         if (action === 'list') return skills;
+        if (action === 'select-current') return { root: payload.root, installFile: payload.root + '/coldcoffee-opencode/SKILL.md' };
+        if (action === 'preview') return { id: 'opencode-preview-fixture' };
+        if (action === 'install') return { ok: true, changed: 1, id: 'opencode-transaction-fixture', installFile: skills.at(-1).skillsRoot + '/coldcoffee-opencode/SKILL.md' };
         throw new Error('Unexpected fixture localSkills action: ' + action);
       },
       transaction: async (action) => {
@@ -175,8 +178,9 @@ async function measureLabel(locator) {
           await page.locator('#page-packs.active').waitFor();
           await page.locator('#newbie-cards .newbie-card').first().waitFor();
           result.modelSeats = await page.locator('#newbie-cards .newbie-card strong').allTextContents();
-          assert.deepEqual(result.modelSeats, EXPECTED_CARD_NAMES, id + ': all 15 model seats render in order');
-          assert.equal(await page.locator('#newbie-cards .newbie-card').count(), 15, id + ': exactly 15 model cards');
+          assert.deepEqual(result.modelSeats, EXPECTED_CARD_NAMES, id + ': original 15 model seats and OpenCode render in order');
+          assert.equal(await page.locator('#newbie-cards .newbie-card').count(), 16, id + ': original 15 cards plus one OpenCode card');
+          assert.equal(await page.locator('#newbie-cards [data-skill-id="opencode"]').count(), 1, id + ': only one OpenCode card in the original grid');
           label = page.locator('#newbie-cards strong').filter({ hasText: /^DeepSeek/ });
           assert.equal(await label.count(), 1, id + ': one DeepSeek card');
           const sidebar = await page.locator('#seats .seat-line').filter({ hasText: 'DeepSeek' }).evaluate(element => {
@@ -193,10 +197,26 @@ async function measureLabel(locator) {
             assert.deepEqual(result.ipcCalls.filter(call => call.method === 'beginner'), [
               { method: 'beginner', action: 'scan' }, { method: 'beginner', action: 'catalog' },
             ]);
-            assert.deepEqual(result.ipcCalls.filter(call => call.method === 'localSkills'), [
+            assert.deepEqual(result.ipcCalls.filter(call => call.method === 'localSkills').map(({ method, action }) => ({ method, action })), [
               { method: 'localSkills', action: 'list' },
             ], id + ': model skill discovery is read-only');
             assert.equal(result.ipcCalls.some(call => call.method === 'transaction'), false);
+            if (test.platform === 'win32') {
+              const selected = page.locator('#newbie-cards .newbie-card[aria-pressed="true"]');
+              for (let i = await selected.count() - 1; i >= 0; i--) await selected.nth(i).click();
+              const openCode = page.locator('#newbie-cards [data-skill-id="opencode"]');
+              await openCode.click();
+              assert.equal(await openCode.getAttribute('aria-pressed'), 'true');
+              await page.locator('#newbie-go').click();
+              await page.waitForFunction(() => document.querySelector('[data-skill-id="opencode"]').classList.contains('is-ok'));
+              const calls = await page.evaluate(() => window.__deepseekUiCalls);
+              assert.equal(calls.filter(call => call.method === 'beginner').some(call => call.action === 'install'), false, id + ': OpenCode must not install another model seat');
+              const selectedRoot = calls.filter(call => call.method === 'localSkills' && call.action === 'select-current').at(-1).payload.root;
+              const shownFile = await page.locator('#newbie-cards .newbie-card').last().locator('code').getAttribute('title');
+              assert.equal(shownFile, selectedRoot + '/coldcoffee-opencode/SKILL.md');
+              assert.equal(calls.filter(call => call.method === 'localSkills' && call.action === 'preview').length, 1);
+              assert.equal(calls.filter(call => call.method === 'localSkills' && call.action === 'install').length, 1);
+            }
           }
         }
         result.metrics = await measureLabel(label);

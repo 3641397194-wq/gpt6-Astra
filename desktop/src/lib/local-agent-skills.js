@@ -18,6 +18,17 @@ const states = new Map();
 function suggestedSkillsRoot(id, { env = process.env, home = os.homedir() } = {}) {
   const profile = profileById(id);
   if (profile.manualRoot) return '';
+  const absoluteEnv = (value) => {
+    const candidate = String(value || '').trim();
+    return candidate && path.isAbsolute(candidate) ? path.resolve(candidate) : '';
+  };
+  if (profile.seat === 'opencode') {
+    const customConfig = absoluteEnv(env.OPENCODE_CONFIG_DIR);
+    const xdgConfig = absoluteEnv(env.XDG_CONFIG_HOME);
+    if (customConfig) return path.join(customConfig, 'skills');
+    if (xdgConfig) return path.join(xdgConfig, 'opencode', 'skills');
+    return path.join(home, '.config', 'opencode', 'skills');
+  }
   const custom = profile.seat === 'codex' ? env.CODEX_HOME || env.CODEX_DIR
     : profile.seat === 'claude' ? env.CLAUDE_CONFIG_DIR || env.CLAUDE_HOME
       : env.GROK_HOME || env.GROK_DIR;
@@ -34,6 +45,8 @@ function createState(id, skillsRoot) {
   const body = fs.readFileSync(path.join(__dirname, 'packs', 'local-agent-skills', `${id}.md`), 'utf8')
     .replaceAll('{{ACTIVATION_REPLY}}', activationReply());
   const tx = new SeatTransactions({
+    seat: profile.seat,
+    preservePending: true,
     plan: (_seat, overrideHome) => ({
       home: overrideHome,
       pack: body,
@@ -55,10 +68,14 @@ function stateFor(id) {
 function list({ env, home } = {}) {
   return LOCAL_AGENT_PROFILES.map((profile) => {
     const active = states.get(profile.id);
-    const root = active?.skillsRoot || suggestedSkillsRoot(profile.id, { env, home });
+    // An automatically discovered root follows environment changes. A root
+    // explicitly selected in the directory picker remains authoritative.
+    const discovered = suggestedSkillsRoot(profile.id, { env, home });
+    const root = active?.explicit ? active.skillsRoot : discovered || active?.skillsRoot || '';
     if (!root) return { ...profile, suggestedSkillsRoot: '', skillsRoot: '', installFile: '', exists: false, installed: false };
     try {
-      const state = active || createState(profile.id, root);
+      const sameRoot = active && path.resolve(active.skillsRoot) === path.resolve(root);
+      const state = sameRoot || active?.explicit ? active : createState(profile.id, root);
       const verification = state.tx.verify(state.seat);
       return {
         ...profile,
@@ -74,9 +91,10 @@ function list({ env, home } = {}) {
   });
 }
 
-function select(id, skillsRoot) {
+function select(id, skillsRoot, { explicit = false } = {}) {
   const profile = profileById(id);
   const state = createState(id, skillsRoot);
+  state.explicit = explicit;
   return { ok: true, id, root: state.skillsRoot, installFile: path.join(state.root, 'SKILL.md'), agent: profile.agent };
 }
 
@@ -91,6 +109,7 @@ function deploy(id, transactionId) {
   const profile = profileById(id);
   const state = stateFor(id);
   const result = state.tx.deploy(transactionId);
+  if (result.changed === 0) result.id = state.tx.history().find(item => item.status === 'applied')?.id || result.id;
   return { ...result, profileId: id, profile: profile.name, agent: profile.agent, installFile: path.join(state.root, 'SKILL.md') };
 }
 

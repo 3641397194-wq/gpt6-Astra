@@ -221,6 +221,13 @@ handleTrusted("coldbrew:local-skills", async (_event, action, payload = {}) => {
     if (!profile || !root) throw new Error("这个席位需要手动选择 Agent Skills 目录");
     return localAgentSkills.select(id, root);
   }
+  if (action === "select-current") {
+    const profile = workbenchCore.LOCAL_AGENT_PROFILES.find((item) => item.id === id);
+    const root = typeof payload.root === "string" && path.isAbsolute(payload.root)
+      ? payload.root : profile && localAgentSkills.suggestedSkillsRoot(id);
+    if (!profile || !root) throw new Error("请选择 Agent 实际加载的绝对 Skills 目录");
+    return localAgentSkills.select(id, root, { explicit: true });
+  }
   if (action === "choose") {
     const profile = workbenchCore.LOCAL_AGENT_PROFILES.find((item) => item.id === id);
     if (!profile) throw new Error("未知本地 Agent 技能包");
@@ -228,7 +235,7 @@ handleTrusted("coldbrew:local-skills", async (_event, action, payload = {}) => {
       title: `选择 ${profile.agent} 实际加载的 Skills 目录`,
       properties: ["openDirectory", "createDirectory"],
     });
-    return result.canceled ? { canceled: true } : localAgentSkills.select(id, result.filePaths[0]);
+    return result.canceled ? { canceled: true } : localAgentSkills.select(id, result.filePaths[0], { explicit: true });
   }
   if (action === "preview") return localAgentSkills.preview(id);
   if (action === "install") {

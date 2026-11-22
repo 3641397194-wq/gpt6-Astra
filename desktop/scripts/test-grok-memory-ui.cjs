@@ -43,7 +43,7 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
     const page = await context.newPage();
     page.on('pageerror', error => report.errors.push(error.message));
     await page.goto('http://coldcoffee-fixture.test/src/workbench/index.html');
-    await page.waitForFunction(() => document.querySelectorAll('#newbie-cards .newbie-card').length === 15);
+    await page.waitForFunction(() => document.querySelectorAll('#newbie-cards .newbie-card').length === 16);
     const card = page.locator('[data-skill-id="grok-bot"]');
     const selected = await card.getAttribute('aria-pressed');
     const button = card.getByRole('button', { name: '管理 Bot 云端记忆' });
@@ -51,7 +51,7 @@ const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 't
     await page.locator('#grok-memory[open]').waitFor();
     assert.equal(await card.getAttribute('aria-pressed'), selected);
     assert.equal(f.calls.length, 0, 'opening must not load a login or contact service');
-    check('15 seats; keyboard entry does not change install selection; open is passive');
+    check('original fifteen model seats plus OpenCode; keyboard entry does not change install selection; open is passive');
     await page.locator('#gm-connect').click();
     await page.waitForFunction(() => document.querySelector('#gm-connection').textContent.includes('已连接'));
     assert.equal(await page.locator('#gm-bots button').count(), 2);

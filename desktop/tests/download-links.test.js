@@ -10,7 +10,9 @@ const { spawnSync } = require('node:child_process');
 const root = path.resolve(__dirname, '../..');
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const version = read('VERSION').trim();
+const IOS_VERSION = '3.3.0-preview.3';
 const repository = 'https://github.com/3641397194-wq/gpt6-Astra';
+const assetUrl = (tagVersion, name) => `${repository}/releases/download/v${tagVersion}/${name}`;
 const installers = [
   ['win', 'x64', 'exe', `ColdCoffee-Workbench-Windows-${version}-x64.exe`],
   ['mac', 'arm64', 'dmg', `ColdCoffee-Workbench-macOS-arm64-${version}.dmg`],
@@ -25,17 +27,19 @@ const mobileAssets = [
   `ColdCoffee-Mobile-Source-${version}.zip`,
 ];
 const iosDevelopmentAssets = [
-  `ColdCoffee-iOS-Source-${version}.zip`,
-  `ColdCoffee-iOS-Unsigned-${version}.zip`,
+  `ColdCoffee-iOS-Source-${IOS_VERSION}.zip`,
+  `ColdCoffee-iOS-Unsigned-${IOS_VERSION}.zip`,
   'SHA256SUMS-iOS.txt',
 ];
-const expected = [...installers.map(([, , , name]) => name), ...mobileAssets, ...iosDevelopmentAssets]
-  .map((name) => `${repository}/releases/download/v${version}/${name}`).sort();
+const desktopUrls = installers.map(([, , , name]) => assetUrl(version, name));
+const mobileUrls = mobileAssets.map((name) => assetUrl(version, name));
+const iosUrls = iosDevelopmentAssets.map((name) => assetUrl(IOS_VERSION, name));
+const expected = [...desktopUrls, ...mobileUrls, ...iosUrls].sort();
 const python = (process.platform === 'win32' ? ['python', 'py', 'python3'] : ['python3', 'python'])
   .find((command) => spawnSync(command, ['--version'], { windowsHide: true }).status === 0);
 
-function downloadLinks(source) {
-  return [...source.matchAll(/\bhref\s*=\s*["']([^"']+)["']/gi)]
+function downloadLinks(source, pattern = /\bhref\s*=\s*["']([^"']+)["']/gi) {
+  return [...source.matchAll(pattern)]
     .map((match) => match[1])
     .filter((url) => url.startsWith(`${repository}/releases/download/`))
     .sort();
@@ -64,10 +68,9 @@ test('the mobile package and Android version agree with the unified release', ()
   assert.equal(mobileAssets.length, 2, 'APK and corresponding GPL source are published together');
 });
 
-test('iOS development links include source, unsigned app, and separate checksums', () => {
-  assert.equal(iosDevelopmentAssets.length, 3);
-  assert.ok(iosDevelopmentAssets[0].includes(version));
-  assert.ok(iosDevelopmentAssets[1].includes(version));
+test('iOS development links include source, unsigned app, and checksums on the pinned release', () => {
+  const links = downloadLinks(read('README.md'));
+  for (const url of iosUrls) assert.ok(links.includes(url), `Missing ${url}`);
 });
 
 for (const relative of ['README.md', 'docs/index.html', 'docs/readme-preview.html']) {
@@ -76,10 +79,11 @@ for (const relative of ['README.md', 'docs/index.html', 'docs/readme-preview.htm
   });
 }
 
-test('the English README points at the same release version', () => {
+test('the English README points at the same split desktop/Android and iOS releases', () => {
   const source = read('README_EN.md');
-  assert.ok(source.includes(`[Download all platforms](${repository}/releases/tag/v${version})`));
-  assert.ok(source.includes(`Release ${version}:`));
+  assert.ok(source.includes(`[Desktop and Android release](${repository}/releases/tag/v${version})`));
+  assert.ok(source.includes(`[earlier release assets](${repository}/releases/tag/v${IOS_VERSION})`));
+  assert.deepEqual(downloadLinks(source, /\]\(([^()]+)\)/g), expected);
 });
 
 function fixture(t) {
@@ -137,7 +141,8 @@ test('isolated preview generation preserves the complete canonical README and is
       '<td><code translate="no">WorkBuddy</code></td>', '<td><code translate="no">Cursor</code></td>']) {
       assert.ok(page.includes(preserved), `${relative}: lost ${preserved}`);
     }
-    assert.ok(page.includes(`<h3>当前预览</h3><p>${version}<br>`));
+    assert.ok(page.includes(`<h3>当前预览</h3><p>桌面与 Android：${version}<br>`));
+    assert.ok(page.includes(`iOS 开发附件：${IOS_VERSION}<br>`));
   }
   assert.ok(first.get('docs/readme-preview.html').includes('href="/workbench/"'));
   assert.ok(first.get('docs/index.html').includes('href="#上手使用"'));
@@ -153,26 +158,24 @@ test('isolated preview generation preserves the complete canonical README and is
 });
 
 const missingAsset = {
-  'missing mobile APK': mobileAssets[0],
-  'missing mobile source': mobileAssets[1],
-  'missing iOS source': iosDevelopmentAssets[0],
-  'missing iOS unsigned app': iosDevelopmentAssets[1],
-  'missing iOS checksums': iosDevelopmentAssets[2],
+  'missing mobile APK': mobileUrls[0],
+  'missing mobile source': mobileUrls[1],
+  'missing iOS source': iosUrls[0],
+  'missing iOS unsigned app': iosUrls[1],
+  'missing iOS checksums': iosUrls[2],
 };
 for (const kind of ['version mismatch', 'stale installer', 'duplicate installer', ...Object.keys(missingAsset)]) {
   test(`generation validates ${kind} before touching existing previews`, (t) => {
     const dir = fixture(t);
     const readmePath = path.join(dir, 'README.md');
     if (kind === 'version mismatch') fs.writeFileSync(path.join(dir, 'VERSION'), '0.0.0-preview.1\n');
-    if (kind === 'stale installer') {
-      fs.writeFileSync(readmePath, fs.readFileSync(readmePath, 'utf8')
-        .replace(expected[0], expected[0].replace(`/v${version}/`, '/v0.0.0/')));
-    }
-    if (kind === 'duplicate installer') fs.appendFileSync(readmePath, `<a href="${expected[0]}">Duplicate</a>`);
-    if (missingAsset[kind]) {
-      const name = missingAsset[kind];
-      const url = `${repository}/releases/download/v${version}/${name}`;
-      fs.writeFileSync(readmePath, fs.readFileSync(readmePath, 'utf8').replace(url, '#removed-by-fixture'));
+    if (kind === 'duplicate installer') fs.appendFileSync(readmePath, `<a href="${desktopUrls[0]}">Duplicate</a>`);
+    if (kind === 'stale installer' || missingAsset[kind]) {
+      const url = missingAsset[kind] || desktopUrls[0];
+      const replacement = missingAsset[kind] ? '#removed-by-fixture' : url.replace(`/v${version}/`, '/v0.0.0/');
+      const source = fs.readFileSync(readmePath, 'utf8');
+      assert.ok(downloadLinks(source).includes(url), `Fixture did not contain ${url}`);
+      fs.writeFileSync(readmePath, source.replace(url, replacement));
     }
     const original = fs.readFileSync(readmePath);
     for (const name of ['index.html', 'readme-preview.html']) fs.writeFileSync(path.join(dir, 'docs', name), 'UNCHANGED');

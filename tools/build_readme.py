@@ -24,6 +24,8 @@ MOBILE_ASSETS = (
     "ColdCoffee-Mobile-Android-{version}.apk",
     "ColdCoffee-Mobile-Source-{version}.zip",
 )
+# iOS development attachments are published separately from the desktop/Android release.
+IOS_DEVELOPMENT_VERSION = "3.3.0-preview.3"
 IOS_DEVELOPMENT_ASSETS = (
     "ColdCoffee-iOS-Source-{version}.zip",
     "ColdCoffee-iOS-Unsigned-{version}.zip",
@@ -72,7 +74,11 @@ def validate_downloads(root, body):
         expected.append(f"{REPOSITORY}/releases/download/v{version}/{name}")
     expected.extend(
         f"{REPOSITORY}/releases/download/v{version}/{name.format(version=version)}"
-        for name in (*MOBILE_ASSETS, *IOS_DEVELOPMENT_ASSETS)
+        for name in MOBILE_ASSETS
+    )
+    expected.extend(
+        f"{REPOSITORY}/releases/download/v{IOS_DEVELOPMENT_VERSION}/{name.format(version=IOS_DEVELOPMENT_VERSION)}"
+        for name in IOS_DEVELOPMENT_ASSETS
     )
 
     parser = AnchorLinks()
@@ -82,7 +88,7 @@ def validate_downloads(root, body):
         missing = sorted((Counter(expected) - Counter(actual)).elements())
         unexpected = sorted((Counter(actual) - Counter(expected)).elements())
         raise ValueError(
-            "README release asset links do not match VERSION and artifactName"
+            "README release asset links do not match VERSION, artifactName or iOS development release"
             f"; missing={missing}; unexpected={unexpected}"
         )
     return version
@@ -113,7 +119,7 @@ def render_page(body, version, local_preview):
 <header class="appbar"><div class="repo-name"><img src="{asset_prefix}coldcoffee-noir-avatar-62.png" alt=""><strong>冷咖啡</strong> / GPT-6.2</div><span class="preview-label">{label}</span></header>
 <nav class="repo-tabs" aria-label="项目导航"><a class="selected" href="#模型焦点">GPT-6.2 双模型</a><a href="#安卓手机端">Android 手机端</a><a href="#ios手机端">iPhone / iOS</a><a href="#软件界面">电脑工作台</a><a href="#下载">下载安装</a><a href="#冷咖啡服务">中转与定制</a><a href="#冷咖啡社群">冷咖啡社区</a></nav>
 <div class="container"><div class="notice"><span><strong>{escape(version)} · GPT-6.2 Astra / Sol。</strong> 连接后从 <code>/v1/models</code> 选准确 ID；账号权限以服务商为准。下载前请核对 GitHub Assets 与校验文件。</span><a href="#下载">选择你的设备 ↓</a></div>
-<div class="repo-grid"><article class="readme"><div class="readme-tab">冷咖啡 · Astra / Sol 产品预览与使用说明</div><div class="markdown-body">{body}</div></article><aside class="about"><h3>一杯冷咖啡，两种新焦点</h3><p>GPT-6.2 Astra 与 Sol 在模型目录中优先展示。准确 ID 从服务商返回列表中选择；电脑、Android 和 iPhone 共享清晰的接入与对话体验。</p><span class="tag">GPT-6.2 Astra</span><span class="tag">GPT-6.2 Sol</span><span class="tag">电脑＋手机</span><span class="tag">冷咖啡中转</span><span class="tag">独立闭源定制</span><hr><h3>当前预览</h3><p>{escape(version)}<br>预览版<br>Windows / macOS / Linux / Android / iOS<br>官网：coldcoffeeai.com<br>接口：coldcoffeeai.com/v1</p><a href="#安卓手机端">安卓界面与接入 ↓</a><a href="#软件界面">电脑端界面 ↓</a><a href="{prefix}ANDROID.md">安卓安装教程 ↗</a><a href="{prefix}IOS-MARKETING.md">iOS 构建与上架 ↗</a><a href="{prefix}MOBILE-PRIVACY.md">手机端数据与隐私 ↗</a><a href="{prefix}release-notes-{escape(version)}.md">本版更新说明 ↗</a><a href="{workbench_href}">{aside_text}</a><a href="#下载">统一下载入口 ↓</a><a href="#冷咖啡服务">付费中转与本机定制 ↓</a><a href="#冷咖啡社群">QQ / 微信咨询 / Telegram ↓</a><hr><p>顾客填写自己的 Key；公开发布内容不内置个人密钥。</p></aside></div></div></body></html>'''
+<div class="repo-grid"><article class="readme"><div class="readme-tab">冷咖啡 · Astra / Sol 产品预览与使用说明</div><div class="markdown-body">{body}</div></article><aside class="about"><h3>一杯冷咖啡，两种新焦点</h3><p>GPT-6.2 Astra 与 Sol 在模型目录中优先展示。准确 ID 从服务商返回列表中选择；电脑、Android 和 iPhone 共享清晰的接入与对话体验。</p><span class="tag">GPT-6.2 Astra</span><span class="tag">GPT-6.2 Sol</span><span class="tag">电脑＋手机</span><span class="tag">冷咖啡中转</span><span class="tag">独立闭源定制</span><hr><h3>当前预览</h3><p>桌面与 Android：{escape(version)}<br>Windows / macOS / Linux / Android<br>iOS 开发附件：{escape(IOS_DEVELOPMENT_VERSION)}<br>官网：coldcoffeeai.com<br>接口：coldcoffeeai.com/v1</p><a href="#安卓手机端">安卓界面与接入 ↓</a><a href="#软件界面">电脑端界面 ↓</a><a href="#opencode">OpenCode 接入 ↓</a><a href="{prefix}ANDROID.md">安卓安装教程 ↗</a><a href="{prefix}IOS-MARKETING.md">iOS 构建与上架 ↗</a><a href="{prefix}MOBILE-PRIVACY.md">手机端数据与隐私 ↗</a><a href="{prefix}release-notes-{escape(version)}.md">本版更新说明 ↗</a><a href="{workbench_href}">{aside_text}</a><a href="#下载">统一下载入口 ↓</a><a href="#冷咖啡服务">付费中转与本机定制 ↓</a><a href="#冷咖啡社群">QQ / 微信咨询 / Telegram ↓</a><hr><p>顾客填写自己的 Key；公开发布内容不内置个人密钥。</p></aside></div></div></body></html>'''
 
 def generate(root, check=False):
     root = root.resolve()

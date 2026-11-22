@@ -12,13 +12,14 @@
 
 The refreshed clients highlight GPT-6.2 Astra and Sol when those models are present in your provider directory. Requests keep the exact returned model IDs and preserve existing selections; account access and pricing are determined by the provider.
 
-**3.3.0-preview.3 · WINDOWS / macOS / LINUX / ANDROID / iOS**
+**Desktop and Android 3.3.0-preview.4 · iOS development build 3.3.0-preview.3**
 
 <sub>One ColdCoffee brand, an original visual identity, and your own provider credentials.</sub>
 
 </div>
 
 <p align="center"><a href="#android--coldcoffee-on-your-phone"><strong>Android app ↓</strong></a> · <a href="#ios--coldcoffee-on-your-iphone"><strong>iPhone / iOS ↓</strong></a> · <a href="#original-toolbox--downloads"><strong>Downloads ↓</strong></a> · <a href="https://coldcoffeeai.com/"><strong>ColdCoffee paid API relay ↗</strong></a> · <a href="#coldcoffee-services"><strong>Local workflows and customization ↓</strong></a></p>
+<p align="center"><a href="#desktop-interface--install-connect-and-stay-in-touch">Desktop interface ↓</a> · <a href="#opencode">OpenCode setup ↓</a> · <a href="#02--16-installation-entries">16 installation entries ↓</a></p>
 
 ## Android / ColdCoffee on your phone
 
@@ -64,9 +65,9 @@ The preview passed all five simulator tests and the unsigned device build in mac
 
 These independent paid offerings do not turn the GPL mobile application into proprietary software. For WeChat contact or a WeChat group invitation, ask an administrator through the QQ groups; no unverified WeChat QR is published.
 
-## What's new in 3.3.0-preview.3
+## What's new in 3.3.0-preview.4
 
-Android and iOS clients join the existing desktop workbench, with unified provider setup, corresponding mobile sources, six mobile research lanes, and community/service access. iOS source and the signing/TestFlight/App Store preparation are included; actual store publication remains pending Apple credentials and review. Desktop routing retains stable nodes, the vintage Ragdoll courier, model search, connection retry, configuration recovery and zoom controls. See the [release notes](docs/release-notes-3.3.0-preview.3.md).
+The desktop workbench adds OpenCode as its 16th installation entry and as a client in the relay setup wizard. The desktop and Android release uses 3.3.0-preview.4; the iOS development downloads remain on 3.3.0-preview.3. See the [release notes](docs/release-notes-3.3.0-preview.4.md).
 
 ## Visual routing
 
@@ -110,38 +111,59 @@ npm ci
 npm start
 ```
 
-Build desktop packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). For Android, follow the [mobile build guide](docs/ANDROID.md#从源码构建). For iOS, follow the [iOS release guide](docs/IOS-MARKETING.md). Version 3.3.0-preview.3 is a preview build with unified release downloads and SHA-256 checksums; iOS is currently source/build preparation rather than a published App Store binary.
+Build desktop packages with the platform-specific commands: `npm run pack:win` (Windows portable), `npm run pack:mac` (macOS DMG and ZIP), or `npm run pack:linux` (Linux AppImage and DEB). For Android, follow the [mobile build guide](docs/ANDROID.md#从源码构建). For iOS, follow the [iOS release guide](docs/IOS-MARKETING.md). Desktop and Android 3.3.0-preview.4 share one release and SHA-256 checksums. The iOS 3.3.0-preview.3 development build is not a published App Store binary.
 
-All 15 model seats write an original CHA pack or skill into the selected local instruction directory. Backups land in each home's `cha-backups/`. Use `verify` and `restore` for the marked block. See [docs/SEAT-PACKS.md](docs/SEAT-PACKS.md).
+The original 15 installation entries retain their existing local setup. See [guide to the original entries](docs/SEAT-PACKS.md).
 
 IDA user plugins resolve to `%APPDATA%\\Hex-Rays\\IDA Pro\\plugins` on Windows, `~/Library/Application Support/Hex-Rays/IDA Pro/plugins` on macOS, and `~/.idapro/plugins` on Linux. Set `IDAUSR` to override the user directory. The IDA MCP package cache follows each platform's user data directory; set `DOUBAO_USER_SKILLS` or `WORKBUDDY_HOME` when a client uses a custom location.
 
-## 02 / Fifteen AI Models
+## 02 / 16 installation entries
 
-The 15 model seats are `GPT-6.2 Astra / Sol · Codex`, `Claude Code全模型支持`, `Grok 4.7`, `DeepSeek v4.1 Flash 10.17版本`, `GLM 5.3全模型支持`, `Gemini全模型支持`, `豆包`, `WorkBuddy`, `Cursor`, `MiniMax 3.1 Flash`, `Kimi K3.1`, `Grok Bot`, `Claude Duet`, `ChatGPT Dot`, and `Meta Muse`.
+The 3.3.0-preview.4 desktop workbench adds OpenCode to the original 15 installation entries. These are installation entries, not a count of AI models. The earlier 3.3.0-preview.3 desktop installers include entries 01–15 only.
+
+| # | Model or client | 3.3.0-preview.4 desktop |
+|---|---|---|
+| 01 | GPT-6.2 Astra / Sol · Codex | Included |
+| 02 | Claude Code (all supported models) | Included |
+| 03 | Grok 4.7 | Included |
+| 04 | DeepSeek v4.1 Flash (October 17 version) | Included |
+| 05 | GLM 5.3 (all supported models) | Included |
+| 06 | Gemini (all supported models) | Included |
+| 07 | 豆包 | Included |
+| 08 | WorkBuddy | Included |
+| 09 | Cursor | Included |
+| 10 | MiniMax 3.1 Flash | Included |
+| 11 | Kimi K3.1 | Included |
+| 12 | Grok Bot | Included |
+| 13 | Claude Duet | Included |
+| 14 | ChatGPT Dot | Included |
+| 15 | Meta Muse | Included |
+| 16 | [OpenCode](#opencode) (client) | Included; relay setup previews the local configuration file |
 
 The DeepSeek seat targets the October 17 official Harness `0.2.1-rc.2` on Windows, macOS, and Linux. It installs only under `$DSH_HOME` (default `~/.dsh`), with a short `AGENTS.md` entry and `skills/cha-deepseek/SKILL.md`; the shared `$DSH_AGENTS_HOME` / `~/.agents` root remains untouched. See the [Harness installation notes](docs/SEAT-PACKS.md#deepseek-官方-harness-安装说明).
 
 ## Desktop interface / Install, connect, and stay in touch
 
-Select the model seats you use, install their bundled skills, and check the result in one workbench. Files are backed up before writing and verified afterward; uninstall restores the saved backup.
+The 3.3.0-preview.4 desktop workbench shows all 16 installation entries in one grid. OpenCode is the new client card at the end of the existing grid, not a new AI model.
 
 <p align="center">
-  <a href="docs/assets/coldcoffee-workbench-install-v7.png"><img src="docs/assets/coldcoffee-workbench-install-v7.png" width="100%" alt="ColdCoffee Workbench installation page with model seats, skill resources, and installation checks" /></a><br />
-  <sub>Installation · Select clients, back up files, install, verify, and restore</sub>
+  <a href="docs/assets/coldcoffee-workbench-install-current.png"><img src="docs/assets/coldcoffee-workbench-install-current.png" width="100%" alt="Current ColdCoffee installation page with the original 15 entries and OpenCode in the same grid" /></a><br />
+  <sub>Installation · OpenCode joins the existing card grid</sub>
 </p>
+
+<p id="opencode"><strong>OpenCode relay setup (desktop 3.3.0-preview.4).</strong> Configure the relay separately from the installation card. In the <strong>Visual Workbench</strong>, click <strong>Start setup</strong>, then select OpenCode, a relay and an available model. Preview the local configuration before confirming. The Workbench backs up existing configuration and can restore it. Keep the Workbench’s local gateway running while using OpenCode; the Workbench manages the API key. <strong>The <a href="#original-toolbox--downloads">3.3.0-preview.4 desktop installers</a> include OpenCode; the earlier 3.3.0-preview.3 installers do not.</strong></p>
 
 <table>
   <tr>
-    <td width="50%"><a href="docs/assets/coldcoffee-workbench-relay-v7.png"><img src="docs/assets/coldcoffee-workbench-relay-v7.png" width="100%" alt="ColdCoffee relay page with the API address, key field, model selection, and Codex configuration" /></a></td>
-    <td width="50%"><a href="docs/assets/coldcoffee-workbench-community-v7.png"><img src="docs/assets/coldcoffee-workbench-community-v7.png" width="100%" alt="ColdCoffee community page with all four QQ groups, Telegram chat, and channel" /></a></td>
+    <td width="50%"><a href="docs/assets/coldcoffee-workbench-relay-current.png"><img src="docs/assets/coldcoffee-workbench-relay-current.png" width="100%" alt="First step of the ColdCoffee client connection wizard with OpenCode selected" /></a></td>
+    <td width="50%"><a href="docs/assets/coldcoffee-workbench-community-current.png"><img src="docs/assets/coldcoffee-workbench-community-current.png" width="100%" alt="Current ColdCoffee community page with all four QQ groups, Telegram chat, and channel" /></a></td>
   </tr>
-  <tr><td align="center"><strong>ColdCoffee relay</strong><br /><sub>Enter a key, choose a model, copy the Codex configuration, and check the connection</sub></td><td align="center"><strong>ColdCoffee community</strong><br /><sub>QQ and Telegram links for usage, support, and paid local customization</sub></td></tr>
+  <tr><td align="center"><strong>ColdCoffee relay</strong><br /><sub>Connection wizard · OpenCode selected in the first step</sub></td><td align="center"><strong>ColdCoffee community</strong><br /><sub>QQ and Telegram links for usage, support, and paid local customization</sub></td></tr>
 </table>
 
 **Enter 冷咖啡 to start:** after installation, restart the target client and send **冷咖啡** as a separate message. DeepSeek Harness also accepts the same word in the companion's activation field.
 
-<sub>The installation and community screenshots show existing features from an earlier Windows build, using an isolated test profile with no personal key. The routing screenshot above shows this release. Community cards use the actual assets. Click any screenshot to open the full image.</sub>
+<sub>These installation, relay and community screenshots show the current desktop source preview, using isolated test data and no personal key. They do not verify live API calls. The community cards use the actual assets. Click a screenshot to open it at full size.</sub>
 
 ## DeepSeek Harness / ColdCoffee workspace
 
@@ -204,7 +226,7 @@ In the desktop workbench, select **安装到 DeepSeek**, fully quit and reopen o
 
 <div align="center">
 
-`CHA / COLD BREW ZERO / BREAK//OPEN / GPT-6.2 ASTRA / SOL / DeepSeek v4.1 Flash 10.17版本 / GLM 5.3全模型支持 / GEMINI / 3.3.0-preview.3`
+`CHA / COLD BREW ZERO / BREAK//OPEN / GPT-6.2 ASTRA / SOL / DeepSeek v4.1 Flash 10.17版本 / GLM 5.3全模型支持 / GEMINI / 3.3.0-preview.4`
 
 </div>
 
@@ -218,12 +240,19 @@ Bot acknowledgement, independent readback, and new-conversation behavior are sho
 
 ![Original Grok Bot memory UI, isolated test data](docs/assets/coldcoffee-grok-memory-v8.png)
 
-Release 3.3.0-preview.3: seven Workbench installers and one Android APK share the same release, accompanied by the Android source and checksums. The iOS SwiftUI source and signing/TestFlight/App Store preparation are included in the repository, but no App Store binary is claimed before Apple signing and review. This remains a preview build. Desktop packages cover Windows x64 portable EXE, macOS Apple silicon arm64 and Intel x64 DMG/ZIP, and Linux x64 AppImage/DEB. The desktop workbench retains 15 AI model seats, including MiniMax 3.1 Flash, Kimi K3.1, Grok Bot, Claude Duet, ChatGPT Dot, and Meta Muse; the Android app connects to model APIs directly.
+Desktop and Android 3.3.0-preview.4 share a release. All seven desktop installers have 16 installation entries, including the OpenCode client. Download availability depends on the GitHub Release assets being published; verify the checksums for the version you install.
 
-[Download all platforms](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.3) · [Android installation and source](docs/ANDROID.md) · [iOS source and release guide](docs/IOS-MARKETING.md) · [Original toolbox and feature scope](docs/original-toolbox.md)
+| Desktop installer | Format | 3.3.0-preview.4 availability |
+|---|---|---|
+| Windows x64 | [Portable EXE](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-Windows-3.3.0-preview.4-x64.exe) | 16 installation entries; includes OpenCode |
+| macOS Apple silicon (arm64) | [DMG](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-macOS-arm64-3.3.0-preview.4.dmg), [ZIP](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-macOS-arm64-3.3.0-preview.4.zip) | 16 installation entries; includes OpenCode |
+| macOS Intel (x64) | [DMG](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-macOS-x64-3.3.0-preview.4.dmg), [ZIP](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-macOS-x64-3.3.0-preview.4.zip) | 16 installation entries; includes OpenCode |
+| Linux x86_64 | [AppImage](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-Linux-x86_64-3.3.0-preview.4.AppImage), [DEB](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Workbench-Linux-amd64-3.3.0-preview.4.deb) | 16 installation entries; includes OpenCode |
 
-[Default latest download page](https://github.com/3641397194-wq/gpt6-Astra/releases/latest) · [All releases](https://github.com/3641397194-wq/gpt6-Astra/releases). Share the release page or a complete versioned installer URL; do not mix an old tag with a new file name.
+[Desktop and Android release](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.4) · [Android APK](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Mobile-Android-3.3.0-preview.4.apk) · [Corresponding Android source](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.4/ColdCoffee-Mobile-Source-3.3.0-preview.4.zip) · [Android installation guide](docs/ANDROID.md)
 
-The release includes eight installers, the corresponding mobile source archive, and SHA256SUMS. Validation scope and remaining device/service checks are recorded in the release notes.
+iOS development downloads stay on 3.3.0-preview.3. See the [iOS source and release guide](docs/IOS-MARKETING.md) or [earlier release assets](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.3). The unsigned app is not an App Store binary or directly installable IPA.
+
+[All releases](https://github.com/3641397194-wq/gpt6-Astra/releases) · [Original toolbox and feature scope](docs/original-toolbox.md)
 
 The 16 original tools run inside the application. AI automation provides a real tool/observation loop, with a 19-tool MCP server and an exportable skill. Larger exploitation, ticket/domain and remote-session modules remain future work.

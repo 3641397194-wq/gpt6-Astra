@@ -16,8 +16,8 @@ function fixture(t) {
   return path.join(base, 'agent-skills');
 }
 
-test('four local Agent profiles stay independent from relay models and expose truthful target rules', () => {
-  assert.deepEqual(LOCAL_AGENT_PROFILES.map(item => item.id), ['grok-bot', 'claude-duet', 'chatgpt-dot', 'meta-muse']);
+test('five local Agent profiles include OpenCode independently from relay models', () => {
+  assert.deepEqual(LOCAL_AGENT_PROFILES.map(item => item.id), ['grok-bot', 'claude-duet', 'chatgpt-dot', 'meta-muse', 'opencode']);
   const home = path.join(tempRoot, 'coldcoffee-fixture-home');
   assert.equal(localSkills.suggestedSkillsRoot('grok-bot', { home, env: {} }), path.join(home, '.grok', 'skills'));
   assert.equal(localSkills.suggestedSkillsRoot('claude-duet', { home, env: {} }), path.join(home, '.claude', 'skills'));
@@ -35,7 +35,7 @@ test('one-click card discovery checks default skill files without creating Agent
     CODEX_HOME: path.join(base, 'codex-home'),
   };
   const rows = localSkills.list({ home: base, env });
-  assert.deepEqual(rows.map((item) => item.id), ['grok-bot', 'claude-duet', 'chatgpt-dot', 'meta-muse']);
+  assert.deepEqual(rows.map((item) => item.id), ['grok-bot', 'claude-duet', 'chatgpt-dot', 'meta-muse', 'opencode']);
   assert.ok(rows.slice(0, 3).every((item) => item.exists === false && item.installed === false && item.installFile.endsWith('SKILL.md')));
   assert.equal(rows[3].manualRoot, true);
   assert.equal(rows[3].installFile, '');
@@ -46,7 +46,7 @@ test('one-click card discovery checks default skill files without creating Agent
 
 test('preview is read-only; install is backed up, hash-verified, and restorable', (t) => {
   const skillsRoot = fixture(t);
-  localSkills.select('claude-duet', skillsRoot);
+  localSkills.select('claude-duet', skillsRoot, { explicit: true });
   const plan = localSkills.preview('claude-duet');
   assert.equal(plan.changes, 1);
   assert.equal(fs.existsSync(plan.installFile), false);

@@ -4,7 +4,7 @@
   else root.ColdCoffeeCore = api;
 })(typeof globalThis === 'object' ? globalThis : this, function () {
   'use strict';
-  const VERSION = '3.3.0-preview.3';
+  const VERSION = '3.3.0-preview.4';
   const DEEPSEEK_LABEL = 'DeepSeek v4.1 Flash 10.17版本';
   const SEATS = [
     {id:'codex',tag:'GPT-6.2 Astra / Sol',mark:'01',hint:'目标清单 → 最小实现 → 验收证据'},
@@ -23,7 +23,8 @@
     {id:'grok-bot',name:'Grok Bot',seat:'grok',agent:'Grok 4.7 模型',root:'.grok/skills',skill:'coldcoffee-grok-bot',summary:'快速拆解目标，列出依据与待验证项。'},
     {id:'claude-duet',name:'Claude Duet',seat:'claude',agent:'Claude Code 模型',root:'.claude/skills',skill:'coldcoffee-claude-duet',summary:'分阶段整理需求、变更、测试与交付。'},
     {id:'chatgpt-dot',name:'ChatGPT Dot',seat:'codex',agent:'GPT-6.2 Astra / Sol',root:'.codex/skills',skill:'coldcoffee-chatgpt-dot',summary:'把目标转成可执行任务，并记录验证结果。'},
-    {id:'meta-muse',name:'Meta Muse',seat:'gemini',agent:'Gemini 模型',root:'手动选择 Skills 目录',skill:'coldcoffee-meta-muse',summary:'创意发散、内容结构化与多方案比较。',manualRoot:true}
+    {id:'meta-muse',name:'Meta Muse',seat:'gemini',agent:'Gemini 模型',root:'手动选择 Skills 目录',skill:'coldcoffee-meta-muse',summary:'创意发散、内容结构化与多方案比较。',manualRoot:true},
+    {id:'opencode',name:'OpenCode',seat:'opencode',agent:'OpenCode',root:'.config/opencode',skill:'coldcoffee-opencode',summary:'安装冷咖啡本地工作流，单独输入「冷咖啡」启动。',customRoot:true}
   ];
   const PROFILES = [
     {id:'max',label:'全开',code:'MAX',brief:'完整交付、验收与后续步骤'},

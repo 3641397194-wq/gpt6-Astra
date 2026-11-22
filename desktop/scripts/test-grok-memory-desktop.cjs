@@ -81,7 +81,7 @@ if (process.platform === 'win32') {
       win.webContents.setBackgroundThrottling(false); win.setContentSize(1500, 1100); win.showInactive();
     });
     phase('model-cards');
-    await page.waitForFunction(() => document.querySelectorAll('#newbie-cards .newbie-card').length === 15, null, { polling: 100, timeout: 30000 });
+    await page.waitForFunction(() => document.querySelectorAll('#newbie-cards .newbie-card').length === 16, null, { polling: 100, timeout: 30000 });
     phase('intercept-rpc');
     await app.evaluate(async ({ protocol }, expectedToken) => {
       const fixture = { calls: [], entries: [], memories: [{ text: '回答先给结果，再说明依据。', scope: 'user', tier: 'log' }], seq: 1 };

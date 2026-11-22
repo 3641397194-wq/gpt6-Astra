@@ -1,7 +1,7 @@
 {
   "name": "coldbrew-zero-desktop",
   "productName": "冷咖啡破甲工作台",
-  "version": "3.3.0-preview.3",
+  "version": "3.3.0-preview.4",
   "private": true,
   "description": "冷咖啡 · GPT-6.2 Astra / Sol · DeepSeek v4.1 Flash 10.17版本 · 可视化模型中转与桌面工作台",
   "main": "src/main.js",
@@ -87,17 +87,31 @@
       {
         "from": "resources/legal",
         "to": "legal",
-        "filter": ["LICENSE", "THIRD_PARTY_NOTICES.md", "OPEN_SOURCE_NOTICES.txt"]
+        "filter": [
+          "LICENSE",
+          "THIRD_PARTY_NOTICES.md",
+          "OPEN_SOURCE_NOTICES.txt"
+        ]
       },
       {
         "from": "resources/magpie",
         "to": "magpie",
-        "filter": ["LICENSE", "THIRD_PARTY_NOTICES", "*/magpie", "*/magpie.exe"]
+        "filter": [
+          "LICENSE",
+          "THIRD_PARTY_NOTICES",
+          "*/magpie",
+          "*/magpie.exe"
+        ]
       },
       {
         "from": "resources/grok-memory",
         "to": "grok-memory",
-        "filter": ["*.md", "*.txt", "*.json", "*.tar.gz"]
+        "filter": [
+          "*.md",
+          "*.txt",
+          "*.json",
+          "*.tar.gz"
+        ]
       },
       {
         "from": "resources/upstream-skills",
@@ -169,7 +183,9 @@
     "mac": {
       "icon": "assets/brand-v6/icon.png",
       "identity": "-",
-      "signIgnore": ["/Resources/magpie/"],
+      "signIgnore": [
+        "/Resources/magpie/"
+      ],
       "category": "public.app-category.developer-tools",
       "target": [
         "dmg",

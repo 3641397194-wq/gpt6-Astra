@@ -27,7 +27,7 @@ for (const relative of ['README.md', 'README_EN.md', 'docs/index.html', 'docs/re
   });
 }
 
-test('all fifteen installed model seats carry the complete four-group activation page', t => {
+test('all original model seats and local Agent workflows carry the complete community activation page', t => {
   const home = fs.mkdtempSync(path.join(fs.realpathSync.native(require('node:os').tmpdir()), 'cc-community-'));
   t.after(() => fs.rmSync(home, { recursive: true, force: true }));
   const welcome = activationReply().trimEnd();
@@ -39,7 +39,7 @@ test('all fifteen installed model seats carry the complete four-group activation
     packs.push({ id: profile.id, text: plan.pack });
     assert.equal(fs.existsSync(plan.installFile), false, 'preview must remain read-only');
   }
-  assert.equal(packs.length, 15);
+  assert.equal(packs.length, PACK_IDS.length + LOCAL_AGENT_PROFILES.length);
   for (const pack of packs) {
     assert.ok(pack.text.includes(welcome), `${pack.id}: complete canonical welcome text`);
     assert.ok(!pack.text.includes('{{ACTIVATION_REPLY}}'), `${pack.id}: unresolved activation template`);

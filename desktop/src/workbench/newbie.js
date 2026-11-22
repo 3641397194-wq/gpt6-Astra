@@ -83,7 +83,7 @@
         code.title = row.root;
         card.append(code);
       }
-      if (row.kind === 'local-skill' && row.manualRoot) {
+      if (row.kind === 'local-skill' && (row.manualRoot || row.customRoot)) {
         const box = document.createElement('div');
         box.className = 'newbie-open';
         const choose = document.createElement('button');
@@ -144,9 +144,9 @@
   }
 
   function skillRows(list) {
-    const marks = { 'grok-bot': 'GROK / SKILL', 'claude-duet': 'CLAUDE / SKILL', 'chatgpt-dot': 'CODEX / SKILL', 'meta-muse': 'LOCAL / SKILL' };
+    const marks = { 'opencode': 'OPENCODE / SKILL', 'grok-bot': 'GROK / SKILL', 'claude-duet': 'CLAUDE / SKILL', 'chatgpt-dot': 'CODEX / SKILL', 'meta-muse': 'LOCAL / SKILL' };
     return list.map((profile) => ({
-      kind: 'local-skill', skillId: profile.id, manualRoot: !!profile.manualRoot,
+      kind: 'local-skill', skillId: profile.id, manualRoot: !!profile.manualRoot, customRoot: !!profile.customRoot,
       name: profile.name, line: marks[profile.id] || 'LOCAL / SKILL',
       ok: true, exists: !!profile.exists, installed: !!profile.installed,
       skillsRoot: profile.skillsRoot || '', root: profile.installFile || profile.suggestedSkillsRoot || '',
@@ -209,7 +209,7 @@
         row.root = selected.installFile;
       }
     } else {
-      const selected = await localSkillCall('select-default', { id: row.skillId });
+      const selected = await localSkillCall(row.skillsRoot ? 'select-current' : 'select-default', { id: row.skillId, root: row.skillsRoot });
       row.skillsRoot = selected.root;
       row.root = selected.installFile;
     }
@@ -227,7 +227,7 @@
         row.root = selected.installFile;
       }
     } else {
-      const selected = await localSkillCall('select-default', { id: row.skillId });
+      const selected = await localSkillCall(row.skillsRoot ? 'select-current' : 'select-default', { id: row.skillId, root: row.skillsRoot });
       row.skillsRoot = selected.root;
       row.root = selected.installFile;
     }
