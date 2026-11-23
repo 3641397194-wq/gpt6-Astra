@@ -60,7 +60,7 @@ function installFixture(seed = {}) {
     },
     getState() { return JSON.stringify(savedState); },
     saveState(text) { savedState = JSON.parse(text); return JSON.stringify({ ok: true }); },
-    getVersion() { return JSON.stringify({ version: '3.3.0-preview.4', build: 'isolated-fixture' }); },
+    getVersion() { return JSON.stringify({ version: '3.3.0-preview.5', build: 'isolated-fixture' }); },
     copyText(text) { copied.push(text); },
     shareText(text) { shared.push(text); },
     openExternal(url) { external.push(url); },
@@ -176,7 +176,7 @@ try {
     try {
       assert.equal(await page.locator('#brand-home img').getAttribute('src'), 'assets/avatar.png');
       assert.equal(await page.locator('link[rel="icon"]').getAttribute('href'), 'assets/icon.png');
-      assert.match(await page.locator('.hero-art').getAttribute('alt'), /黑白电影/);
+      assert.match(await page.locator('.hero-art').getAttribute('alt'), /暗夜绯红/);
       await page.locator('#home-connect').click();
       assert.equal(await page.locator('#provider-url').inputValue(), 'https://coldcoffeeai.com/v1');
       await page.locator('#provider-key').fill('fixture-key-not-a-real-credential');
@@ -230,7 +230,7 @@ try {
       await page.locator('[data-page="chat"]').click();
       await page.locator('#model-open').click();
       await page.waitForFunction(() => document.querySelector('#model-status')?.textContent.includes('读取成功'));
-      assert.equal(await page.locator('.model-featured-unavailable').count(), 2);
+      assert.equal(await page.locator('.model-featured-unavailable').count(), 5);
       assert.equal(await page.locator('.model-featured-unavailable').first().isDisabled(), true);
       assert.equal(await page.locator('#selected-model').textContent(), 'chat-fixture');
       await page.locator('#manual-model').fill('custom-model-id');

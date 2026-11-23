@@ -32,16 +32,64 @@ IOS_DEVELOPMENT_ASSETS = (
     "SHA256SUMS-iOS.txt",
 )
 CSS = '''
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:#242329;background:#eeeae7;font:16px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}
-a{color:#ad203b;text-decoration:none;text-underline-offset:4px}a:hover{text-decoration:underline}a:focus-visible,summary:focus-visible{outline:3px solid #c0324a;outline-offset:5px;border-radius:3px}
-.appbar{background:#19181c;color:#f9f5ef;border-bottom:3px solid #bc3049;padding:18px max(24px,calc((100vw - 1420px)/2));display:flex;justify-content:space-between;align-items:center;gap:24px}.repo-name{font-size:18px;font-weight:600;letter-spacing:.03em;display:flex;align-items:center;gap:12px}.repo-name img{width:38px;height:38px;object-fit:cover;border-radius:9px}.repo-name strong{color:#fff}.preview-label{font-size:14px;color:#c6bdbe}
-.repo-tabs{background:#fffdf9;padding:0 max(24px,calc((100vw - 1420px)/2));display:flex;gap:30px;border-bottom:1px solid #e5deda;overflow-x:auto;white-space:nowrap}.repo-tabs a{padding:14px 0;font-size:15px;color:#5c5456}.repo-tabs .selected{color:#ad203b;border-bottom:3px solid #ad203b;font-weight:700}
-.container{max-width:1480px;padding:32px;margin:auto}.notice{border:1px solid #dfd4cf;border-radius:16px;background:#fffaf5;padding:19px 24px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:center;gap:24px;font-size:15px}.notice strong{color:#8f2136}.notice a{background:#a8223b;color:#fff;border-radius:10px;padding:12px 18px;white-space:nowrap;font-weight:700}
-.repo-grid{display:grid;grid-template-columns:minmax(0,1090px) 260px;gap:30px;align-items:start}.readme{border:1px solid #e2d9d4;border-radius:18px;background:#fffdfb;overflow:hidden;min-width:0;box-shadow:0 12px 44px #33222707}.readme-tab{font-size:14px;padding:15px 30px;border-bottom:1px solid #e9e0dc;font-weight:600;color:#716568;background:#fcf9f6}
-.markdown-body{padding:36px;font-size:16px;overflow-wrap:anywhere}.markdown-body img{max-width:100%;height:auto;vertical-align:middle;border-radius:10px}.markdown-body>div[align="center"]>img:first-child{display:block;width:100%;border-radius:16px;box-shadow:0 18px 45px #2110181f}.markdown-body h1{font-size:clamp(28px,3.3vw,42px);line-height:1.32;letter-spacing:-.035em;padding-bottom:14px;margin:28px 0 18px;color:#17151a}.markdown-body h2{font-size:28px;line-height:1.4;border-bottom:1px solid #e6dcd6;padding-bottom:15px;margin:52px 0 22px;scroll-margin-top:24px;letter-spacing:-.02em}.markdown-body h3{font-size:21px;line-height:1.5;margin-top:30px}.markdown-body p{margin:15px 0 21px}.markdown-body sub{color:#75686c;font-size:14px;line-height:1.7}.markdown-body table{display:block;max-width:100%;width:100%;overflow-x:auto;border-collapse:collapse;font-size:15px;margin:24px 0;border-radius:10px}.markdown-body td,.markdown-body th{border:1px solid #e5dcd7;padding:16px;vertical-align:top;min-width:138px}.markdown-body th{background:#f5efeb;color:#3d3337;font-weight:700}.markdown-body td{background:#fffdfb}.markdown-body .model-spotlight{border:1px solid #b78995;box-shadow:0 12px 28px #4b182217}.markdown-body .model-spotlight th{background:#282126;color:#fff;border-color:#594049;font-size:18px}.markdown-body .model-spotlight td{background:#fff7f5}.markdown-body .model-spotlight td[colspan]{background:#f9ecea}.markdown-body blockquote{margin:28px 0;border-left:4px solid #b12740;border-radius:0 12px 12px 0;background:#faf0ee;padding:15px 22px;color:#593a43}.markdown-body blockquote p{margin:8px 0}.markdown-body pre{padding:20px;border:1px solid #e6dcd6;border-radius:12px;background:#f6f1ed;overflow:auto;line-height:1.65}.markdown-body code{font-family:Consolas,"SFMono-Regular",monospace;font-size:.91em}.markdown-body details{border:1px solid #e2d7d2;padding:17px 21px;border-radius:12px;margin-top:24px;background:#fcf9f7}.markdown-body summary{cursor:pointer;font-weight:600;font-size:15px;color:#76646a}.markdown-body hr{border:0;border-top:1px solid #e6dcd6;margin-top:38px}
-.about{padding:24px 20px;border:1px solid #e2d9d4;border-radius:16px;background:#fffdf9}.about h3{font-size:17px;margin:0 0 14px;color:#252026}.about p{font-size:14px;color:#76686d;line-height:1.9}.about .tag{display:inline-block;font-size:12px;background:#f7e7e7;color:#9e2940;border-radius:7px;padding:4px 9px;margin:0 3px 9px 0}.about hr{border:0;border-top:1px solid #e5dbd5;margin:25px 0}.about a{display:block;margin-top:14px;font-size:14px}
-@media(max-width:1100px){.repo-grid{grid-template-columns:1fr}.about{display:none}.container{padding:22px}.markdown-body{padding:30px}.preview-label{display:none}}
-@media(max-width:600px){.appbar{padding:18px}.repo-name{font-size:16px}.container{padding:12px}.readme{border-radius:12px}.readme-tab{padding:13px 18px}.markdown-body{padding:18px;font-size:16px}.markdown-body h1{font-size:25px}.markdown-body h2{font-size:25px;margin-top:38px}.markdown-body th,.markdown-body td{padding:12px;min-width:145px;font-size:15px}.markdown-body sub{font-size:13px}.notice{display:block;padding:17px;font-size:15px;margin-bottom:16px}.notice a{display:inline-block;margin-top:14px}.repo-tabs{gap:23px;padding:0 18px}.repo-tabs a{font-size:14px}.markdown-body blockquote{padding:12px 17px}.markdown-body details{padding:14px}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;color:#efeaf0;background:radial-gradient(900px 500px at 14% -8%,rgba(255,59,92,.12),transparent 58%),radial-gradient(640px 420px at 88% 8%,rgba(240,190,91,.07),transparent 58%),#08080d;font:16px/1.8 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#ff7b93;text-decoration:none;text-underline-offset:4px}a:hover{color:#ff9fb2;text-decoration:underline}
+a:focus-visible,summary:focus-visible{outline:2px solid #ff3b5c;outline-offset:4px;border-radius:4px}
+.appbar{background:rgba(12,11,18,.94);backdrop-filter:blur(12px);color:#f9f5f8;border-bottom:1px solid #2b2537;box-shadow:0 1px 0 rgba(255,59,92,.14);padding:16px max(24px,calc((100vw - 1440px)/2));display:flex;justify-content:space-between;align-items:center;gap:24px;position:sticky;top:0;z-index:20}
+.repo-name{font-size:18px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:12px}
+.repo-name img{width:40px;height:40px;object-fit:cover;border-radius:11px;border:1px solid rgba(255,76,108,.55)}
+.repo-name strong{color:#fff}
+.repo-name .badge{font-size:11px;padding:3px 10px;border-radius:999px;background:rgba(255,59,92,.15);border:1px solid rgba(255,76,108,.4);color:#ffa4b6;font-weight:600}
+.preview-label{font-size:13px;color:#b2a5b6}
+.repo-tabs{background:#0e0d15;padding:0 max(24px,calc((100vw - 1440px)/2));display:flex;gap:28px;border-bottom:1px solid #252131;overflow-x:auto;white-space:nowrap}
+.repo-tabs a{padding:14px 0;font-size:14px;color:#b4a9b8;font-weight:500}.repo-tabs a:hover{color:#fff;text-decoration:none}
+.repo-tabs .selected{color:#ff728c;border-bottom:3px solid #ff3b5c;font-weight:700}
+.container{max-width:1480px;padding:28px 32px 48px;margin:auto}
+.notice{border:1px solid #7a5c28;border-left:4px solid #f0be5b;border-radius:16px;background:linear-gradient(105deg,#21180b 0%,#141118 72%);padding:18px 24px;margin-bottom:26px;display:flex;justify-content:space-between;align-items:center;gap:24px;font-size:15px;color:#e8d9bb;box-shadow:0 12px 32px rgba(0,0,0,.35)}
+.notice strong{color:#ffe8ae}.notice code{background:rgba(255,255,255,.08);padding:2px 6px;border-radius:6px;color:#ffd280}
+.notice-actions{display:flex;gap:10px;flex-shrink:0;flex-wrap:wrap}
+.notice a{background:linear-gradient(135deg,#ec2f52,#c81d42);color:#fff;border-radius:10px;padding:10px 18px;white-space:nowrap;font-weight:700;font-size:14px;box-shadow:0 6px 20px rgba(236,47,82,.3)}
+.notice a:hover{text-decoration:none;filter:brightness(1.08)}
+.notice a.vip-cta{background:linear-gradient(135deg,#f0be5b,#d49c37);color:#1d1304;box-shadow:0 6px 20px rgba(240,190,91,.24)}
+.repo-grid{display:grid;grid-template-columns:minmax(0,1110px) 280px;gap:28px;align-items:start}
+.readme{border:1px solid #2b2638;border-radius:20px;background:linear-gradient(180deg,#13121b 0%,#0f0f17 100%);overflow:hidden;min-width:0;box-shadow:0 18px 56px rgba(0,0,0,.45)}
+.readme-tab{font-size:13px;padding:14px 30px;border-bottom:1px solid #262233;font-weight:650;color:#b8abb9;background:#171622;letter-spacing:.4px}
+.markdown-body{padding:36px;font-size:16px;overflow-wrap:anywhere;color:#e7e0e9}
+.markdown-body img{max-width:100%;height:auto;vertical-align:middle;border-radius:12px;border:1px solid rgba(255,255,255,.08)}
+.markdown-body>div[align="center"]>img:first-child{display:block;width:100%;border-radius:16px;border:1px solid rgba(255,76,108,.28);box-shadow:0 20px 56px rgba(0,0,0,.55)}
+.markdown-body h1{font-size:clamp(28px,3.2vw,42px);line-height:1.3;letter-spacing:-.025em;padding-bottom:12px;margin:24px 0 16px;color:#faf6fa;font-weight:800}
+.markdown-body h2{font-size:26px;line-height:1.4;border-bottom:1px solid #2b2638;padding-bottom:13px;margin:48px 0 20px;scroll-margin-top:92px;color:#faf6fa;font-weight:750}
+.markdown-body h3{font-size:20px;line-height:1.5;margin-top:28px;color:#f3eaf2}
+.markdown-body p{margin:14px 0 20px;color:#d6ced8}
+.markdown-body strong{color:#faf5f9}
+.markdown-body sub{color:#9f94a6;font-size:13px;line-height:1.7}
+.markdown-body table{display:block;max-width:100%;width:100%;overflow-x:auto;border-collapse:collapse;font-size:15px;margin:22px 0;border-radius:12px}
+.markdown-body td,.markdown-body th{border:1px solid #2d273b;padding:14px 16px;vertical-align:top;min-width:130px}
+.markdown-body th{background:#1c1929;color:#f7eff6;font-weight:700}
+.markdown-body td{background:#13121c;color:#dcd3df}
+.markdown-body .model-spotlight{border:1px solid rgba(255,76,108,.48);box-shadow:0 14px 36px rgba(232,46,81,.14)}
+.markdown-body .model-spotlight th{background:linear-gradient(135deg,#2a1622,#1c1627);color:#fff;border-color:#573145;font-size:18px}
+.markdown-body .model-spotlight td{background:#16131f}
+.markdown-body .model-spotlight td[colspan]{background:#1c1624}
+.markdown-body blockquote{margin:24px 0;border-left:4px solid #ff3b5c;border-radius:0 12px 12px 0;background:rgba(255,59,92,.09);padding:15px 22px;color:#f2dde3}
+.markdown-body blockquote p{margin:8px 0;color:#f2dde3}
+.markdown-body pre{padding:18px 20px;border:1px solid #2e283b;border-radius:12px;background:#0c0b12;color:#e8dfec;overflow:auto;line-height:1.65}
+.markdown-body code{font-family:Consolas,"SFMono-Regular",monospace;font-size:.9em;background:rgba(255,255,255,.07);color:#ffc0cd;padding:2px 6px;border-radius:6px}
+.markdown-body pre code{background:transparent;color:inherit;padding:0}
+.markdown-body details{border:1px solid #2d273b;padding:15px 20px;border-radius:12px;margin-top:22px;background:#14131e}
+.markdown-body summary{cursor:pointer;font-weight:650;font-size:15px;color:#d6c7d7}
+.markdown-body hr{border:0;border-top:1px solid #2b2638;margin-top:36px}
+.about{padding:24px 20px;border:1px solid #2d273c;border-radius:18px;background:linear-gradient(180deg,#161522 0%,#101018 100%);position:sticky;top:90px;box-shadow:0 14px 40px rgba(0,0,0,.38)}
+.about h3{font-size:16px;margin:0 0 12px;color:#faf5f9}
+.about p{font-size:13.5px;color:#b7acb9;line-height:1.85}
+.about .tag{display:inline-block;font-size:12px;background:rgba(255,59,92,.14);border:1px solid rgba(255,76,108,.36);color:#ff9fb2;border-radius:8px;padding:4px 9px;margin:0 5px 8px 0;font-weight:600}
+.about .tag.gold{background:rgba(240,190,91,.14);border-color:rgba(240,190,91,.42);color:#fae0a2}
+.about hr{border:0;border-top:1px solid #2b2638;margin:20px 0}
+.about a{display:block;margin-top:11px;font-size:14px;color:#ff8ca2}
+.about a:hover{color:#ffb8c7}
+@media(max-width:1160px){.repo-grid{grid-template-columns:1fr}.about{display:none}.container{padding:20px}.markdown-body{padding:28px}.preview-label{display:none}}
+@media(max-width:600px){.appbar{padding:14px 16px}.repo-name{font-size:15px}.repo-name .badge{display:none}.container{padding:12px}.readme{border-radius:14px}.readme-tab{padding:12px 16px}.markdown-body{padding:18px;font-size:15px}.markdown-body h1{font-size:24px}.markdown-body h2{font-size:22px;margin-top:34px}.markdown-body th,.markdown-body td{padding:11px;min-width:130px;font-size:14px}.notice{display:block;padding:16px;font-size:14px;margin-bottom:16px}.notice-actions{margin-top:12px}.repo-tabs{gap:20px;padding:0 16px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 '''
 
@@ -106,20 +154,20 @@ def render_page(body, version, local_preview):
     prefix = "/docs/" if local_preview else ""
     body = rebase_docs_paths(body, prefix)
     workbench_href = "/workbench/" if local_preview else "#上手使用"
-    aside_text = "操作新版软件 ↗" if local_preview else "查看软件启动步骤 ↓"
+    aside_text = "打开新版桌面软件预览 ↗" if local_preview else "查看软件启动步骤 ↓"
     asset_prefix = f"{prefix}assets/"
-    title = "冷咖啡 · GPT-6.2 Astra / Sol 双模型焦点"
-    label = "本地仓库主页预览" if local_preview else "Astra / Sol · 电脑、安卓与 iPhone"
+    title = "冷咖啡 · GPT-6.2 Astra / Sol 官方中转与全模型破甲工作台"
+    label = "2026 暗夜绯红 · 本地主页预览" if local_preview else "GPT-6.2 Astra / Sol · 官方中转 · 闭源与定制"
     return f'''<!doctype html><html lang="zh-CN"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="冷咖啡 GPT-6.2 Astra 与 Sol 模型焦点：连接自己的中转，读取实际模型 ID，在电脑、Android 和 iPhone 上流式对话。">
-<meta name="theme-color" content="#19181c">
-<link rel="icon" type="image/png" href="{asset_prefix}coldcoffee-noir-icon-62.png">
+<meta name="description" content="冷咖啡 GPT-6.2 Astra / Sol 官方付费中转与全模型破甲工作台：coldcoffeeai.com 买 Key 直连，支持收费闭源破甲与专属定制，同步 GLM-5.4、Claude Fable 5.2、Gemini 4、Kimi K3.1 Pro 与 MiniMax M3.1 Flash。">
+<meta name="theme-color" content="#08080d">
+<link rel="icon" type="image/png" href="{asset_prefix}coldcoffee-flagship-icon.png">
 <title>{title}</title><style>{CSS}</style></head><body>
-<header class="appbar"><div class="repo-name"><img src="{asset_prefix}coldcoffee-noir-avatar-62.png" alt=""><strong>冷咖啡</strong> / GPT-6.2</div><span class="preview-label">{label}</span></header>
-<nav class="repo-tabs" aria-label="项目导航"><a class="selected" href="#模型焦点">GPT-6.2 双模型</a><a href="#安卓手机端">Android 手机端</a><a href="#ios手机端">iPhone / iOS</a><a href="#软件界面">电脑工作台</a><a href="#下载">下载安装</a><a href="#冷咖啡服务">中转与定制</a><a href="#冷咖啡社群">冷咖啡社区</a></nav>
-<div class="container"><div class="notice"><span><strong>{escape(version)} · GPT-6.2 Astra / Sol。</strong> 连接后从 <code>/v1/models</code> 选准确 ID；账号权限以服务商为准。下载前请核对 GitHub Assets 与校验文件。</span><a href="#下载">选择你的设备 ↓</a></div>
-<div class="repo-grid"><article class="readme"><div class="readme-tab">冷咖啡 · Astra / Sol 产品预览与使用说明</div><div class="markdown-body">{body}</div></article><aside class="about"><h3>一杯冷咖啡，两种新焦点</h3><p>GPT-6.2 Astra 与 Sol 在模型目录中优先展示。准确 ID 从服务商返回列表中选择；电脑、Android 和 iPhone 共享清晰的接入与对话体验。</p><span class="tag">GPT-6.2 Astra</span><span class="tag">GPT-6.2 Sol</span><span class="tag">电脑＋手机</span><span class="tag">冷咖啡中转</span><span class="tag">独立闭源定制</span><hr><h3>当前预览</h3><p>桌面与 Android：{escape(version)}<br>Windows / macOS / Linux / Android<br>iOS 开发附件：{escape(IOS_DEVELOPMENT_VERSION)}<br>官网：coldcoffeeai.com<br>接口：coldcoffeeai.com/v1</p><a href="#安卓手机端">安卓界面与接入 ↓</a><a href="#软件界面">电脑端界面 ↓</a><a href="#opencode">OpenCode 接入 ↓</a><a href="{prefix}ANDROID.md">安卓安装教程 ↗</a><a href="{prefix}IOS-MARKETING.md">iOS 构建与上架 ↗</a><a href="{prefix}MOBILE-PRIVACY.md">手机端数据与隐私 ↗</a><a href="{prefix}release-notes-{escape(version)}.md">本版更新说明 ↗</a><a href="{workbench_href}">{aside_text}</a><a href="#下载">统一下载入口 ↓</a><a href="#冷咖啡服务">付费中转与本机定制 ↓</a><a href="#冷咖啡社群">QQ / 微信咨询 / Telegram ↓</a><hr><p>顾客填写自己的 Key；公开发布内容不内置个人密钥。</p></aside></div></div></body></html>'''
+<header class="appbar"><div class="repo-name"><img src="{asset_prefix}coldcoffee-flagship-avatar.png" alt=""><strong>冷咖啡</strong> / GPT-6.2 Astra · Sol <span class="badge">2026 旗舰重设计</span></div><span class="preview-label">{label}</span></header>
+<nav class="repo-tabs" aria-label="项目导航"><a class="selected" href="#模型焦点">GPT-6.2 核心</a><a href="#冷咖啡服务">中转与闭源定制</a><a href="#冷咖啡社群">四QQ群 & TG</a><a href="#软件界面">新版软件</a><a href="#一键安装目标">16 入口全模型</a><a href="#安卓手机端">Android / iOS</a><a href="#下载">下载安装</a></nav>
+<div class="container"><div class="notice"><span><strong>{escape(version)} · 核心主推 GPT-6.2 Astra / Sol + 冷咖啡付费中转。</strong> 去 <code>coldcoffeeai.com</code> 买 Key 即可满血使用内置工作流；需要收费闭源破甲与定制，进四个 QQ 群或 Telegram 找管理。</span><div class="notice-actions"><a href="https://coldcoffeeai.com/">开通冷咖啡中转 ↗</a><a class="vip-cta" href="#冷咖啡社群">闭源 / 定制进群 ↓</a></div></div>
+<div class="repo-grid"><article class="readme"><div class="readme-tab">README.md · 冷咖啡 GPT-6.2 Astra / Sol 官方主页（同步 GLM-5.4 / Claude Fable 5.2 / Gemini 4）</div><div class="markdown-body">{body}</div></article><aside class="about"><h3>冷咖啡核心服务</h3><p>主打 <strong>GPT-6.2 Astra / Sol</strong> 官方付费中转（内置工作流）及<strong>收费闭源/定制破甲</strong>；同步升级 GLM-5.4、Claude Fable 5.2、Gemini 4、Kimi K3.1 Pro、MiniMax M3.1 Flash 与豆包 2.1。</p><span class="tag">GPT-6.2 Astra</span><span class="tag">GPT-6.2 Sol</span><span class="tag gold">coldcoffeeai.com</span><span class="tag gold">闭源 / 定制破甲</span><span class="tag">GLM-5.4</span><span class="tag">Claude Fable 5.2</span><span class="tag">Gemini 4</span><hr><h3>官方社群与通道</h3><p>QQ 一群：<code>1057540028</code><br>QQ 二群：<code>1077074552</code><br>QQ 三群：<code>618179023</code><br>QQ 四群：<code>1131239659</code><br>TG 群：<a style="display:inline;margin:0" href="https://t.me/coolcoffeeai">t.me/coolcoffeeai</a><br>TG 频道：<a style="display:inline;margin:0" href="https://t.me/chachachalkf">t.me/chachachalkf</a></p><hr><h3>快速跳转</h3><a href="https://coldcoffeeai.com/">开通冷咖啡中转 ↗</a><a href="#冷咖啡服务">闭源与定制破甲说明 ↓</a><a href="#冷咖啡社群">查看四群二维码与 TG ↓</a><a href="#软件界面">新版暗夜绯红桌面界面 ↓</a><a href="#一键安装目标">16 个一键安装入口 ↓</a><a href="#安卓手机端">Android / iPhone 客户端 ↓</a><a href="#下载">全平台下载入口 ↓</a><a href="{workbench_href}">{aside_text}</a><hr><h3>当前预览</h3><p>桌面与 Android：{escape(version)}<br>iOS 开发附件：{escape(IOS_DEVELOPMENT_VERSION)}<br>官网：coldcoffeeai.com<br>顾客自填 Key，公开仓库零私密信息。</p></aside></div></div></body></html>'''
 
 def generate(root, check=False):
     root = root.resolve()

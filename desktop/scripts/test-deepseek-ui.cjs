@@ -11,8 +11,8 @@ const ROOT = path.resolve(__dirname, '../..');
 const OUTPUT = path.resolve(__dirname, '../work/deepseek-ui');
 const LABEL = 'DeepSeek v4.1 Flash 10.17版本';
 const EXPECTED_CARD_NAMES = [
-  'Codex', 'Claude', 'Grok', LABEL, 'GLM', 'Gemini', '豆包', 'WorkBuddy', 'Cursor',
-  'MiniMax 3.1 Flash', 'Kimi K3.1', 'Grok Bot', 'Claude Duet', 'ChatGPT Dot', 'Meta Muse', 'OpenCode',
+  'Codex', 'Claude Code', 'Grok', LABEL, 'GLM 5.4', 'Gemini 4', '豆包 2.1', 'WorkBuddy', 'Cursor',
+  'MiniMax M3.1 Flash', 'Kimi K3.1 Pro', 'Grok Bot', 'Claude Duet', 'ChatGPT Dot', 'Meta Muse', 'OpenCode',
 ];
 const SIZES = [{ width: 1360, height: 1080 }, { width: 1080, height: 900 }];
 const MIME = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp' };

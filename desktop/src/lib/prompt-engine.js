@@ -4,7 +4,7 @@ const { DEEPSEEK_LABEL } = require("../shared/workbench-core");
 
 const ACTIVATION_WORD = "冷咖啡";
 const CONTROL_WORD = "BREAK//OPEN";
-const APP_TITLE = `gpt6 Astra-claude全模型支持-grok4.7-${DEEPSEEK_LABEL}-glm5.3全模型支持-gemini全模型支持破甲越狱`;
+const APP_TITLE = `gpt6.2 Astra-gpt6.2 Sol-claude Fable 5.2-grok4.7-${DEEPSEEK_LABEL}-glm5.4全模型支持-gemini4全模型支持破甲越狱`;
 const ACTIVATION_LATCHES = [
   ACTIVATION_WORD,
   "cold coffee",
@@ -28,17 +28,17 @@ const PROFILES = [
 ];
 
 const SEATS = [
-  { id: "codex", tag: "GPT-6 Astra全模型支持", name: "Codex", accent: "#d42b31", short: "model_instructions 破甲覆盖", mark: "01" },
-  { id: "claude", tag: "Claude Code全模型支持", name: "Claude", accent: "#ded5cb", short: "CLAUDE.md 常驻破甲", mark: "02" },
+  { id: "codex", tag: "GPT-6.2 Astra / Sol", name: "Codex", accent: "#d42b31", short: "model_instructions 破甲覆盖", mark: "01" },
+  { id: "claude", tag: "Claude Fable 5.2 / 全模型支持", name: "Claude Code", accent: "#ded5cb", short: "CLAUDE.md 常驻破甲", mark: "02" },
   { id: "grok", tag: "Grok 4.7", name: "Grok", accent: "#9d252b", short: "AGENTS / skills 破甲", mark: "03" },
   { id: "deepseek", tag: DEEPSEEK_LABEL, name: DEEPSEEK_LABEL, accent: "#ef4348", short: "官方 Harness · ~/.dsh", mark: "04" },
-  { id: "glm53", tag: "GLM 5.3全模型支持", name: "GLM", accent: "#4b1318", short: "GLM.md / ZCode 破甲", mark: "05" },
-  { id: "gemini", tag: "Gemini全模型支持", name: "Gemini", accent: "#ef4348", short: "GEMINI.md 破甲注入", mark: "06" },
-  { id: "doubao", tag: "豆包", name: "Doubao", accent: "#c45a3a", short: ".user_skills/cha-doubao", mark: "07" },
+  { id: "glm53", tag: "GLM 5.4全模型支持", name: "GLM 5.4", accent: "#4b1318", short: "GLM.md / ZCode 破甲", mark: "05" },
+  { id: "gemini", tag: "Gemini 4 全模型支持", name: "Gemini 4", accent: "#ef4348", short: "GEMINI.md 破甲注入", mark: "06" },
+  { id: "doubao", tag: "豆包 2.1", name: "Doubao", accent: "#c45a3a", short: ".user_skills/cha-doubao", mark: "07" },
   { id: "workbuddy", tag: "WorkBuddy", name: "WorkBuddy", accent: "#8d3a44", short: ".workbuddy/skills/cha-workbuddy", mark: "08" },
   { id: "cursor", tag: "Cursor", name: "Cursor", accent: "#d7dde6", short: "~/.cursor/rules/cha-cursor.mdc", mark: "09" },
-  { id: "mimo", tag: "MiniMax 3.1 Flash", name: "MiniMax", accent: "#ff7a1a", short: "~/.config/mimocode/skills/cha-mimo", mark: "10" },
-  { id: "kimi", tag: "Kimi K3.1", name: "Kimi", accent: "#6ec1ff", short: "~/.kimi-code/skills/cha-kimi", mark: "11" },
+  { id: "mimo", tag: "MiniMax M3.1 Flash", name: "MiniMax", accent: "#ff7a1a", short: "~/.config/mimocode/skills/cha-mimo", mark: "10" },
+  { id: "kimi", tag: "Kimi K3.1 Pro", name: "Kimi", accent: "#6ec1ff", short: "~/.kimi-code/skills/cha-kimi", mark: "11" },
 ];
 
 const CHANNELS = [

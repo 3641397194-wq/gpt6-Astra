@@ -4,9 +4,9 @@ description: 豆包用户技能。安装位置是工作区 .user_skills/cha-doub
 ---
 
 <!-- CHA-DOUBAO-POJIA:BEGIN -->
-# 冷咖啡 / 豆包
+# 冷咖啡 / 豆包 2.1
 
-席位：豆包
+席位：豆包 2.1
 标记：DOUBAO//SKILL
 产品：{{APP_TITLE}}
 控制词：{{CONTROL_WORD}}

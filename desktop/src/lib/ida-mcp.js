@@ -230,16 +230,16 @@ function clients(options = {}) {
   const buddy = workbuddyHome(env, home);
   return [
     { id: "codex", label: "Codex", kind: "toml", file: path.join(home, ".codex", "config.toml"), enabled: false },
-    { id: "claude", label: "Claude Code", kind: "json", file: path.join(home, ".claude.json"), keys: ["mcpServers", SERVER], entry: { type: "http", url: URL } },
+    { id: "claude", label: "Claude Code · Fable 5.2", kind: "json", file: path.join(home, ".claude.json"), keys: ["mcpServers", SERVER], entry: { type: "http", url: URL } },
     { id: "grok", label: "Grok", kind: "toml", file: path.join(home, ".grok", "config.toml"), enabled: true },
     { id: "deepseek", label: DEEPSEEK_LABEL, kind: "manual", note: "在 Harness 当前 profile 中配置 MCP；这里保留手动接入" },
-    { id: "glm53", label: "GLM / ZCode", kind: "json", file: path.join(home, ".zcode", "cli", "config.json"), keys: ["mcp", "servers", SERVER], entry: { type: "http", url: URL, enabled: true } },
-    { id: "gemini", label: "Gemini", kind: "json", file: path.join(home, ".gemini", "settings.json"), keys: ["mcpServers", SERVER], entry: { httpUrl: URL } },
-    { id: "doubao", label: "豆包", kind: "manual", note: "豆包没有 mcp.json。连接器里选 HTTP，地址用下面这一条" },
+    { id: "glm53", label: "GLM 5.4 / ZCode", kind: "json", file: path.join(home, ".zcode", "cli", "config.json"), keys: ["mcp", "servers", SERVER], entry: { type: "http", url: URL, enabled: true } },
+    { id: "gemini", label: "Gemini 4", kind: "json", file: path.join(home, ".gemini", "settings.json"), keys: ["mcpServers", SERVER], entry: { httpUrl: URL } },
+    { id: "doubao", label: "豆包 2.1", kind: "manual", note: "豆包没有 mcp.json。连接器里选 HTTP，地址用下面这一条" },
     { id: "workbuddy", label: "WorkBuddy", kind: "json", file: path.join(buddy, "mcp.json"), keys: ["mcpServers", SERVER], entry: { type: "streamableHttp", url: URL, timeout: 30000 }, create: true },
     { id: "cursor", label: "Cursor", kind: "json", file: path.join(home, ".cursor", "mcp.json"), keys: ["mcpServers", SERVER], entry: { url: URL }, create: true },
-    { id: "mimo", label: "MiniMax 3.1 Flash", kind: "manual", note: "技能写在用户配置目录 skills/cha-mimo/SKILL.md。不改 mimocode.json，避免动到模型和 Key" },
-    { id: "kimi", label: "Kimi K3.1", kind: "manual", note: "技能写在 Kimi Code 数据根 skills/cha-kimi/SKILL.md。不改 config.toml，不写 ~/.agents/skills" },
+    { id: "mimo", label: "MiniMax M3.1 Flash", kind: "manual", note: "技能写在用户配置目录 skills/cha-mimo/SKILL.md。不改 mimocode.json，避免动到模型和 Key" },
+    { id: "kimi", label: "Kimi K3.1 Pro", kind: "manual", note: "技能写在 Kimi Code 数据根 skills/cha-kimi/SKILL.md。不改 config.toml，不写 ~/.agents/skills" },
   ];
 }
 

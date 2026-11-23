@@ -1,9 +1,9 @@
 {
   "name": "coldbrew-zero-desktop",
   "productName": "冷咖啡破甲工作台",
-  "version": "3.3.0-preview.4",
+  "version": "3.3.0-preview.5",
   "private": true,
-  "description": "冷咖啡 · GPT-6.2 Astra / Sol · DeepSeek v4.1 Flash 10.17版本 · 可视化模型中转与桌面工作台",
+  "description": "冷咖啡 · GPT-6.2 Astra / Sol · 官方付费中转与闭源定制 · 同步 GLM-5.4 / Claude Fable 5.2 / Gemini 4 / DeepSeek v4.1 Flash 10.17版本",
   "main": "src/main.js",
   "author": {
     "name": "3641397194-wq",

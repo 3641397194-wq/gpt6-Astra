@@ -3,14 +3,24 @@
 import { wrapOpenAIChatCompletionSse } from '../vendor/chatbox/openai-chat-sse-termination.ts';
 
 const ALLOWED_PROTOCOLS = new Set(['chat', 'responses']);
-export const FEATURED_MODELS = Object.freeze(['GPT-6.2 Astra', 'GPT-6.2 Sol']);
+export const FEATURED_MODELS = Object.freeze([
+  'GPT-6.2 Astra',
+  'GPT-6.2 Sol',
+  'GLM-5.4',
+  'Claude Fable 5.2',
+  'Gemini 4',
+]);
 
 // Labels are hints only. A selectable option always carries the exact ID from
 // the configured provider's /models response (or an explicitly entered ID).
 export function modelFamily(id) {
-  const match = /^(?:[^/]+\/)?gpt[-_ ]?6[.\-_ ]?2[-_ ]+(astra|sol)(?:$|[.\-_ ])/i.exec(String(id));
-  if (!match) return '';
-  return match[1].toLowerCase() === 'astra' ? FEATURED_MODELS[0] : FEATURED_MODELS[1];
+  const raw = String(id || '');
+  const gpt = /^(?:[^/]+\/)?gpt[-_ ]?6[.\-_ ]?2[-_ ]+(astra|sol)(?:$|[.\-_ ])/i.exec(raw);
+  if (gpt) return gpt[1].toLowerCase() === 'astra' ? 'GPT-6.2 Astra' : 'GPT-6.2 Sol';
+  if (/^(?:[^/]+\/)?glm[-_ ]?5[.\-_ ]?4(?:$|[.\-_ ])/i.test(raw)) return 'GLM-5.4';
+  if (/^(?:[^/]+\/)?(?:claude[-_ ]?)?fable[-_ ]?5[.\-_ ]?2(?:$|[.\-_ ])/i.test(raw)) return 'Claude Fable 5.2';
+  if (/^(?:[^/]+\/)?gemini[-_ ]?4(?:[-_ ]?(?:carbon|neon|hydrogen|argon))?(?:$|[.\-_ ])/i.test(raw)) return 'Gemini 4';
+  return '';
 }
 
 export function orderModels(ids) {

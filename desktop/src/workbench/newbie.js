@@ -11,9 +11,9 @@
   let busy = false;
   const desktop = !!window.coldbrew?.beginner;
   const DEMO = [
-    ['codex', 'Codex', 'GPT'], ['claude', 'Claude', 'Code'], ['grok', 'Grok', '4.7'], ['deepseek', window.ColdCoffeeCore.DEEPSEEK_LABEL, 'Harness'],
-    ['glm53', 'GLM', '5.3'], ['gemini', 'Gemini', '全模型'], ['doubao', '豆包', '技能'], ['workbuddy', 'WorkBuddy', '搭档'],
-    ['cursor', 'Cursor', '.cursor'], ['mimo', 'MiniMax 3.1 Flash', '.config'], ['kimi', 'Kimi K3.1', '.kimi-code'],
+    ['codex', 'Codex', 'GPT-6.2'], ['claude', 'Claude Code', 'Fable 5.2'], ['grok', 'Grok', '4.7'], ['deepseek', window.ColdCoffeeCore.DEEPSEEK_LABEL, 'Harness'],
+    ['glm53', 'GLM 5.4', 'GLM / ZCode'], ['gemini', 'Gemini 4', '全模型支持'], ['doubao', '豆包 2.1', 'Seed 2.1'], ['workbuddy', 'WorkBuddy', '搭档'],
+    ['cursor', 'Cursor', '.cursor'], ['mimo', 'MiniMax M3.1 Flash', '.config'], ['kimi', 'Kimi K3.1 Pro', '.kimi-code'],
   ];
 
   function toast(text) {
@@ -395,6 +395,15 @@
     button.addEventListener('click', () => {
       if (typeof copy === 'function') copy(button.dataset.qq);
       else toast(button.dataset.qq);
+    });
+  });
+  stage.querySelectorAll('[data-ext]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const url = button.dataset.ext;
+      if (window.coldbrew?.openExternal) {
+        try { await window.coldbrew.openExternal(url); return; } catch (error) { toast(error.message); return; }
+      }
+      window.open(url, '_blank', 'noopener,noreferrer');
     });
   });
 

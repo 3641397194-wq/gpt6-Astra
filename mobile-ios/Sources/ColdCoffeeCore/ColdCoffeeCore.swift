@@ -98,12 +98,18 @@ public enum EndpointNormalizer {
 }
 
 public enum ModelCatalog {
-    public static let featured = ["GPT-6.2 Astra", "GPT-6.2 Sol"]
+    public static let featured = ["GPT-6.2 Astra", "GPT-6.2 Sol", "GLM-5.4", "Claude Fable 5.2", "Gemini 4"]
 
     public static func family(for id: String) -> String? {
-        for (index, name) in ["astra", "sol"].enumerated() {
-            let pattern = "^(?:[^/]+/)?gpt[-_ ]?6[.\\-_ ]?2[-_ ]+\(name)(?:$|[.\\-_ ])"
-            if id.range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil { return featured[index] }
+        let rules: [(String, String)] = [
+            ("^(?:[^/]+/)?gpt[-_ ]?6[.\\-_ ]?2[-_ ]+astra(?:$|[.\\-_ ])", "GPT-6.2 Astra"),
+            ("^(?:[^/]+/)?glm[-_ ]?5[.\\-_ ]?4(?:$|[.\\-_ ])", "GLM-5.4"),
+            ("^(?:[^/]+/)?gpt[-_ ]?6[.\\-_ ]?2[-_ ]+sol(?:$|[.\\-_ ])", "GPT-6.2 Sol"),
+            ("^(?:[^/]+/)?(?:claude[-_ ]?)?fable[-_ ]?5[.\\-_ ]?2(?:$|[.\\-_ ])", "Claude Fable 5.2"),
+            ("^(?:[^/]+/)?gemini[-_ ]?4(?:[-_ ]?(?:carbon|neon|hydrogen|argon))?(?:$|[.\\-_ ])", "Gemini 4"),
+        ]
+        for (pattern, label) in rules {
+            if id.range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil { return label }
         }
         return nil
     }

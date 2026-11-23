@@ -1,4 +1,4 @@
-/* Approved noir cover, contained within the ordinary connection banner. */
+/* ColdCoffee 2026 Noir Crimson Studio — Hero & Banner Containment */
 .page-heading.relay-heading.noir62-banner {
   position: relative;
   isolation: isolate;
@@ -6,11 +6,12 @@
   align-items: center;
   min-height: 288px;
   margin: 0 0 22px;
-  padding: 30px 34px;
+  padding: 32px 36px;
   overflow: hidden;
-  border: 1px solid #3a3034;
-  border-radius: 14px;
-  background: #0b0b0d;
+  border: 1px solid rgba(255, 59, 92, .28);
+  border-radius: 18px;
+  background: #09090e;
+  box-shadow: 0 20px 54px rgba(0, 0, 0, .48), inset 0 1px 0 rgba(255, 255, 255, .06);
 }
 
 .noir62-cover {
@@ -34,55 +35,59 @@
   z-index: -1;
   content: "";
   pointer-events: none;
-  background: linear-gradient(90deg, #0b0b0deb, #0b0b0d94 42%, #0b0b0d12 72%);
+  background:
+    radial-gradient(480px 320px at 10% 18%, rgba(255, 59, 92, .16), transparent 65%),
+    linear-gradient(90deg, #08080cf6 0%, #08080cdc 42%, #08080c30 72%, transparent 100%);
 }
 
 .noir62-copy {
   position: relative;
-  width: 62%;
+  width: min(62%, 680px);
   min-width: 0;
 }
 
 .noir62-banner .eyebrow {
-  color: #e59aa5;
-  font-size: 13px;
-  letter-spacing: 1px;
+  color: #ff7e96;
+  font-size: 12px;
+  letter-spacing: 1.6px;
 }
 
 .noir62-banner h1 {
   margin: 12px 0;
-  color: #f5f1eb;
-  font-size: clamp(32px, 3.6vw, 48px);
-  font-weight: 750;
+  color: #faf7f9;
+  font-size: clamp(30px, 3.4vw, 44px);
+  font-weight: 800;
   line-height: 1.24;
-  letter-spacing: 0;
+  letter-spacing: -.4px;
 }
 
 .noir62-banner h1 span {
-  color: #f5f1eb;
+  color: #ff5d7a;
   background: none;
 }
 
 .noir62-banner p {
-  max-width: 32ch;
+  max-width: 44ch;
   margin: 0;
-  color: #d1c8c7;
+  color: #cfc6ce;
   font-size: 16px;
   line-height: 1.75;
 }
 
 .harness-feature-art {
-  background: #0b0b0d;
+  background: #09090e;
+  border-radius: 14px;
+  overflow: hidden;
 }
 
 .harness-feature-art img,
 .hero .hero-art {
-  object-fit: contain;
+  object-fit: cover;
   object-position: right center;
 }
 
 .harness-feature-art::after {
-  background: linear-gradient(90deg, #0b0b0d, transparent 22%), linear-gradient(0deg, #0b0b0d88, transparent 35%);
+  background: linear-gradient(90deg, #09090ecc, transparent 30%), linear-gradient(0deg, #09090eaa, transparent 42%);
 }
 
 .harness-feature-orbit {
@@ -90,26 +95,28 @@
 }
 
 .harness-feature-sign {
-  border-color: #5c4248;
-  background: #171115dd;
-  color: #e8dfe1;
+  border: 1px solid rgba(255, 76, 108, .42);
+  background: rgba(15, 13, 21, .88);
+  color: #f4e8ee;
+  border-radius: 999px;
+  padding: 6px 14px;
 }
 
 @media (max-width: 900px) {
   .page-heading.relay-heading.noir62-banner {
-    min-height: 264px;
+    min-height: 256px;
     padding: 26px;
   }
 
   .noir62-copy {
-    width: 72%;
+    width: 78%;
   }
 }
 
 @media (max-width: 640px) {
   .page-heading.relay-heading.noir62-banner {
-    min-height: 248px;
-    padding: 22px;
+    min-height: 236px;
+    padding: 20px;
   }
 
   .noir62-copy {
@@ -117,16 +124,16 @@
   }
 
   .noir62-cover {
-    opacity: .58;
+    opacity: .46;
     object-position: right center;
   }
 
   .noir62-banner::after {
-    background: linear-gradient(90deg, #0b0b0de8, #0b0b0d66);
+    background: linear-gradient(90deg, #08080cf2, #08080c88);
   }
 
   .noir62-banner h1 {
-    font-size: clamp(28px, 6vw, 36px);
+    font-size: clamp(24px, 5.8vw, 34px);
   }
 
   .noir62-banner p {

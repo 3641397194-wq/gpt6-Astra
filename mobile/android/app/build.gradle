@@ -22,8 +22,8 @@ android {
         applicationId 'com.coldcoffee.mobile'
         minSdk 26
         targetSdk 35
-        versionCode 330004
-        versionName '3.3.0-preview.4'
+        versionCode 330005
+        versionName '3.3.0-preview.5'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         buildConfigField 'boolean', 'RELEASE_SIGNED', hasReleaseSigning.toString()
     }

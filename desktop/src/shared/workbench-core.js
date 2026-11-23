@@ -4,26 +4,26 @@
   else root.ColdCoffeeCore = api;
 })(typeof globalThis === 'object' ? globalThis : this, function () {
   'use strict';
-  const VERSION = '3.3.0-preview.4';
+  const VERSION = '3.3.0-preview.5';
   const DEEPSEEK_LABEL = 'DeepSeek v4.1 Flash 10.17版本';
   const SEATS = [
     {id:'codex',tag:'GPT-6.2 Astra / Sol',mark:'01',hint:'目标清单 → 最小实现 → 验收证据'},
-    {id:'claude',tag:'Claude Code全模型支持',mark:'02',hint:'约束整理 → 结构化实现 → 差异复核'},
+    {id:'claude',tag:'Claude Fable 5.2 / 全模型支持',mark:'02',hint:'约束整理 → 结构化实现 → 差异复核'},
     {id:'grok',tag:'Grok 4.7',mark:'03',hint:'关键问题 → 直接产物 → 不确定项'},
     {id:'deepseek',tag:DEEPSEEK_LABEL,mark:'04',hint:'问题拆分 → 可复现步骤 → 结果检查'},
-    {id:'glm53',tag:'GLM 5.3全模型支持',mark:'05',hint:'任务条目 → 分段推进 → 交付清单'},
-    {id:'gemini',tag:'Gemini全模型支持',mark:'06',hint:'素材边界 → 综合组织 → 输出验证'},
-    {id:'doubao',tag:'豆包',mark:'07',hint:'技能落在平台用户数据目录的 .user_skills/cha-doubao，不写入自带 .skills',place:'DOUBAO_USER_SKILLS 或平台默认目录'},
+    {id:'glm53',tag:'GLM 5.4全模型支持',mark:'05',hint:'任务条目 → 分段推进 → 交付清单'},
+    {id:'gemini',tag:'Gemini 4 全模型支持',mark:'06',hint:'素材边界 → 综合组织 → 输出验证'},
+    {id:'doubao',tag:'豆包 2.1',mark:'07',hint:'技能落在平台用户数据目录的 .user_skills/cha-doubao，不写入自带 .skills',place:'DOUBAO_USER_SKILLS 或平台默认目录'},
     {id:'workbuddy',tag:'WorkBuddy',mark:'08',hint:'技能落在用户目录的 .workbuddy/skills/cha-workbuddy，入口写 AGENTS.md',place:'WORKBUDDY_HOME 或 ~/.workbuddy'},
     {id:'cursor',tag:'Cursor',mark:'09',hint:'常驻规则写在用户目录 .cursor/rules/cha-cursor.mdc，YAML 头 alwaysApply',place:'~/.cursor  · 不写安装目录，不写 AppData'},
-    {id:'mimo',tag:'MiniMax 3.1 Flash',mark:'10',hint:'技能写在用户配置目录 .config/mimocode/skills/cha-mimo/SKILL.md，YAML 头 name 为 cha-mimo',place:'~/.config/mimocode  · 不写 npm，不写 auth.json'},
-    {id:'kimi',tag:'Kimi K3.1',mark:'11',hint:'技能写在 Kimi Code 数据根 .kimi-code/skills/cha-kimi/SKILL.md，YAML 头 name 为 cha-kimi',place:'~/.kimi-code  · 不写 config.toml，不写 ~/.agents'}
+    {id:'mimo',tag:'MiniMax M3.1 Flash',mark:'10',hint:'技能写在用户配置目录 .config/mimocode/skills/cha-mimo/SKILL.md，YAML 头 name 为 cha-mimo',place:'~/.config/mimocode  · 不写 npm，不写 auth.json'},
+    {id:'kimi',tag:'Kimi K3.1 Pro',mark:'11',hint:'技能写在 Kimi Code 数据根 .kimi-code/skills/cha-kimi/SKILL.md，YAML 头 name 为 cha-kimi',place:'~/.kimi-code  · 不写 config.toml，不写 ~/.agents'}
   ];
   const LOCAL_AGENT_PROFILES = [
     {id:'grok-bot',name:'Grok Bot',seat:'grok',agent:'Grok 4.7 模型',root:'.grok/skills',skill:'coldcoffee-grok-bot',summary:'快速拆解目标，列出依据与待验证项。'},
-    {id:'claude-duet',name:'Claude Duet',seat:'claude',agent:'Claude Code 模型',root:'.claude/skills',skill:'coldcoffee-claude-duet',summary:'分阶段整理需求、变更、测试与交付。'},
+    {id:'claude-duet',name:'Claude Duet',seat:'claude',agent:'Claude Fable 5.2 / 全模型',root:'.claude/skills',skill:'coldcoffee-claude-duet',summary:'分阶段整理需求、变更、测试与交付。'},
     {id:'chatgpt-dot',name:'ChatGPT Dot',seat:'codex',agent:'GPT-6.2 Astra / Sol',root:'.codex/skills',skill:'coldcoffee-chatgpt-dot',summary:'把目标转成可执行任务，并记录验证结果。'},
-    {id:'meta-muse',name:'Meta Muse',seat:'gemini',agent:'Gemini 模型',root:'手动选择 Skills 目录',skill:'coldcoffee-meta-muse',summary:'创意发散、内容结构化与多方案比较。',manualRoot:true},
+    {id:'meta-muse',name:'Meta Muse',seat:'gemini',agent:'Gemini 4 全模型',root:'手动选择 Skills 目录',skill:'coldcoffee-meta-muse',summary:'创意发散、内容结构化与多方案比较。',manualRoot:true},
     {id:'opencode',name:'OpenCode',seat:'opencode',agent:'OpenCode',root:'.config/opencode',skill:'coldcoffee-opencode',summary:'安装冷咖啡本地工作流，单独输入「冷咖啡」启动。',customRoot:true}
   ];
   const PROFILES = [

@@ -26,11 +26,16 @@
   const oldRelayLabel = document.querySelector('.nav[data-page="relay"] span:not(.shell-nav-icon)'); if (oldRelayLabel) oldRelayLabel.textContent = '高级接入';
   const page = document.createElement('section'); page.id = 'page-visual'; page.className = 'page vg';
   page.innerHTML = `
-    <header class="vg-heading"><img class="vg-hero-art" src="../../assets/brand-v6/hero.webp" alt="冷咖啡加州海岸漫画封面"><div class="vg-hero-copy"><div class="vg-hero-eyebrow"><span class="vg-kicker">冷咖啡 · 可视化工作台</span><span id="vg-engine" class="vg-pill">网关准备中</span></div><h1>连接你的 AI<span>，</span><br>看清每次请求<span>。</span></h1><p>选择中转和模型，实时查看请求的去向与耗时。</p><div class="vg-heading-actions"><button id="vg-setup" class="vg-primary">开始接入 <span>→</span></button><button id="vg-demo" class="vg-secondary">体验可视化 ↗</button></div></div></header>
+    <header class="vg-heading"><img class="vg-hero-art" src="../../assets/brand-v6/hero.webp" alt="冷咖啡暗夜绯红原创角色封面"><div class="vg-hero-copy"><div class="vg-hero-eyebrow"><span class="vg-kicker">冷咖啡 · GPT-6.2 ASTRA / SOL 官方付费中转</span><span id="vg-engine" class="vg-pill">网关准备中</span></div><h1>GPT-6.2 Astra / Sol<span>，</span><br>冷咖啡中转一键直连<span>。</span></h1><p>去 coldcoffeeai.com 买 Key 即可接入满血工作流；需要收费闭源破甲与专属定制，进群找管理。同步支持 GLM-5.4、Claude Fable 5.2、Gemini 4。</p><div class="vg-hero-chips" aria-label="核心旗舰与最新同步模型"><span class="chip-hot">GPT-6.2 Astra</span><span class="chip-hot">GPT-6.2 Sol</span><span>GLM-5.4</span><span>Claude Fable 5.2</span><span>Gemini 4</span><span>Kimi K3.1 Pro</span></div><div class="vg-heading-actions"><button id="vg-setup" class="vg-primary">开始接入 <span>→</span></button><button id="vg-hero-site" class="vg-secondary" type="button">去官网买 Key ↗</button><button id="vg-hero-closed" class="vg-gold-btn" type="button">闭源 / 定制进群</button><button id="vg-demo" class="vg-secondary">体验可视化 ↗</button></div></div></header>
+    <section class="vg-promo-strip" aria-label="冷咖啡中转、闭源定制与全部社群入口">
+      <div class="vg-promo-block vg-promo-relay"><span class="vg-kicker">冷咖啡付费中转</span><strong>coldcoffeeai.com</strong><p>中转内置工作流，GPT-6.2 Astra / Sol 满配直用。</p><button id="vg-promo-site" type="button" class="vg-promo-btn">开通与充值 ↗</button></div>
+      <div class="vg-promo-block vg-promo-vip"><span class="vg-kicker">收费 · 闭源与定制破甲</span><strong>装到你电脑 · 支持任意订阅/中转</strong><p>闭源破甲与专属工作流定制，进 QQ 群私聊管理沟通报价。</p><button id="vg-promo-closed" type="button" class="vg-gold-btn">进群找管理 ↗</button></div>
+      <div class="vg-promo-block vg-promo-groups"><span class="vg-kicker">四个 QQ 群 · 飞机群与频道</span><strong>官方社群直达</strong><div class="vg-promo-pills"><button type="button" data-vg-qq="1057540028">QQ一群 1057540028</button><button type="button" data-vg-qq="1077074552">QQ二群 1077074552</button><button type="button" data-vg-qq="618179023">QQ三群 618179023</button><button type="button" data-vg-qq="1131239659">QQ四群 1131239659</button><button id="vg-promo-tg-chat" type="button" class="vg-tg-pill">TG 聊天群 ↗</button><button id="vg-promo-tg-channel" type="button" class="vg-tg-pill">TG 频道 ↗</button></div></div>
+    </section>
     <div id="vg-banner" class="vg-banner" role="status" hidden></div>
     <div id="vg-connection" class="vg-connection" data-state="starting"><div><strong id="vg-connection-title">正在连接本机网关</strong><span id="vg-connection-note" role="status">首次启动请稍候，接入配置会保留。</span></div><button id="vg-retry" type="button" class="vg-secondary" hidden>重新连接</button></div>
     <p id="vg-config-warning" class="vg-config-warning" role="status" hidden></p>
-    <section class="vg-recommendations" aria-labelledby="vg-recommendations-title"><div><h2 id="vg-recommendations-title">推荐模型</h2><p>以中转实际返回为准</p></div>${relayModels.families.map(family => `<button type="button" class="vg-recommendation" data-family="${family.key}" data-availability="pending"><span aria-hidden="true">${family.mark}</span><strong>${family.name}</strong><small>等待验证</small></button>`).join('')}</section>
+    <section class="vg-recommendations" aria-labelledby="vg-recommendations-title"><div class="vg-rec-head"><h2 id="vg-recommendations-title">核心旗舰 · GPT-6.2 Astra / Sol 与最新全模型</h2><p>优先匹配 GPT-6.2 Astra / Sol，同步识别 GLM-5.4、Claude Fable 5.2、Gemini 4</p></div>${relayModels.families.map(family => `<button type="button" class="vg-recommendation" data-family="${family.key}" data-availability="pending"><span aria-hidden="true">${family.mark}</span><strong>${family.name}</strong><small>等待验证</small></button>`).join('')}</section>
     <div class="vg-stats"><div><span>最近请求</span><strong id="vg-count">0</strong><small>经过本机网关</small></div><div><span>成功响应</span><strong id="vg-success">—</strong><small id="vg-success-note">等待第一条请求</small></div><div><span>平均耗时</span><strong id="vg-latency">—</strong><small>已完成请求</small></div><div><span>当前模型</span><strong id="vg-model-stat" class="vg-stat-model">等待连接</strong><small id="vg-model-note">以中转实际列表为准</small></div></div>
     <div class="vg-grid">
       <section class="vg-card vg-flow-card"><div class="vg-card-head"><div><span class="vg-live-dot"></span><h2>实时路由</h2><span class="vg-subtle" id="vg-flow-label">等待第一条请求</span></div><button id="vg-groups-open" class="vg-secondary">管理路由组</button></div>
@@ -463,6 +468,15 @@
   $('vg-copy-word').onclick = () => navigator.clipboard.writeText('冷咖啡').then(() => status('已复制「冷咖啡」，到目标软件发送。')).catch(() => status('启动口令：冷咖啡'));
   $('vg-finish').onclick = () => { closeSetup(); show(); };
   $('vg-install').onclick = () => go('packs'); $('vg-site').onclick = () => external('https://coldcoffeeai.com/'); $('vg-buy').onclick = () => external('https://coldcoffeeai.com/'); $('vg-community').onclick = () => go('community'); $('vg-custom').onclick = () => go('community');
+  $('vg-hero-site').onclick = () => external('https://coldcoffeeai.com/');
+  $('vg-promo-site').onclick = () => external('https://coldcoffeeai.com/');
+  $('vg-hero-closed').onclick = () => go('community');
+  $('vg-promo-closed').onclick = () => go('community');
+  $('vg-promo-tg-chat').onclick = () => external('https://t.me/coolcoffeeai');
+  $('vg-promo-tg-channel').onclick = () => external('https://t.me/chachachalkf');
+  page.querySelectorAll('[data-vg-qq]').forEach(btn => {
+    btn.onclick = () => navigator.clipboard.writeText(btn.dataset.vgQq).then(() => tell(`已复制 QQ 群号：${btn.dataset.vgQq}（进群私聊管理咨询闭源破甲、定制与售后）`)).catch(() => tell(`QQ 群号：${btn.dataset.vgQq}`));
+  });
   $('vg-demo').onclick = () => send(true); $('vg-test-form').onsubmit = event => { event.preventDefault(); send(false, $('vg-test-input').value); };
   $('vg-flow-detail').onclick = () => { const route = currentRoute(); if (route) detailRoute(route); else tell('先体验可视化或发送一条真实请求，再查看详情。'); };
   $('vg-cancel').onclick = () => call('cancel').catch(error => tell(error.message));

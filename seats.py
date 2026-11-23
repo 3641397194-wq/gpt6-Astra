@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 DEEPSEEK_LABEL = "DeepSeek v4.1 Flash 10.17版本"
-APP_TITLE = f"gpt6 Astra-claude全模型支持-grok4.7-{DEEPSEEK_LABEL}-glm5.3全模型支持-gemini全模型支持破甲越狱"
+APP_TITLE = f"gpt6.2 Astra-gpt6.2 Sol-claude Fable 5.2-grok4.7-{DEEPSEEK_LABEL}-glm5.4全模型支持-gemini4全模型支持破甲越狱"
 ACTIVATION_WORD = "冷咖啡"
 CONTROL_WORD = "BREAK//OPEN"
 PACK_IDS = ("codex", "claude", "grok", "deepseek", "glm53", "gemini", "doubao", "workbuddy", "cursor")
@@ -41,6 +41,10 @@ SEAT_ALIASES = {
     "deepseekv4.1flash10.17": "deepseek",
     "glm53": "glm53",
     "glm-5.3": "glm53",
+    "glm54": "glm53",
+    "glm-5.4": "glm53",
+    "claude-fable-5.2": "claude",
+    "gemini-4": "gemini",
     "gemini": "gemini",
     "doubao": "doubao",
     "doubao-work": "doubao",

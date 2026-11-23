@@ -12,17 +12,17 @@ const { DEEPSEEK_LABEL } = require('../shared/workbench-core');
 const activePreparations = new Set();
 
 const CARDS = {
-  codex: { name: 'Codex', line: 'GPT' },
-  claude: { name: 'Claude', line: 'Code' },
+  codex: { name: 'Codex', line: 'GPT-6.2' },
+  claude: { name: 'Claude Code', line: 'Fable 5.2' },
   grok: { name: 'Grok', line: '4.7' },
   deepseek: { name: DEEPSEEK_LABEL, line: 'Harness' },
-  glm53: { name: 'GLM', line: '5.3' },
-  gemini: { name: 'Gemini', line: '全模型' },
-  doubao: { name: '豆包', line: '技能' },
+  glm53: { name: 'GLM 5.4', line: 'GLM / ZCode' },
+  gemini: { name: 'Gemini 4', line: '全模型支持' },
+  doubao: { name: '豆包 2.1', line: 'Seed 2.1' },
   workbuddy: { name: 'WorkBuddy', line: '搭档' },
   cursor: { name: 'Cursor', line: '.cursor' },
-  mimo: { name: 'MiniMax 3.1 Flash', line: '.config' },
-  kimi: { name: 'Kimi K3.1', line: '.kimi-code' },
+  mimo: { name: 'MiniMax M3.1 Flash', line: '.config' },
+  kimi: { name: 'Kimi K3.1 Pro', line: '.kimi-code' },
 };
 
 const LAUNCH = {

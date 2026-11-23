@@ -149,7 +149,7 @@ function relayConfigText() {
   const baseUrl=relayBaseUrl();
   const modelId=relayInput('relay-provider');
   if (!state.relayReady || !state.relayModels.includes(modelId)) throw new Error('先测试接入，再从模型目录选择。');
-  const effort=['gpt-6-astra','gpt-6.1-sol'].includes(modelId)?'model_reasoning_effort = "xhigh"\n':'';
+  const effort=['gpt-6-astra','gpt-6.1-sol','gpt-6.2-astra','gpt-6.2-sol'].includes(modelId.toLowerCase())?'model_reasoning_effort = "xhigh"\n':'';
   const configPath=window.coldbrew?.platform==='win32'?'%USERPROFILE%\\.codex\\config.toml':'~/.codex/config.toml';
   return `# 贴进 Codex 的 ${configPath}
 # 已有的同名项留一份就行。

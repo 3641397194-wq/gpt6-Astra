@@ -12,8 +12,8 @@ const port=Number(process.env.PORT||8772);
 const routes={'/':'docs/readme-preview.html','/readme-preview':'docs/readme-preview.html','/workbench/':'desktop/src/workbench/index.html','/assets/brand-avatar-v3.png':'desktop/assets/brand-avatar-v3.png','/assets/brand-avatar-v4.png':'desktop/assets/brand-avatar-v4.png','/assets/coldcoffee-manga-v3.png':'desktop/assets/coldcoffee-manga-v3.png','/assets/coldcoffee-manga-v4.png':'desktop/assets/coldcoffee-manga-v4.png','/assets/coldcoffee-manga-v5.jpg':'desktop/assets/coldcoffee-manga-v5.jpg'};
 routes['/lib/harness-plugin/ui/rem-blue.svg']='desktop/src/lib/harness-plugin/ui/rem-blue.svg';
 routes['/lib/harness-plugin/ui/rem-blue.png']='desktop/src/lib/harness-plugin/ui/rem-blue.png';
-const prefixes={'/docs/':'docs/','/workbench/':'desktop/src/workbench/','/shared/':'desktop/src/shared/','/assets/community/':'desktop/assets/community/'};
-const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.svg':'image/svg+xml','.md':'text/plain; charset=utf-8'};
+const prefixes={'/docs/':'docs/','/workbench/':'desktop/src/workbench/','/shared/':'desktop/src/shared/','/assets/community/':'desktop/assets/community/','/assets/brand-v6/':'desktop/assets/brand-v6/'};
+const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.md':'text/plain; charset=utf-8'};
 function previewRoot(seat){
  if(!PACK_IDS.includes(seat))throw new Error('未知席位');
  const base=path.join(root,'.coldbrew','interactive-preview');

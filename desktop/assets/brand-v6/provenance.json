@@ -1,12 +1,12 @@
 {
-  "name": "ColdCoffee original visual identity, California Coast edition",
-  "created": "2026-11-21",
-  "model": "OpenAI built-in image generation",
-  "artwork": "Original adult manga heroine on a sunny California beach with a matching portrait crop and complementary seaside coffee shop illustration.",
+  "name": "ColdCoffee original visual identity, 2026 Noir Crimson Flagship edition",
+  "created": "2026-11-23",
+  "model": "Antigravity built-in image generation",
+  "artwork": "Original adult anime heroine in noir obsidian and crimson studio aesthetic with matching portrait icon and editorial cover.",
   "sourceSha256": {
-    "coldcoffee-california-cover.png": "3f96f46b84944296d52384111b76d5ac9857baf593c06eb7fbd96888ed1d5f7a",
-    "coldcoffee-california-portrait-source.png": "3f96f46b84944296d52384111b76d5ac9857baf593c06eb7fbd96888ed1d5f7a",
-    "coldcoffee-california-community.png": "5f860d0507a2f4e56b40b3f5d15dd81b53962493cf6189de1e1519e0bcc4d905"
+    "coldcoffee-flagship-hero.jpg": "4bcf342f4e2cbbe5959ac285dbd9e52e1014b5411ff3feefc239fef0b2797be3",
+    "coldcoffee-flagship-icon.jpg": "6adc10813a7c39b1e8c9fa550d08703bc1cf7e8563a9bd0b8a9ecd16a751191a",
+    "coldcoffee-flagship-cover.png": "c294138471f73237927e840c3b2654037d1f3c8e332af7872cf4f6124729cbf3"
   },
-  "processing": "WebP homepage and desktop covers. The portrait was cropped from the cover and encoded as WebP, PNG, and a seven-size ICO."
+  "processing": "Format conversion to 1672x941 WebP desktop cover, 1024x1024 rounded PNG/ICO/WebP icon & avatar, mobile/iOS variants, and 1920x960 editorial GitHub banner."
 }

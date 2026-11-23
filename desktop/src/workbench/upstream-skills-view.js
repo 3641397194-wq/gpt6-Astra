@@ -83,9 +83,9 @@
     return entry;
   }));
   const seats = [
-    ['codex', 'Codex'], ['claude', 'Claude Code'], ['grok', 'Grok'], ['deepseek', window.ColdCoffeeCore?.DEEPSEEK_LABEL || 'DeepSeek Harness'],
-    ['glm53', 'GLM / ZCode'], ['gemini', 'Gemini'], ['doubao', '豆包'], ['workbuddy', 'WorkBuddy'],
-    ['cursor', 'Cursor'], ['mimo', 'MiniMax 3.1 Flash'], ['kimi', 'Kimi Code'],
+    ['codex', 'Codex · GPT-6.2'], ['claude', 'Claude Fable 5.2'], ['grok', 'Grok 4.7'], ['deepseek', window.ColdCoffeeCore?.DEEPSEEK_LABEL || 'DeepSeek Harness'],
+    ['glm53', 'GLM 5.4 / ZCode'], ['gemini', 'Gemini 4'], ['doubao', '豆包 2.1'], ['workbuddy', 'WorkBuddy'],
+    ['cursor', 'Cursor'], ['mimo', 'MiniMax M3.1 Flash'], ['kimi', 'Kimi K3.1 Pro'],
   ];
   const number = (value) => Number.isFinite(Number(value)) ? Number(value).toLocaleString('zh-CN') : '—';
   const text = (tag, className, value) => {
