@@ -10,7 +10,7 @@ await fs.mkdir(path.join(root, 'www/legal'), { recursive: true });
 await fs.mkdir(path.join(root, 'work'), { recursive: true });
 await build({
   entryPoints: [path.join(root, 'src/app.js')], bundle: true,
-  outfile: path.join(root, 'www/app.js'), format: 'esm', target: 'chrome100',
+  outfile: path.join(root, 'www/app.js'), format: 'iife', target: 'chrome61',
   minify: true, sourcemap: false, legalComments: 'eof', charset: 'utf8',
 });
 await build({

@@ -1,10 +1,10 @@
 # Android integration contract
 
-- Application ID: `com.coldcoffee.mobile`; version `3.3.0-preview.5`; versionCode `330005`.
+- Application ID: `com.coldcoffee.mobile`; version `3.3.0-preview.6`; versionCode `330006`.
 - AGP `8.7.3`, Gradle `8.9`, JDK `17`, compile/target SDK `35`, Build Tools `35.0.0`, minimum SDK `26`.
 - Build web assets first with the mobile package's build command. Then build from `mobile/android`: `bash ./gradlew --no-daemon :app:assembleRelease :app:testDebugUnitTest :app:assembleDebugAndroidTest`.
 - Signing uses environment variables `COLDCOFFEE_ANDROID_KEYSTORE`, `COLDCOFFEE_ANDROID_STORE_PASSWORD`, `COLDCOFFEE_ANDROID_KEY_ALIAS`, `COLDCOFFEE_ANDROID_KEY_PASSWORD` only. With no configuration, release is unsigned (no debug signing substitute).
-- Signed release output: `app/build/outputs/apk/release/ColdCoffee-Mobile-Android-3.3.0-preview.5.apk`. With absent signing configuration the name has `-unsigned` and is not a customer installer.
+- Signed release output: `app/build/outputs/apk/release/ColdCoffee-Mobile-Android-3.3.0-preview.6.apk`. With absent signing configuration the name has `-unsigned` and is not a customer installer.
 - UI assets are copied from `mobile/www/` during build. The launcher uses `mobile/assets/launcher-foreground.png`; the UI uses `mobile/assets/icon.png`. The vector brand substitute remains if the launcher image is absent. Legal resources are copied from `mobile/legal/`.
 - Native bridge is `window.ColdCoffeeNative`; providers return `hasKey` without raw API keys; protocol field accepts `chat` or `responses`.
 - Native headers event includes status, contentType and headers.content-type. JSON and UTF-8 SSE body chunks use the same event stream.

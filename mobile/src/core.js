@@ -83,8 +83,9 @@ export function requestBody({ protocol, model, messages, system = '' }) {
 export function extractResponse(value, protocol = 'chat') {
   if (value?.error) throw new Error(typeof value.error === 'string' ? value.error : value.error.message || '服务商返回错误');
   if (protocol === 'responses') {
-    return value?.output_text || (value?.output || []).flatMap(item => item.content || [])
-      .filter(item => item.type === 'output_text').map(item => item.text || '').join('');
+    return value?.output_text || (Array.isArray(value?.output) ? value.output : []).map(item =>
+      (Array.isArray(item?.content) ? item.content : []).filter(part => part?.type === 'output_text')
+        .map(part => part.text || '').join('')).join('');
   }
   const content = value?.choices?.[0]?.message?.content;
   return Array.isArray(content) ? content.filter(item => item.type === 'text').map(item => item.text || '').join('') : content || '';
@@ -95,7 +96,8 @@ export function extractResponse(value, protocol = 'chat') {
 export async function consumeChatStream(stream, { protocol = 'chat', onText, onReasoning, onUsage, onEnd } = {}) {
   let logicalDone = false, tappedBuffer = '';
   const tapDecoder = new TextDecoder();
-  const tapped = protocol === 'chat' ? stream.pipeThrough(new TransformStream({
+  const useChatboxWrapper = protocol === 'chat' && typeof TransformStream === 'function' && typeof globalThis !== 'undefined';
+  const tapped = useChatboxWrapper ? stream.pipeThrough(new TransformStream({
     transform(chunk, controller) {
       tappedBuffer += tapDecoder.decode(chunk, { stream: true });
       let boundary;
@@ -110,15 +112,16 @@ export async function consumeChatStream(stream, { protocol = 'chat', onText, onR
       controller.enqueue(chunk);
     },
   })) : stream;
-  const input = protocol === 'chat' ? wrapOpenAIChatCompletionSse(tapped) : stream;
+  const input = useChatboxWrapper ? wrapOpenAIChatCompletionSse(tapped) : stream;
   const reader = input.getReader();
   const decoder = new TextDecoder();
   let buffer = '', received = false, complete = false;
+  const ended = () => protocol === 'responses' ? complete : !useChatboxWrapper && logicalDone;
   const processFrame = frame => {
     const data = frame.split(/\r?\n/).filter(line => line.startsWith('data:'))
       .map(line => line.slice(5).replace(/^ /, '')).join('\n');
     if (!data) return;
-    if (data === '[DONE]') { complete = true; return; }
+    if (data === '[DONE]') { complete = true; logicalDone = true; return; }
     let value;
     try { value = JSON.parse(data); } catch { throw new Error('模型返回了无法解析的流式数据，请检查接口协议'); }
     if (value.error || value.type === 'error' || value.type === 'response.failed') {
@@ -147,13 +150,13 @@ export async function consumeChatStream(stream, { protocol = 'chat', onText, onR
       while ((match = /\r?\n\r?\n/.exec(buffer))) {
         processFrame(buffer.slice(0, match.index));
         buffer = buffer.slice(match.index + match[0].length);
-        if (protocol === 'responses' && complete) { await reader.cancel(); break; }
+        if (ended()) break;
       }
-      if (protocol === 'responses' && complete) break;
+      if (ended()) break;
       if (buffer.length > 2 * 1024 * 1024) throw new Error('流式数据帧过大，请检查服务商返回格式');
     }
     buffer += decoder.decode();
-    if (buffer.trim()) processFrame(buffer);
+    if (!ended() && buffer.trim()) processFrame(buffer);
     if (!received) throw new Error('接口没有返回可显示的文字，请检查模型和协议');
     if (!complete && !logicalDone) throw new Error('连接提前结束，已保留部分回复，请重试');
     onEnd?.();

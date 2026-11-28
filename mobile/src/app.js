@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // Copyright (c) 2026 ColdCoffee contributors.
-import { marked } from 'marked';
+import './webview-compat.js';
 import DOMPurify from 'dompurify';
 import { VERSION, SERVICES, SOURCE_URL } from './config.js';
 import { FEATURED_MODELS, modelFamily, normalizeProvider, readModels, requestBody, extractResponse, consumeChatStream, exportPublicState, redactError } from './core.js';
@@ -60,7 +60,7 @@ function safeLoad() {
 }
 function safeProviders() {
   try { const result = bridge.listProviders(); return Array.isArray(result) ? result : []; }
-  catch { queueMicrotask(() => toast('读取本机配置遇到问题，请勿清除应用数据；可重新打开后重试')); return []; }
+  catch { setTimeout(() => toast('读取本机配置遇到问题，请勿清除应用数据；可重新打开后重试'), 0); return []; }
 }
 function toast(text) {
   clearTimeout(toastTimer); $('#toast').textContent = text; $('#toast').hidden = false;
@@ -82,7 +82,7 @@ function showPage(page) {
   if (page === 'chat') { updateSelection(); renderMessages(); }
   if (page === 'work') { renderWorkModes(); renderWorkHistory(); updateWorkProviderNote(); }
   if (page === 'providers') renderProviders();
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  window.scrollTo(0, 0);
 }
 function openDialog(id) { const dialog = $(`#${id}`); if (!dialog.open) dialog.showModal(); }
 function clearKey() { $('#provider-key').value = ''; $('#provider-key').type = keyType; }
@@ -411,10 +411,17 @@ function messageContent(message) {
   return message.image ? [{ type: 'text', text: message.text || '请描述这张图片。' }, { type: 'image_url', image_url: { url: message.image } }] : message.text;
 }
 function markdown(text) {
-  return DOMPurify.sanitize(marked.parse(text || '', { breaks: true, gfm: true }), {
-    FORBID_TAGS: ['img', 'video', 'audio', 'iframe', 'form', 'input', 'button', 'style', 'svg', 'math'],
-    FORBID_ATTR: ['style', 'src', 'srcset'],
-  });
+  const source = text || '';
+  try {
+    // Bundle Marked lazily: a runtime without its RegExp features should still
+    // open the app and display the conversation as escaped text.
+    const { marked } = require('marked');
+    if (DOMPurify.isSupported) return DOMPurify.sanitize(marked.parse(source, { breaks: true, gfm: true }), {
+      FORBID_TAGS: ['img', 'video', 'audio', 'iframe', 'form', 'input', 'button', 'style', 'svg', 'math'],
+      FORBID_ATTR: ['style', 'src', 'srcset'],
+    });
+  } catch { /* Plain text remains usable if this WebView cannot render Markdown. */ }
+  return escape(source).replace(/\r\n?|\n/g, '<br>');
 }
 function renderMessages() {
   const list = $('#messages'), chat = conversation(); list.replaceChildren();
@@ -455,7 +462,7 @@ function scheduleMessageUpdate(node, message) {
     renderFrame = 0;
     const nearBottom = document.documentElement.scrollHeight - window.scrollY - window.innerHeight < 260;
     updateMessage(node, message);
-    if (nearBottom && currentPage === 'chat') window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
+    if (nearBottom && currentPage === 'chat') window.scrollTo(0, document.documentElement.scrollHeight);
   });
 }
 async function generate(chat, placeholder, context) {
@@ -683,7 +690,10 @@ $('#system-open').onclick = () => { $('#system-prompt').value = conversation().s
 $('#system-save').onclick = () => { if (request) { toast('请停止生成后修改会话设置'); return; } conversation().system = $('#system-prompt').value; saveNow(); closeDialog($('#system-dialog')); toast('当前会话设置已保存'); };
 $('#font-size').onchange = event => { state.fontSize = Number(event.target.value); applyAppearance(); saveNow(); };
 $('#theme').onchange = event => { state.theme = event.target.value; applyAppearance(); saveNow(); };
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (state.theme === 'system') applyAppearance(); });
+const systemTheme = matchMedia('(prefers-color-scheme: dark)');
+const syncSystemTheme = () => { if (state.theme === 'system') applyAppearance(); };
+if (typeof systemTheme.addEventListener === 'function') systemTheme.addEventListener('change', syncSystemTheme);
+else if (typeof systemTheme.addListener === 'function') systemTheme.addListener(syncSystemTheme);
 $('#export-config').onclick = () => { bridge.shareText(JSON.stringify(exportPublicState(state, providers), null, 2)); toast('已打开分享；内容不含 Key 或聊天记录'); };
 $('#privacy-open').onclick = showPrivacy;
 $('#licenses-open').onclick = showLicenses;

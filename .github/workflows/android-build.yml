@@ -1,0 +1,108 @@
+name: Android independent build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-independent-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  android:
+    name: Verify and sign Android only
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Verify fixed Gradle wrapper
+        run: |
+          printf '%s  %s\n' \
+            '498495120a03b9a6ab5d155f5de3c8f0d986a449153702fb80fc80e134484f17' \
+            'mobile/android/gradle/wrapper/gradle-wrapper.jar' | sha256sum --check --status
+          grep -Fqx 'distributionSha256Sum=d725d707bfabd4dfdc958c624003b3c80accc03f7037b5122c4b1d0ef15cecab' mobile/android/gradle/wrapper/gradle-wrapper.properties
+      - name: Prepare fixed Android SDK
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Verify mobile source and touch interaction
+        working-directory: mobile
+        run: |
+          npm ci
+          npm test
+          npm run audit:source
+          npx playwright install --with-deps chromium
+          npm run test:ui
+      - name: Prepare existing Android release signing
+        env:
+          COLDCOFFEE_ANDROID_KEYSTORE_B64: ${{ secrets.COLDCOFFEE_ANDROID_KEYSTORE_B64 }}
+        run: |
+          python3 - <<'PY'
+          import base64, os
+          from pathlib import Path
+          encoded = os.environ.get("COLDCOFFEE_ANDROID_KEYSTORE_B64", "")
+          if not encoded:
+              raise SystemExit("Existing Android signing material is missing.")
+          directory = Path(os.environ["RUNNER_TEMP"]) / "coldcoffee-android-signing"
+          directory.mkdir(mode=0o700, parents=True, exist_ok=True)
+          key_path = directory / "release.p12"
+          key_path.write_bytes(base64.b64decode(encoded, validate=True))
+          key_path.chmod(0o600)
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
+              stream.write(f"COLDCOFFEE_ANDROID_KEYSTORE={key_path}\n")
+          PY
+      - name: Build signed Android release and native unit tests
+        env:
+          COLDCOFFEE_ANDROID_STORE_PASSWORD: ${{ secrets.COLDCOFFEE_ANDROID_STORE_PASSWORD }}
+          COLDCOFFEE_ANDROID_KEY_ALIAS: ${{ secrets.COLDCOFFEE_ANDROID_KEY_ALIAS }}
+          COLDCOFFEE_ANDROID_KEY_PASSWORD: ${{ secrets.COLDCOFFEE_ANDROID_KEY_PASSWORD }}
+        run: bash mobile/android/gradlew -p mobile/android --no-daemon :app:assembleRelease :app:testDebugUnitTest :app:lintRelease
+      - name: Verify upgrade identity, package and matching source
+        run: |
+          version="$(node -p "require('./mobile/package.json').version")"
+          apk="$GITHUB_WORKSPACE/mobile/android/app/build/outputs/apk/release/ColdCoffee-Mobile-Android-${version}.apk"
+          test -s "$apk"
+          signer="$ANDROID_HOME/build-tools/35.0.0/apksigner"
+          "$signer" verify --verbose --print-certs "$apk" > "$RUNNER_TEMP/signature.txt"
+          grep -Fqx 'Signer #1 certificate SHA-256 digest: a5d756a285673e886f3f7e5f1a67d940ae32e9ba6b77cb8d11f9c185dc9ec21d' "$RUNNER_TEMP/signature.txt"
+          if grep -q 'CN=Android Debug' "$RUNNER_TEMP/signature.txt"; then exit 1; fi
+          analyzer="$ANDROID_HOME/cmdline-tools/latest/bin/apkanalyzer"
+          test "$("$analyzer" manifest application-id "$apk")" = "com.coldcoffee.mobile"
+          test "$("$analyzer" manifest version-name "$apk")" = "$version"
+          test "$("$analyzer" manifest version-code "$apk")" = "330006"
+          test "$("$analyzer" manifest debuggable "$apk")" = "false"
+          npm --prefix mobile run audit:apk -- "$apk"
+          npm --prefix mobile run source:archive
+          mkdir -p android-out
+          cp "$apk" android-out/
+          cp "mobile/dist/ColdCoffee-Mobile-Source-${version}.zip" android-out/
+          cp mobile/work/apk-audit.json android-out/
+          cp "$RUNNER_TEMP/signature.txt" android-out/
+          (cd android-out && sha256sum ColdCoffee-Mobile-* > SHA256SUMS-Android.txt)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-independent-signed
+          path: android-out/*
+          if-no-files-found: error
+          retention-days: 14
+      - name: Remove runner signing material
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          target = Path(os.environ["RUNNER_TEMP"]) / "coldcoffee-android-signing" / "release.p12"
+          target.unlink(missing_ok=True)
+          PY

@@ -80,7 +80,8 @@ function installFixture(seed = {}) {
         later(25, () => { emit(req.id, { type: 'done' }); active.delete(req.id); });
         return req.id;
       }
-      const last = (req.body.messages || req.body.input || []).filter(item => item.role === 'user').at(-1);
+      const userMessages = (req.body.messages || req.body.input || []).filter(item => item.role === 'user');
+      const last = userMessages[userMessages.length - 1];
       const prompt = typeof last?.content === 'string' ? last.content : '图片提问';
       if (prompt.includes('HTTP错误')) {
         later(10, () => emit(req.id, { type: 'headers', status: 429, headers: { 'content-type': 'application/json' } }));
@@ -124,9 +125,19 @@ const seeded = () => ({
   providers: [{ id: 'fixture-provider', name: '冷咖啡 · 测试配置', baseUrl: 'https://example.invalid/v1', protocol: 'chat', hasKey: true }],
   state: { providerId: 'fixture-provider', model: 'chat-fixture', fontSize: 17, theme: 'light', conversations: [] },
 });
-async function pageFor(seed = {}) {
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+async function pageFor(seed = {}, { legacyWebView = false } = {}) {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, hasTouch: true });
   await context.addInitScript(installFixture, seed);
+  if (legacyWebView) await context.addInitScript(() => {
+    delete Element.prototype.replaceChildren;
+    delete Array.prototype.at;
+    delete Object.hasOwn;
+    delete Crypto.prototype.randomUUID;
+    window.TransformStream = undefined;
+    for (const method of ['addEventListener', 'removeEventListener']) {
+      Object.defineProperty(MediaQueryList.prototype, method, { configurable: true, value: undefined });
+    }
+  });
   const page = await context.newPage();
   page.on('pageerror', error => errors.push(error.message));
   await page.route('**/*', async route => {
@@ -171,6 +182,27 @@ try {
   // headless Edge profile when that Playwright browser has not been installed.
   const fallback = !existsSync(chromium.executablePath()) && process.platform === 'win32' ? { channel: 'msedge' } : {};
   browser = await chromium.launch({ headless: true, ...fallback });
+  await check('older Android WebView can tap navigation, set up a provider and finish chat', async () => {
+    const { page, context } = await pageFor({}, { legacyWebView: true });
+    try {
+      await page.locator('#settings-open').tap();
+      assert.equal(await page.locator('#settings-dialog').isVisible(), true);
+      await page.locator('#settings-dialog [data-close]').tap();
+      await page.locator('#home-connect').tap();
+      await page.locator('#provider-key').fill('fixture-legacy-webview-key');
+      await page.locator('#provider-save').tap();
+      await page.waitForFunction(() => document.querySelector('#model-status')?.textContent.includes('读取成功'));
+      await page.locator('[data-model-id="chat-fixture"]').tap();
+      assert.equal(await page.locator('#page-chat').isVisible(), true);
+      await page.locator('#message-input').fill('旧版 WebView 流式回复');
+      await page.locator('#send-message').tap();
+      await page.waitForFunction(() => document.querySelector('.message-meta')?.textContent === '生成完成');
+      assert.equal(await page.locator('.message-body ol li').count(), 3);
+      assert.equal(await page.evaluate(() => window.__fixture.activeCount()), 0);
+      await page.locator('[data-page="community"]').tap();
+      assert.equal(await page.locator('#page-community').isVisible(), true);
+    } finally { await context.close(); }
+  });
   await check('coldcoffee setup, real model-list flow, searching, selection and streaming completion', async () => {
     const { page, context } = await pageFor();
     try {

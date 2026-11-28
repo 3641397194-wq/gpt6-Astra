@@ -67,7 +67,9 @@ public class NativeBridgeInstrumentedTest {
         long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(15);
         boolean ready = false;
         while (System.nanoTime() < deadline) {
-            if ("\"complete\"".equals(evaluate("document.readyState"))) {
+            // about:blank can also be "complete" before Android dispatches the real navigation.
+            if ("true".equals(evaluate("document.readyState==='complete' "
+                    + "&& document.querySelector('#settings-open')!==null"))) {
                 ready = true;
                 break;
             }
@@ -81,6 +83,49 @@ public class NativeBridgeInstrumentedTest {
     @After public void tearDown() {
         if (bridge != null) bridge.close();
         if (scenario != null) scenario.close();
+    }
+
+    @Test public void packagedInterfaceRespondsToTouchAfterLaunch() throws Exception {
+        tapWebControl("#settings-open");
+        waitForWebState("document.querySelector('#settings-dialog').open");
+        tapWebControl("#settings-dialog [data-close]");
+        waitForWebState("!document.querySelector('#settings-dialog').open");
+        tapWebControl("[data-page='community']");
+        waitForWebState("document.querySelector('#page-community').classList.contains('active')");
+    }
+
+    private void tapWebControl(String selector) throws Exception {
+        JSONObject point = decodedObject(evaluate("(function(){"
+                + "var el=document.querySelector(" + JSONObject.quote(selector) + ");"
+                + "var rect=el.getBoundingClientRect();var scale=window.devicePixelRatio;"
+                + "return JSON.stringify({x:(rect.left+rect.width/2)*scale,y:(rect.top+rect.height/2)*scale});"
+                + "})()"));
+        Instrumentation runner = InstrumentationRegistry.getInstrumentation();
+        float x = (float) point.getDouble("x");
+        float y = (float) point.getDouble("y");
+        runner.runOnMainSync(() -> {
+            long start = SystemClock.uptimeMillis();
+            MotionEvent down = MotionEvent.obtain(start, start, MotionEvent.ACTION_DOWN, x, y, 0);
+            MotionEvent up = MotionEvent.obtain(start, start + 80, MotionEvent.ACTION_UP, x, y, 0);
+            down.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+            up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+            try {
+                webView.dispatchTouchEvent(down);
+                webView.dispatchTouchEvent(up);
+            } finally {
+                down.recycle();
+                up.recycle();
+            }
+        });
+    }
+
+    private void waitForWebState(String expression) throws Exception {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+        while (System.nanoTime() < deadline) {
+            if ("true".equals(evaluate(expression))) return;
+            Thread.sleep(50);
+        }
+        fail("Packaged touch had no visible effect: " + expression);
     }
 
     @Test public void providerSecretsAreEncryptedAndNeverReturnedOrExportedIntoState() throws Exception {
