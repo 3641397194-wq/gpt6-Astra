@@ -88,8 +88,12 @@ final class ColdCoffeeInteractionUITests: XCTestCase {
         tap(app.tabBars.buttons["对话"], in: app)
         let draft = app.descendants(matching: .any).matching(identifier: "chat-draft").firstMatch
         tap(draft, in: app)
-        let text = "draft-retained-for-retry"
-        draft.typeText(text)
+        draft.typeText("730061924580")
+        // Check preservation of the actual composer content, independently of
+        // simulator keyboard/autocorrection delivery of individual keystrokes.
+        let textBeforeSend = try XCTUnwrap(draft.value as? String)
+        XCTAssertFalse(textBeforeSend.isEmpty)
+        XCTAssertTrue(textBeforeSend.allSatisfy(\.isNumber))
         tap(app.buttons["chat-send"], in: app)
         let alert = app.alerts["需要处理"]
         XCTAssertTrue(alert.waitForExistence(timeout: 5))
@@ -97,7 +101,7 @@ final class ColdCoffeeInteractionUITests: XCTestCase {
         XCTAssertTrue(app.tabBars.buttons["首页"].isSelected)
         tap(app.tabBars.buttons["对话"], in: app)
         XCTAssertTrue(draft.waitForExistence(timeout: 5))
-        XCTAssertEqual(draft.value as? String, text)
+        XCTAssertEqual(draft.value as? String, textBeforeSend)
         keepScreenshot("draft-preserved-after-rejected-send", app: app)
     }
 }
