@@ -10,6 +10,8 @@ const { spawnSync } = require('node:child_process');
 const root = path.resolve(__dirname, '../..');
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const version = read('VERSION').trim();
+const mobileVersion = JSON.parse(read('mobile/package.json')).version;
+const mobileTag = mobileVersion === version ? `v${mobileVersion}` : `android-v${mobileVersion}`;
 const IOS_VERSION = '3.3.0-preview.3';
 const repository = 'https://github.com/3641397194-wq/gpt6-Astra';
 const assetUrl = (tagVersion, name) => `${repository}/releases/download/v${tagVersion}/${name}`;
@@ -23,8 +25,8 @@ const installers = [
   ['linux', 'amd64', 'deb', `ColdCoffee-Workbench-Linux-amd64-${version}.deb`],
 ];
 const mobileAssets = [
-  `ColdCoffee-Mobile-Android-${version}.apk`,
-  `ColdCoffee-Mobile-Source-${version}.zip`,
+  `ColdCoffee-Mobile-Android-${mobileVersion}.apk`,
+  `ColdCoffee-Mobile-Source-${mobileVersion}.zip`,
 ];
 const iosDevelopmentAssets = [
   `ColdCoffee-iOS-Source-${IOS_VERSION}.zip`,
@@ -32,7 +34,7 @@ const iosDevelopmentAssets = [
   'SHA256SUMS-iOS.txt',
 ];
 const desktopUrls = installers.map(([, , , name]) => assetUrl(version, name));
-const mobileUrls = mobileAssets.map((name) => assetUrl(version, name));
+const mobileUrls = mobileAssets.map((name) => `${repository}/releases/download/${mobileTag}/${name}`);
 const iosUrls = iosDevelopmentAssets.map((name) => assetUrl(IOS_VERSION, name));
 const expected = [...desktopUrls, ...mobileUrls, ...iosUrls].sort();
 const python = (process.platform === 'win32' ? ['python', 'py', 'python3'] : ['python3', 'python'])
@@ -58,13 +60,14 @@ test('VERSION, package metadata and all seven configured installer names agree',
   }
 });
 
-test('the mobile package and Android version agree with the unified release', () => {
+test('the independently versioned mobile metadata and Android version agree', () => {
   const pkg = JSON.parse(read('mobile/package.json'));
   const lock = JSON.parse(read('mobile/package-lock.json'));
-  assert.equal(pkg.version, version);
-  assert.equal(lock.version, version);
-  assert.equal(lock.packages[''].version, version);
-  assert.ok(read('mobile/android/app/build.gradle').includes(`versionName '${version}'`));
+  assert.equal(pkg.version, mobileVersion);
+  assert.equal(lock.version, mobileVersion);
+  assert.equal(lock.packages[''].version, mobileVersion);
+  assert.ok(read('mobile/android/app/build.gradle').includes(`versionName '${mobileVersion}'`));
+  assert.ok(read('mobile/src/config.js').includes(`VERSION = '${mobileVersion}'`));
   assert.equal(mobileAssets.length, 2, 'APK and corresponding GPL source are published together');
 });
 
@@ -81,7 +84,7 @@ for (const relative of ['README.md', 'docs/index.html', 'docs/readme-preview.htm
 
 test('the English README points at the same split desktop/Android and iOS releases', () => {
   const source = read('README_EN.md');
-  assert.ok(source.includes(`[Desktop and Android release](${repository}/releases/tag/v${version})`));
+  assert.ok(source.includes(`[Desktop release](${repository}/releases/tag/v${version})`));
   assert.ok(source.includes(`[earlier release assets](${repository}/releases/tag/v${IOS_VERSION})`));
   assert.deepEqual(downloadLinks(source, /\]\(([^()]+)\)/g), expected);
 });
@@ -94,8 +97,9 @@ function fixture(t) {
     fs.rmSync(dir, { recursive: true, force: true });
   });
   fs.mkdirSync(path.join(dir, 'desktop'));
+  fs.mkdirSync(path.join(dir, 'mobile'));
   fs.mkdirSync(path.join(dir, 'docs'));
-  for (const relative of ['VERSION', 'README.md', 'desktop/package.json']) {
+  for (const relative of ['VERSION', 'README.md', 'desktop/package.json', 'mobile/package.json']) {
     fs.copyFileSync(path.join(root, relative), path.join(dir, relative));
   }
   return dir;
@@ -141,7 +145,7 @@ test('isolated preview generation preserves the complete canonical README and is
       '<td><code translate="no">WorkBuddy</code></td>', '<td><code translate="no">Cursor</code></td>']) {
       assert.ok(page.includes(preserved), `${relative}: lost ${preserved}`);
     }
-    assert.ok(page.includes(`<h3>当前预览</h3><p>桌面与 Android：${version}<br>`));
+    assert.ok(page.includes(`<h3>当前预览</h3><p>桌面：${version}<br>Android：${mobileVersion}<br>`));
     assert.ok(page.includes(`iOS 开发附件：${IOS_VERSION}<br>`));
   }
   assert.ok(first.get('docs/readme-preview.html').includes('href="/workbench/"'));
@@ -164,11 +168,16 @@ const missingAsset = {
   'missing iOS unsigned app': iosUrls[1],
   'missing iOS checksums': iosUrls[2],
 };
-for (const kind of ['version mismatch', 'stale installer', 'duplicate installer', ...Object.keys(missingAsset)]) {
+for (const kind of ['version mismatch', 'mobile version mismatch', 'stale installer', 'duplicate installer', ...Object.keys(missingAsset)]) {
   test(`generation validates ${kind} before touching existing previews`, (t) => {
     const dir = fixture(t);
     const readmePath = path.join(dir, 'README.md');
     if (kind === 'version mismatch') fs.writeFileSync(path.join(dir, 'VERSION'), '0.0.0-preview.1\n');
+    if (kind === 'mobile version mismatch') {
+      const pkg = JSON.parse(fs.readFileSync(path.join(dir, 'mobile/package.json'), 'utf8'));
+      pkg.version = '0.0.0-preview.1';
+      fs.writeFileSync(path.join(dir, 'mobile/package.json'), JSON.stringify(pkg));
+    }
     if (kind === 'duplicate installer') fs.appendFileSync(readmePath, `<a href="${desktopUrls[0]}">Duplicate</a>`);
     if (kind === 'stale installer' || missingAsset[kind]) {
       const url = missingAsset[kind] || desktopUrls[0];

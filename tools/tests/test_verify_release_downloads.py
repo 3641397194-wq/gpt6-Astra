@@ -29,6 +29,15 @@ class Response:
 
 
 class DownloadChecks(unittest.TestCase):
+    def test_independent_android_version_preserves_desktop_names(self):
+        unified = verify.asset_names("3.3.0-preview.5")
+        split = verify.asset_names("3.3.0-preview.5", "3.3.0-preview.6")
+        self.assertEqual(split[:7], unified[:7])
+        self.assertEqual(split[7:], ["ColdCoffee-Mobile-Android-3.3.0-preview.6.apk",
+                                     "ColdCoffee-Mobile-Source-3.3.0-preview.6.zip"])
+        with self.assertRaises(ValueError):
+            verify.asset_names("3.3.0-preview.5", "../invalid")
+
     def test_seven_desktop_installers_android_and_corresponding_source_names(self):
         names = verify.asset_names("3.3.0-preview.2")
         self.assertEqual(len(names), 9)

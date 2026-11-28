@@ -9,9 +9,12 @@ import time
 import urllib.request
 
 
-def asset_names(version):
+def asset_names(version, mobile_version=None):
+    mobile_version = mobile_version or version
     if not re.fullmatch(r"\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?", version):
         raise ValueError("Invalid release version")
+    if mobile_version != version:
+        asset_names(mobile_version)
     return [
         f"ColdCoffee-Workbench-Windows-{version}-x64.exe",
         f"ColdCoffee-Workbench-macOS-arm64-{version}.dmg",
@@ -20,14 +23,14 @@ def asset_names(version):
         f"ColdCoffee-Workbench-macOS-x64-{version}.zip",
         f"ColdCoffee-Workbench-Linux-x86_64-{version}.AppImage",
         f"ColdCoffee-Workbench-Linux-amd64-{version}.deb",
-        f"ColdCoffee-Mobile-Android-{version}.apk",
-        f"ColdCoffee-Mobile-Source-{version}.zip",
+        f"ColdCoffee-Mobile-Android-{mobile_version}.apk",
+        f"ColdCoffee-Mobile-Source-{mobile_version}.zip",
     ]
 
 
-def check_latest_release(repo, version, opener=urllib.request.urlopen):
+def check_latest_release(repo, version, opener=urllib.request.urlopen, mobile_version=None):
     """Versioned URLs can pass while GitHub's default Latest still breaks."""
-    expected = asset_names(version)
+    expected = asset_names(version, mobile_version)
     url = f"https://api.github.com/repos/{repo}/releases/latest"
     request = urllib.request.Request(url, headers={
         "User-Agent": "ColdCoffee-public-download-check",
@@ -93,6 +96,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", default="3641397194-wq/gpt6-Astra")
     parser.add_argument("--version", default=(Path(__file__).resolve().parents[1] / "VERSION").read_text().strip())
+    parser.add_argument("--mobile-version", help="Independent Android version; defaults to --version")
     parser.add_argument("--attempts", type=int, choices=range(1, 11), default=3)
     parser.add_argument("--check-latest", action="store_true",
                         help="Also check GitHub's default Latest and all nine latest/download aliases")
@@ -100,7 +104,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", args.repo):
         parser.error("Expected OWNER/REPOSITORY")
-    names = asset_names(args.version)
+    names = asset_names(args.version, args.mobile_version)
     urls = [f"https://github.com/{args.repo}/releases/download/v{args.version}/{name}" for name in names]
     if args.check_latest:
         urls.extend(f"https://github.com/{args.repo}/releases/latest/download/{name}" for name in names)
@@ -121,7 +125,7 @@ def main(argv=None):
     if args.check_latest:
         for attempt in range(args.attempts):
             try:
-                report["latest"] = {"ok": True, **check_latest_release(args.repo, args.version)}
+                report["latest"] = {"ok": True, **check_latest_release(args.repo, args.version, mobile_version=args.mobile_version)}
                 break
             except Exception as error:
                 report["latest"] = {"ok": False, "error": str(error)}

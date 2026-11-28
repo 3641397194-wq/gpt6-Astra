@@ -111,6 +111,10 @@ def validate_downloads(root, body):
     package = json.loads((root / "desktop/package.json").read_text(encoding="utf-8-sig"))
     if package["version"] != version:
         raise ValueError("VERSION and desktop/package.json version disagree")
+    mobile_version = json.loads((root / "mobile/package.json").read_text(encoding="utf-8-sig"))["version"]
+    if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?", mobile_version):
+        raise ValueError("mobile/package.json must contain a release version")
+    mobile_tag = f"v{mobile_version}" if mobile_version == version else f"android-v{mobile_version}"
 
     expected = []
     for platform, arch, ext in INSTALLERS:
@@ -121,7 +125,7 @@ def validate_downloads(root, body):
             raise ValueError(f"Unsupported installer artifactName: {name}")
         expected.append(f"{REPOSITORY}/releases/download/v{version}/{name}")
     expected.extend(
-        f"{REPOSITORY}/releases/download/v{version}/{name.format(version=version)}"
+        f"{REPOSITORY}/releases/download/{mobile_tag}/{name.format(version=mobile_version)}"
         for name in MOBILE_ASSETS
     )
     expected.extend(
@@ -136,10 +140,10 @@ def validate_downloads(root, body):
         missing = sorted((Counter(expected) - Counter(actual)).elements())
         unexpected = sorted((Counter(actual) - Counter(expected)).elements())
         raise ValueError(
-            "README release asset links do not match VERSION, artifactName or iOS development release"
+            "README release asset links do not match VERSION, mobile version, artifactName or iOS development release"
             f"; missing={missing}; unexpected={unexpected}"
         )
-    return version
+    return version, mobile_version
 
 
 def rebase_docs_paths(body, prefix):
@@ -150,7 +154,7 @@ def rebase_docs_paths(body, prefix):
     )
 
 
-def render_page(body, version, local_preview):
+def render_page(body, version, mobile_version, local_preview):
     prefix = "/docs/" if local_preview else ""
     body = rebase_docs_paths(body, prefix)
     workbench_href = "/workbench/" if local_preview else "#上手使用"
@@ -167,15 +171,15 @@ def render_page(body, version, local_preview):
 <header class="appbar"><div class="repo-name"><img src="{asset_prefix}coldcoffee-flagship-avatar.png" alt=""><strong>冷咖啡</strong> / GPT-6.2 Astra · Sol <span class="badge">2026 旗舰重设计</span></div><span class="preview-label">{label}</span></header>
 <nav class="repo-tabs" aria-label="项目导航"><a class="selected" href="#模型焦点">GPT-6.2 核心</a><a href="#冷咖啡服务">中转与闭源定制</a><a href="#冷咖啡社群">四QQ群 & TG</a><a href="#软件界面">新版软件</a><a href="#一键安装目标">16 入口全模型</a><a href="#安卓手机端">Android / iOS</a><a href="#下载">下载安装</a></nav>
 <div class="container"><div class="notice"><span><strong>{escape(version)} · 核心主推 GPT-6.2 Astra / Sol + 冷咖啡付费中转。</strong> 去 <code>coldcoffeeai.com</code> 买 Key 即可满血使用内置工作流；需要收费闭源破甲与定制，进四个 QQ 群或 Telegram 找管理。</span><div class="notice-actions"><a href="https://coldcoffeeai.com/">开通冷咖啡中转 ↗</a><a class="vip-cta" href="#冷咖啡社群">闭源 / 定制进群 ↓</a></div></div>
-<div class="repo-grid"><article class="readme"><div class="readme-tab">README.md · 冷咖啡 GPT-6.2 Astra / Sol 官方主页（同步 GLM-5.4 / Claude Fable 5.2 / Gemini 4）</div><div class="markdown-body">{body}</div></article><aside class="about"><h3>冷咖啡核心服务</h3><p>主打 <strong>GPT-6.2 Astra / Sol</strong> 官方付费中转（内置工作流）及<strong>收费闭源/定制破甲</strong>；同步升级 GLM-5.4、Claude Fable 5.2、Gemini 4、Kimi K3.1 Pro、MiniMax M3.1 Flash 与豆包 2.1。</p><span class="tag">GPT-6.2 Astra</span><span class="tag">GPT-6.2 Sol</span><span class="tag gold">coldcoffeeai.com</span><span class="tag gold">闭源 / 定制破甲</span><span class="tag">GLM-5.4</span><span class="tag">Claude Fable 5.2</span><span class="tag">Gemini 4</span><hr><h3>官方社群与通道</h3><p>QQ 一群：<code>1057540028</code><br>QQ 二群：<code>1077074552</code><br>QQ 三群：<code>618179023</code><br>QQ 四群：<code>1131239659</code><br>TG 群：<a style="display:inline;margin:0" href="https://t.me/coolcoffeeai">t.me/coolcoffeeai</a><br>TG 频道：<a style="display:inline;margin:0" href="https://t.me/chachachalkf">t.me/chachachalkf</a></p><hr><h3>快速跳转</h3><a href="https://coldcoffeeai.com/">开通冷咖啡中转 ↗</a><a href="#冷咖啡服务">闭源与定制破甲说明 ↓</a><a href="#冷咖啡社群">查看四群二维码与 TG ↓</a><a href="#软件界面">新版暗夜绯红桌面界面 ↓</a><a href="#一键安装目标">16 个一键安装入口 ↓</a><a href="#安卓手机端">Android / iPhone 客户端 ↓</a><a href="#下载">全平台下载入口 ↓</a><a href="{workbench_href}">{aside_text}</a><hr><h3>当前预览</h3><p>桌面与 Android：{escape(version)}<br>iOS 开发附件：{escape(IOS_DEVELOPMENT_VERSION)}<br>官网：coldcoffeeai.com<br>顾客自填 Key，公开仓库零私密信息。</p></aside></div></div></body></html>'''
+<div class="repo-grid"><article class="readme"><div class="readme-tab">README.md · 冷咖啡 GPT-6.2 Astra / Sol 官方主页（同步 GLM-5.4 / Claude Fable 5.2 / Gemini 4）</div><div class="markdown-body">{body}</div></article><aside class="about"><h3>冷咖啡核心服务</h3><p>主打 <strong>GPT-6.2 Astra / Sol</strong> 官方付费中转（内置工作流）及<strong>收费闭源/定制破甲</strong>；同步升级 GLM-5.4、Claude Fable 5.2、Gemini 4、Kimi K3.1 Pro、MiniMax M3.1 Flash 与豆包 2.1。</p><span class="tag">GPT-6.2 Astra</span><span class="tag">GPT-6.2 Sol</span><span class="tag gold">coldcoffeeai.com</span><span class="tag gold">闭源 / 定制破甲</span><span class="tag">GLM-5.4</span><span class="tag">Claude Fable 5.2</span><span class="tag">Gemini 4</span><hr><h3>官方社群与通道</h3><p>QQ 一群：<code>1057540028</code><br>QQ 二群：<code>1077074552</code><br>QQ 三群：<code>618179023</code><br>QQ 四群：<code>1131239659</code><br>TG 群：<a style="display:inline;margin:0" href="https://t.me/coolcoffeeai">t.me/coolcoffeeai</a><br>TG 频道：<a style="display:inline;margin:0" href="https://t.me/chachachalkf">t.me/chachachalkf</a></p><hr><h3>快速跳转</h3><a href="https://coldcoffeeai.com/">开通冷咖啡中转 ↗</a><a href="#冷咖啡服务">闭源与定制破甲说明 ↓</a><a href="#冷咖啡社群">查看四群二维码与 TG ↓</a><a href="#软件界面">新版暗夜绯红桌面界面 ↓</a><a href="#一键安装目标">16 个一键安装入口 ↓</a><a href="#安卓手机端">Android / iPhone 客户端 ↓</a><a href="#下载">全平台下载入口 ↓</a><a href="{workbench_href}">{aside_text}</a><hr><h3>当前预览</h3><p>桌面：{escape(version)}<br>Android：{escape(mobile_version)}<br>iOS 开发附件：{escape(IOS_DEVELOPMENT_VERSION)}<br>官网：coldcoffeeai.com<br>顾客自填 Key，公开仓库零私密信息。</p></aside></div></div></body></html>'''
 
 def generate(root, check=False):
     root = root.resolve()
     body = (root / "README.md").read_text(encoding="utf-8")
-    version = validate_downloads(root, body)
+    version, mobile_version = validate_downloads(root, body)
     pages = {
-        root / "docs/readme-preview.html": render_page(body, version, True),
-        root / "docs/index.html": render_page(body, version, False),
+        root / "docs/readme-preview.html": render_page(body, version, mobile_version, True),
+        root / "docs/index.html": render_page(body, version, mobile_version, False),
     }
     if check:
         stale = [
