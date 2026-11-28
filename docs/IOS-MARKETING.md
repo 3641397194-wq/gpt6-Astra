@@ -18,7 +18,9 @@ xcodebuild \
   -scheme ColdCoffeeIOS \
   -sdk iphonesimulator \
   -configuration Debug \
-  CODE_SIGNING_ALLOWED=NO \
+  CODE_SIGNING_ALLOWED=YES \
+  CODE_SIGN_IDENTITY=- \
+  CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES \
   build
 ```
 

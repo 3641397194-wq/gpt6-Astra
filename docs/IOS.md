@@ -16,7 +16,9 @@ xcodebuild -project mobile-ios/ColdCoffeeIOS.xcodeproj \
   -sdk iphonesimulator \
   -configuration Debug \
   -destination 'generic/platform=iOS Simulator' \
-  CODE_SIGNING_ALLOWED=NO \
+  CODE_SIGNING_ALLOWED=YES \
+  CODE_SIGN_IDENTITY=- \
+  CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES \
   build
 ```
 
@@ -27,6 +29,8 @@ device_id="$(xcrun simctl list devices available | awk -F '[()]' '/iPhone/{print
 xcodebuild -project mobile-ios/ColdCoffeeIOS.xcodeproj \
   -scheme ColdCoffeeIOS \
   -destination "platform=iOS Simulator,id=${device_id}" \
+  CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- \
+  CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES \
   test
 ```
 
@@ -34,13 +38,15 @@ xcodebuild -project mobile-ios/ColdCoffeeIOS.xcodeproj \
 
 ## 本版开发附件
 
-`3.3.0-preview.3` 已通过 macOS CI 的五项模拟器测试、四页界面截图与无签名设备构建：
+`3.3.0-preview.6` 是独立 iOS 开发版，包含草稿保留、请求停止/重试、过期结果隔离及按中转地址隔离 Key 的修复。对应模拟器与构建结果见本版发布页。
 
-- [对应源码 ZIP](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-iOS-Source-3.3.0-preview.3.zip)：含 Xcode 工程、源码、素材、许可与第三方声明；仅收录 Git 跟踪的文件，排除临时工作、签名和构建目录。
-- [无签名设备 .app ZIP](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-iOS-Unsigned-3.3.0-preview.3.zip)：macOS CI 的 Release 开发构建，供开发者签名使用，并非可直接安装的 IPA。
-- [iOS SHA-256 清单](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/SHA256SUMS-iOS.txt)：用于校验上述两个附件。
+- [对应源码 ZIP](https://github.com/3641397194-wq/gpt6-Astra/releases/download/ios-v3.3.0-preview.6/ColdCoffee-iOS-Source-3.3.0-preview.6.zip)：含 Xcode 工程、源码、素材、许可与第三方声明；仅收录 Git 跟踪的文件，排除临时工作、签名和构建目录。
+- [无签名设备 .app ZIP](https://github.com/3641397194-wq/gpt6-Astra/releases/download/ios-v3.3.0-preview.6/ColdCoffee-iOS-Unsigned-3.3.0-preview.6.zip)：macOS CI 的 Release 开发构建，供开发者签名使用，并非可直接安装的 IPA。
+- [iOS SHA-256 清单](https://github.com/3641397194-wq/gpt6-Astra/releases/download/ios-v3.3.0-preview.6/SHA256SUMS-iOS.txt)：用于校验上述两个附件。
 
-未配置 Apple 签名资料时，可先在 Xcode 中运行 iPhone Simulator；TestFlight 与 App Store 尚未上架。
+未配置 Apple 分发签名资料时，可先在 Xcode 中运行 iPhone Simulator；模拟器使用本地临时签名以保留 Keychain 权限，不需要 Apple 开发者账号。TestFlight 与 App Store 尚未上架。
+
+升级提醒：旧版全局 Key 没有可靠的中转地址绑定，仍保留在本机 Keychain，但本版不会自动发送它。请在接入设置中重新填写并保存一次；以后切换中转时只读取对应地址的 Key。
 
 ## TestFlight / App Store 发布
 

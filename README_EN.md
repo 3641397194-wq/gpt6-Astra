@@ -12,7 +12,7 @@
 
 Centered on **GPT-6.2 Astra** and **GPT-6.2 Sol** with the **ColdCoffee Paid API Relay (`coldcoffeeai.com`)**, plus paid **closed-source local workflows** and **bespoke custom workflows**. Updated across desktop and mobile for **GLM 5.4 (`glm-5.4`)**, **Claude Fable 5.2**, **Gemini 4**, **Kimi K3.1 Pro**, **MiniMax M3.1 Flash**, **Doubao 2.1**, and **OpenCode**.
 
-**Desktop 3.3.0-preview.5 · Android 3.3.0-preview.6 · iOS development build 3.3.0-preview.3**
+**Desktop 3.3.0-preview.5 · Android 3.3.0-preview.6 · iOS development build 3.3.0-preview.6**
 
 </div>
 
@@ -129,7 +129,7 @@ ColdCoffee ships an ice-blue companion plugin for DeepSeek Harness Web & Windows
 
 [Desktop release](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.5) · [Android APK](https://github.com/3641397194-wq/gpt6-Astra/releases/download/android-v3.3.0-preview.6/ColdCoffee-Mobile-Android-3.3.0-preview.6.apk) · [Corresponding Android source](https://github.com/3641397194-wq/gpt6-Astra/releases/download/android-v3.3.0-preview.6/ColdCoffee-Mobile-Source-3.3.0-preview.6.zip) · [Android installation guide](docs/ANDROID.md)
 
-iOS development downloads stay on 3.3.0-preview.3: [corresponding iOS source](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-iOS-Source-3.3.0-preview.3.zip), [unsigned development app](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/ColdCoffee-iOS-Unsigned-3.3.0-preview.3.zip), and [iOS checksums](https://github.com/3641397194-wq/gpt6-Astra/releases/download/v3.3.0-preview.3/SHA256SUMS-iOS.txt) ([earlier release assets](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/v3.3.0-preview.3)).
+iOS development downloads stay on 3.3.0-preview.6: [corresponding iOS source](https://github.com/3641397194-wq/gpt6-Astra/releases/download/ios-v3.3.0-preview.6/ColdCoffee-iOS-Source-3.3.0-preview.6.zip), [unsigned development app](https://github.com/3641397194-wq/gpt6-Astra/releases/download/ios-v3.3.0-preview.6/ColdCoffee-iOS-Unsigned-3.3.0-preview.6.zip), and [iOS checksums](https://github.com/3641397194-wq/gpt6-Astra/releases/download/ios-v3.3.0-preview.6/SHA256SUMS-iOS.txt) ([iOS development release](https://github.com/3641397194-wq/gpt6-Astra/releases/tag/ios-v3.3.0-preview.6)).
 
 <details>
 <summary>Disclaimer · 免责声明</summary>

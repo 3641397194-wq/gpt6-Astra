@@ -12,7 +12,8 @@ const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const version = read('VERSION').trim();
 const mobileVersion = JSON.parse(read('mobile/package.json')).version;
 const mobileTag = mobileVersion === version ? `v${mobileVersion}` : `android-v${mobileVersion}`;
-const IOS_VERSION = '3.3.0-preview.3';
+const IOS_VERSION = read('mobile-ios/VERSION').trim();
+const iosTag = `ios-v${IOS_VERSION}`;
 const repository = 'https://github.com/3641397194-wq/gpt6-Astra';
 const assetUrl = (tagVersion, name) => `${repository}/releases/download/v${tagVersion}/${name}`;
 const installers = [
@@ -35,7 +36,7 @@ const iosDevelopmentAssets = [
 ];
 const desktopUrls = installers.map(([, , , name]) => assetUrl(version, name));
 const mobileUrls = mobileAssets.map((name) => `${repository}/releases/download/${mobileTag}/${name}`);
-const iosUrls = iosDevelopmentAssets.map((name) => assetUrl(IOS_VERSION, name));
+const iosUrls = iosDevelopmentAssets.map((name) => `${repository}/releases/download/${iosTag}/${name}`);
 const expected = [...desktopUrls, ...mobileUrls, ...iosUrls].sort();
 const python = (process.platform === 'win32' ? ['python', 'py', 'python3'] : ['python3', 'python'])
   .find((command) => spawnSync(command, ['--version'], { windowsHide: true }).status === 0);
@@ -85,7 +86,7 @@ for (const relative of ['README.md', 'docs/index.html', 'docs/readme-preview.htm
 test('the English README points at the same split desktop/Android and iOS releases', () => {
   const source = read('README_EN.md');
   assert.ok(source.includes(`[Desktop release](${repository}/releases/tag/v${version})`));
-  assert.ok(source.includes(`[earlier release assets](${repository}/releases/tag/v${IOS_VERSION})`));
+  assert.ok(source.includes(`[iOS development release](${repository}/releases/tag/${iosTag})`));
   assert.deepEqual(downloadLinks(source, /\]\(([^()]+)\)/g), expected);
 });
 
@@ -98,8 +99,9 @@ function fixture(t) {
   });
   fs.mkdirSync(path.join(dir, 'desktop'));
   fs.mkdirSync(path.join(dir, 'mobile'));
+  fs.mkdirSync(path.join(dir, 'mobile-ios'));
   fs.mkdirSync(path.join(dir, 'docs'));
-  for (const relative of ['VERSION', 'README.md', 'desktop/package.json', 'mobile/package.json']) {
+  for (const relative of ['VERSION', 'README.md', 'desktop/package.json', 'mobile/package.json', 'mobile-ios/VERSION']) {
     fs.copyFileSync(path.join(root, relative), path.join(dir, relative));
   }
   return dir;
@@ -168,11 +170,12 @@ const missingAsset = {
   'missing iOS unsigned app': iosUrls[1],
   'missing iOS checksums': iosUrls[2],
 };
-for (const kind of ['version mismatch', 'mobile version mismatch', 'stale installer', 'duplicate installer', ...Object.keys(missingAsset)]) {
+for (const kind of ['version mismatch', 'mobile version mismatch', 'iOS version mismatch', 'stale installer', 'duplicate installer', ...Object.keys(missingAsset)]) {
   test(`generation validates ${kind} before touching existing previews`, (t) => {
     const dir = fixture(t);
     const readmePath = path.join(dir, 'README.md');
     if (kind === 'version mismatch') fs.writeFileSync(path.join(dir, 'VERSION'), '0.0.0-preview.1\n');
+    if (kind === 'iOS version mismatch') fs.writeFileSync(path.join(dir, 'mobile-ios/VERSION'), '0.0.0-preview.1\n');
     if (kind === 'mobile version mismatch') {
       const pkg = JSON.parse(fs.readFileSync(path.join(dir, 'mobile/package.json'), 'utf8'));
       pkg.version = '0.0.0-preview.1';
