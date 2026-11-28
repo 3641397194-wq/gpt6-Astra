@@ -31,7 +31,7 @@ jobs:
         run: |
           xcodebuild -version
           test -d mobile-ios/ColdCoffeeIOS.xcodeproj
-          test -f VERSION
+          test -f mobile-ios/VERSION
 
       - name: Run iOS source privacy audit
         run: |
@@ -51,6 +51,8 @@ jobs:
             -configuration Debug \
             -destination "platform=iOS Simulator,id=${device_id}" \
             -derivedDataPath "$RUNNER_TEMP/ColdCoffeeIOSDerivedData" \
+            -parallel-testing-enabled NO \
+            -resultBundlePath "$RUNNER_TEMP/ColdCoffeeIOSTests.xcresult" \
             CODE_SIGNING_ALLOWED=NO \
             test
 
@@ -67,7 +69,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          version="$(tr -d '\r\n' < VERSION)"
+          version="$(tr -d '\r\n' < mobile-ios/VERSION)"
           xcodebuild \
             -project mobile-ios/ColdCoffeeIOS.xcodeproj \
             -scheme ColdCoffeeIOS \
@@ -93,6 +95,7 @@ jobs:
             mobile-ios/dist/ColdCoffee-iOS-Source-*.zip
             mobile-ios/work/privacy-audit.json
             ${{ runner.temp }}/ios-ui/coldcoffee-ios-*.png
+            ${{ runner.temp }}/ColdCoffeeIOSTests.xcresult
           if-no-files-found: error
           retention-days: 14
 
@@ -150,7 +153,7 @@ jobs:
           IOS_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
         run: |
           set -euo pipefail
-          version="$(tr -d '\r\n' < VERSION)"
+          version="$(tr -d '\r\n' < mobile-ios/VERSION)"
           xcodebuild archive \
             -project mobile-ios/ColdCoffeeIOS.xcodeproj \
             -scheme ColdCoffeeIOS \

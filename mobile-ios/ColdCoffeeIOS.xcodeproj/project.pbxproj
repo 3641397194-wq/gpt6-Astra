@@ -14,6 +14,7 @@
 		100000000000000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000005 /* Assets.xcassets */; };
 		100000000000000000000006 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000006 /* PrivacyInfo.xcprivacy */; };
 		100000000000000000000007 /* ColdCoffeeCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000007 /* ColdCoffeeCoreTests.swift */; };
+		100000000000000000000008 /* ColdCoffeeInteractionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000011 /* ColdCoffeeInteractionUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,8 @@
 		200000000000000000000008 /* ColdCoffeeIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColdCoffeeIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		200000000000000000000009 /* ColdCoffeeIOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ColdCoffeeIOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		200000000000000000000010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		200000000000000000000011 /* ColdCoffeeInteractionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColdCoffeeInteractionUITests.swift; sourceTree = "<group>"; };
+		200000000000000000000012 /* ColdCoffeeIOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ColdCoffeeIOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +45,12 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		300000000000000000000007 /* UI Test Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -80,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				400000000000000000000008 /* ColdCoffeeCoreTests */,
+				400000000000000000000009 /* ColdCoffeeUITests */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -89,6 +99,7 @@
 			children = (
 				200000000000000000000008 /* ColdCoffeeIOS.app */,
 				200000000000000000000009 /* ColdCoffeeIOSTests.xctest */,
+				200000000000000000000012 /* ColdCoffeeIOSUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -117,6 +128,14 @@
 				200000000000000000000007 /* ColdCoffeeCoreTests.swift */,
 			);
 			path = ColdCoffeeCoreTests;
+			sourceTree = "<group>";
+		};
+		400000000000000000000009 /* ColdCoffeeUITests */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000011 /* ColdCoffeeInteractionUITests.swift */,
+			);
+			path = ColdCoffeeUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -157,6 +176,23 @@
 			productReference = 200000000000000000000009 /* ColdCoffeeIOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		500000000000000000000003 /* ColdCoffeeIOSUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 700000000000000000000004 /* Build configuration list for PBXNativeTarget "ColdCoffeeIOSUITests" */;
+			buildPhases = (
+				300000000000000000000008 /* UI Test Sources */,
+				300000000000000000000007 /* UI Test Frameworks */,
+				300000000000000000000009 /* UI Test Resources */,
+			);
+			buildRules = ();
+			dependencies = (
+				600000000000000000000003 /* UI Test Target Dependency */,
+			);
+			name = ColdCoffeeIOSUITests;
+			productName = ColdCoffeeIOSUITests;
+			productReference = 200000000000000000000012 /* ColdCoffeeIOSUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -169,6 +205,10 @@
 						CreatedOnToolsVersion = 16.0;
 					};
 					500000000000000000000002 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 500000000000000000000001;
+					};
+					500000000000000000000003 = {
 						CreatedOnToolsVersion = 16.0;
 						TestTargetID = 500000000000000000000001;
 					};
@@ -190,6 +230,7 @@
 			targets = (
 				500000000000000000000001 /* ColdCoffeeIOS */,
 				500000000000000000000002 /* ColdCoffeeIOSTests */,
+				500000000000000000000003 /* ColdCoffeeIOSUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -209,6 +250,12 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		300000000000000000000009 /* UI Test Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
@@ -233,6 +280,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		300000000000000000000008 /* UI Test Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				100000000000000000000008 /* ColdCoffeeInteractionUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -241,10 +296,22 @@
 			target = 500000000000000000000001 /* ColdCoffeeIOS */;
 			targetProxy = 600000000000000000000002 /* PBXContainerItemProxy */;
 		};
+		600000000000000000000003 /* UI Test Target Dependency */ = {
+			isa = PBXTargetDependency;
+			target = 500000000000000000000001 /* ColdCoffeeIOS */;
+			targetProxy = 600000000000000000000004 /* UI Test Container Proxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXContainerItemProxy section */
 		600000000000000000000002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 800000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 500000000000000000000001;
+			remoteInfo = ColdCoffeeIOS;
+		};
+		600000000000000000000004 /* UI Test Container Proxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 800000000000000000000001 /* Project object */;
 			proxyType = 1;
@@ -393,6 +460,28 @@
 			};
 			name = Release;
 		};
+		900000000000000000000007 /* Debug UI tests */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.coldcoffee.mobile.ios.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = ColdCoffeeIOS;
+			};
+			name = Debug;
+		};
+		900000000000000000000008 /* Release UI tests */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.coldcoffee.mobile.ios.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = ColdCoffeeIOS;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -419,6 +508,15 @@
 			buildConfigurations = (
 				900000000000000000000001 /* Debug */,
 				900000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		700000000000000000000004 /* Build configuration list for PBXNativeTarget "ColdCoffeeIOSUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				900000000000000000000007 /* Debug UI tests */,
+				900000000000000000000008 /* Release UI tests */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

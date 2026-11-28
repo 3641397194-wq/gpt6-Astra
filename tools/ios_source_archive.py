@@ -11,8 +11,9 @@ import zipfile
 
 def main(root: pathlib.Path | None = None) -> int:
     root = (root or pathlib.Path(__file__).resolve().parents[1]).resolve()
-    version = (root / "VERSION").read_text(encoding="utf-8").strip()
     source = root / "mobile-ios"
+    version_path = source / "VERSION" if (source / "VERSION").is_file() else root / "VERSION"
+    version = version_path.read_text(encoding="utf-8").strip()
     if not source.is_dir():
         raise SystemExit("mobile-ios source directory is missing")
     output = source / "dist" / f"ColdCoffee-iOS-Source-{version}.zip"

@@ -9,6 +9,13 @@ import UIKit
 import CryptoKit
 #endif
 
+protocol ChatServing: Sendable {
+    func models(for provider: Provider, key: String) async throws -> [String]
+    func streamChat(provider: Provider, key: String, model: String, messages: [ChatMessage], system: String) -> AsyncThrowingStream<String, Error>
+}
+
+extension OpenAIClient: ChatServing {}
+
 @MainActor
 final class AppModel: ObservableObject {
     enum Tab: Hashable {
@@ -102,6 +109,7 @@ final class AppModel: ObservableObject {
     @Published var apiKey = ""
     @Published var models: [String] = []
     @Published var selectedModel = ""
+    @Published var chatDraft = ""
     @Published var messages: [ChatMessage] = []
     @Published var isBusy = false
     @Published var status = "等待接入"
@@ -110,59 +118,129 @@ final class AppModel: ObservableObject {
     @Published var fontScale: CGFloat = 1.0
     @Published var pickedImage: (data: Data, name: String, mime: String)?
 
-    private let keychain = KeychainStore()
-    private let client = OpenAIClient()
+    private let keychain: KeychainStore
+    private let client: any ChatServing
+    private let defaults: UserDefaults
     private let historyKey = "coldcoffee.ios.history.v1"
     private let settingsKey = "coldcoffee.ios.settings.v1"
     private let savedWorkKey = "coldcoffee.ios.work-result.v1"
     private var streamTask: Task<Void, Never>?
+    private var activeReplyID: UUID?
+    private var modelLoadTask: Task<Void, Never>?
+    private var modelLoadID: UUID?
     private var workTask: Task<Void, Never>?
 
-    init() {
+    init(client: any ChatServing = OpenAIClient(), defaults: UserDefaults = .standard, keychain: KeychainStore = KeychainStore()) {
+        self.client = client
+        self.defaults = defaults
+        self.keychain = keychain
         provider = Provider(name: "冷咖啡付费中转", baseURL: PublicServices.api.absoluteString)
-        apiKey = keychain.get("primary") ?? ""
         loadSettings()
+        do {
+            provider.baseURL = try Self.canonicalEndpoint(provider.baseURL)
+            apiKey = keychain.get(try Self.credentialAccount(for: provider.baseURL)) ?? ""
+        } catch {
+            provider = Provider(name: "冷咖啡付费中转", baseURL: PublicServices.api.absoluteString)
+            selectedModel = ""
+            status = "旧版中转地址需要重新填写"
+        }
+        provider.hasKey = !apiKey.isEmpty
+        if apiKey.isEmpty, let legacy = keychain.get("primary"), !legacy.isEmpty {
+            // The old global entry has no trustworthy endpoint binding. Keep it
+            // intact, but never send it to whichever provider happens to be selected.
+            status = "旧版 Key 已保留在本机，请重新填写并保存以绑定当前中转"
+        }
         loadHistory()
         loadSavedWork()
     }
 
-    func saveKey() {
+    @discardableResult
+    func saveKey() -> Bool {
         do {
-            try keychain.set(apiKey.trimmingCharacters(in: .whitespacesAndNewlines), for: "primary")
-            provider.hasKey = !apiKey.isEmpty
-            status = apiKey.isEmpty ? "等待填写 Key" : "Key 只保存在本机 Keychain"
+            let clean = apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
+            let account = try Self.credentialAccount(for: provider.baseURL)
+            if clean.isEmpty { keychain.delete(account) }
+            else { try keychain.set(clean, for: account) }
+            apiKey = clean
+            provider.hasKey = !clean.isEmpty
+            errorMessage = nil
+            status = clean.isEmpty ? "等待填写 Key" : "Key 只保存在本机 Keychain"
             saveSettings()
+            return true
         } catch {
             errorMessage = error.localizedDescription
+            return false
         }
     }
 
-    func addProvider(name: String, baseURL: String) {
+    private static func canonicalEndpoint(_ raw: String) throws -> String {
+        let normalized = try EndpointNormalizer.normalize(raw)
+        guard var components = URLComponents(url: normalized, resolvingAgainstBaseURL: false) else {
+            throw ColdCoffeeError.invalidEndpoint
+        }
+        components.scheme = components.scheme?.lowercased()
+        components.host = components.host?.lowercased()
+        if components.port == 443 { components.port = nil }
+        guard let endpoint = components.url?.absoluteString else { throw ColdCoffeeError.invalidEndpoint }
+        return endpoint
+    }
+
+    private static func credentialAccount(for raw: String) throws -> String {
+        "provider:" + (try canonicalEndpoint(raw))
+    }
+
+    @discardableResult
+    func addProvider(name: String, baseURL: String) -> Bool {
         do {
-            let url = try EndpointNormalizer.normalize(baseURL)
-            provider = Provider(name: name.isEmpty ? "我的兼容中转" : name, baseURL: url.absoluteString, hasKey: !apiKey.isEmpty)
+            let endpoint = try Self.canonicalEndpoint(baseURL)
+            let changedEndpoint = endpoint != (try? Self.canonicalEndpoint(provider.baseURL))
+            modelLoadTask?.cancel()
+            modelLoadTask = nil
+            modelLoadID = nil
+            if changedEndpoint {
+                if isBusy { stop() }
+                apiKey = keychain.get(try Self.credentialAccount(for: endpoint)) ?? ""
+            }
+            provider = Provider(name: name.isEmpty ? "我的兼容中转" : name, baseURL: endpoint, hasKey: !apiKey.isEmpty)
             models = []
             selectedModel = ""
+            errorMessage = nil
             status = "已切换到 \(provider.name)"
             saveSettings()
+            return true
         } catch {
             errorMessage = error.localizedDescription
+            return false
         }
     }
 
-    func loadModels() {
-        guard !apiKey.isEmpty else {
+    @discardableResult
+    func loadModels() -> Task<Void, Never>? {
+        modelLoadTask?.cancel()
+        modelLoadTask = nil
+        modelLoadID = nil
+        let requestedKey = apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !requestedKey.isEmpty else {
+            status = "等待填写 Key"
             errorMessage = ColdCoffeeError.missingKey.localizedDescription
-            return
+            return nil
         }
         status = "正在读取模型"
         errorMessage = nil
         let requestedProvider = provider
-        let requestedKey = apiKey
-        Task {
+        let requestID = UUID()
+        modelLoadID = requestID
+        let task = Task {
+            defer {
+                if modelLoadID == requestID {
+                    modelLoadTask = nil
+                    modelLoadID = nil
+                    if status == "正在读取模型" { status = "等待接入" }
+                }
+            }
             do {
                 let result = try await client.models(for: requestedProvider, key: requestedKey)
-                guard provider == requestedProvider, apiKey == requestedKey else { return }
+                guard isCurrentModelLoad(requestID, providerID: requestedProvider.id, key: requestedKey) else { return }
                 models = result
                 if selectedModel.isEmpty, let first = result.first {
                     selectedModel = first
@@ -170,12 +248,18 @@ final class AppModel: ObservableObject {
                 }
                 status = result.isEmpty ? "接口已连接，服务商未返回模型列表" : "已读取 \(result.count) 个模型"
             } catch {
-                guard provider == requestedProvider, apiKey == requestedKey else { return }
-                models = []
+                guard isCurrentModelLoad(requestID, providerID: requestedProvider.id, key: requestedKey) else { return }
                 status = "读取模型失败"
                 errorMessage = error.localizedDescription
             }
         }
+        modelLoadTask = task
+        return task
+    }
+
+    private func isCurrentModelLoad(_ requestID: UUID, providerID: String, key: String) -> Bool {
+        !Task.isCancelled && modelLoadID == requestID && provider.id == providerID
+            && apiKey.trimmingCharacters(in: .whitespacesAndNewlines) == key
     }
 
     func selectModel(_ id: String, manuallyEntered: Bool = false) {
@@ -188,18 +272,22 @@ final class AppModel: ObservableObject {
         saveSettings()
     }
 
-    func send(_ text: String) {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty || pickedImage != nil else { return }
-        guard !apiKey.isEmpty else {
+    @discardableResult
+    func sendDraft() -> Bool {
+        let trimmed = chatDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !isBusy, !trimmed.isEmpty || pickedImage != nil else { return false }
+        let requestKey = apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !requestKey.isEmpty else {
             errorMessage = ColdCoffeeError.missingKey.localizedDescription
             tab = .home
-            return
+            return false
         }
-        guard !selectedModel.isEmpty else {
+        let requestModel = selectedModel
+        guard !requestModel.isEmpty else {
             errorMessage = "请先读取模型目录或手动填写模型 ID"
-            return
+            return false
         }
+        let requestProvider = provider
         let attachment = pickedImage
         var message = ChatMessage(role: "user", content: trimmed)
         if let attachment {
@@ -207,45 +295,59 @@ final class AppModel: ObservableObject {
             message.imageMimeType = attachment.mime
         }
         messages.append(message)
+        chatDraft = ""
         saveHistory()
+        let requestMessages = messages
         pickedImage = nil
         isBusy = true
         status = "流式输出中"
         errorMessage = nil
         var assistant = ChatMessage(role: "assistant", content: "")
         messages.append(assistant)
-        let assistantIndex = messages.count - 1
-        streamTask?.cancel()
+        let replyID = assistant.id
+        activeReplyID = replyID
         streamTask = Task {
             do {
-                for try await token in client.streamChat(provider: provider, key: apiKey, model: selectedModel, messages: Array(messages.dropLast()), system: "你是冷咖啡 iOS 助手，回答清晰、简洁、尊重用户选择。") {
-                    guard !Task.isCancelled else { break }
+                for try await token in client.streamChat(provider: requestProvider, key: requestKey, model: requestModel, messages: requestMessages, system: "你是冷咖啡 iOS 助手，回答清晰、简洁、尊重用户选择。") {
+                    guard !Task.isCancelled, activeReplyID == replyID,
+                          let index = messages.firstIndex(where: { $0.id == replyID }) else { return }
                     assistant.content += token
-                    messages[assistantIndex] = assistant
+                    messages[index] = assistant
                 }
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled, activeReplyID == replyID else { return }
                 if assistant.content.isEmpty { throw ColdCoffeeError.provider("服务商已结束连接，没有返回文字；请检查模型和协议") }
-                messages[assistantIndex] = assistant
+                activeReplyID = nil
+                streamTask = nil
                 isBusy = false
                 status = "已完成"
                 saveHistory()
             } catch {
+                guard !Task.isCancelled, activeReplyID == replyID else { return }
+                activeReplyID = nil
+                streamTask = nil
                 isBusy = false
                 status = "请求失败"
                 errorMessage = error.localizedDescription
-                if messages.indices.contains(assistantIndex), messages[assistantIndex].content.isEmpty {
-                    messages.remove(at: assistantIndex)
-                }
+                discardEmptyReply(replyID)
+                saveHistory()
             }
         }
+        return true
     }
 
     func stop() {
+        let replyID = activeReplyID
+        activeReplyID = nil
         streamTask?.cancel()
         streamTask = nil
+        if let replyID { discardEmptyReply(replyID) }
         isBusy = false
         status = "已停止"
         saveHistory()
+    }
+
+    private func discardEmptyReply(_ replyID: UUID) {
+        messages.removeAll { $0.id == replyID && $0.content.isEmpty }
     }
 
     func runWork() {
@@ -422,12 +524,12 @@ final class AppModel: ObservableObject {
     private func saveSettings() {
         let record = SettingsRecord(provider: provider, selectedModel: selectedModel, fontScale: fontScale, dark: colorScheme == .dark)
         if let data = try? JSONEncoder().encode(record) {
-            UserDefaults.standard.set(data, forKey: settingsKey)
+            defaults.set(data, forKey: settingsKey)
         }
     }
 
     private func loadSettings() {
-        guard let data = UserDefaults.standard.data(forKey: settingsKey),
+        guard let data = defaults.data(forKey: settingsKey),
               let record = try? JSONDecoder().decode(SettingsRecord.self, from: data) else { return }
         provider = record.provider
         selectedModel = record.selectedModel
@@ -438,13 +540,13 @@ final class AppModel: ObservableObject {
 
     private func saveHistory() {
         guard let data = try? JSONEncoder().encode(messages) else { return }
-        UserDefaults.standard.set(data, forKey: historyKey)
+        defaults.set(data, forKey: historyKey)
     }
 
     private func loadHistory() {
-        guard let data = UserDefaults.standard.data(forKey: historyKey),
+        guard let data = defaults.data(forKey: historyKey),
               let saved = try? JSONDecoder().decode([ChatMessage].self, from: data) else { return }
-        messages = saved
+        messages = saved.filter { $0.role != "assistant" || !$0.content.isEmpty }
     }
 
     private func loadSavedWork() {

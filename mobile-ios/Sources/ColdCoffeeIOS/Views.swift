@@ -59,8 +59,7 @@ struct HomeView: View {
                         showingProvider = true
                     }
                     Button {
-                        model.loadModels()
-                        model.tab = .chat
+                        if model.loadModels() != nil { model.tab = .chat }
                     } label: {
                         Label("连接并读取模型  →", systemImage: "arrow.right")
                             .frame(maxWidth: .infinity)
@@ -89,7 +88,6 @@ struct HomeView: View {
 
 struct ChatView: View {
     @EnvironmentObject private var model: AppModel
-    @State private var draft = ""
     @State private var photosItem: PhotosPickerItem?
     @State private var showingManualModel = false
     @State private var manualModelId = ""
@@ -193,20 +191,19 @@ struct ChatView: View {
                     .onChange(of: photosItem) { item in
                         Task { await model.setImage(item) }
                     }
-                    TextField("输入消息…", text: $draft, axis: .vertical)
+                    TextField("输入消息…", text: $model.chatDraft, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                         .lineLimit(1...5)
+                        .accessibilityIdentifier("chat-draft")
                     Button {
-                        if model.isBusy { model.stop() } else {
-                            let text = draft
-                            draft = ""
-                            model.send(text)
-                        }
+                        if model.isBusy { model.stop() } else { model.sendDraft() }
                     } label: {
                         Image(systemName: model.isBusy ? "stop.fill" : "arrow.up")
                             .frame(width: 38, height: 38)
                     }
                     .buttonStyle(PrimaryIconButtonStyle())
+                    .accessibilityLabel(model.isBusy ? "停止生成" : "发送消息")
+                    .accessibilityIdentifier("chat-send")
                 }
                 .padding(14)
                 .background(.thinMaterial)
@@ -449,6 +446,7 @@ struct ProviderSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var baseURL = ""
+    @State private var providerError: String?
 
     var body: some View {
         NavigationStack {
@@ -457,7 +455,12 @@ struct ProviderSheet: View {
                     Text(model.provider.name)
                     Text(model.provider.baseURL).font(.footnote).foregroundStyle(.secondary)
                     SecureField("自己的 API Key", text: $model.apiKey)
-                    Button("保存 Key") { model.saveKey() }
+                    Button("保存 Key") {
+                        if !model.saveKey() {
+                            providerError = model.errorMessage
+                            model.errorMessage = nil
+                        }
+                    }
                 }
                 Section("添加其他 OpenAI 兼容中转") {
                     TextField("名称（可选）", text: $name)
@@ -465,13 +468,21 @@ struct ProviderSheet: View {
                         .textInputAutocapitalization(.never)
                         .keyboardType(.URL)
                     Button("保存并切换") {
-                        model.addProvider(name: name, baseURL: baseURL)
-                        dismiss()
+                        if model.addProvider(name: name, baseURL: baseURL) { dismiss() }
+                        else {
+                            providerError = model.errorMessage
+                            model.errorMessage = nil
+                        }
                     }
                 }
             }
             .navigationTitle("接入设置")
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() } } }
+            .alert("需要处理", isPresented: Binding(get: { providerError != nil }, set: { if !$0 { providerError = nil } })) {
+                Button("知道了") { providerError = nil }
+            } message: {
+                Text(providerError ?? "")
+            }
         }
     }
 }

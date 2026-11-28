@@ -78,6 +78,16 @@ class IOSPackagingTest(unittest.TestCase):
             report["findings"],
         )
 
+    def test_ios_version_is_independent_of_desktop(self):
+        (self.root / "mobile-ios/VERSION").write_text("3.3.0-preview.6\n", encoding="utf-8")
+        subprocess.run(["git", "add", "--", "mobile-ios/VERSION"], cwd=self.root, check=True)
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(ios_source_archive.main(self.root), 0)
+        archive = self.root / "mobile-ios/dist/ColdCoffee-iOS-Source-3.3.0-preview.6.zip"
+        self.assertTrue(archive.is_file())
+        with zipfile.ZipFile(archive) as source:
+            self.assertIn("coldcoffee-ios/VERSION", source.namelist())
+
     def test_tracked_apple_p8_is_rejected_by_archive_and_audit(self):
         key = self.root / "mobile-ios/Signing/AuthKey_FIXTURE.p8"
         key.parent.mkdir(parents=True, exist_ok=True)

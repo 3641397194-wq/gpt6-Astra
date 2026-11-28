@@ -38,6 +38,16 @@
                ReferencedContainer = "container:ColdCoffeeIOS.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "500000000000000000000003"
+               BuildableName = "ColdCoffeeIOSUITests.xctest"
+               BlueprintName = "ColdCoffeeIOSUITests"
+               ReferencedContainer = "container:ColdCoffeeIOS.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
