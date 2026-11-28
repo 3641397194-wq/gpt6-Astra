@@ -45,6 +45,19 @@ jobs:
           device_id="$(xcrun simctl list devices available | awk -F '[()]' '/iPhone/{print $2; exit}')"
           test -n "$device_id"
           echo "IOS_SIMULATOR_ID=$device_id" >> "$GITHUB_ENV"
+          # Local simulator signing needs no Apple account or distribution certificate.
+          xcodebuild \
+            -project mobile-ios/ColdCoffeeIOS.xcodeproj \
+            -scheme ColdCoffeeIOS \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=${device_id}" \
+            -derivedDataPath "$RUNNER_TEMP/ColdCoffeeIOSDerivedData" \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES \
+            build-for-testing
+          app="$RUNNER_TEMP/ColdCoffeeIOSDerivedData/Build/Products/Debug-iphonesimulator/ColdCoffeeIOS.app"
+          codesign --verify --strict --verbose=2 "$app"
+          codesign -d --entitlements :- "$app"
           xcodebuild \
             -project mobile-ios/ColdCoffeeIOS.xcodeproj \
             -scheme ColdCoffeeIOS \
@@ -53,9 +66,9 @@ jobs:
             -derivedDataPath "$RUNNER_TEMP/ColdCoffeeIOSDerivedData" \
             -parallel-testing-enabled NO \
             -resultBundlePath "$RUNNER_TEMP/ColdCoffeeIOSTests.xcresult" \
-            CODE_SIGNING_ALLOWED=YES \
-            CODE_SIGN_IDENTITY=- \
-            test
+            CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES \
+            test-without-building
 
       - name: Capture real iOS simulator screens
         shell: bash
