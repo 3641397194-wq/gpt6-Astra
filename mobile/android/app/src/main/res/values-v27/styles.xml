@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Keep the same colors on API 27+, without referencing a newer attribute on API 26. -->
+    <style name="AppTheme" parent="BaseAppTheme">
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+</resources>
