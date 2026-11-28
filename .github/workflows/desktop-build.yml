@@ -35,6 +35,11 @@ jobs:
             '498495120a03b9a6ab5d155f5de3c8f0d986a449153702fb80fc80e134484f17' \
             'mobile/android/gradle/wrapper/gradle-wrapper.jar' | sha256sum --check --status
           grep -Fqx 'distributionSha256Sum=d725d707bfabd4dfdc958c624003b3c80accc03f7037b5122c4b1d0ef15cecab' mobile/android/gradle/wrapper/gradle-wrapper.properties
+      - name: Set up Android command line tools
+        uses: android-actions/setup-android@v4
+        with:
+          cmdline-tools-version: 12266719
+          log-accepted-android-sdk-licenses: false
       - name: Prepare fixed Android SDK
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
       - name: Verify mobile source and touch interaction
@@ -78,7 +83,7 @@ jobs:
           "$signer" verify --verbose --print-certs "$apk" > "$RUNNER_TEMP/signature.txt"
           grep -Fqx 'Signer #1 certificate SHA-256 digest: a5d756a285673e886f3f7e5f1a67d940ae32e9ba6b77cb8d11f9c185dc9ec21d' "$RUNNER_TEMP/signature.txt"
           if grep -q 'CN=Android Debug' "$RUNNER_TEMP/signature.txt"; then exit 1; fi
-          analyzer="$ANDROID_HOME/cmdline-tools/latest/bin/apkanalyzer"
+          analyzer="$(command -v apkanalyzer)"
           test "$("$analyzer" manifest application-id "$apk")" = "com.coldcoffee.mobile"
           test "$("$analyzer" manifest version-name "$apk")" = "$version"
           test "$("$analyzer" manifest version-code "$apk")" = "330006"
