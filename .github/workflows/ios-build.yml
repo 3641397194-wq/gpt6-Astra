@@ -53,7 +53,8 @@ jobs:
             -derivedDataPath "$RUNNER_TEMP/ColdCoffeeIOSDerivedData" \
             -parallel-testing-enabled NO \
             -resultBundlePath "$RUNNER_TEMP/ColdCoffeeIOSTests.xcresult" \
-            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGN_IDENTITY=- \
             test
 
       - name: Capture real iOS simulator screens
@@ -98,6 +99,15 @@ jobs:
             ${{ runner.temp }}/ColdCoffeeIOSTests.xcresult
           if-no-files-found: error
           retention-days: 14
+
+      - name: Preserve failed simulator diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator-diagnostics
+          path: ${{ runner.temp }}/ColdCoffeeIOSTests.xcresult
+          if-no-files-found: ignore
+          retention-days: 7
 
   testflight:
     name: Export and upload TestFlight IPA
